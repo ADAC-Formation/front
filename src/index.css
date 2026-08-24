@@ -1,0 +1,29 @@
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --color-red: #cc3d34;
+  --color-pink: #F35E6C;
+  --color-orange: #d9812c;
+  --color-yellow: #f6d628;
+  --color-white: #fcfcfc;
+
+  --font-display: "Syne", sans-serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+
+  --color-background: #fcfcfc;
+  --color-accent: #1c1917;
+  --logo-space: 220px;
+}
+
+
+

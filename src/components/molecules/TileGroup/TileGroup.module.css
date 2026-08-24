@@ -1,0 +1,14 @@
+.group {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: repeat(3, 1fr);
+    gap: 20px;
+    width: 60%;
+    height: 50%;
+}
+
+.largeTile {
+    grid-column: 1;
+    grid-row: 1 / 4;
+    
+}

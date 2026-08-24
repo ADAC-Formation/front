@@ -1,0 +1,12 @@
+.logo {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+
+  width: 30%;
+  box-sizing: border-box;
+
+  height: auto;
+  padding: 30px;
+}

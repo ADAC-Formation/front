@@ -1,0 +1,26 @@
+.label {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  font-size: 1.125rem;
+  color: var(--color-white);
+}
+
+.hero {
+  font-size: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .label {
+    font-size: 1.25rem;
+  }
+  .hero {
+    font-size: 1.875rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .hero {
+    font-size: 2.25rem;
+  }
+}

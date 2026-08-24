@@ -1,0 +1,29 @@
+.gestionPage {
+  min-height: 100vh;
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 40px;
+}
+
+.gestionPage h1 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 3rem;
+
+  padding-top: 140px;
+  padding-bottom: 40px;
+}
+
+.tileContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  width: min(1200px, 90%);
+}

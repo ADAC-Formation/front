@@ -1,0 +1,18 @@
+.form {
+  width: 295px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 28px;
+}
+
+.form > :global(a) {
+  align-self: center;
+  margin-top: -4px;
+}
+
+.form > :global(button) {
+  align-self: center;
+  margin-top: 12px;
+}
