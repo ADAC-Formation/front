@@ -1,12 +1,9 @@
 .logo {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
 
-  width: 30%;
-  box-sizing: border-box;
-
+  width: clamp(220px, 60vw, 580px);
   height: auto;
-  padding: 30px;
 }

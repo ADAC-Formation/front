@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import FormField from "../../molecules/FormField/FormField";
-import PrimaryButton from "../../atoms/FormButton/FormButton";
+import FormButton from "../../atoms/FormButton/FormButton";
 import TextLink from "../../atoms/TextLink/TextLink";
 
 import styles from "./LoginForm.module.css";
@@ -56,9 +56,9 @@ const LoginForm = ({
         identifiants oubliés ?
       </TextLink>
 
-      <PrimaryButton type="submit">
+      <FormButton type="submit">
         SE CONNECTER
-      </PrimaryButton>
+      </FormButton>
     </form>
   );
 };

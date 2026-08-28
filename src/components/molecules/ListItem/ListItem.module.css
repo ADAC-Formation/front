@@ -1,0 +1,175 @@
+.item {
+  position: relative;
+
+  display: flex;
+  align-items: stretch;
+
+  min-height: 90px;
+
+  padding: 1rem 0.75rem;
+
+  border-radius: 16px;
+
+  text-decoration: none;
+
+  overflow: hidden;
+
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.item:hover {
+  background-color: var(--muted);
+}
+
+/* ---------- Category bar ---------- */
+
+.categoryBar {
+  width: 5px;
+
+  flex-shrink: 0;
+
+  margin-right: 1rem;
+
+  border-radius: 5px;
+}
+
+
+
+/* ---------- Content ---------- */
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+/* ---------- Category label ---------- */
+
+
+
+.category {
+  display: inline-block;
+
+  margin-bottom: 0.35rem;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+
+  background-color: transparent;
+}
+
+/* ---------- Title ---------- */
+
+.title {
+  min-width: 180px;
+}
+
+.title h2 {
+  margin: 0;
+
+  font-family: var(--font-display);
+
+  font-size: 0.95rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+/* ---------- Details ---------- */
+
+.details {
+  display: flex;
+  align-items: center;
+
+  gap: 1.5rem;
+
+  margin-top: 0.6rem;
+  margin-right: 2.5rem;
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  font-size: 0.8rem;
+
+  color: var(--muted-foreground);
+
+  white-space: nowrap;
+}
+
+.detail svg {
+  color: var(--muted-foreground);
+
+  flex-shrink: 0;
+}
+
+/* ---------- Arrow ---------- */
+
+.arrow {
+  position: absolute;
+
+  right: 0.75rem;
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 28px;
+  height: 28px;
+
+  border-radius: 50%;
+
+  background-color: var(--foreground);
+  color: var(--background);
+
+  font-size: 0.9rem;
+
+  transition: transform 150ms ease;
+}
+
+.item:hover .arrow {
+  transform: translate(3px, -50%);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 800px) {
+  .item {
+    align-items: flex-start;
+
+    padding: 1rem 0.5rem;
+  }
+
+  .categoryBar {
+    margin-right: 0.75rem;
+  }
+
+  .details {
+    flex-wrap: wrap;
+
+    gap: 0.5rem 1rem;
+
+    margin-right: 2rem;
+  }
+
+  .arrow {
+    top: 1rem;
+    right: 0.5rem;
+
+    transform: none;
+  }
+
+  .item:hover .arrow {
+    transform: translateX(3px);
+  }
+}

@@ -4,7 +4,7 @@
 
   box-sizing: border-box;
 
-  border: 1px solid #1f2629;
+  border: 1px solid var(--border);
   border-radius: 14px;
 
   padding: 0 14px;
@@ -12,10 +12,15 @@
   font-family: var(--font-display);
   font-size: 14px;
 
-  background-color: white;
+  background: var(--card);
+  color: var(--card-foreground);
 }
 
 .input:focus {
   outline: none;
-  border-color: #1f2629;
+  border-color: var(--ring);
+}
+
+.input::placeholder {
+  color: var(--muted-foreground);
 }

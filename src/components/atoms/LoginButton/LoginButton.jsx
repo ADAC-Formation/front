@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { useThemeContext } from "../../../context/ThemeProvider";
 import styles from "./LoginButton.module.css";
 
-export function AuthToggle() {
+export function LoginButton() {
   const { isAuthenticated, toggleAuth } = useThemeContext();
   const navigate = useNavigate();
 

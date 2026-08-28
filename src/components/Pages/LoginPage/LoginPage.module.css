@@ -8,4 +8,13 @@
   box-sizing: border-box;
 
   padding-top: 120px;
+  
+}
+
+body {
+  background: var(--background);
+}
+
+body {
+  color: var(--foreground);
 }

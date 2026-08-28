@@ -49,8 +49,14 @@ export function useTheme() {
   }, []);
 
   const toggleDarkMode = useCallback(() => {
-    setTheme({ isDark: !theme.isDark });
-  }, [theme.isDark, setTheme]);
+  setThemeState((prev) => {
+    const next = { ...prev, isDark: !prev.isDark };
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+
+    return next;
+  });
+}, []);
 
   const toggleFontSize = useCallback(() => {
     setTheme({ fontSize: theme.fontSize === "normal" ? "large" : "normal" });

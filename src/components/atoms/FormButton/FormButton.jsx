@@ -1,6 +1,6 @@
 import styles from "./FormButton.module.css";
 
-const PrimaryButton = ({
+const FormButton = ({
   children,
   type = "button",
   onClick,
@@ -18,4 +18,4 @@ const PrimaryButton = ({
   );
 };
 
-export default PrimaryButton;
+export default FormButton;

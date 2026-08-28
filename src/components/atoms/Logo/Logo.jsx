@@ -1,13 +1,18 @@
-import React from 'react'
-import logo from '../../../assets/Logo-Blanc.png'
-import style from "./Logo.module.css"
+import logoLight from "../../../assets/Logo/Logo-Blanc.png";
+import logoDark from "../../../assets/Logo/Logo-Dark.png";
+import { useThemeContext } from "../../../context/ThemeProvider";
+import styles from "./Logo.module.css";
 
 const Logo = () => {
-        
-    return (
-    <img src={logo} alt='Logo' className={style.logo} />
-    )
+  const { isDark } = useThemeContext();
 
-}
+  return (
+    <img
+      src={isDark ? logoDark : logoLight}
+      alt="ADAC Formation"
+      className={styles.logo}
+    />
+  );
+};
 
-export default Logo
+export default Logo;

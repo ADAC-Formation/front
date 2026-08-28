@@ -1,15 +1,14 @@
 import { createBrowserRouter } from "react-router";
-import Layout from "../Layout/Layout";
+
 import ProfilePage from "../components/Pages/Stagiaire/ProfilePage/ProfilePage";
 import NotifPage from "../components/Pages/Stagiaire/NotifPage/NotifPage";
 import MessagesPage from "../components/Pages/Stagiaire/Messages/MessagesPage";
-import FormationsPage from "../components/Pages/Stagiaire/Formations/FormationsPage";
-// import HomePageAdmin from "../components/Pages/Admin/Home/HomePageAdmin";
-// import HomePageStagiaire from "../components/Pages/Stagiaire/Home/HomePageStagiaire";
-// import HomePageFormateur from "../components/Pages/Formateur/Home/HomePageFormateur";
 import HomePage from "../components/Pages/Home/HomePage";
 import LoginPage from "../components/Pages/LoginPage/LoginPage";
-import ManagementMenu from "../components/Pages/Admin/ManagementMenu/ManagementMenu";
+import ManagementMenu from "../components/Pages/ManagementMenu/ManagementMenu";
+import FormationsPage from "../components/Pages/FormationsPage/FormationsPage";
+import FormationDetails from "../components/Pages/FormationDetails/FormationDetails";
+import Layout from "../Layout/layout";
 
 export const router = createBrowserRouter([
   {
@@ -30,7 +29,14 @@ export const router = createBrowserRouter([
         path: "/admin/gestion",
         element: <ManagementMenu />,
       },
-
+      {
+        path: "/admin/formations",
+        element: <FormationsPage />,
+      },
+      {
+        path: "/formations/:formationId",
+        element: <FormationDetails />,
+      },
       {
         path: "/formateur",
         element: <HomePage role="FORMATEUR" />,

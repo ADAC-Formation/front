@@ -1,12 +1,12 @@
 import { BookOpen, UserRound,GraduationCap} from "lucide-react";
-import ManagementTile from "../../../molecules/ManagementTiles/ManagementTiles";
+import ManagementTile from "../../molecules/ManagementTiles/ManagementTiles";
 import styles from "./ManagementMenu.module.css";
 
 const managementTiles = [
   {
     label: "Formations",
     icon: <BookOpen />,
-    color: "#cc3d34",
+    color: "var(--color-red)",
     createLabel: "Créer une nouvelle formation",
     listLabel: "Consulter formations existantes",
     createPath: "/admin/formations/nouvelle",
@@ -15,7 +15,7 @@ const managementTiles = [
   {
     label: "Formateurs",
     icon: <UserRound />,
-    color: "#F35E6C",
+    color: "var(--color-pink)",
     createLabel: "Créer un nouveau profil",
     listLabel: "Consulter profils existants",
     createPath: "/admin/formateurs/nouveau",
@@ -24,7 +24,7 @@ const managementTiles = [
   {
     label: "Stagiaires",
     icon: <GraduationCap />,
-    color: "#d9812c",
+    color: "var(--color-orange)",
     createLabel: "Créer un nouveau profil",
     listLabel: "Consulter profils existants",
     createPath: "/admin/stagiaires/nouveau",
