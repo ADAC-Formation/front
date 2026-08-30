@@ -5,7 +5,7 @@ import {
   MapPin,
   ArrowLeft,
 } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useMemo, useState } from "react";
 import ListItem from "../../../components/molecules/ListItem/ListItem";
 import formations from "../../../utils/simFormations";
@@ -18,54 +18,71 @@ const FormationsPage = () => {
   const [sortBy, setSortBy] = useState("date");
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
 
-const filteredAndSortedFormations = useMemo(() => {
-  const searchTerm = search.toLowerCase().trim();
+  const filteredAndSortedFormations = useMemo(() => {
+    const searchTerm = search.toLowerCase().trim();
 
-  const filtered = formations.filter((formation) => {
-    const matchesSearch =
-      formation.nom.toLowerCase().includes(searchTerm) ||
-      formation.formateur.toLowerCase().includes(searchTerm) ||
-      formation.lieu.toLowerCase().includes(searchTerm) ||
-      formation.category.toLowerCase().includes(searchTerm);
+    const filtered = formations.filter((formation) => {
+      const matchesSearch =
+        formation.nom.toLowerCase().includes(searchTerm) ||
+        formation.formateur.toLowerCase().includes(searchTerm) ||
+        formation.lieu.toLowerCase().includes(searchTerm) ||
+        formation.category.toLowerCase().includes(searchTerm);
 
-    const matchesCategory =
-      selectedCategory === "Toutes" ||
-      formation.category === selectedCategory;
+      const matchesCategory =
+        selectedCategory === "Toutes" ||
+        formation.category === selectedCategory;
 
-    return matchesSearch && matchesCategory;
-  });
+      return matchesSearch && matchesCategory;
+    });
 
-  return [...filtered].sort((a, b) => {
-    if (sortBy === "date") {
-      return a.dateValue.localeCompare(b.dateValue);
-    }
+    return [...filtered].sort((a, b) => {
+      if (sortBy === "date") {
+        return a.dateValue.localeCompare(b.dateValue);
+      }
 
-    if (sortBy === "nom") {
-      return a.nom.localeCompare(b.nom);
-    }
+      if (sortBy === "nom") {
+        return a.nom.localeCompare(b.nom);
+      }
 
-    if (sortBy === "formateur") {
-      return a.formateur.localeCompare(b.formateur);
-    }
+      if (sortBy === "formateur") {
+        return a.formateur.localeCompare(b.formateur);
+      }
 
-    return 0;
-  });
-}, [search, sortBy, selectedCategory]);
+      return 0;
+    });
+  }, [search, sortBy, selectedCategory]);
+
+  const navigate = useNavigate();
 
   return (
     <PageShell>
       <div className={styles.container}>
-
-        <Link to="/" className={styles.back}>
+        <button
+          type="button"
+          className={styles.back}
+          onClick={() => navigate(-1)}
+        >
           <ArrowLeft size={16} />
           Retour
-        </Link>
+        </button>
 
-        <h1 className={styles.title}>Formations</h1>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Formations</h1>
+
+          <div className={styles.actions}>
+            <Link to="/formations/creer" className={styles.createButton}>
+              Créer une nouvelle formation
+            </Link>
+
+            <Link to="/formations/categories" className={styles.createButton}>
+              Gérer les catégories
+            </Link>
+          </div>
+        </div>
 
         <p className={styles.intro}>
-          Consultez les formations disponibles et retrouvez toutes
-          les informations nécessaires.
+          Consultez les formations disponibles et retrouvez toutes les
+          informations nécessaires.
         </p>
 
         <section className={styles.toolbar}>
@@ -81,9 +98,7 @@ const filteredAndSortedFormations = useMemo(() => {
           </div>
 
           <div className={styles.sortContainer}>
-            <label htmlFor="sort">
-              Organiser par :
-            </label>
+            <label htmlFor="sort">Organiser par :</label>
 
             <select
               id="sort"
@@ -97,27 +112,29 @@ const filteredAndSortedFormations = useMemo(() => {
           </div>
         </section>
 
-        <div className={styles.categories}>
-  {categories.map((category) => {
-    const isSelected = selectedCategory === category.name;
+<div className={styles.categories}>
+  {categories
+    .filter((category) => category.name === "Toutes" || category.active)
+    .map((category) => {
+      const isSelected = selectedCategory === category.name;
 
-    return (
-      <button
-        key={category.name}
-        type="button"
-        className={`${styles.category} ${
-          isSelected ? styles.categorySelected : ""
-        }`}
-        onClick={() => setSelectedCategory(category.name)}
-        style={{
-          "--category-color": category.color,
-        }}
-      >
-        <span className={styles.categoryDot} />
-        {category.name}
-      </button>
-    );
-  })}
+      return (
+        <button
+          key={category.name}
+          type="button"
+          className={`${styles.category} ${
+            isSelected ? styles.categorySelected : ""
+          }`}
+          onClick={() => setSelectedCategory(category.name)}
+          style={{
+            "--category-color": category.color,
+          }}
+        >
+          <span className={styles.categoryDot} />
+          {category.name}
+        </button>
+      );
+    })}
 </div>
 
         <section className={styles.card}>
@@ -134,11 +151,11 @@ const filteredAndSortedFormations = useMemo(() => {
           <div className={styles.list}>
             {filteredAndSortedFormations.length > 0 ? (
               filteredAndSortedFormations.map((formation) => (
-              <ListItem
-                key={formation.id}
-                title={formation.nom}
-                category={formation.category}
-                details={[
+                <ListItem
+                  key={formation.id}
+                  title={formation.nom}
+                  category={formation.category}
+                  details={[
                     {
                       icon: CalendarDays,
                       value: formation.date,
@@ -161,14 +178,11 @@ const filteredAndSortedFormations = useMemo(() => {
 
                 <h2>Aucune formation trouvée</h2>
 
-                <p>
-                  Essayez avec un autre terme de recherche.
-                </p>
+                <p>Essayez avec un autre terme de recherche.</p>
               </div>
             )}
           </div>
         </section>
-
       </div>
     </PageShell>
   );

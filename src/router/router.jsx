@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router";
-
+import CreateFormationPage from "../components/Pages/CreateFormationPage/CreateFormationPage";
 import ProfilePage from "../components/Pages/Stagiaire/ProfilePage/ProfilePage";
 import NotifPage from "../components/Pages/Stagiaire/NotifPage/NotifPage";
 import MessagesPage from "../components/Pages/Stagiaire/Messages/MessagesPage";
@@ -9,6 +9,7 @@ import ManagementMenu from "../components/Pages/ManagementMenu/ManagementMenu";
 import FormationsPage from "../components/Pages/FormationsPage/FormationsPage";
 import FormationDetails from "../components/Pages/FormationDetails/FormationDetails";
 import Layout from "../Layout/layout";
+import CategoryManagement from "../components/Pages/Categories/CategoryManagement";
 
 export const router = createBrowserRouter([
   {
@@ -36,6 +37,14 @@ export const router = createBrowserRouter([
       {
         path: "/formations/:formationId",
         element: <FormationDetails />,
+      },
+      {
+        path: "formations/creer",
+        element: <CreateFormationPage />,
+      },
+      {
+        path: "formations/categories",
+        element: <CategoryManagement />,
       },
       {
         path: "/formateur",

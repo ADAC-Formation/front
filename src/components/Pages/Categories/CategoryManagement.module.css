@@ -1,0 +1,386 @@
+/* ---------- Page ---------- */
+
+.container {
+  width: min(80rem, 100%);
+  margin: 0 auto;
+
+  padding-top: 180px;
+  padding-bottom: 60px;
+}
+
+
+/* ---------- Back ---------- */
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin-bottom: 1.5rem;
+
+  border: none;
+  padding: 0;
+
+  background: none;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  color: var(--muted-foreground);
+
+  cursor: pointer;
+
+  transition: color 150ms ease;
+}
+
+.back:hover {
+  color: var(--foreground);
+}
+
+
+/* ---------- Header ---------- */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 2rem;
+
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  line-height: 1.15;
+  font-weight: 700;
+
+  color: var(--foreground);
+}
+
+.intro {
+  max-width: 700px;
+
+  margin: 0.75rem 0 0;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  color: var(--muted-foreground);
+}
+
+
+/* ---------- Create button ---------- */
+
+.createButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0.7rem 1rem;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--color-soft-orange);
+  color: var(--background);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.createButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+
+/* ---------- Main card ---------- */
+
+.card {
+  margin-top: 2.5rem;
+
+  padding: 2rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  overflow: hidden;
+}
+
+
+/* ---------- Card header ---------- */
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader h2 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.cardHeader p {
+  margin: 0.25rem 0 0;
+
+  font-size: 0.875rem;
+
+  color: var(--muted-foreground);
+}
+
+
+/* ---------- Category list ---------- */
+
+.list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+}
+
+
+/* ---------- Category ---------- */
+
+.category {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 1.5rem;
+
+  padding: 1rem 1.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background-color: var(--background);
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.category:hover {
+  border-color: color-mix(
+    in srgb,
+    var(--foreground) 25%,
+    var(--border)
+  );
+
+  box-shadow:
+    0 4px 10px -5px rgba(0, 0, 0, 0.15);
+}
+
+
+/* ---------- Category information ---------- */
+
+.categoryInfo {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+  min-width: 0;
+}
+
+.categoryDot {
+  width: 10px;
+  height: 10px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+}
+
+.categoryInfo h3 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: var(--foreground);
+}
+
+
+/* ---------- Status ---------- */
+
+.activeLabel,
+.inactiveLabel {
+  display: block;
+
+  margin-top: 0.2rem;
+
+  font-size: 0.75rem;
+}
+
+.activeLabel {
+  color: var(--muted-foreground);
+}
+
+.inactiveLabel {
+  color: var(--muted-foreground);
+}
+
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+  flex-shrink: 0;
+}
+
+
+/* ---------- Edit ---------- */
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  border: none;
+  padding: 0;
+
+  background: none;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  color: var(--foreground);
+
+  cursor: pointer;
+
+  transition: opacity 150ms ease;
+}
+
+.editButton:hover {
+  opacity: 0.7;
+}
+
+
+/* ---------- Toggle ---------- */
+
+.toggle {
+  position: relative;
+
+  width: 2.75rem;
+  height: 1.5rem;
+
+  flex-shrink: 0;
+
+  padding: 0;
+
+  border: none;
+  border-radius: 999px;
+
+  background-color: var(--color-red);
+
+  cursor: pointer;
+
+  transition: background-color 150ms ease;
+}
+
+.toggleKnob {
+  position: absolute;
+
+  top: 0.2rem;
+  left: 0.2rem;
+
+  width: 1.1rem;
+  height: 1.1rem;
+
+  border-radius: 50%;
+
+  background-color: white;
+
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.2);
+
+  transition: transform 150ms ease;
+}
+
+.toggleActive {
+  background-color: var(--color-green);
+}
+
+.toggleActive .toggleKnob {
+  transform: translateX(1.25rem);
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+  .container {
+    padding-top: 190px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .header {
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 1.875rem;
+  }
+
+  .createButton {
+    width: 100%;
+  }
+
+  .card {
+    padding: 1.25rem;
+
+    border-radius: 24px;
+  }
+
+  .category {
+    align-items: flex-start;
+
+    padding: 1rem;
+  }
+
+  .actions {
+    gap: 0.75rem;
+  }
+
+  .editButton {
+    font-size: 0;
+  }
+
+  .editButton svg {
+    width: 18px;
+    height: 18px;
+  }
+}

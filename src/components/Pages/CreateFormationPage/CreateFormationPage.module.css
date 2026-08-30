@@ -1,0 +1,472 @@
+
+/* ---------- Page ---------- */
+
+.container {
+  width: min(80rem, 100%);
+  margin: 0 auto;
+
+  padding-top: 220px;
+  padding-bottom: 60px;
+}
+
+
+/* ---------- Back ---------- */
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin-bottom: 1.5rem;
+
+  border: none;
+  padding: 0;
+
+  background: none;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  color: var(--muted-foreground);
+
+  cursor: pointer;
+
+  transition: color 150ms ease;
+}
+
+.back:hover {
+  color: var(--foreground);
+}
+
+
+/* ---------- Header ---------- */
+
+.header {
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  font-weight: 700;
+
+  color: var(--foreground);
+}
+
+.intro {
+  max-width: 700px;
+
+  margin: 0.75rem 0 0;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  color: var(--muted-foreground);
+}
+
+
+/* ---------- Main card ---------- */
+
+.card {
+
+
+  padding: 3rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  overflow: hidden;
+}
+
+
+/* ---------- Sections ---------- */
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.section:last-of-type {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  margin: 0 0 0.35rem;
+
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.sectionDescription {
+  margin: 0 0 1.5rem;
+
+  font-size: 0.85rem;
+  line-height: 1.5;
+
+  color: var(--muted-foreground);
+}
+
+
+/* ---------- Form grid ---------- */
+
+.formGrid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 1.5rem;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+
+/* ---------- Fields ---------- */
+
+.field {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem;
+}
+
+.field label {
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+
+  min-height: 46px;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  padding: 0.7rem 0.875rem;
+
+  background-color: var(--background);
+
+  color: var(--foreground);
+
+  font-size: 0.875rem;
+
+  outline: none;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.field textarea {
+  min-height: 120px;
+
+  resize: vertical;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--muted-foreground);
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus {
+  border-color: var(--foreground);
+
+  box-shadow:
+    0 0 0 3px color-mix(
+      in srgb,
+      var(--foreground) 8%,
+      transparent
+    );
+}
+
+
+/* ---------- Category ---------- */
+
+.categoryRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.categoryRow select {
+  flex: 1;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0 1rem;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background-color: var(--background);
+
+  color: var(--foreground);
+
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    transform 150ms ease;
+}
+
+.secondaryButton:hover {
+  border-color: var(--foreground);
+
+  background-color: var(--muted);
+
+  transform: translateY(-1px);
+}
+
+
+/* ---------- New category ---------- */
+
+.newCategory {
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) auto auto;
+
+  gap: 1rem;
+
+  margin-top: 1rem;
+
+  padding: 1.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background-color: var(--muted);
+}
+
+.newCategoryActions {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 0.5rem;
+}
+
+.colorField {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem;
+}
+
+.colorField label {
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.colorInput {
+  width: 70px;
+  height: 46px;
+
+  padding: 0.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background-color: var(--background);
+
+  cursor: pointer;
+}
+
+
+/* ---------- Documents ---------- */
+
+.documents {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+}
+
+.dropZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 180px;
+
+  padding: 2rem;
+
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+
+  background-color: var(--background);
+
+  text-align: center;
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.dropZone:hover {
+  border-color: var(--foreground);
+
+  background-color: var(--muted);
+}
+
+.dropZoneTitle {
+  margin: 0.75rem 0 0.25rem;
+
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.dropZoneDescription {
+  margin: 0;
+
+  font-size: 0.8rem;
+
+  color: var(--muted-foreground);
+}
+
+.fileInput {
+  display: none;
+}
+
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 0.75rem;
+
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+
+  border-top: 1px solid var(--border);
+}
+
+.cancelButton,
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+
+  padding: 0.7rem 1.25rem;
+
+  border-radius: 14px;
+
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.cancelButton {
+  border: 1px solid var(--border);
+
+  background-color: var(--background);
+
+  color: var(--foreground);
+}
+
+.submitButton {
+  border: 1px solid var(--foreground);
+
+  background-color: var(--foreground);
+
+  color: var(--background);
+}
+
+.cancelButton:hover,
+.submitButton:hover {
+  opacity: 0.9;
+
+  transform: translateY(-1px);
+}
+
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+  .container {
+    padding-top: 190px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .card {
+    padding: 2rem 1.5rem;
+
+    border-radius: 24px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: auto;
+  }
+
+  .categoryRow {
+    flex-direction: column;
+  }
+
+  .secondaryButton {
+    min-height: 46px;
+  }
+
+  .newCategory {
+    grid-template-columns: 1fr;
+  }
+
+  .newCategoryActions {
+    align-items: stretch;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+  }
+}
+

@@ -153,6 +153,8 @@ const formations = [
     dateValue: "2026-09-24",
     formateur: "Sophie Bernard",
     lieu: "Marseille",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -165,6 +167,8 @@ const formations = [
     dateValue: "2026-10-02",
     formateur: "Thomas Leroy",
     lieu: "Toulouse",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -177,6 +181,8 @@ const formations = [
     dateValue: "2026-10-09",
     formateur: "Claire Moreau",
     lieu: "Bordeaux",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -189,6 +195,8 @@ const formations = [
     dateValue: "2026-09-12",
     formateur: "Marie Dupont",
     lieu: "Paris",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -201,6 +209,8 @@ const formations = [
     dateValue: "2026-09-18",
     formateur: "Jean Martin",
     lieu: "Lyon",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -213,6 +223,8 @@ const formations = [
     dateValue: "2026-09-24",
     formateur: "Sophie Bernard",
     lieu: "Marseille",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -225,6 +237,8 @@ const formations = [
     dateValue: "2026-10-02",
     formateur: "Thomas Leroy",
     lieu: "Toulouse",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -237,6 +251,8 @@ const formations = [
     dateValue: "2026-10-09",
     formateur: "Claire Moreau",
     lieu: "Bordeaux",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
@@ -249,18 +265,23 @@ const formations = [
     dateValue: "2026-09-12",
     formateur: "Marie Dupont",
     lieu: "Paris",
+    modalite: "Présentiel",
+    documents: [],
   },
 
   {
     id: 22,
     nom: "Identification des repères pour l'attribution des aides financières",
     category: "Formations en intra",
-    public: "Membre ou futur membre d’une commission d’attribution d’aide financière",
+    public:
+      "Membre ou futur membre d’une commission d’attribution d’aide financière",
     ref: "IN03",
     date: "18 septembre 2026",
     dateValue: "2026-09-18",
     formateur: "Jean Martin",
     lieu: "Lyon",
+    modalite: "Présentiel",
+    documents: [],
   },
 ];
 
