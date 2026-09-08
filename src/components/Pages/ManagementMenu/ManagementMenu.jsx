@@ -9,7 +9,7 @@ const managementTiles = [
     color: "var(--color-red)",
     createLabel: "Créer une nouvelle formation",
     listLabel: "Consulter formations existantes",
-    createPath: "/admin/formations/nouvelle",
+    createPath: "/formations/creer",
     listPath: "/admin/formations",
   },
   {
@@ -35,7 +35,7 @@ const managementTiles = [
 const ManagementMenu = () => {
   return (
     <main className={styles.gestionPage}>
-      <h1 className={styles.title}>Gestion</h1>
+      <h1 className={styles.title}> Gestion</h1>
 
       <div className={styles.tileContainer}>
         {managementTiles.map((tile) => (
