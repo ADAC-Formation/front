@@ -165,11 +165,11 @@
 /* ---------- Category ---------- */
 
 .category {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  justify-content: space-between;
 
-  gap: 1.5rem;
+  gap: 1rem;
 
   padding: 1rem 1.25rem;
 
@@ -336,6 +336,72 @@
 .toggleActive .toggleKnob {
   transform: translateX(1.25rem);
 }
+
+.tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+
+  width: 280px;
+  padding: 0.6rem 0.75rem;
+
+  background: #333;
+  color: white;
+  border-radius: 6px;
+
+  font-size: 0.75rem;
+  line-height: 1.4;
+  font-weight: 400;
+  text-align: left;
+
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  transition: opacity 0.15s ease;
+  z-index: 10;
+}
+
+.toggle:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ---------- Edit category ---------- */
+
+.editForm {
+  grid-column: 1 / -1;
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) auto auto;
+
+  gap: 1rem;
+
+  margin-top: 1rem;
+
+  padding: 1.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background-color: var(--muted);
+}
+
+.editFormActions {
+  display: flex;
+  align-items: flex-end;
+
+  gap: 0.5rem;
+}
+
+input{
+  margin-left: 0.5rem;
+
+  border-radius: 6px;
+  border: 1px solid;
+}
+
 
 
 /* ---------- Responsive ---------- */

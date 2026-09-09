@@ -9,17 +9,56 @@ const CategoryManagement = () => {
   const navigate = useNavigate();
 
   const [categoryList, setCategoryList] = useState(
-    categories.filter((category) => category.name !== "Toutes")
+    categories.filter((category) => category.name !== "Toutes"),
   );
+
+  const [editingCategoryId, setEditingCategoryId] = useState(null);
+  const [editData, setEditData] = useState({
+    name: "",
+    color: "",
+  });
 
   const handleToggle = (id) => {
     setCategoryList((currentCategories) =>
       currentCategories.map((category) =>
         category.id === id
           ? { ...category, active: !category.active }
-          : category
-      )
+          : category,
+      ),
     );
+  };
+
+  const handleEdit = (category) => {
+    setEditingCategoryId(category.id);
+    setEditData({
+      name: category.name,
+      color: category.color,
+    });
+  };
+
+  const handleEditChange = (event) => {
+    const { name, value } = event.target;
+
+    setEditData((currentData) => ({
+      ...currentData,
+      [name]: value,
+    }));
+  };
+
+  const handleSaveEdit = () => {
+    setCategoryList((currentCategories) =>
+      currentCategories.map((category) =>
+        category.id === editingCategoryId
+          ? {
+              ...category,
+              name: editData.name,
+              color: editData.color,
+            }
+          : category,
+      ),
+    );
+
+    setEditingCategoryId(null);
   };
 
   return (
@@ -91,6 +130,7 @@ const CategoryManagement = () => {
                     type="button"
                     className={styles.editButton}
                     aria-label={`Modifier ${category.name}`}
+                    onClick={() => handleEdit(category)}
                   >
                     <Pencil size={16} />
                     Modifier
@@ -110,8 +150,65 @@ const CategoryManagement = () => {
                     aria-pressed={category.active}
                   >
                     <span className={styles.toggleKnob} />
+
+                    <span className={styles.tooltip}>
+                      {category.active
+                        ? "Désactiver la catégorie pour ne plus la voir apparaître lors de la création d'une nouvelle formation"
+                        : "Activer la catégorie pour la rendre disponible lors de la création d'une nouvelle formation"}
+                    </span>
                   </button>
                 </div>
+                {editingCategoryId === category.id && (
+                  <div className={styles.editForm}>
+                    <div className={styles.field}>
+                      <label htmlFor={`category-name-${category.id}`}>
+                        Nom de la catégorie
+                      </label>
+
+                      <input
+                        id={`category-name-${category.id}`}
+                        name="name"
+                        type="text"
+                        value={editData.name}
+                        onChange={handleEditChange}
+                        required
+                      />
+                    </div>
+
+                    <div className={styles.colorField}>
+                      <label htmlFor={`category-color-${category.id}`}>
+                        Couleur
+                      </label>
+
+                      <input
+                        id={`category-color-${category.id}`}
+                        name="color"
+                        className={styles.colorInput}
+                        type="color"
+                        value={editData.color}
+                        onChange={handleEditChange}
+                      />
+                    </div>
+
+                    <div className={styles.editFormActions}>
+                      <button
+                        type="button"
+                        className={styles.cancelButton}
+                        onClick={() => setEditingCategoryId(null)}
+                      >
+                        Annuler
+                      </button>
+
+                      <button
+                        type="button"
+                        className={styles.submitButton}
+                        onClick={handleSaveEdit}
+                      >
+                        Enregistrer
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>
