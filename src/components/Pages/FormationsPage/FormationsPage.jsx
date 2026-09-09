@@ -5,7 +5,7 @@ import {
   MapPin,
   ArrowLeft,
 } from "lucide-react";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { useMemo, useState } from "react";
 import ListItem from "../../../components/molecules/ListItem/ListItem";
 import formations from "../../../utils/simFormations";
@@ -52,19 +52,13 @@ const FormationsPage = () => {
     });
   }, [search, sortBy, selectedCategory]);
 
-  const navigate = useNavigate();
-
   return (
     <PageShell>
       <div className={styles.container}>
-        <button
-          type="button"
-          className={styles.back}
-          onClick={() => navigate(-1)}
-        >
-          <ArrowLeft size={16} />
-          Retour
-        </button>
+        <Link to="/admin/gestion" className={styles.back}>
+  <ArrowLeft size={16} />
+  Retour
+</Link>
 
         <div className={styles.header}>
           <h1 className={styles.title}>Formations</h1>
