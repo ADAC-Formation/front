@@ -24,9 +24,9 @@
 
 ## 5. Chargement annoncé et échec de chargement (TDD)
 
-- [ ] 5.1 RED : tests — premier affichage sur une route non chargée : `status` « Chargement… » présent puis page ; navigation vers une page non chargée : région `status` « Chargement de la page… » puis disparition ; échec d'un `import()` (module qui rejette) : `alert` « Cette page n'a pas pu être chargée… » + bouton « Réessayer » qui appelle `window.location.reload` (espion) ; jest-axe sur `RouteError` ; confirmer RED
-- [ ] 5.2 Créer `src/router/RouteError.jsx`, ajouter `errorElement` et `HydrateFallback` à la route racine (emplacement du `HydrateFallback` tranché par le test : logo et en-tête visibles si possible), et `NavigationStatus` dans `Layout` ; GREEN
-- [ ] 5.3 Commit `feat: announce page loading and handle chunk load failures`
+- [x] 5.1 RED : tests — premier affichage sur une route non chargée : `status` « Chargement… » présent puis page ; navigation vers une page non chargée : région `status` « Chargement de la page… » puis disparition ; échec d'un `import()` (module qui rejette) : `alert` « Cette page n'a pas pu être chargée… » + bouton « Réessayer » qui appelle `window.location.reload` (espion) ; jest-axe sur `RouteError` ; confirmer RED
+- [x] 5.2 Créer `src/router/RouteError.jsx`, ajouter `errorElement` et `HydrateFallback` à la route racine (emplacement du `HydrateFallback` tranché par le test : logo et en-tête visibles si possible), et `NavigationStatus` dans `Layout` ; GREEN
+- [x] 5.3 Commit `feat: announce page loading and handle chunk load failures`
 
 ## 6. Mesure, budget et documentation
 

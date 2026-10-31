@@ -1,6 +1,8 @@
 import { createBrowserRouter } from "react-router";
 import { lazyPage } from "./lazyPage";
 import Root from "./Root";
+import RouteError from "./RouteError";
+import SessionLoader from "../features/auth/guards/SessionLoader";
 import RequireAuth from "../features/auth/guards/RequireAuth";
 import RequireRole from "../features/auth/guards/RequireRole";
 import PublicOnly from "../features/auth/guards/PublicOnly";
@@ -11,6 +13,9 @@ export const routes = [
   {
     path: "/",
     element: <Root />,
+    // Premier affichage pendant le téléchargement des pages ; erreurs de route (chargement raté, adresse inconnue).
+    HydrateFallback: SessionLoader,
+    ErrorBoundary: RouteError,
     children: [
       // Publiques : connexion (réservée aux visiteurs), activation, mot de passe oublié.
       {
