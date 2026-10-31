@@ -371,3 +371,7 @@
 - **Décision** : les pages de comptes reprennent le gabarit de `FormationsPage` : contenu sous le logo (`padding-top` 180 px), lien « Retour », titre, texte d'introduction, bouton d'action orange doux, barre de recherche, « Organiser par : » (nom, prénom, e-mail), filtre de statut en pastilles colorées (restent des boutons radio accessibles), carte arrondie (30 px) contenant des lignes à barre de couleur (vert = actif, gris = inactif) ; formulaires dans une carte avec boutons « Annuler » / « Créer le compte » comme la création de formation. La recherche et le tri se font côté client sur la liste reçue.
 - **Pourquoi** : cohérence visuelle du portail (D41, `docs/design-front.md`).
 - **Alternatives écartées** : tableau seul (écart avec le reste du site) ; réutiliser `ListItem` (c'est un lien complet : impossible d'y mettre des boutons d'action valides).
+
+## D59 — Pages chargées à la demande, avec budget de taille du fichier d'entrée
+- Date : 2026-10-31
+- **Avant** (`npm run build` sur `dev`, `3d04fd5`) : un seul fichier JS `index-*.js` = 470,64 kB (149,74 kB gzip) ; CSS 39,63 kB (7,06 kB gzip) ; `Logo-Dark.png` 230,22 kB, `Logo-Blanc.png` 69,86 kB. Cause : 22 imports statiques dans `src/router/router.jsx`, aucun `lazy`.

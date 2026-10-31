@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  // Le manifeste permet à scripts/check-bundle.mjs de vérifier le budget et le découpage par page.
+  build: { manifest: true },
   test: {
     environment: 'jsdom',
     globals: true,

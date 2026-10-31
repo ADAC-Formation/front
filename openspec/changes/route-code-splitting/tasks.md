@@ -1,12 +1,12 @@
 ## 1. Préparation et mesure de départ
 
-- [ ] 1.1 Partir de `dev` à jour (branche `feature/route-code-splitting` déjà créée) ; vérifier `npm run check`. Rappel : le test d'auth « vide la session et redirige vers /login » est instable sur `dev`, le relancer avant de conclure à une régression
-- [ ] 1.2 Relever la mesure de départ (`npm run build` : entrée brut et gzip, CSS, images) et l'inscrire dans `docs/decisions-front-foundations.md` sous D59 (section « Avant ») ; vérifier que les chiffres correspondent à ceux de design.md (470,64 kB / 149,74 kB gzip)
+- [x] 1.1 Partir de `dev` à jour (branche `feature/route-code-splitting` déjà créée) ; vérifier `npm run check`. Rappel : le test d'auth « vide la session et redirige vers /login » est instable sur `dev`, le relancer avant de conclure à une régression
+- [x] 1.2 Relever la mesure de départ (`npm run build` : entrée brut et gzip, CSS, images) et l'inscrire dans `docs/decisions-front-foundations.md` sous D59 (section « Avant ») ; vérifier que les chiffres correspondent à ceux de design.md (470,64 kB / 149,74 kB gzip)
 
 ## 2. Outil de budget (TDD)
 
-- [ ] 2.1 RED : `scripts/bundle-budget.test.js` — fonction pure `checkBundle({ manifest, entryGzipBytes, budget })` : réussit sous le budget et sans page dans l'entrée ; échoue avec les deux valeurs au-dessus ; échoue en nommant un fichier sous `src/components/Pages/` ou `src/features/*/pages/` importé statiquement par l'entrée (y compris indirectement) ; confirmer RED
-- [ ] 2.2 Créer `scripts/bundle-budget.js` (logique) et `scripts/check-bundle.mjs` (lit `dist/.vite/manifest.json`, gzip de l'entrée, `bundle-budget.json`, code de sortie) ; activer `build.manifest` dans `vite.config.js` ; GREEN ; vérifier que `node scripts/check-bundle.mjs` échoue aujourd'hui (pages dans l'entrée), ce qui prouve que le contrôle détecte le problème
+- [x] 2.1 RED : `scripts/bundle-budget.test.js` — fonction pure `checkBundle({ manifest, entryGzipBytes, budget })` : réussit sous le budget et sans page dans l'entrée ; échoue avec les deux valeurs au-dessus ; échoue en nommant un fichier sous `src/components/Pages/` ou `src/features/*/pages/` importé statiquement par l'entrée (y compris indirectement) ; confirmer RED
+- [x] 2.2 Créer `scripts/bundle-budget.js` (logique) et `scripts/check-bundle.mjs` (lit `dist/.vite/manifest.json`, gzip de l'entrée, `bundle-budget.json`, code de sortie) ; activer `build.manifest` dans `vite.config.js` ; GREEN ; vérifier que `node scripts/check-bundle.mjs` échoue aujourd'hui (pages dans l'entrée), ce qui prouve que le contrôle détecte le problème
 - [ ] 2.3 Commit `chore: add bundle budget check script`
 
 ## 3. Session demandée dès le démarrage (TDD)
