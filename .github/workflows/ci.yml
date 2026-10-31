@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  pull_request:
+    branches: ["dev", "main"]
+  push:
+    branches: ["dev", "main"]
+    tags: ["v*.*.*"]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      # TODO: ajouter `npm test` une fois Vitest installé (D4) — puis remplacer lint/test/build par `npm run check`
+      - run: npm run build
+        env:
+          VITE_API_URL: /api
+
+  docker:
+    needs: check
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image (validation sur PR, sans push)
+        if: github.event_name == 'pull_request'
+        run: docker build -t adac-front:ci .
+
+      # Tags (INFRASTRUCTURE.md §16 : jamais uniquement `latest` en prod)
+      #  - tag git vX.Y.Z -> X.Y.Z, X.Y et latest
+      #  - push sur main  -> main + sha
+      #  - push sur dev   -> dev + sha
+      - name: Métadonnées de l'image
+        if: github.event_name == 'push'
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/adac-formation/front
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=ref,event=branch
+            type=sha
+          flavor: |
+            latest=${{ startsWith(github.ref, 'refs/tags/v') }}
+
+      - name: Login ghcr.io
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push
+        if: github.event_name == 'push'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
