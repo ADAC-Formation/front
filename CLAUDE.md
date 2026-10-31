@@ -182,7 +182,8 @@ npm run test -- NomTest       # un test spécifique
 
 ## État actuel / pièges (travail en cours)
 
-- Auth branchée (change `auth-real-backend`, D52) : la session est la requête `['auth','me']` (`features/auth/hooks.js`, `useCurrentUser`) ; `features/auth/UserProvider.jsx` branche le 401 de `Axiosclient.js` (`setUnauthorizedHandler`, `ApiError` D12) ; gardes `RequireAuth` / `RequireRole` / `PublicOnly` ; pages connexion, activation, mot de passe oublié, réinitialisation. Les hooks TanStack Query des autres ressources ne sont pas encore écrits.
+- Auth branchée (change `auth-real-backend`, D52) : la session est la requête `['auth','me']` (`features/auth/hooks.js`, `useCurrentUser`) ; `features/auth/UserProvider.jsx` branche le 401 de `Axiosclient.js` (`setUnauthorizedHandler`, `ApiError` D12) ; gardes `RequireAuth` / `RequireRole` / `PublicOnly` ; pages connexion, activation, mot de passe oublié, réinitialisation. Les hooks TanStack Query des autres ressources ne sont pas encore écrits (sauf les comptes, ci-dessous).
+- Comptes branchés (change `users-account-management`, D54) : `src/features/accounts/` (listes, création, modification, détail, suspension / réactivation) sur `/admin/formateurs` et `/admin/stagiaires` ; la chargée de formation gère, le formateur consulte en lecture seule. Reportés : colonne formations et « Envoyer un message » (`feature/formations`, `feature/messagerie`), profil et import Excel.
 - `npm run lint` est propre (0 erreur) ; `npm run check` vert (lint + tests + build).
 - `text-large` et `high-contrast` sont posées sur `<html>` sans règle CSS ; le bouton principal utilise la variable inexistante `--color-accent` (voir `docs/design-front.md`).
 - Données encore mockées (`utils/simFormations.jsx`, `utils/categories.js`).

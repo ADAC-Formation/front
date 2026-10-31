@@ -7,7 +7,7 @@ Permet à la chargée de formation de créer, consulter, corriger, suspendre et 
 ## ADDED Requirements
 
 ### Requirement: Accès aux écrans de comptes selon le rôle
-Les routes `/admin/formateurs`, `/admin/stagiaires` et leurs détails SHALL être réservées aux rôles `SUPER_ADMIN` et `ADMIN`. Les routes `/admin/formateurs/nouveau` et `/admin/stagiaires/nouveau` SHALL être réservées à `SUPER_ADMIN`. Un autre rôle SHALL voir la page « Accès refusé », un visiteur SHALL être redirigé vers `/login`. Le back reste l'autorité (403).
+Les routes `/admin/formateurs`, `/admin/stagiaires` et leurs détails SHALL être réservées aux rôles `SUPER_ADMIN` et `ADMIN`. Les routes `/admin/formateurs/nouveau`, `/admin/stagiaires/nouveau` et `/admin/<type>/:id/modifier` SHALL être réservées à `SUPER_ADMIN`. Un autre rôle SHALL voir la page « Accès refusé », un visiteur SHALL être redirigé vers `/login`. Le back reste l'autorité (403).
 
 #### Scenario: Stagiaire sur la liste des formateurs
 - **WHEN** un `STAGIAIRE` ouvre `/admin/formateurs`
