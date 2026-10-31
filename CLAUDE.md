@@ -69,7 +69,7 @@ Rôles du back (source de vérité, rôle lu via `GET /auth/me`) :
 - `ADMIN` — Formateur : lecture + messagerie + ajout docs
 - `STAGIAIRE` — Apprenant : lecture de ses formations + messagerie
 
-Libellés affichés : Chargée de formation / Formateur / Stagiaire (D33). Cible (D46, demande de changement au back) : le formateur voit toutes les formations en lecture seule, « Mes formations » par défaut ; en attendant, `tech.md` (ses formations seulement) fait foi.
+Libellés affichés : Chargée de formation / Formateur / Stagiaire (D33). D46 (l'emporte sur `tech.md`, exception à D40) : le formateur voit toutes les formations en lecture seule, « Mes formations » par défaut ; demande de changement au back en cours (Q3).
 Les rôles du front (`utils/roles.js` : `ROLES`, `roleLabels`) sont alignés sur ceux du back.
 
 ## Back-end en LECTURE SEULE — règle absolue

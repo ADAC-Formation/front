@@ -312,7 +312,8 @@
 
 ## D46 — Formateur : toutes les formations en lecture seule, « Mes formations » par défaut
 - Date : 2026-10-31
-- **Décision** : le front vise ce comportement (PRD, USERFLOW, TICKET-024). `tech.md` prévoit aujourd'hui « ADMIN = ses formations seulement » : c'est une **demande de changement** pour Charlotte (`points-pour-charlotte.md` Q3). Tant qu'elle n'est pas faite, le front suit `tech.md` (D40).
+- **Décision** : le front implémente ce comportement (PRD, USERFLOW, TICKET-024). `tech.md` prévoit « ADMIN = ses formations seulement » : **D46 l'emporte sur `tech.md` sur ce point** (exception à D40, décidée par Manon le 2026-10-31). Le front n'applique pas la restriction de `tech.md` ; la demande de changement correspondante reste adressée à Charlotte (`points-pour-charlotte.md` Q3) pour aligner le back.
+- **Conséquence** : tant que le back n'est pas aligné, un ADMIN peut recevoir 404 sur une formation qui n'est pas la sienne ; le front doit gérer ce cas proprement (message clair, pas de plantage).
 
 ## D47 — Tableau de bord : Gestion / Messages / Notifications / Profil, puis Formations / Formateurs / Stagiaires
 - Date : 2026-10-31

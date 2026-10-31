@@ -186,7 +186,7 @@ Tout le front est porté par Manon (17 tickets, ≈ 33 h). Back/infra : Charlott
 | 016 | OK → 200 + cookie, redirection vers le tableau de bord ; 401 « Identifiants invalides » ; 403 compte non activé ; 429 « Trop de tentatives » (15 min) |
 | 017 | Code à 6 chiffres + mot de passe (8–72, 1 majuscule, 1 chiffre) ; 400 « Code invalide ou expiré » ; « Renvoyer un code » (429 après 3/15 min) ; retour à la connexion avec bandeau |
 | 018 | `forgot-password` renvoie toujours 200 avec le même message ; réinitialisation = même flux code + nouveau mot de passe |
-| 024 | Visibilité par rôle (SA : toutes ; ADMIN : voir D46 — aujourd'hui les siennes selon `tech.md` ; STAGIAIRE : celles où il est inscrit) ; archivées en lecture seule |
+| 024 | Visibilité par rôle (SA : toutes ; ADMIN : toutes en lecture seule, D46 l'emporte sur `tech.md` ; STAGIAIRE : celles où il est inscrit) ; archivées en lecture seule |
 
 Critères des autres tickets : `back/docs/STORIES.md` + `docs/spec.md`, rédigés au démarrage de chaque ticket (D39).
 
@@ -237,7 +237,7 @@ Cérémonies : aucune fixe (D29). Point de synchronisation Manon–Charlotte sel
 |---|---|---|---|
 | Comptes | CRUD + suspendre | — | — (seulement `PATCH /users/me`) |
 | Catégories | CRUD | Lire | Lire |
-| Formations | CRUD + archiver + import | Lire les siennes (`tech.md`) — cible D46 : toutes en lecture | Lire celles où il est inscrit |
+| Formations | CRUD + archiver + import | Lire toutes en lecture seule (D46, l'emporte sur `tech.md`) | Lire celles où il est inscrit |
 | Inscriptions | Gérer | Lire les siennes | — |
 | Documents | Tout | Déposer sur ses formations ; supprimer les siens | Déposer sur ses inscriptions |
 | Messagerie | Individuelle + groupée (3 filtres) | Individuelle + groupée FORMATION (les siennes) | Individuelle (SA et formateurs) |

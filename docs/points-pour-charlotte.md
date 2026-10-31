@@ -65,7 +65,7 @@ Décision du front : **le formateur voit toutes les formations en lecture seule,
 2. un filtre « mes formations » (par ex. `?mine=true`, retiré du contrat par TICKET-022) ;
 3. confirmer ce que le formateur peut lire sur une formation qui n'est pas la sienne (inscrits ? documents ?).
 
-En attendant, le front suit `tech.md` (ADMIN = ses formations seulement).
+Le front applique sa décision (D46), qui l'emporte sur `tech.md` sur ce point : il faut donc aligner le back, sinon un formateur recevra 404 sur les formations des autres.
 
 ### Q4 — Tableau de bord — proposition de changement
 Proposition : niveau 1 identique pour tous les rôles **Gestion · Messages · Notifications · Profil** (le stagiaire voit **Mes formations** à la place de Gestion) ; dans **Gestion** : **Formations · Formateurs · Stagiaires** (+ Catégories pour la chargée de formation).
@@ -92,7 +92,7 @@ Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » es
 | 4 | Corps d'activation / reset | `{email, code, newPassword}` | TICKET-017/018 : sans e-mail | `tech.md` (voir Q2) | ☐ |
 | 5 | Suspendre un compte | `PATCH /users/{id}/deactivate` · `/reactivate` | TICKET-021 : `PATCH /users/{id}` avec `isActive` | `tech.md` | ☐ |
 | 6 | Lister les comptes | `GET /users/formateurs` · `/stagiaires` | TICKET-021 : `getUsers(role, isActive)` | `tech.md` | ☐ |
-| 7 | Formations visibles par ADAC/ADMIN | uniquement les siennes | PRD, USERFLOW, TICKET-024 : toutes en lecture | **décidé : toutes (Q3)** — en attendant `tech.md` | ✅ (demande de changement) |
+| 7 | Formations visibles par ADAC/ADMIN | uniquement les siennes | PRD, USERFLOW, TICKET-024 : toutes en lecture | **décidé : toutes (Q3, D46 l'emporte sur `tech.md`)** | ✅ (demande de changement) |
 | 8 | Télécharger un document | `GET /documents/{id}/download` (flux, cookie) | TICKET-027 : « URL signée » ; DTO expose aussi `fileUrl` | `tech.md` (blob) | ☐ |
 | 9 | Marquer lu | `PATCH /messages/{id}/read` (un message) | TICKET-031 : `markAsRead(conversationId)` | `tech.md` (un appel par message, en parallèle) | ☐ |
 | 10 | Filtre de message groupé | `MANUAL` ; `POST /messages/send` + `GET /messages/group/preview` | TICKET-032 : `FREE_SELECT`, `/messages/group` | `tech.md` | ☐ |
