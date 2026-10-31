@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Navigate } from "react-router";
 import { UserContext } from "../context/User/UserContext";
 
-const routeManager = () => {
+const RouteManager = () => {
   const { user, isLogged, loading } = useContext(UserContext);
 
   if (loading) return <div>Loading...</div>;
@@ -23,4 +23,4 @@ const routeManager = () => {
   }
 };
 
-export default routeManager;
+export default RouteManager;

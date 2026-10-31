@@ -1,6 +1,5 @@
-import React from 'react'
 import Tile from '../../atoms/Tile/Tile'
-import { BookOpen, MessageSquare, Bell, User} from "lucide-react";
+import { MessageSquare, Bell, User} from "lucide-react";
 import style from "./TileGroup.module.css"
 
 const TileGroup = ({label, icon, largeTilePath}) => {

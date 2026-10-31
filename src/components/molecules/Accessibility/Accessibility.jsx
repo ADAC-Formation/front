@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Settings, X, Type, Eye } from "lucide-react";
 import { IconButton } from "../../atoms/IconButton/IconButton";
-import { useThemeContext } from "../../../context/ThemeProvider";
+import { useThemeContext } from "../../../hooks/use-theme-context";
 import styles from "./Accessibility.module.css";
 
 export function AccessibilityMenu() {

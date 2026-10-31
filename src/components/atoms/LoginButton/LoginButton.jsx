@@ -1,6 +1,6 @@
 import { LogIn, LogOut } from "lucide-react";
 import { useNavigate } from "react-router";
-import { useThemeContext } from "../../../context/ThemeProvider";
+import { useThemeContext } from "../../../hooks/use-theme-context";
 import styles from "./LoginButton.module.css";
 
 export function LoginButton() {

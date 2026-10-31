@@ -1,5 +1,4 @@
 import styles from "./TileLabel.module.css";
-import React from 'react'
 
 const TileLabel = ({ children, variant = "default", className }) => {
   return (
