@@ -38,8 +38,8 @@
 
 ## 7. Documentation et passage manuel
 
-- [ ] 7.1 Mettre à jour `docs/points-pour-charlotte.md` (résultat du test `formationIds: []`, liste stagiaires de l'ADMIN « ses formations » vs D46, rappel ligne 5 sur deactivate/reactivate) et `CLAUDE.md` (section « État actuel » : comptes branchés)
-- [ ] 7.2 Commit `docs: record account management decisions and update project context`
+- [x] 7.1 Mettre à jour `docs/points-pour-charlotte.md` (résultat du test `formationIds: []`, liste stagiaires de l'ADMIN « ses formations » vs D46, rappel ligne 5 sur deactivate/reactivate) et `CLAUDE.md` (section « État actuel » : comptes branchés)
+- [x] 7.2 Commit `docs: record account management decisions and update project context`
 - [ ] 7.3 Passage manuel contre le vrai back local avec les comptes de `docs/dev/seed-local-admin.sql` : création formateur et stagiaire, e-mail déjà utilisé, édition, changement d'e-mail d'un compte activé, suspension / réactivation, lecture seule en ADMIN, accès refusé en STAGIAIRE — ne pas cocher sans l'avoir fait (Docker requis)
 - [ ] 7.4 Relecture de Manon ; PR unique vers `dev` (dernier ticket de `feature/users`) uniquement à sa demande, aucun push avant
 
