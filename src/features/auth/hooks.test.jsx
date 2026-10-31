@@ -54,6 +54,17 @@ describe('useCurrentUser', () => {
     expect(await screen.findByText('erreur')).toBeInTheDocument()
   })
 
+  it("signale une erreur si GET /auth/me répond autre chose qu'un utilisateur (ex. page HTML, VITE_API_URL absente)", async () => {
+    server.use(
+      http.get(
+        `${API_URL}/auth/me`,
+        () => new HttpResponse('<!doctype html><html></html>', { headers: { 'Content-Type': 'text/html' } }),
+      ),
+    )
+    renderWithProviders(<CurrentUserProbe />, { withSession: true })
+    expect(await screen.findByText('erreur')).toBeInTheDocument()
+  })
+
   it("n'écrit rien dans le stockage du navigateur", async () => {
     mockSession('ADMIN')
     renderWithProviders(<CurrentUserProbe />, { withSession: true })

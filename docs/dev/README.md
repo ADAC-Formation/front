@@ -35,7 +35,7 @@ curl -i http://localhost:8080/api/auth/me     # 401 : normal tant qu'on n'est pa
 # Swagger : http://localhost:8080/swagger-ui.html
 ```
 
-Ensuite `npm run dev` (front sur http://localhost:5173, origine CORS autorisée).
+Ensuite, à la racine du front : `cp .env.example .env` (une seule fois ; `VITE_API_URL=http://localhost:8080/api`), puis `npm run dev` (front sur http://localhost:5173, origine CORS autorisée). Sans `.env`, le front interroge le serveur Vite au lieu du back.
 
 ## Comptes de dev
 

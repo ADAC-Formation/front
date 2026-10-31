@@ -1,4 +1,5 @@
 import apiClient from '../../api/Axiosclient'
+import { ApiError } from '../../api/ApiError'
 
 // Appels vers /auth (contrat : back-readonly/docs/tech.md § 1). Les erreurs arrivent
 // déjà normalisées en ApiError (intercepteur du client).
@@ -7,6 +8,13 @@ import apiClient from '../../api/Axiosclient'
 export async function fetchCurrentUser() {
   try {
     const { data } = await apiClient.get('/auth/me')
+    // Garde-fou : sans VITE_API_URL, la requête part vers le serveur Vite qui répond 200 avec une
+    // page HTML. Une réponse qui n'est pas un utilisateur ne doit jamais valoir « connecté ».
+    if (data === null || typeof data !== 'object' || typeof data.role !== 'string') {
+      throw new ApiError({
+        message: "Réponse inattendue du serveur. Vérifiez la configuration de l'adresse de l'API (VITE_API_URL).",
+      })
+    }
     return data
   } catch (error) {
     if (error.status === 401) return null

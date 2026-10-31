@@ -96,7 +96,7 @@ Stack de test : Vitest + Testing Library + MSW + jest-axe (D4, D15) — install�
 
 1. `npm install`
 2. **Le back doit tourner** sur `http://localhost:8080` (Docker compose depuis `../../back-readonly` + `docs/dev/docker-compose.dev.yml` — voir « Back en local » ci-dessous et `docs/dev/README.md`).
-3. `.env` git-ignoré à la racine si besoin (ex : `VITE_API_URL`)
+3. **`.env` à la racine, obligatoire** (git-ignoré) : `cp .env.example .env` (`VITE_API_URL=http://localhost:8080/api`). Sans lui, le front interroge le serveur Vite au lieu du back ; redémarrer `npm run dev` après modification.
 4. `npm run dev` — le serveur Vite démarre sur `http://localhost:5173` (origine CORS par défaut du back, ne pas changer de port)
 5. Vérifier : la page s'affiche et `GET /auth/me` répond (401 si non connecté, c'est normal)
 
