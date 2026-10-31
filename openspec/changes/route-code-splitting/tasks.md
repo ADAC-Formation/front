@@ -17,10 +17,10 @@
 
 ## 4. Routes chargées à la demande (TDD)
 
-- [ ] 4.1 RED : `src/router/lazy-routes.test.jsx` — `lazyPage` renvoie une fonction `lazy` qui résout `{ Component }` depuis l'export par défaut ; les routes `/login`, `/formations`, `/admin/formateurs` s'affichent après attente (`findBy…`) ; un visiteur reste redirigé vers `/login`, un `STAGIAIRE` voit « Accès refusé » sur `/admin/formateurs`, un utilisateur connecté sur `/login` va au tableau de bord ; confirmer RED sur l'utilitaire
-- [ ] 4.2 Remplacer les imports statiques de pages de `router.jsx` par `lazyPage(() => import(...))` (pages d'auth, accueil, menu Gestion, formations, détail, catégories, création, profil, messages, notifications, comptes) ; garder gardes, `Root` et `AccessDeniedPage` en statique ; GREEN
-- [ ] 4.3 Adapter les tests de routes existants (`router.test.jsx`, `accounts-routes.test.jsx`) là où ils supposent un rendu synchrone, sans changer ce qu'ils vérifient ; `npm run test` vert (relancer si seul le test d'auth instable échoue)
-- [ ] 4.4 Commit `perf: load pages lazily by route`
+- [x] 4.1 RED : `src/router/lazy-routes.test.jsx` — `lazyPage` renvoie une fonction `lazy` qui résout `{ Component }` depuis l'export par défaut ; les routes `/login`, `/formations`, `/admin/formateurs` s'affichent après attente (`findBy…`) ; un visiteur reste redirigé vers `/login`, un `STAGIAIRE` voit « Accès refusé » sur `/admin/formateurs`, un utilisateur connecté sur `/login` va au tableau de bord ; confirmer RED sur l'utilitaire
+- [x] 4.2 Remplacer les imports statiques de pages de `router.jsx` par `lazyPage(() => import(...))` (pages d'auth, accueil, menu Gestion, formations, détail, catégories, création, profil, messages, notifications, comptes) ; garder gardes, `Root` et `AccessDeniedPage` en statique ; GREEN
+- [x] 4.3 Adapter les tests de routes existants (`router.test.jsx`, `accounts-routes.test.jsx`) là où ils supposent un rendu synchrone, sans changer ce qu'ils vérifient ; `npm run test` vert (relancer si seul le test d'auth instable échoue)
+- [x] 4.4 Commit `perf: load pages lazily by route`
 
 ## 5. Chargement annoncé et échec de chargement (TDD)
 

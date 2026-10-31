@@ -1,24 +1,9 @@
 import { createBrowserRouter } from "react-router";
-import CreateFormationPage from "../components/Pages/CreateFormationPage/CreateFormationPage";
-import ProfilePage from "../components/Pages/Stagiaire/ProfilePage/ProfilePage";
-import NotifPage from "../components/Pages/Stagiaire/NotifPage/NotifPage";
-import MessagesPage from "../components/Pages/Stagiaire/Messages/MessagesPage";
-import HomeRoute from "../components/Pages/Home/HomeRoute";
-import LoginPage from "../components/Pages/LoginPage/LoginPage";
-import ManagementMenu from "../components/Pages/ManagementMenu/ManagementMenu";
-import FormationsPage from "../components/Pages/FormationsPage/FormationsPage";
-import FormationDetails from "../components/Pages/FormationDetails/FormationDetails";
-import CategoryManagement from "../components/Pages/Categories/CategoryManagement";
+import { lazyPage } from "./lazyPage";
 import Root from "./Root";
 import RequireAuth from "../features/auth/guards/RequireAuth";
 import RequireRole from "../features/auth/guards/RequireRole";
 import PublicOnly from "../features/auth/guards/PublicOnly";
-import ActivationPage from "../features/auth/pages/ActivationPage";
-import ForgotPasswordPage from "../features/auth/pages/ForgotPasswordPage";
-import ResetPasswordPage from "../features/auth/pages/ResetPasswordPage";
-import AccountListPage from "../features/accounts/pages/AccountListPage";
-import AccountDetailPage from "../features/accounts/pages/AccountDetailPage";
-import AccountFormPage from "../features/accounts/pages/AccountFormPage";
 import { MANAGEMENT_ROLES, ROLES } from "../utils/roles";
 
 // Exportées pour pouvoir être testées avec un routeur en mémoire.
@@ -30,34 +15,34 @@ export const routes = [
       // Publiques : connexion (réservée aux visiteurs), activation, mot de passe oublié.
       {
         element: <PublicOnly />,
-        children: [{ path: "login", element: <LoginPage /> }],
+        children: [{ path: "login", ...lazyPage(() => import("../components/Pages/LoginPage/LoginPage")) }],
       },
-      { path: "activation", element: <ActivationPage /> },
-      { path: "mot-de-passe-oublie", element: <ForgotPasswordPage /> },
-      { path: "reinitialisation", element: <ResetPasswordPage /> },
+      { path: "activation", ...lazyPage(() => import("../features/auth/pages/ActivationPage")) },
+      { path: "mot-de-passe-oublie", ...lazyPage(() => import("../features/auth/pages/ForgotPasswordPage")) },
+      { path: "reinitialisation", ...lazyPage(() => import("../features/auth/pages/ResetPasswordPage")) },
 
       // Tout le reste exige une session (D9).
       {
         element: <RequireAuth />,
         children: [
-          { index: true, element: <HomeRoute /> },
-          { path: "formations", element: <FormationsPage /> },
-          { path: "formations/:formationId", element: <FormationDetails /> },
-          { path: "profile", element: <ProfilePage /> },
-          { path: "notifications", element: <NotifPage /> },
-          { path: "messages", element: <MessagesPage /> },
+          { index: true, ...lazyPage(() => import("../components/Pages/Home/HomeRoute")) },
+          { path: "formations", ...lazyPage(() => import("../components/Pages/FormationsPage/FormationsPage")) },
+          { path: "formations/:formationId", ...lazyPage(() => import("../components/Pages/FormationDetails/FormationDetails")) },
+          { path: "profile", ...lazyPage(() => import("../components/Pages/Stagiaire/ProfilePage/ProfilePage")) },
+          { path: "notifications", ...lazyPage(() => import("../components/Pages/Stagiaire/NotifPage/NotifPage")) },
+          { path: "messages", ...lazyPage(() => import("../components/Pages/Stagiaire/Messages/MessagesPage")) },
 
           // Gestion : chargée de formation et formateurs.
           {
             element: <RequireRole roles={MANAGEMENT_ROLES} />,
             children: [
-              { path: "admin/gestion", element: <ManagementMenu /> },
-              { path: "admin/formations", element: <FormationsPage /> },
+              { path: "admin/gestion", ...lazyPage(() => import("../components/Pages/ManagementMenu/ManagementMenu")) },
+              { path: "admin/formations", ...lazyPage(() => import("../components/Pages/FormationsPage/FormationsPage")) },
               // Comptes : consultation pour les deux rôles de gestion (D54).
-              { path: "admin/formateurs", element: <AccountListPage kind="formateurs" /> },
-              { path: "admin/formateurs/:id", element: <AccountDetailPage kind="formateurs" /> },
-              { path: "admin/stagiaires", element: <AccountListPage kind="stagiaires" /> },
-              { path: "admin/stagiaires/:id", element: <AccountDetailPage kind="stagiaires" /> },
+              { path: "admin/formateurs", ...lazyPage(() => import("../features/accounts/pages/AccountListPage"), { kind: "formateurs" }) },
+              { path: "admin/formateurs/:id", ...lazyPage(() => import("../features/accounts/pages/AccountDetailPage"), { kind: "formateurs" }) },
+              { path: "admin/stagiaires", ...lazyPage(() => import("../features/accounts/pages/AccountListPage"), { kind: "stagiaires" }) },
+              { path: "admin/stagiaires/:id", ...lazyPage(() => import("../features/accounts/pages/AccountDetailPage"), { kind: "stagiaires" }) },
             ],
           },
 
@@ -65,13 +50,13 @@ export const routes = [
           {
             element: <RequireRole roles={[ROLES.SUPER_ADMIN]} />,
             children: [
-              { path: "formations/creer", element: <CreateFormationPage /> },
-              { path: "formations/categories", element: <CategoryManagement /> },
+              { path: "formations/creer", ...lazyPage(() => import("../components/Pages/CreateFormationPage/CreateFormationPage")) },
+              { path: "formations/categories", ...lazyPage(() => import("../components/Pages/Categories/CategoryManagement")) },
               // Comptes : création et modification (D54). « nouveau » est déclaré avant « :id ».
-              { path: "admin/formateurs/nouveau", element: <AccountFormPage kind="formateurs" /> },
-              { path: "admin/formateurs/:id/modifier", element: <AccountFormPage kind="formateurs" /> },
-              { path: "admin/stagiaires/nouveau", element: <AccountFormPage kind="stagiaires" /> },
-              { path: "admin/stagiaires/:id/modifier", element: <AccountFormPage kind="stagiaires" /> },
+              { path: "admin/formateurs/nouveau", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "formateurs" }) },
+              { path: "admin/formateurs/:id/modifier", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "formateurs" }) },
+              { path: "admin/stagiaires/nouveau", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "stagiaires" }) },
+              { path: "admin/stagiaires/:id/modifier", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "stagiaires" }) },
             ],
           },
         ],
