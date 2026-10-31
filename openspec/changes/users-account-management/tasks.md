@@ -25,9 +25,9 @@
 
 ## 5. Détail d'un compte (TDD)
 
-- [ ] 5.1 RED : `AccountDetailPage.test.jsx` — informations et libellé de rôle (D33), `404` « Compte introuvable », boutons Modifier / Suspendre selon le rôle, contenu rendu en texte, check jest-axe ; confirmer RED
-- [ ] 5.2 Créer `AccountDetailPage` ; GREEN
-- [ ] 5.3 Commit `feat: add account detail page`
+- [x] 5.1 RED : `AccountDetailPage.test.jsx` — informations et libellé de rôle (D33), `404` « Compte introuvable », boutons Modifier / Suspendre selon le rôle, contenu rendu en texte, check jest-axe ; confirmer RED
+- [x] 5.2 Créer `AccountDetailPage` ; GREEN
+- [x] 5.3 Commit `feat: add account detail page`
 
 ## 6. Routes et menu Gestion (TDD)
 
