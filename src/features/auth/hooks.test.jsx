@@ -1,13 +1,14 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useLocation } from 'react-router'
+import { render } from '@testing-library/react'
 import { renderWithProviders } from '../../test/render'
 import { server } from '../../test/msw/server'
 import { API_URL, USERS, mockSession, mockNoSession } from '../../test/session'
 import apiClient from '../../api/Axiosclient'
-import { useCurrentUser, useLogin, useLogout } from './hooks'
+import { CURRENT_USER_KEY, prefetchSession, useCurrentUser, useLogin, useLogout } from './hooks'
 
 function Where() {
   const location = useLocation()
@@ -189,5 +190,47 @@ describe('session expirée', () => {
     expect(screen.getByTestId('notice')).toHaveTextContent('session-expired')
     expect(screen.getByText('visiteur')).toBeInTheDocument()
     expect(sessionStorage.length).toBe(0)
+  })
+})
+
+describe('prefetchSession', () => {
+  const newClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
+
+  it("remplit le cache avec l'utilisateur quand GET /auth/me répond 200", async () => {
+    mockSession('ADMIN')
+    const queryClient = newClient()
+    await prefetchSession(queryClient)
+    expect(queryClient.getQueryData(CURRENT_USER_KEY)).toEqual(USERS.ADMIN)
+  })
+
+  it('met null dans le cache (visiteur) quand GET /auth/me répond 401', async () => {
+    mockNoSession()
+    const queryClient = newClient()
+    await prefetchSession(queryClient)
+    expect(queryClient.getQueryData(CURRENT_USER_KEY)).toBeNull()
+  })
+
+  it('ne lève jamais d’erreur, même si GET /auth/me répond 500', async () => {
+    server.use(http.get(`${API_URL}/auth/me`, () => new HttpResponse(null, { status: 500 })))
+    await expect(prefetchSession(newClient())).resolves.not.toThrow()
+  })
+
+  it('évite une seconde requête : un useCurrentUser monté ensuite lit le cache', async () => {
+    let calls = 0
+    server.use(
+      http.get(`${API_URL}/auth/me`, () => {
+        calls += 1
+        return HttpResponse.json(USERS.STAGIAIRE)
+      }),
+    )
+    const queryClient = newClient()
+    await prefetchSession(queryClient)
+    render(
+      <QueryClientProvider client={queryClient}>
+        <CurrentUserProbe />
+      </QueryClientProvider>,
+    )
+    expect(await screen.findByText('STAGIAIRE')).toBeInTheDocument()
+    expect(calls).toBe(1)
   })
 })

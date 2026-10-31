@@ -14,12 +14,20 @@ import {
 export const CURRENT_USER_KEY = ['auth', 'me']
 const SESSION_STALE_TIME = 5 * 60 * 1000
 
+const currentUserQuery = {
+  queryKey: CURRENT_USER_KEY,
+  queryFn: fetchCurrentUser,
+  staleTime: SESSION_STALE_TIME,
+}
+
+// Lance GET /auth/me dès le démarrage, en parallèle du téléchargement de la page : les gardes
+// trouvent ensuite la réponse dans le cache. Ne lève jamais d'erreur (un échec est repris par la garde).
+export function prefetchSession(queryClient) {
+  return queryClient.prefetchQuery(currentUserQuery)
+}
+
 export function useCurrentUser() {
-  const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: CURRENT_USER_KEY,
-    queryFn: fetchCurrentUser,
-    staleTime: SESSION_STALE_TIME,
-  })
+  const { data, isLoading, isError, error, refetch } = useQuery(currentUserQuery)
   return { user: data ?? null, isLoading, isError, error, refetch }
 }
 

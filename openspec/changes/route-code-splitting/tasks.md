@@ -7,13 +7,13 @@
 
 - [x] 2.1 RED : `scripts/bundle-budget.test.js` — fonction pure `checkBundle({ manifest, entryGzipBytes, budget })` : réussit sous le budget et sans page dans l'entrée ; échoue avec les deux valeurs au-dessus ; échoue en nommant un fichier sous `src/components/Pages/` ou `src/features/*/pages/` importé statiquement par l'entrée (y compris indirectement) ; confirmer RED
 - [x] 2.2 Créer `scripts/bundle-budget.js` (logique) et `scripts/check-bundle.mjs` (lit `dist/.vite/manifest.json`, gzip de l'entrée, `bundle-budget.json`, code de sortie) ; activer `build.manifest` dans `vite.config.js` ; GREEN ; vérifier que `node scripts/check-bundle.mjs` échoue aujourd'hui (pages dans l'entrée), ce qui prouve que le contrôle détecte le problème
-- [ ] 2.3 Commit `chore: add bundle budget check script`
+- [x] 2.3 Commit `chore: add bundle budget check script`
 
 ## 3. Session demandée dès le démarrage (TDD)
 
-- [ ] 3.1 RED : test de `prefetchSession` dans `features/auth/hooks.test.jsx` — remplit `['auth','me']` (200 → utilisateur, 401 → `null`), ne lève jamais d'erreur (500), et un `useCurrentUser` monté ensuite ne refait aucune requête (un seul appel MSW) ; confirmer RED
-- [ ] 3.2 Ajouter `prefetchSession` à `features/auth/hooks.js` et l'appeler dans `main.jsx` avant `render` ; GREEN
-- [ ] 3.3 Commit `perf: start the session request at app startup`
+- [x] 3.1 RED : test de `prefetchSession` dans `features/auth/hooks.test.jsx` — remplit `['auth','me']` (200 → utilisateur, 401 → `null`), ne lève jamais d'erreur (500), et un `useCurrentUser` monté ensuite ne refait aucune requête (un seul appel MSW) ; confirmer RED
+- [x] 3.2 Ajouter `prefetchSession` à `features/auth/hooks.js` et l'appeler dans `main.jsx` avant `render` ; GREEN
+- [x] 3.3 Commit `perf: start the session request at app startup`
 
 ## 4. Routes chargées à la demande (TDD)
 
