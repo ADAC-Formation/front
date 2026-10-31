@@ -1,4 +1,6 @@
 import { BookOpen, UserRound,GraduationCap} from "lucide-react";
+import { useCurrentUser } from "../../../features/auth/hooks";
+import { canManageAccounts } from "../../../features/accounts/accountKinds";
 import ManagementTile from "../../molecules/ManagementTiles/ManagementTiles";
 import styles from "./ManagementMenu.module.css";
 
@@ -32,14 +34,26 @@ const managementTiles = [
   },
 ];
 
+// Seule la chargée de formation crée des comptes ; le formateur les consulte (D54).
+const ACCOUNT_TILES = ["Formateurs", "Stagiaires"];
+
 const ManagementMenu = () => {
+  const { user } = useCurrentUser();
+  const canCreateAccounts = canManageAccounts(user);
+
   return (
     <main className={styles.gestionPage}>
       <h1 className={styles.title}> Gestion</h1>
 
       <div className={styles.tileContainer}>
         {managementTiles.map((tile) => (
-          <ManagementTile key={tile.label} {...tile} />
+          <ManagementTile
+            key={tile.label}
+            {...tile}
+            createPath={
+              ACCOUNT_TILES.includes(tile.label) && !canCreateAccounts ? undefined : tile.createPath
+            }
+          />
         ))}
       </div>
     </main>

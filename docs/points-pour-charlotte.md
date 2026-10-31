@@ -80,6 +80,12 @@ Le contrat existe (inscrire / désinscrire, document ciblé par stagiaire), mais
 ### Q7 — Dates
 `tech.md` décrit des `LocalDateTime` sans décalage (`2026-03-10T14:30:00`) alors que `ADAC_KNOWLEDGE.md` mentionne `OffsetDateTime` dans le code. Les DTO renvoient-ils un décalage horaire (`Z` / `+01:00`) ? Cela change l'affichage des dates dans le front.
 
+### Q8 — Comptes : deux points à confirmer (change `users-account-management`)
+1. `POST /api/users/stagiaires` : le front crée pour l'instant le stagiaire avec `formationIds: []` (le choix des formations arrive avec `feature/formations`). Le DTO du back accepte un champ vide ou absent ; **confirmé le 2026-10-31 contre le vrai back local : `201`**.
+   Constats du même passage : `409` sur e-mail déjà utilisé (création et `PUT`), `403` pour ADMIN sur `POST`, `404` pour ADMIN sur `GET /users/{id}` d'un compte inactif, `PUT` partiel OK.
+3. **Statut d'un compte** : un compte tout juste créé a `isActive: false` (jamais activé), identique à un compte suspendu dans `UserResponse`, et `PATCH /users/{id}/reactivate` répond `409` « Ce compte n'a jamais été activé — utilisez le renvoi du code d'activation ». Le front affiche donc « Inactif » pour tout `isActive: false` (D55). **Demande** : ajouter un champ (par ex. `activated` ou `activatedAt`) à `UserResponse` pour distinguer « jamais activé » (action : renvoyer le code) de « suspendu » (action : réactiver).
+2. `GET /api/users/stagiaires` pour un ADMIN : `tech.md` indique « actifs uniquement, filtre par défaut : ses formations ». Or D46 donne au formateur toutes les formations en lecture. Le front affiche ce que le back renvoie ; si le formateur doit voir tous les stagiaires actifs, il faut aligner le back (même question que Q3). Le détail `GET /users/{id}` d'un stagiaire hors de ses formations peut aussi répondre 404 : le front affiche alors « Compte introuvable ».
+
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
 Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.
