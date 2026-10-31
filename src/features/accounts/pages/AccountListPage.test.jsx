@@ -53,6 +53,12 @@ describe('AccountListPage', () => {
     expect(await screen.findByRole('link', { name: 'Anne Martin' })).toBeInTheDocument()
   })
 
+  it('propose un retour vers le menu Gestion', async () => {
+    mockAccountList('formateurs', FORMATEURS)
+    renderList('formateurs', 'ADMIN')
+    expect(await screen.findByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/admin/gestion')
+  })
+
   describe('SUPER_ADMIN', () => {
     it('propose la création', async () => {
       mockAccountList('formateurs', FORMATEURS)

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import FormButton from '../../../components/atoms/FormButton/FormButton'
+import BackButton from '../../../components/molecules/BackButton/BackButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { useCurrentUser } from '../../auth/hooks'
 import AccountNotice from '../components/AccountNotice'
@@ -39,6 +40,8 @@ const AccountListPage = ({ kind }) => {
 
   return (
     <div className={styles.page}>
+      <BackButton to="/admin/gestion" />
+
       <div className={styles.header}>
         <h1 className={styles.title}>{config.title}</h1>
         {canManage && (

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import FormButton from '../../../components/atoms/FormButton/FormButton'
+import BackButton from '../../../components/molecules/BackButton/BackButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { roleLabels } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
@@ -43,6 +44,8 @@ const AccountDetailPage = ({ kind }) => {
 
   return (
     <div className={styles.page}>
+      <BackButton to={config.basePath}>Retour aux {config.title.toLowerCase()}</BackButton>
+
       <h1 className={styles.title}>{fullName(account)}</h1>
 
       <AccountNotice />
@@ -78,7 +81,6 @@ const AccountDetailPage = ({ kind }) => {
               Réactiver
             </button>
           ))}
-        <Link to={config.basePath}>Retour aux {config.title.toLowerCase()}</Link>
       </div>
 
       {confirming && (

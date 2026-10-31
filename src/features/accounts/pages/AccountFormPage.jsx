@@ -2,6 +2,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import FormButton from '../../../components/atoms/FormButton/FormButton'
+import BackButton from '../../../components/molecules/BackButton/BackButton'
 import FormField from '../../../components/molecules/FormField/FormField'
 import { validateEmail, validateRequired } from '../../../utils/validation'
 import { ACCOUNT_KINDS, fullName } from '../accountKinds'
@@ -9,7 +10,7 @@ import AccountNotFound from '../components/AccountNotFound'
 import { useAccount, useCreateAccount, useUpdateAccount } from '../hooks'
 import styles from './AccountPages.module.css'
 
-const EMPTY_VALUES = { nom: '', prenom: '', email: '' }
+const EMPTY_VALUES = { prenom: '', nom: '', email: '' }
 
 // Formulaire commun à la création et à la modification (React Hook Form + validateurs, D13).
 // En modification, `account` préremplit les champs et seuls les champs changés sont envoyés.
@@ -59,6 +60,12 @@ const AccountForm = ({ config, account }) => {
 
   return (
     <div className={styles.page}>
+      {account ? (
+        <BackButton to={`${config.basePath}/${account.id}`} />
+      ) : (
+        <BackButton to={config.basePath}>Retour aux {config.title.toLowerCase()}</BackButton>
+      )}
+
       <h1 className={styles.title}>
         {account ? `Modifier ${fullName(account)}` : config.createLabel}
       </h1>
@@ -67,18 +74,18 @@ const AccountForm = ({ config, account }) => {
         {otherError && <Alert variant="error">{otherError.message}</Alert>}
 
         <FormField
-          label="Nom"
-          autoComplete="off"
-          required
-          error={errors.nom?.message}
-          {...register('nom', { validate: (value) => validateRequired(value, 'Le nom') ?? true })}
-        />
-        <FormField
           label="Prénom"
           autoComplete="off"
           required
           error={errors.prenom?.message}
           {...register('prenom', { validate: (value) => validateRequired(value, 'Le prénom') ?? true })}
+        />
+        <FormField
+          label="Nom"
+          autoComplete="off"
+          required
+          error={errors.nom?.message}
+          {...register('nom', { validate: (value) => validateRequired(value, 'Le nom') ?? true })}
         />
         <FormField
           label="Adresse e-mail"

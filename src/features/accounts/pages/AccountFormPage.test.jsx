@@ -47,6 +47,21 @@ describe('AccountFormPage — création', () => {
     await fill('Adresse e-mail', 'zoe@adac.test')
   }
 
+  it('demande le prénom avant le nom', async () => {
+    renderForm('/admin/formateurs/nouveau')
+    await screen.findByRole('heading', { level: 1 })
+    const labels = screen.getAllByRole('textbox').map((field) => field.labels[0].textContent)
+    expect(labels).toEqual(['Prénom', 'Nom', 'Adresse e-mail'])
+  })
+
+  it('propose un retour vers la liste', async () => {
+    renderForm('/admin/stagiaires/nouveau')
+    expect(await screen.findByRole('link', { name: 'Retour aux stagiaires' })).toHaveAttribute(
+      'href',
+      '/admin/stagiaires',
+    )
+  })
+
   it('affiche les trois champs obligatoires', async () => {
     renderForm('/admin/formateurs/nouveau')
     expect(await screen.findByRole('heading', { level: 1, name: 'Créer un formateur' })).toBeInTheDocument()
@@ -121,6 +136,12 @@ describe('AccountFormPage — modification', () => {
   function mockAccount(account) {
     mockRequest('get', `/users/${account.id}`, () => HttpResponse.json(account))
   }
+
+  it('propose un retour vers le détail', async () => {
+    mockAccount(FORMATEURS[0])
+    renderForm('/admin/formateurs/10/modifier')
+    expect(await screen.findByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/admin/formateurs/10')
+  })
 
   it('préremplit le formulaire avec le compte', async () => {
     mockAccount(FORMATEURS[0])

@@ -53,6 +53,15 @@ describe('AccountDetailPage', () => {
     expect(screen.getByRole('link', { name: 'Retour aux formateurs' })).toHaveAttribute('href', '/admin/formateurs')
   })
 
+  it('propose un retour vers la liste', async () => {
+    mockAccount(FORMATEURS[0])
+    renderDetail('formateurs', 10, 'ADMIN')
+    expect(await screen.findByRole('link', { name: 'Retour aux formateurs' })).toHaveAttribute(
+      'href',
+      '/admin/formateurs',
+    )
+  })
+
   it('affiche la confirmation transmise par la navigation', async () => {
     mockAccount(FORMATEURS[0])
     renderDetail('formateurs', 10, 'SUPER_ADMIN', { state: { notice: 'account-updated' } })

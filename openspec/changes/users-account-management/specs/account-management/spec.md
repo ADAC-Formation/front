@@ -111,6 +111,17 @@ Le statut « Inactif » (`isActive: false`) regroupe les comptes suspendus et le
 - **WHEN** le back répond `403` ou `404`
 - **THEN** un message d'erreur est annoncé et le statut affiché ne change pas
 
+### Requirement: Retour et ordre des champs
+Chaque écran de comptes (liste, création, modification, détail, compte introuvable) SHALL afficher en haut un lien « Retour » (ou « Retour aux formateurs / stagiaires ») vers l'écran parent, présenté comme sur les pages formations et catégories. Les formulaires SHALL demander le prénom avant le nom.
+
+#### Scenario: Retour depuis le détail
+- **WHEN** l'utilisateur est sur le détail d'un formateur
+- **THEN** un lien « Retour aux formateurs » mène à la liste
+
+#### Scenario: Ordre des champs
+- **WHEN** le formulaire de création s'affiche
+- **THEN** les champs sont dans l'ordre Prénom, Nom, Adresse e-mail
+
 ### Requirement: Accessibilité des écrans de comptes
 Chaque écran (listes, création, détail) SHALL passer un contrôle jest-axe, associer chaque champ à son étiquette, annoncer les erreurs et confirmations aux technologies d'assistance, et rester utilisable sur tablette et mobile (la liste se réorganise sans défilement horizontal de la page).
 
