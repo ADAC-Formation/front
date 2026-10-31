@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router'
-import { fetchCurrentUser, login, logout } from './api'
+import {
+  activate,
+  fetchCurrentUser,
+  forgotPassword,
+  login,
+  logout,
+  resendActivation,
+  resetPassword,
+} from './api'
 
 // La session est une requête TanStack Query, pas un état parallèle : une seule source de vérité.
 export const CURRENT_USER_KEY = ['auth', 'me']
@@ -47,3 +55,17 @@ export function useLogout() {
     },
   })
 }
+
+// Succès → retour à la connexion avec un bandeau (transmis par la navigation, rien n'est stocké).
+function useBackToLogin(mutationFn, notice) {
+  const navigate = useNavigate()
+  return useMutation({
+    mutationFn,
+    onSuccess: () => navigate('/login', { replace: true, state: { notice } }),
+  })
+}
+
+export const useActivate = () => useBackToLogin(activate, 'activated')
+export const useResetPassword = () => useBackToLogin(resetPassword, 'password-reset')
+export const useResendActivation = () => useMutation({ mutationFn: resendActivation })
+export const useForgotPassword = () => useMutation({ mutationFn: forgotPassword })

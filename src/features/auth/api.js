@@ -22,3 +22,23 @@ export async function login({ email, password }) {
 export async function logout() {
   await apiClient.post('/auth/logout')
 }
+
+export async function activate({ email, code, newPassword }) {
+  const { data } = await apiClient.post('/auth/activate', { email, code, newPassword })
+  return data
+}
+
+export async function resendActivation({ email }) {
+  const { data } = await apiClient.post('/auth/resend-activation', { email })
+  return data
+}
+
+export async function forgotPassword({ email }) {
+  const { data } = await apiClient.post('/auth/forgot-password', { email })
+  return data
+}
+
+export async function resetPassword({ email, code, newPassword }) {
+  const { data } = await apiClient.post('/auth/reset-password', { email, code, newPassword })
+  return data
+}

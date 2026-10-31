@@ -37,9 +37,9 @@
 
 ## 7. Activation et récupération du mot de passe (TDD)
 
-- [ ] 7.1 RED : tests des pages `/activation`, `/mot-de-passe-oublie`, `/reinitialisation` — règle de mot de passe, confirmation, `?email=` prérempli et modifiable, succès → `/login` avec bandeau, `400` « Code invalide ou expiré », renvoi de code (200 / 429), message générique de `forgot-password`, un check jest-axe par page
-- [ ] 7.2 Confirmer RED ; créer les pages et les hooks `useActivate`, `useResendActivation`, `useForgotPassword`, `useResetPassword` ; confirmer GREEN
-- [ ] 7.3 Commit `feat: add account activation and password recovery pages`
+- [x] 7.1 RED : tests des pages `/activation`, `/mot-de-passe-oublie`, `/reinitialisation` — règle de mot de passe, confirmation, `?email=` prérempli et modifiable, succès → `/login` avec bandeau, `400` « Code invalide ou expiré », renvoi de code (200 / 429), message générique de `forgot-password`, un check jest-axe par page
+- [x] 7.2 Confirmer RED ; créer les pages et les hooks `useActivate`, `useResendActivation`, `useForgotPassword`, `useResetPassword` ; confirmer GREEN
+- [x] 7.3 Commit `feat: add account activation and password recovery pages`
 
 ## 8. Routeur, tableau de bord et nettoyage (TDD)
 
