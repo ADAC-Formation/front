@@ -28,3 +28,21 @@ TanStack Query (D8) · routes sans préfixe de rôle + `RequireAuth`/`RequireRol
 
 ## Écarts connus code ↔ contrat
 Voir `CLAUDE.md` § « Known state / traps » et `plan-de-proyecto.md` § 10.
+
+## Critères d'acceptation des tickets d'authentification (change `auth-real-backend`)
+À valider par Manon (D49). Contrat : `tech.md` § 1. Le détail testable est dans `openspec/changes/auth-real-backend/specs/`.
+
+### TICKET-016 — Connexion
+- Champs « Adresse e-mail » et « Mot de passe » (le plan disait « identifiant » : `tech.md` l'emporte, D40). Bouton de la coque conservé : « SE CONNECTER » (US-001 AC-01 parle de « Commencer la session », écart consigné).
+- 200 → cookie `jwt` posé par le back, redirection vers `/`, rôle lu via `GET /auth/me`.
+- 401 « Identifiants invalides » ; 403 « Compte non activé… » (+ lien vers l'activation) ; 429 « Trop de tentatives… » ; réseau → message en ligne annoncé, e-mail conservé.
+- Lien « Mot de passe oublié / Activer mon compte » et texte « Pas de compte ? Contactez votre administrateur ».
+- Déconnexion via `POST /auth/logout` (204 ou 401 → session vidée) ; 401 sur une requête de données → `/login` avec « session expirée ».
+
+### TICKET-017 — Activation
+- E-mail (prérempli par `?email=` s'il existe, Q2), code à 6 chiffres, mot de passe + confirmation (8–72 car., 1 majuscule, 1 chiffre).
+- 200 → `/login` avec le bandeau « Compte activé avec succès » ; 400 « Code invalide ou expiré » (indifférenciable) + « Renvoyer un code » (`resend-activation`, 429 après 3 envois / 15 min).
+
+### TICKET-018 — Mot de passe oublié / réinitialisation
+- `forgot-password` : toujours le même message (« Si cet email existe… »), jamais d'indication sur l'existence du compte.
+- `reset-password` : même flux code + nouveau mot de passe qu'à l'activation ; 200 → `/login` avec le bandeau « Mot de passe mis à jour ».
