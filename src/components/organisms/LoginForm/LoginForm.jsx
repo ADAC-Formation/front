@@ -1,64 +1,70 @@
-import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 import FormField from "../../molecules/FormField/FormField";
 import FormButton from "../../atoms/FormButton/FormButton";
 import TextLink from "../../atoms/TextLink/TextLink";
+import Alert from "../../atoms/Alert/Alert";
+import { validateEmail, validateRequired } from "../../../utils/validation";
 
 import styles from "./LoginForm.module.css";
 
+// `error` : ApiError de la dernière tentative (message du back affiché en ligne, D12).
 const LoginForm = ({
   onSubmit,
-  forgotPasswordPath = "/forgot-password",
+  error = null,
+  isSubmitting = false,
+  forgotPasswordPath = "/mot-de-passe-oublie",
+  activationPath = "/activation",
 }) => {
-  const [formData, setFormData] = useState({
-    identifier: "",
-    password: "",
-  });
-
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-
-    setFormData((previous) => ({
-      ...previous,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    onSubmit?.(formData);
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ defaultValues: { email: "", password: "" } });
 
   return (
-    <form
-      className={styles.form}
-      onSubmit={handleSubmit}
-    >
+    <form className={styles.form} onSubmit={handleSubmit(onSubmit)} noValidate>
+      {error && (
+        <Alert variant="error">
+          {error.message}
+          {error.status === 403 && (
+            <>
+              {" "}
+              <TextLink to={activationPath}>Activer mon compte</TextLink>
+            </>
+          )}
+        </Alert>
+      )}
+
       <FormField
-        label="Identifiant"
-        name="identifier"
-        value={formData.identifier}
-        onChange={handleChange}
-        required
+        label="Adresse e-mail"
+        type="email"
+        autoComplete="username"
+        error={errors.email?.message}
+        {...register("email", { validate: (value) => validateEmail(value) ?? true })}
       />
 
       <FormField
         label="Mot de passe"
         type="password"
-        name="password"
-        value={formData.password}
-        onChange={handleChange}
-        required
+        autoComplete="current-password"
+        error={errors.password?.message}
+        {...register("password", {
+          validate: (value) => validateRequired(value, "Le mot de passe") ?? true,
+        })}
       />
 
       <TextLink to={forgotPasswordPath}>
-        identifiants oubliés ?
+        Mot de passe oublié / Activer mon compte
       </TextLink>
 
-      <FormButton type="submit">
+      <FormButton type="submit" disabled={isSubmitting}>
         SE CONNECTER
       </FormButton>
+
+      <p className={styles.noAccount}>
+        Pas de compte ? Contactez votre administrateur
+      </p>
     </form>
   );
 };

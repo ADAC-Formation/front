@@ -31,9 +31,9 @@
 
 ## 6. Page de connexion (TDD)
 
-- [ ] 6.1 RED : `LoginPage.test.jsx` — champs « Adresse e-mail » et « Mot de passe », champs vides sans appel, succès → `/` , 401/403/429/réseau → message en ligne annoncé, e-mail conservé, lien activation sur 403, lien « Mot de passe oublié / Activer mon compte », texte « Pas de compte ? Contactez votre administrateur », bandeaux `activated` / `password-reset` / `session-expired`, check jest-axe
-- [ ] 6.2 Confirmer RED ; recâbler `LoginForm` (React Hook Form + validateurs) et `LoginPage` (`useLogin`, `Alert`, notices) ; confirmer GREEN
-- [ ] 6.3 Commit `feat: connect login page to POST /auth/login`
+- [x] 6.1 RED : `LoginPage.test.jsx` — champs « Adresse e-mail » et « Mot de passe », champs vides sans appel, succès → `/` , 401/403/429/réseau → message en ligne annoncé, e-mail conservé, lien activation sur 403, lien « Mot de passe oublié / Activer mon compte », texte « Pas de compte ? Contactez votre administrateur », bandeaux `activated` / `password-reset` / `session-expired`, check jest-axe
+- [x] 6.2 Confirmer RED ; recâbler `LoginForm` (React Hook Form + validateurs) et `LoginPage` (`useLogin`, `Alert`, notices) ; confirmer GREEN
+- [x] 6.3 Commit `feat: connect login page to POST /auth/login`
 
 ## 7. Activation et récupération du mot de passe (TDD)
 

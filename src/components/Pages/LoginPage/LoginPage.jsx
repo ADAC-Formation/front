@@ -1,15 +1,20 @@
 import LoginForm from "../../organisms/LoginForm/LoginForm";
+import { NoticeBanner } from "../../../features/auth/notices";
+import { useLogin } from "../../../features/auth/hooks";
 import styles from "./LoginPage.module.css";
 
 const LoginPage = () => {
-  const handleLogin = (formData) => {
-    console.log(formData);
-  };
+  const { mutate, error, isPending } = useLogin();
 
   return (
-    <main className={styles.loginPage}>
-      <LoginForm onSubmit={handleLogin} />
-    </main>
+    // <div> et non <main> : le Layout fournit déjà le <main> de la page.
+    <div className={styles.loginPage}>
+      <div className={styles.content}>
+        <h1 className={styles.title}>Connexion</h1>
+        <NoticeBanner />
+        <LoginForm onSubmit={mutate} error={error} isSubmitting={isPending} />
+      </div>
+    </div>
   );
 };
 

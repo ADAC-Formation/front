@@ -19,3 +19,7 @@
 .success {
   border-left-color: var(--color-green);
 }
+
+.info {
+  border-left-color: var(--color-blue);
+}
