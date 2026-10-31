@@ -18,10 +18,10 @@
 
 ## 4. Session : API, hooks et provider (TDD)
 
-- [ ] 4.1 Créer `src/test/session.js` (`mockSession(role)` et `mockNoSession()` : handlers MSW pour `/auth/me`) et l'utiliser dans `renderWithProviders`
-- [ ] 4.2 RED : `src/features/auth/hooks.test.jsx` — `useCurrentUser` (200 → utilisateur ; 401 → `null` sans erreur ; 500 → erreur), `useLogin` (écrit `['auth','me']`, redirige vers `/`), `useLogout` (204 et 401 → cache vidé, redirection `/login`), 401 sur requête de données → cache vidé + `/login` avec notice « session expirée », rien dans `localStorage`/`sessionStorage`
-- [ ] 4.3 Confirmer RED ; créer `api.js`, `hooks.js`, `user-context.js`, `UserProvider.jsx` (enregistre/nettoie `setUnauthorizedHandler`) ; confirmer GREEN
-- [ ] 4.4 Commit `feat: add user session backed by GET /auth/me`
+- [x] 4.1 Créer `src/test/session.js` (`mockSession(role)` et `mockNoSession()` : handlers MSW pour `/auth/me`) et l'utiliser dans `renderWithProviders`
+- [x] 4.2 RED : `src/features/auth/hooks.test.jsx` — `useCurrentUser` (200 → utilisateur ; 401 → `null` sans erreur ; 500 → erreur), `useLogin` (écrit `['auth','me']`, redirige vers `/`), `useLogout` (204 et 401 → cache vidé, redirection `/login`), 401 sur requête de données → cache vidé + `/login` avec notice « session expirée », rien dans `localStorage`/`sessionStorage`
+- [x] 4.3 Confirmer RED ; créer `api.js`, `hooks.js`, `UserProvider.jsx` (enregistre/nettoie `setUnauthorizedHandler`, sans contexte parallèle) ; confirmer GREEN
+- [x] 4.4 Commit `feat: add user session backed by GET /auth/me`
 
 ## 5. Gardes de routes (TDD)
 
