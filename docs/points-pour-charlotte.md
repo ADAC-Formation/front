@@ -39,6 +39,7 @@
 - **Tags** (§16) : le CI front pousse `X.Y.Z`, `X.Y` et `latest` sur un tag git `vX.Y.Z`, et `main` / `dev` + SHA sur push de branche. Valeur par défaut du compose : `FRONT_IMAGE_TAG` (aujourd'hui `latest`) → en prod, utiliser un tag versionné.
 - **Healthcheck front** (§7 : `curl -f http://localhost/`) : `curl` est installé dans l'image front (absent de `nginx:alpine`).
 - **Droits ghcr** : le push d'image demande que les Actions du repo front aient le droit `packages: write` (réglage d'organisation).
+- **Cache après déploiement** (change `route-code-splitting`, D59) : le front est désormais découpé en une trentaine de fichiers `assets/*-<hash>.js`. Recommandation (information, rien à faire côté front) : servir `index.html` **sans cache long** (`Cache-Control: no-cache`) et `assets/*` (noms hachés) avec un cache long (`max-age=31536000, immutable`). Sinon, un onglet resté ouvert pendant un déploiement demande des fichiers qui n'existent plus : le front affiche alors « Cette page n'a pas pu être chargée » avec « Réessayer » (recharge l'application), mais il vaut mieux éviter le cas.
 - **CI** : la CI du back ne se déclenche que sur PR vers `main` ; §14 prévoit `dev` et `main`. Le CI front se déclenche sur PR et push vers `dev` et `main`.
 
 ### 2.3 `DESIGN.md`
@@ -111,7 +112,7 @@ _Dernière mise à jour : 2026-10-31._
 
 ## 5. CI du front : `npm run check` (TICKET-010)
 
-La CI du front (`.github/workflows/ci.yml`) exécute désormais `npm run check` (lint + tests Vitest + build avec `VITE_API_URL=/api`) à la place de lint + build seuls. Aucune action requise de ta part ; à confirmer avec toi si tu veux conserver ces étapes dans ton flux de déploiement (TICKET-010).
+La CI du front (`.github/workflows/ci.yml`) exécute désormais `npm run check` (lint + tests Vitest + build avec `VITE_API_URL=/api` + contrôle du budget de taille du fichier d'entrée) à la place de lint + build seuls. Aucune action requise de ta part ; à confirmer avec toi si tu veux conserver ces étapes dans ton flux de déploiement (TICKET-010).
 
 ## 6. Écarts relevés pendant le branchement de l'authentification (change `auth-real-backend`)
 
