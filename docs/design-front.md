@@ -82,7 +82,7 @@ Teintes de tuiles en sombre : `--rouge`, `--rose`, `--orange`, `--jaune`, `--noi
 | Corps, champs, boutons | 14 px | 400 / 600 | Plus Jakarta Sans / Syne |
 | Petits libellés, liens | 11–12 px | 400 | Plus Jakarta Sans |
 
-> Option « Grand texte » : classe `text-large` ajoutée sur `<html>`.
+> Option « Grand texte » : classe `text-large` sur `<html>` ; la base passe à 125 % et toutes les tailles de police sont en `rem` (aucune en `px`, vérifié par test). Option « Contraste élevé » : classe `high-contrast` (clair) ou `high-contrast` + `dark` (sombre) ; jetons en hexadécimal, texte 7:1, bordures et anneau de focus 3:1 (D58).
 
 ---
 
@@ -94,7 +94,8 @@ Base : `rem` / multiples de 4 px. Valeurs courantes observées :
 |---|---|
 | Écart entre icônes d'en-tête | 0,375 rem (< 640 px) · 0,5 rem (≥ 640 px) |
 | Marge de l'en-tête | 1 rem (< 640 px) · 1,5 rem (≥ 640 px) |
-| Marge de page (`PageShell`) | `6rem 2.5rem 3rem` (≥ 1024 px) · `6rem 1.5rem 3rem` (≤ 1023 px) · `5rem 1rem 3rem` (≤ 639 px) |
+| Dégagement sous le logo (`--page-top`, `PageShell`) | `calc(6rem + 180px)` = 276 px (≥ 640 px) · `calc(5rem + 180px)` (≤ 639 px) — le logo est en position absolue, aucune page ne redéfinit ce dégagement (D57) |
+| Marges latérales de page (`PageShell`) | 2,5 rem (≥ 1024 px) · 1,5 rem (≤ 1023 px) · 1 rem (≤ 639 px) ; contenu 80 rem au plus ; 3 rem en bas |
 | Padding interne d'une tuile | 32 px |
 | Hauteur d'un champ | 43 px |
 
@@ -224,8 +225,6 @@ Points de rupture déjà présents dans le code : 639, 640, 700, 800, 1023, 1024
 
 | Sujet | Constat |
 |---|---|
-| Grand texte / contraste élevé | Les classes `text-large` et `high-contrast` sont posées sur `<html>`, mais **aucune règle CSS ne leur correspond** encore |
-| Bouton principal | Utilise `var(--color-accent)`, variable non définie (le token existant est `--accent`) |
 | Polices | Syne chargée depuis Google Fonts (`index.html`) — à auto-héberger (D31) ; Plus Jakarta Sans à déclarer |
 | Points de rupture | Plusieurs valeurs proches (639/640, 700, 800) |
 

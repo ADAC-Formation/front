@@ -40,8 +40,8 @@
 
 ## 7. Documentation et passage manuel
 
-- [ ] 7.1 Mettre à jour `docs/design-front.md` (écarts levés), `CLAUDE.md` (section « État actuel » : gabarit, options d'affichage, garde-fous) et noter dans `docs/decisions-front-foundations.md` le changement de destination du « Retour » (Catégories, Création) ; vérifier que `design-front.md` ne liste plus ces écarts
-- [ ] 7.2 `npm run check` vert (lancer deux fois si le test d'auth instable échoue seul) ; commit `docs: record layout and display preferences cleanup`
+- [x] 7.1 Mettre à jour `docs/design-front.md` (écarts levés), `CLAUDE.md` (section « État actuel » : gabarit, options d'affichage, garde-fous) et noter dans `docs/decisions-front-foundations.md` le changement de destination du « Retour » (Catégories, Création) ; vérifier que `design-front.md` ne liste plus ces écarts
+- [x] 7.2 `npm run check` vert (lancer deux fois si le test d'auth instable échoue seul) ; commit `docs: record layout and display preferences cleanup`
 - [ ] 7.3 Passage manuel sur le vrai back local, à ≥ 1280, 768 et 390 px puis à ≥ 1920 px : dégagement sous le logo identique sur toutes les pages (y compris comptes), aucune superposition avec le logo, « Retour » partout, Tab visible sur chaque champ, « Grand texte » sans débordement (formulaires d'auth, boutons), « Contraste élevé » en clair et en sombre — ne pas cocher sans l'avoir fait
 - [ ] 7.4 Relecture de Manon ; merge dans `dev` uniquement à sa demande
 
