@@ -365,3 +365,9 @@
 - **Pourquoi** : constaté contre le vrai back local, un compte fraîchement créé a `isActive: false`, comme un compte suspendu ; l'appeler « Suspendu » serait faux et son bouton « Réactiver » échouerait.
 - **Alternatives écartées** : garder « Suspendu » (trompeur) ; deviner l'état par un autre appel ; ajouter « Renvoyer le code » (le bouton apparaîtrait aussi pour un compte réellement suspendu).
 - Change OpenSpec : `users-account-management`.
+
+## D56 — Pages de comptes : même design que la page Formations
+- Date : 2026-10-31
+- **Décision** : les pages de comptes reprennent le gabarit de `FormationsPage` : contenu sous le logo (`padding-top` 180 px), lien « Retour », titre, texte d'introduction, bouton d'action orange doux, barre de recherche, « Organiser par : » (nom, prénom, e-mail), filtre de statut en pastilles colorées (restent des boutons radio accessibles), carte arrondie (30 px) contenant des lignes à barre de couleur (vert = actif, gris = inactif) ; formulaires dans une carte avec boutons « Annuler » / « Créer le compte » comme la création de formation. La recherche et le tri se font côté client sur la liste reçue.
+- **Pourquoi** : cohérence visuelle du portail (D41, `docs/design-front.md`).
+- **Alternatives écartées** : tableau seul (écart avec le reste du site) ; réutiliser `ListItem` (c'est un lien complet : impossible d'y mettre des boutons d'action valides).

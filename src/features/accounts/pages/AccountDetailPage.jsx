@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
-import FormButton from '../../../components/atoms/FormButton/FormButton'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { roleLabels } from '../../../utils/roles'
@@ -32,7 +31,9 @@ const AccountDetailPage = ({ kind }) => {
     ) : (
       <div className={styles.page}>
         <Alert variant="error">{error.message}</Alert>
-        <FormButton onClick={() => refetch()}>Réessayer</FormButton>
+        <button type="button" className={styles.submitButton} onClick={() => refetch()}>
+          Réessayer
+        </button>
       </div>
     )
   }
@@ -46,42 +47,49 @@ const AccountDetailPage = ({ kind }) => {
     <div className={styles.page}>
       <BackButton to={config.basePath}>Retour aux {config.title.toLowerCase()}</BackButton>
 
-      <h1 className={styles.title}>{fullName(account)}</h1>
-
-      <AccountNotice />
-      {setActive.error && <Alert variant="error">{setActive.error.message}</Alert>}
-
-      <dl className={styles.definition}>
-        <dt>E-mail</dt>
-        <dd>{account.email}</dd>
-        <dt>Rôle</dt>
-        <dd>{roleLabels[account.role] ?? account.role}</dd>
-        <dt>Statut</dt>
-        <dd>{account.isActive ? 'Actif' : 'Inactif'}</dd>
-      </dl>
-
-      <div className={styles.actions}>
+      <div className={styles.header}>
+        <h1 className={styles.title}>{fullName(account)}</h1>
         {canManage && (
-          <Link className={styles.primaryLink} to={`${config.basePath}/${account.id}/modifier`}>
+          <Link className={styles.createButton} to={`${config.basePath}/${account.id}/modifier`}>
             Modifier
           </Link>
         )}
-        {canManage &&
-          (account.isActive ? (
-            <button type="button" className={styles.rowButton} onClick={() => setConfirming(true)}>
-              Suspendre
-            </button>
-          ) : (
-            <button
-              type="button"
-              className={styles.rowButton}
-              onClick={() => changeStatus(true)}
-              disabled={setActive.isPending}
-            >
-              Réactiver
-            </button>
-          ))}
       </div>
+
+      <div className={styles.notices}>
+        <AccountNotice />
+        {setActive.error && <Alert variant="error">{setActive.error.message}</Alert>}
+      </div>
+
+      <section className={styles.card}>
+        <dl className={styles.definition}>
+          <dt>E-mail</dt>
+          <dd>{account.email}</dd>
+          <dt>Rôle</dt>
+          <dd>{roleLabels[account.role] ?? account.role}</dd>
+          <dt>Statut</dt>
+          <dd>{account.isActive ? 'Actif' : 'Inactif'}</dd>
+        </dl>
+
+        {canManage && (
+          <div className={styles.actions}>
+            {account.isActive ? (
+              <button type="button" className={styles.secondaryButton} onClick={() => setConfirming(true)}>
+                Suspendre
+              </button>
+            ) : (
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => changeStatus(true)}
+                disabled={setActive.isPending}
+              >
+                Réactiver
+              </button>
+            )}
+          </div>
+        )}
+      </section>
 
       {confirming && (
         <ConfirmDialog
