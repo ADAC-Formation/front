@@ -1,0 +1,54 @@
+schema: spec-driven
+
+context: |
+  ADAC training portal: replaces per-person email exchanges with one platform where
+  the training officer publishes trainings, uploads documents and messages trainees
+  (Qualiopi compliance). Roles (backend is the source of truth, read via GET /auth/me):
+  SUPER_ADMIN (training officer, full access), ADMIN (trainer: read + messaging + add docs),
+  STAGIAIRE (trainee: own trainings + messaging). UI labels: Chargée de formation /
+  Formateur / Stagiaire.
+
+  Layout: front and back are two SEPARATE git repos, not a monorepo.
+    - this repo (ADAC Front/front) -> React 19 + Vite, plain JS (Manon). Owned by this workstream.
+    - ../../back-readonly          -> Spring Boot 3 / Java 21 / PostgreSQL (Charlotte). READ-ONLY.
+  Never modify, commit or push in back-readonly, and never run write calls (gh/API)
+  against the ADAC-Formation org unless explicitly asked. Backend needs are written up as
+  change requests (front/docs/points-pour-charlotte.md), not implemented.
+
+  API contract: back-readonly/docs/tech.md wins over any other backend doc on conflict.
+  Use the backend `dev` branch, not `main` (obsolete).
+
+  Hard constraints:
+    - Auth is a JWT in an HttpOnly cookie `jwt`; axios uses withCredentials: true; no token
+      or personal data in localStorage; no Authorization header.
+    - Render notification/message `content` as text, never HTML (XSS).
+    - Accessibility WCAG 2.1 AA, lang="fr"; desktop-first but responsive (tablet/mobile).
+    - Privacy: no trackers, self-hosted fonts.
+    - Docs and UI strings in French; code identifiers in English.
+    - Password rule: 8-72 chars, at least 1 uppercase and 1 digit.
+    - Frontend decisions are numbered D1-D46 in front/docs/decisions-*.md; reference the
+      relevant D-number instead of re-deciding, and record new decisions there.
+
+rules:
+  proposal:
+    - State which side is affected (front, back change request, or both) and what is out of scope
+    - Reference the backend ticket(s) from back-readonly/docs/TICKETS.md when one exists
+  specs:
+    - Ground API behaviour in tech.md (endpoints, DTOs, HTTP codes 401/403/409/429); flag any conflict instead of silently picking a side
+    - Write requirements per role (SUPER_ADMIN / ADMIN / STAGIAIRE) where behaviour differs
+  design:
+    - Put new front code in src/features/<name>/; shared UI stays in src/components/ (atomic design)
+    - Server state via TanStack Query + the single axios client; forms via React Hook Form
+  tasks:
+    - TDD is mandatory - each ticket starts with failing tests (Vitest + Testing Library + MSW, one jest-axe check per page) before any implementation task
+    - One commit per ticket, Conventional Commits; the last task of a theme branch is the single PR to dev
+
+operations:
+  apply:
+    guidance:
+      - Confirm RED before implementing and GREEN after
+      - Done means `npm run check` green (lint + test + build), jest-axe passing, manual pass against the real local backend, docs updated
+      - Do not push or open PRs unless Manon explicitly asks
+  archive:
+    guidance:
+      - Summarize the archive outcome and list any backend change requests still open
