@@ -1,5 +1,5 @@
 .tile {
-  --tile-color: #ccc;
+  --tile-color: var(--color-neutral);
 
   position: relative;
   isolation: isolate;

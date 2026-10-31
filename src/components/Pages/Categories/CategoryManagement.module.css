@@ -88,8 +88,8 @@
   border: none;
   border-radius: 12px;
 
-  background-color: var(--color-soft-orange);
-  color: var(--background);
+  background-color: var(--color-action);
+  color: var(--color-on-action);
 
   font-family: inherit;
   font-size: 0.875rem;
@@ -345,8 +345,8 @@
   width: 280px;
   padding: 0.6rem 0.75rem;
 
-  background: #333;
-  color: white;
+  background: var(--foreground);
+  color: var(--background);
   border-radius: 6px;
 
   font-size: 0.75rem;

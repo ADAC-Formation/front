@@ -59,8 +59,8 @@
   border: none;
   border-radius: 12px;
 
-  background-color: var(--color-soft-orange);
-  color: var(--background);
+  background-color: var(--color-action);
+  color: var(--color-on-action);
 
   font-family: inherit;
   font-size: 0.875rem;

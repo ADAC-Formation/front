@@ -382,3 +382,17 @@
 - **Limite connue du budget** : il porte sur le fichier d'entrée seul. Déplacer du code de l'entrée vers un chunk importé statiquement par l'entrée le ferait baisser sans alléger le démarrage (aujourd'hui 3 chunks de ce type). À durcir (budget sur la fermeture de démarrage) si le cas se présente.
 - **Alternatives écartées** : `React.lazy` + `Suspense` (le routeur gère déjà l'attente et l'erreur de route) ; exporter `Component` depuis chaque page (touche 20 fichiers) ; `manualChunks` / découpage « vendor » (hors périmètre, mesure d'abord) ; `loader` de route pour la session (changerait D52).
 - Change OpenSpec : `route-code-splitting`.
+
+## D57 — Gabarit de page unique : un seul `<main>`, un seul dégagement sous le logo (prolonge D56)
+- Date : 2026-10-31
+- **Décision** : `templates/PageShell` rend un `<div>` (le seul `<main>` est celui de `Layout`) et porte le dégagement sous le logo (`--page-top` = `calc(6rem + 180px)`, soit 276 px ; `calc(5rem + 180px)` sous 640 px), les marges latérales (2,5 / 1,5 / 1 rem) et la largeur de contenu 80 rem ; variante `center` pour l'accueil, le menu Gestion et l'authentification. Toutes les pages l'utilisent et ne redéfinissent ni dégagement ni conteneur. Un seul composant `BackButton` pour les « Retour », avec destination explicite : liste des formations → `/admin/gestion` ; Catégories, Création et Détail de formation → `/formations` (ils ne suivent plus l'historique).
+- **Pourquoi** : le logo est en `position: absolute`, donc chaque page compensait à sa façon (160, 180, 250 px, 6 rem…) et plusieurs rendaient un second `<main>` (WCAG 1.3.1 / 2.4.1). Constaté sur les pages de comptes (D56).
+- **Alternatives écartées** : retirer le `<main>` de `Layout` (oublis, pages d'auth sans gabarit) ; garder `navigate(-1)` (faux sur un lien direct).
+- Change OpenSpec : `ui-structure-cleanup`.
+
+## D58 — Options d'affichage effectives et garde-fous CSS
+- Date : 2026-10-31
+- **Décision** : (1) `html.text-large` met la base à 125 % et toutes les tailles de police sont en `rem` ; (2) `html.high-contrast` et `html.dark.high-contrast` redéfinissent les jetons en hexadécimal (texte ≥ 7:1, bordures ≥ 3:1, anneau de focus) ; (3) nouveaux jetons `--color-on-yellow`, `--color-action` / `--color-on-action` (le visuel normal ne change pas) ; (4) anneau de focus global `:focus-visible` de 2 px (`--ring`), jamais de `outline: none` sans remplacement ; (5) tests Vitest qui lisent les feuilles de style : variables non définies, couleurs en dur hors `index.css`, `outline: none` sans remplacement, `font-size` en `px`, rapports de contraste.
+- **Pourquoi** : « Grand texte » et « Contraste élevé » posaient une classe sans aucune règle ; le bouton principal utilisait une variable inexistante (`--color-accent`) ; plusieurs champs n'avaient plus d'indicateur de focus (WCAG 2.4.7, 1.4.4, 1.4.6).
+- **Alternatives écartées** : corriger le contraste du blanc sur orange doux en mode normal (décision de design) ; un vrai parseur CSS pour les tests (règles volontairement simples).
+- Change OpenSpec : `ui-structure-cleanup`.

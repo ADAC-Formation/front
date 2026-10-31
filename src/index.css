@@ -45,6 +45,10 @@ select {
   --color-blue: #12427c;
   --color-soft-orange: #F7A062;
   --color-green:  #439224;
+  --color-neutral: #ccc;
+
+  /* Texte sur le jaune de marque : toujours sombre, quel que soit le mode. */
+  --color-on-yellow: oklch(0.2630 0.0115 225.65);
 
 
   /* Typography */
@@ -70,6 +74,10 @@ select {
   --accent-foreground: var(--foreground);
 
   --ring: var(--foreground);
+
+  /* Boutons d'action orange doux : fond et texte (redéfinis en contraste élevé). */
+  --color-action: var(--color-soft-orange);
+  --color-on-action: var(--background);
 }
 
 .dark {

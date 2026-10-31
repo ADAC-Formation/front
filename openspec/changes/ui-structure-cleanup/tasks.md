@@ -1,13 +1,13 @@
 ## 1. Préparation
 
-- [ ] 1.1 Partir de `dev` à jour (branche `feature/ui-cleanup` déjà créée) ; vérifier `npm run check` au départ. Noter que le test d'auth « vide la session et redirige vers /login » est instable sur `dev` (3 échecs sur 5) : hors périmètre, à relancer avant de conclure à une régression
-- [ ] 1.2 Relever dans `docs/design-front.md` les écarts à lever (`text-large`, `high-contrast`, `--color-accent`) et inscrire D57 (gabarit de page unique, un seul `<main>`, dégagement 276 px) et D58 (options d'affichage effectives, garde-fous CSS) dans `docs/decisions-front-foundations.md` ; vérifier qu'elles suivent D56
+- [x] 1.1 Partir de `dev` à jour (branche `feature/ui-cleanup` déjà créée) ; vérifier `npm run check` au départ. Noter que le test d'auth « vide la session et redirige vers /login » est instable sur `dev` (3 échecs sur 5) : hors périmètre, à relancer avant de conclure à une régression
+- [x] 1.2 Relever dans `docs/design-front.md` les écarts à lever (`text-large`, `high-contrast`, `--color-accent`) et inscrire D57 (gabarit de page unique, un seul `<main>`, dégagement 276 px) et D58 (options d'affichage effectives, garde-fous CSS) dans `docs/decisions-front-foundations.md` ; vérifier qu'elles suivent D56
 
 ## 2. Garde-fous CSS et jetons (TDD)
 
-- [ ] 2.1 RED : `src/test/css-hygiene.test.js` (lecture de toutes les feuilles via `import.meta.glob('../**/*.css', { query: '?raw', eager: true })`) — aucune `var(--x)` sans définition (jetons globaux, ou variable posée localement dans une feuille ou en `style` JSX), aucune couleur hexadécimale en dur hors `index.css`, aucun `outline: none` sans règle `:focus-visible` / `:focus-within` de remplacement dans la même feuille ; confirmer RED (au moins `--color-accent`, `#333` et les `outline: none` actuels)
-- [ ] 2.2 Ajouter `--color-on-yellow` et le couple `--color-action` / `--color-on-action` dans `index.css` ; `FormButton` utilise `--color-on-yellow` ; l'info-bulle de `CreateFormationPage.module.css` passe de `#333` / `white` à `--foreground` / `--background` ; les boutons orange doux de Formations, Catégories et comptes utilisent `--color-action` / `--color-on-action` ; les tests « variables » et « couleurs en dur » passent, vérifier que l'apparence normale est inchangée
-- [ ] 2.3 Commit `test: add CSS hygiene guards and define missing color tokens`
+- [x] 2.1 RED : `src/test/css-hygiene.test.js` (lecture de toutes les feuilles via `import.meta.glob('../**/*.css', { query: '?raw', eager: true })`) — aucune `var(--x)` sans définition (jetons globaux, ou variable posée localement dans une feuille ou en `style` JSX), aucune couleur hexadécimale en dur hors `index.css`, aucun `outline: none` sans règle `:focus-visible` / `:focus-within` de remplacement dans la même feuille ; confirmer RED (au moins `--color-accent`, `#333` et les `outline: none` actuels)
+- [x] 2.2 Ajouter `--color-on-yellow` et le couple `--color-action` / `--color-on-action` dans `index.css` ; `FormButton` utilise `--color-on-yellow` ; l'info-bulle de `CreateFormationPage.module.css` passe de `#333` / `white` à `--foreground` / `--background` ; les boutons orange doux de Formations, Catégories et comptes utilisent `--color-action` / `--color-on-action` ; les tests « variables » et « couleurs en dur » passent, vérifier que l'apparence normale est inchangée
+- [x] 2.3 Commit `test: add CSS hygiene guards and define missing color tokens`
 
 ## 3. Options d'affichage effectives (TDD)
 
