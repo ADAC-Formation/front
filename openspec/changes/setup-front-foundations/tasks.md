@@ -28,7 +28,7 @@
 - [x] 4.1 Retirer `React` et `BookOpen` inutilisés (Layout, Stagiaire/*, TileLabel, TileGroup)
 - [x] 4.2 Séparer contexte et hook de thème pour fast-refresh (`ThemeProvider`) et mettre à jour les imports
 - [x] 4.3 Corriger `UserProvider` (plus d'effet avec setState ni de lecture `localStorage`, D31) et `routeManager`
-- [ ] 4.4 `npm run lint` à 0 erreur ; `npm run build` OK ; vérifier à la main que `npm run dev` affiche toujours les pages
+- [x] 4.4 `npm run lint` à 0 erreur ; `npm run build` OK ; vérifier à la main que `npm run dev` affiche toujours les pages
 - [x] 4.5 Commit `refactor: fix ESLint errors in legacy code`
 
 ## 5. Porte de qualité, CI et docs
