@@ -1,9 +1,9 @@
+/* Même gabarit que les pages formations et catégories : le contenu commence sous le logo. */
 .page {
   box-sizing: border-box;
-  width: 100%;
-  max-width: 960px;
+  width: min(80rem, 100%);
   margin: 0 auto;
-  padding: 120px 16px 40px;
+  padding: 180px 2.5rem 60px;
 
   display: flex;
   flex-direction: column;
@@ -140,9 +140,16 @@
 }
 
 /* Mobile : chaque ligne du tableau devient une carte, sans défilement horizontal. */
+@media (max-width: 1023px) {
+  .page {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
 @media (max-width: 640px) {
   .page {
-    padding-top: 96px;
+    padding: 190px 1rem 60px;
   }
 
   .table thead {
