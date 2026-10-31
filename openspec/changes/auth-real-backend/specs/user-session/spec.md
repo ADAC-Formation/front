@@ -50,11 +50,15 @@ Les erreurs de `POST /auth/login` SHALL être affichées dans le formulaire, ann
 - **THEN** le formulaire affiche un message d'erreur de connexion au serveur
 
 ### Requirement: Déconnexion
-Un utilisateur connecté SHALL pouvoir se déconnecter via `POST /auth/logout`. Après la déconnexion, la session SHALL être vidée, toute donnée mise en cache de l'utilisateur SHALL être supprimée et l'utilisateur SHALL être redirigé vers `/login`. Le bouton d'en-tête SHALL afficher « Se connecter » pour un visiteur et « Se déconnecter » pour un utilisateur connecté.
+Un utilisateur connecté SHALL pouvoir se déconnecter via `POST /auth/logout`. Après la déconnexion, la session SHALL être vidée, toute donnée mise en cache de l'utilisateur SHALL être supprimée et l'utilisateur SHALL être redirigé vers `/login`. Le bouton d'en-tête SHALL afficher « Se connecter » pour un visiteur et « Se déconnecter » pour un utilisateur connecté ; sur la page `/login`, le visiteur SHALL NOT voir « Se connecter » dans l'en-tête (redondant avec le formulaire).
 
 #### Scenario: Déconnexion réussie
 - **WHEN** l'utilisateur connecté clique sur « Se déconnecter » et le back répond `204`
 - **THEN** il est redirigé vers `/login` et ne peut plus accéder aux pages protégées
+
+#### Scenario: Page de connexion
+- **WHEN** un visiteur ouvre `/login`
+- **THEN** l'en-tête ne contient pas de bouton « Se connecter » et le formulaire garde son propre bouton de soumission
 
 #### Scenario: Déconnexion sur session déjà expirée
 - **WHEN** `POST /auth/logout` répond `401`

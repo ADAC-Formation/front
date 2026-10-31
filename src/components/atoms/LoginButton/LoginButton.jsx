@@ -1,5 +1,5 @@
 import { LogIn, LogOut } from "lucide-react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useCurrentUser, useLogout } from "../../../features/auth/hooks";
 import styles from "./LoginButton.module.css";
 
@@ -7,11 +7,15 @@ export function LoginButton() {
   const { user, isLoading } = useCurrentUser();
   const { mutate: logout, isPending } = useLogout();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   // Tant que la session n'est pas connue, on n'affiche pas un état qui pourrait être faux.
   if (isLoading) return null;
 
   const isAuthenticated = Boolean(user);
+
+  // Sur la page de connexion, « Se connecter » serait redondant avec le formulaire.
+  if (!isAuthenticated && pathname === "/login") return null;
 
   const handleClick = () => {
     if (isAuthenticated) {

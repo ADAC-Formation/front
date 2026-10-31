@@ -134,6 +134,16 @@ describe('bouton de connexion / déconnexion de l\'en-tête', () => {
     expect(router.state.location.pathname).toBe('/login')
   })
 
+  it('visiteur sur /login : pas de bouton « Se connecter » dans l\'en-tête (redondant avec le formulaire)', async () => {
+    mockNoSession()
+    renderApp('/login')
+    await screen.findByRole('heading', { name: 'Connexion' })
+    const header = screen.getByRole('banner')
+    expect(within(header).queryByRole('button', { name: /se connecter/i })).not.toBeInTheDocument()
+    // Le formulaire garde son propre bouton de soumission.
+    expect(screen.getByRole('button', { name: /se connecter/i })).toBeInTheDocument()
+  })
+
   it('utilisateur connecté : « Se déconnecter » appelle POST /auth/logout puis ouvre /login', async () => {
     mockSession('STAGIAIRE')
     let logoutCalled = false
