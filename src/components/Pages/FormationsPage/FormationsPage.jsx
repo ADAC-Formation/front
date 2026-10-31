@@ -3,13 +3,13 @@ import {
   CalendarDays,
   UserRound,
   MapPin,
-  ArrowLeft,
 } from "lucide-react";
 import { Link } from "react-router";
 import { useMemo, useState } from "react";
 import ListItem from "../../../components/molecules/ListItem/ListItem";
 import formations from "../../../utils/simFormations";
 import categories from "../../../utils/categories";
+import BackButton from "../../molecules/BackButton/BackButton";
 import styles from "./FormationsPage.module.css";
 import { PageShell } from "../../../templates/PageShell/PageShell";
 
@@ -54,10 +54,7 @@ const FormationsPage = () => {
 
   return (
     <PageShell>
-      <Link to="/admin/gestion" className={styles.back}>
-<ArrowLeft size={16} />
-Retour
-</Link>
+      <BackButton to="/admin/gestion">Retour</BackButton>
 
       <div className={styles.header}>
         <h1 className={styles.title}>Formations</h1>

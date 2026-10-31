@@ -1,13 +1,13 @@
 import {
-  ArrowLeft,
   CalendarDays,
   UserRound,
   MapPin,
   UsersRound,
 } from "lucide-react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import categories from "../../../utils/categories";
 import formations from "../../../utils/simFormations";
+import BackButton from "../../molecules/BackButton/BackButton";
 import styles from "./FormationDetails.module.css";
 import { PageShell } from "../../../templates/PageShell/PageShell";
 
@@ -32,10 +32,7 @@ const category = categories.find(
 
   return (
     <PageShell>
-      <Link to="/formations" className={styles.back}>
-        <ArrowLeft size={16} />
-        Retour aux formations
-      </Link>
+      <BackButton to="/formations">Retour aux formations</BackButton>
 
       <article
         className={styles.card}

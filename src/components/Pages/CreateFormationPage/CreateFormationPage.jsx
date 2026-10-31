@@ -1,8 +1,9 @@
 
-import { ArrowLeft, Upload } from "lucide-react";
+import { Upload } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 
+import BackButton from "../../molecules/BackButton/BackButton";
 import styles from "./CreateFormationPage.module.css";
 import categories from "../../../utils/categories";
 import { PageShell } from "../../../templates/PageShell/PageShell";
@@ -41,14 +42,7 @@ const CreateFormationPage = () => {
 
   return (
     <PageShell>
-      <button
-        type="button"
-        className={styles.back}
-        onClick={() => navigate(-1)}
-      >
-        <ArrowLeft size={16} />
-        Retour
-      </button>
+      <BackButton to="/formations">Retour</BackButton>
 
       <header className={styles.header}>
         <h1 className={styles.title}>

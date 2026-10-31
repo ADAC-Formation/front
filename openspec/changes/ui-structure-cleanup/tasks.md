@@ -28,9 +28,9 @@
 
 ## 5. Lien « Retour » commun (TDD)
 
-- [ ] 5.1 RED : tests de présence — Formations (`/admin/gestion`), Catégories, Création et Détail de formation (`/formations`, « Retour aux formations » pour le détail) ; aucun `<button>` « Retour » ; aucune règle `.back` dans les feuilles de page ; confirmer RED
-- [ ] 5.2 Remplacer les liens écrits à la main par `BackButton` dans les quatre pages, supprimer les règles `.back` dupliquées et les `navigate(-1)` « Retour » (garder celui du bouton « Annuler » de la création) ; GREEN
-- [ ] 5.3 Commit `refactor: use BackButton on every secondary page`
+- [x] 5.1 RED : tests de présence — Formations (`/admin/gestion`), Catégories, Création et Détail de formation (`/formations`, « Retour aux formations » pour le détail) ; aucun `<button>` « Retour » ; aucune règle `.back` dans les feuilles de page ; confirmer RED
+- [x] 5.2 Remplacer les liens écrits à la main par `BackButton` dans les quatre pages, supprimer les règles `.back` dupliquées et les `navigate(-1)` « Retour » (garder celui du bouton « Annuler » de la création) ; GREEN
+- [x] 5.3 Commit `refactor: use BackButton on every secondary page`
 
 ## 6. Focus visible (TDD)
 

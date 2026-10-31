@@ -1,13 +1,11 @@
-import { ArrowLeft, Pencil } from "lucide-react";
-import { useNavigate } from "react-router";
+import { Pencil } from "lucide-react";
 import { useState } from "react";
 import categories from "../../../utils/categories";
+import BackButton from "../../molecules/BackButton/BackButton";
 import styles from "./CategoryManagement.module.css";
 import { PageShell } from "../../../templates/PageShell/PageShell";
 
 const CategoryManagement = () => {
-  const navigate = useNavigate();
-
   const [categoryList, setCategoryList] = useState(
     categories.filter((category) => category.name !== "Toutes"),
   );
@@ -63,14 +61,7 @@ const CategoryManagement = () => {
 
   return (
     <PageShell>
-      <button
-        type="button"
-        className={styles.back}
-        onClick={() => navigate(-1)}
-      >
-        <ArrowLeft size={16} />
-        Retour
-      </button>
+      <BackButton to="/formations">Retour</BackButton>
 
       <div className={styles.header}>
         <div>

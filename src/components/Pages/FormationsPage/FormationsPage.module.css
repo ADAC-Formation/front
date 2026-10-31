@@ -33,28 +33,6 @@
 }
 
 
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-  color: var(--muted-foreground);
-  transition: color 150ms ease;
-
-  /* Reset button styling */
-  border: none;
-  padding: 0;
-  background: none;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.back:hover {
-  color: var(--foreground);
-}
-
 
 .title {
   margin-top: 1.5rem;
