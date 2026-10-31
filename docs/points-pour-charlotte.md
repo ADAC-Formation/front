@@ -1,0 +1,106 @@
+# Points pour Charlotte — décisions du front, impacts sur le back, questions
+
+> Document à partager avec `design-front.md`. Rédigé par Manon le 2026-10-31 après lecture complète du repo `back` (branche `dev`).
+> Principe : le front s'aligne sur le back (D1), sauf le design, qui est une décision du front (D41).
+> Quand `docs/tech.md` entre en conflit avec un autre document du back, **`tech.md` l'emporte** (D40).
+
+## 1. Décisions prises côté front (pour information)
+
+| # | Décision | Détail |
+|---|---|---|
+| 1 | **Design propre au front** | Thème conservé (Syne + Plus Jakarta Sans, tokens `oklch`, mode sombre / grand texte / contraste élevé). Décrit dans `design-front.md`, même structure que `DESIGN.md`. Merci de ne pas considérer `DESIGN.md` comme la référence visuelle du front. |
+| 2 | **Polices auto-hébergées** | Google Fonts transmet l'adresse IP des visiteurs à un tiers : on s'en passe (RGPD). TICKET-043 (« Manrope via Google Fonts ») n'est donc pas suivi sur ce point. |
+| 3 | **Responsive** | Desktop d'abord, mais responsive avec une bonne UX tablette et mobile (le PRD demande « responsive »). |
+| 4 | **Git** | Même flux que le back : une branche par thème (`feature/setup`, `feature/auth`, `feature/users`…), une seule PR vers `dev` au dernier ticket de la branche, Conventional Commits en anglais. Aucun push sans décision de Manon. |
+| 5 | **Structure du code** | `src/features/<domaine>/` + composants partagés en Atomic Design (`ARCHI.md` : « structure gérée par elle »). Les chemins des tickets (`pages/`, `services/`, `context/`) ne sont donc pas suivis à la lettre. |
+| 6 | **Dockerfile + CI dans le repo front** | Suivant `INFRASTRUCTURE.md` §4 : `Dockerfile` (node:20-alpine → nginx:alpine), `.dockerignore`, `.github/workflows/ci.yml`, `.env.example`. Charlotte garde compose, nginx, TLS, CD. |
+| 7 | **Documentation en français** | Conformément à `AGENTS.md` ; commits en anglais. |
+| 8 | **Tickets et SDD propres au front** | Le front écrit sa propre spec et ses propres tickets (SDD), puis les compare aux tickets 008–049 de Charlotte pour signaler les écarts. |
+| 9 | **Pré-contrôle des fichiers côté client** | pdf, jpg, png, docx, 10 Mo max (valeurs de TICKET-027) ; le back reste l'autorité. |
+
+## 2. Impacts sur les documents de Charlotte
+
+### 2.1 `STACK.md` — versions et ajouts réellement utilisés par le front
+
+| Ligne | Aujourd'hui | Réel / prévu |
+|---|---|---|
+| Framework | React + Vite 5 | React 19 + Vite 8 |
+| Routing | React Router v6 | react-router 8 (`createBrowserRouter`) |
+| UI | non définie | CSS Modules + tokens CSS, lucide-react (Atomic Design) |
+| Formulaires | React Hook Form (probable) | React Hook Form confirmé |
+| Données | — | **TanStack Query** + axios (cache, sondage des notifications) |
+| Tests | Vitest + Testing Library + MSW | idem + **jest-axe** (accessibilité) |
+
+→ Mettre à jour `STACK.md` si tu le souhaites (pas urgent).
+
+### 2.2 `INFRASTRUCTURE.md`
+
+- **Contradiction interne** : §4 (L57–58) dit que le compose « pull l'image construite par le CI **de ce repo** », alors que §4 (L66), §28 et §30 disent que **le CI du repo front** build et pousse `ghcr.io/adac-formation/front`. Le front applique la 2ᵉ lecture. **À confirmer** (TICKET-010).
+- **Tags** (§16) : le CI front pousse `X.Y.Z`, `X.Y` et `latest` sur un tag git `vX.Y.Z`, et `main` / `dev` + SHA sur push de branche. Valeur par défaut du compose : `FRONT_IMAGE_TAG` (aujourd'hui `latest`) → en prod, utiliser un tag versionné.
+- **Healthcheck front** (§7 : `curl -f http://localhost/`) : `curl` est installé dans l'image front (absent de `nginx:alpine`).
+- **Droits ghcr** : le push d'image demande que les Actions du repo front aient le droit `packages: write` (réglage d'organisation).
+- **CI** : la CI du back ne se déclenche que sur PR vers `main` ; §14 prévoit `dev` et `main`. Le CI front se déclenche sur PR et push vers `dev` et `main`.
+
+### 2.3 `DESIGN.md`
+Voir `design-front.md`, dernière section (tableau d'écarts). Rien à modifier côté back ; à titre indicatif, `DESIGN.md` pourrait renvoyer vers `design-front.md` pour le front.
+
+## 3. Questions pour Charlotte
+
+### Q1 — Changement de mot de passe (bloquant pour TICKET-044)
+TICKET-044 demande `changePassword(oldPassword, newPassword)` et « Ancien mot de passe incorrect », mais :
+- `tech.md` : `PATCH /api/users/me` n'accepte que `emailNotificationsEnabled` ;
+- je n'ai trouvé aucune route de changement de mot de passe dans le code.
+
+Faut-il ajouter un endpoint (par ex. `PATCH /api/users/me/password` avec `{oldPassword, newPassword}`) ? Sinon la page Profil ne pourra pas proposer ce formulaire (le flux « mot de passe oublié » reste disponible).
+
+### Q2 — Activation et réinitialisation : d'où vient l'e-mail ?
+`POST /auth/activate` et `/auth/reset-password` exigent `{email, code, newPassword}`, mais TICKET-017/018 ne prévoient que `activate(code, password)`. Le lien reçu par e-mail (`/activation`, `/reinitialisation`) contient-il l'adresse en paramètre (par ex. `?email=…`) ? Je n'ai pas trouvé le gabarit de l'e-mail dans le code. À défaut, le front demandera à l'utilisateur de saisir son adresse.
+
+### Q3 — Portée des formations pour le rôle ADMIN (formateur) — demande de changement
+Décision du front : **le formateur voit toutes les formations en lecture seule, avec « Mes formations » en filtre par défaut** (PRD, USERFLOW, TICKET-024).
+`tech.md` dit l'inverse (« ADMIN : uniquement les siennes », 404 sinon). Pour appliquer la décision il faudrait :
+1. `GET /api/formations` et `GET /api/formations/{id}` : ADMIN voit toutes les formations ;
+2. un filtre « mes formations » (par ex. `?mine=true`, retiré du contrat par TICKET-022) ;
+3. confirmer ce que le formateur peut lire sur une formation qui n'est pas la sienne (inscrits ? documents ?).
+
+En attendant, le front suit `tech.md` (ADMIN = ses formations seulement).
+
+### Q4 — Tableau de bord — proposition de changement
+Proposition : niveau 1 identique pour tous les rôles **Gestion · Messages · Notifications · Profil** (le stagiaire voit **Mes formations** à la place de Gestion) ; dans **Gestion** : **Formations · Formateurs · Stagiaires** (+ Catégories pour la chargée de formation).
+Cela revient à `USERFLOW.md` et corrige TICKET-043, dont les tuiles pour SUPER_ADMIN (Formations, Formateurs, Stagiaires, Messagerie) font disparaître Notifications et Profil.
+
+### Q5 — Types de fichiers et taille maximale
+`tech.md` indique seulement « type non autorisé ou taille dépassée ». Le front pré-contrôle avec pdf, jpg, png, docx et 10 Mo (TICKET-027). La liste exacte (jpeg ? autres ?) et la taille du back sont-elles les mêmes ?
+
+### Q6 — Inscriptions et documents ciblés : écrans
+Le contrat existe (inscrire / désinscrire, document ciblé par stagiaire), mais aucun ticket front ne couvre « Inscrire un stagiaire » (US-006), « Modifier un utilisateur » (`PUT /users/{id}`, TICKET-050) ni le dépôt de document ciblé (US-010). Le front les ajoutera à son propre plan (SDD) ; pas de demande côté back.
+
+### Q7 — Dates
+`tech.md` décrit des `LocalDateTime` sans décalage (`2026-03-10T14:30:00`) alors que `ADAC_KNOWLEDGE.md` mentionne `OffsetDateTime` dans le code. Les DTO renvoient-ils un décalage horaire (`Z` / `+01:00`) ? Cela change l'affichage des dates dans le front.
+
+## 4. Conflits entre `tech.md` et les autres documents du back
+
+Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.
+
+| # | Sujet | `tech.md` | Autre document | Suivi par défaut | Décision |
+|---|---|---|---|---|---|
+| 1 | Compte non activé à la connexion | 403 « Compte non activé… » | TICKET-016 : 401 « Compte non activé » | `tech.md` (403) | ☐ |
+| 2 | Mot de passe oublié — e-mail inconnu | toujours 200, même message | TICKET-018 : test 200 ou 404 ; USERFLOW : « email non reconnu → erreur » | `tech.md` (toujours le même message) | ☐ |
+| 3 | Activation : 429 | `/activate` ne renvoie jamais 429 ; `/resend-activation` oui | US-002 AC-05 | `tech.md` | ☐ |
+| 4 | Corps d'activation / reset | `{email, code, newPassword}` | TICKET-017/018 : sans e-mail | `tech.md` (voir Q2) | ☐ |
+| 5 | Suspendre un compte | `PATCH /users/{id}/deactivate` · `/reactivate` | TICKET-021 : `PATCH /users/{id}` avec `isActive` | `tech.md` | ☐ |
+| 6 | Lister les comptes | `GET /users/formateurs` · `/stagiaires` | TICKET-021 : `getUsers(role, isActive)` | `tech.md` | ☐ |
+| 7 | Formations visibles par ADAC/ADMIN | uniquement les siennes | PRD, USERFLOW, TICKET-024 : toutes en lecture | **décidé : toutes (Q3)** — en attendant `tech.md` | ✅ (demande de changement) |
+| 8 | Télécharger un document | `GET /documents/{id}/download` (flux, cookie) | TICKET-027 : « URL signée » ; DTO expose aussi `fileUrl` | `tech.md` (blob) | ☐ |
+| 9 | Marquer lu | `PATCH /messages/{id}/read` (un message) | TICKET-031 : `markAsRead(conversationId)` | `tech.md` (un appel par message, en parallèle) | ☐ |
+| 10 | Filtre de message groupé | `MANUAL` ; `POST /messages/send` + `GET /messages/group/preview` | TICKET-032 : `FREE_SELECT`, `/messages/group` | `tech.md` | ☐ |
+| 11 | Types de notification | `type` : `NEW_MESSAGE`, `DOCUMENT_UPLOADED`… ; `entityType` : `FORMATION` \| `MESSAGE` | TICKET-035 : MESSAGE / DOCUMENT / FORMATION | `tech.md` (icône selon `type`) | ☐ |
+| 12 | Profil d'un utilisateur par un stagiaire | `GET /users/{id}` interdit au stagiaire ; pas de `GET /users/me` | USERFLOW : « Mon profil » | utiliser `GET /auth/me` | ☐ |
+| 13 | Changement de mot de passe | aucun endpoint | TICKET-044 | bloqué — voir Q1 | ☐ |
+| 14 | Tuiles du tableau de bord | — | DESIGN / USERFLOW (Gestion·Messages·Notifications·Profil) vs TICKET-043 (SA : Formations·Formateurs·Stagiaires·Messagerie) | **décidé : USERFLOW (Q4)** | ✅ (proposition) |
+
+_Dernière mise à jour : 2026-10-31._
+
+## 5. CI du front : `npm run check` (TICKET-010)
+
+La CI du front (`.github/workflows/ci.yml`) exécute désormais `npm run check` (lint + tests Vitest + build avec `VITE_API_URL=/api`) à la place de lint + build seuls. Aucune action requise de ta part ; à confirmer avec toi si tu veux conserver ces étapes dans ton flux de déploiement (TICKET-010).
