@@ -7,6 +7,13 @@ import { ThemeProvider } from './context/ThemeProvider'
 import { createQueryClient } from './api/queryClient'
 import './index.css'
 
+// Ancien sélecteur de rôle simulé (supprimé) : on nettoie la clé qu'il laissait dans le navigateur.
+try {
+  localStorage.removeItem('dev-role')
+} catch {
+  // stockage indisponible : sans importance
+}
+
 const queryClient = createQueryClient()
 
 createRoot(document.getElementById('root')).render(

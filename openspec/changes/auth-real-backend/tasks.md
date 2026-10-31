@@ -43,11 +43,11 @@
 
 ## 8. Routeur, tableau de bord et nettoyage (TDD)
 
-- [ ] 8.1 RED : tests du routeur (visiteur sur route protégée → `/login`, `STAGIAIRE` sur `/admin/gestion` → « Accès refusé », `ADMIN` sur `/formations/categories` → refus, `SUPER_ADMIN` sur `/formations/creer` OK, `/` → tuile « Formations » pour `STAGIAIRE` et « Gestion » pour `SUPER_ADMIN`/`ADMIN`) ; test de `LoginButton` (« Se connecter » / « Se déconnecter ») ; test de libellés de rôles (D33)
-- [ ] 8.2 Confirmer RED ; créer `Root` (`UserProvider` + `Layout`), réécrire `router.jsx` (table des routes de la conception), recâbler `HomePage`/dashboard sur le rôle réel et `LoginButton` sur `useLogout`, réécrire `utils/roles.js` ; confirmer GREEN
-- [ ] 8.3 Supprimer `RoleSwitcher`, l'ancien `src/context/UserProvider.jsx`, `ProtectedRoute` s'il existe, `utils/routeManager.jsx`, `isAuthenticated`/`toggleAuth` de `use-theme.js` et `dev-role` ; corriger l'import `./layout.module.css` → `./Layout.module.css` ; vérifier qu'aucun usage ne subsiste (grep de 1.2)
-- [ ] 8.4 `npm run check` vert (lint + tests + build)
-- [ ] 8.5 Commit `refactor: remove simulated auth, role switcher and legacy routes`
+- [x] 8.1 RED : tests du routeur (visiteur sur route protégée → `/login`, `STAGIAIRE` sur `/admin/gestion` → « Accès refusé », `ADMIN` sur `/formations/categories` → refus, `SUPER_ADMIN` sur `/formations/creer` OK, `/` → tuile « Formations » pour `STAGIAIRE` et « Gestion » pour `SUPER_ADMIN`/`ADMIN`) ; test de `LoginButton` (« Se connecter » / « Se déconnecter ») ; test de libellés de rôles (D33)
+- [x] 8.2 Confirmer RED ; créer `Root` (`UserProvider` + `Layout`), réécrire `router.jsx` (table des routes de la conception), recâbler `HomePage`/dashboard sur le rôle réel et `LoginButton` sur `useLogout`, réécrire `utils/roles.js` ; confirmer GREEN
+- [x] 8.3 Supprimer `RoleSwitcher`, l'ancien `src/context/UserProvider.jsx`, `ProtectedRoute` s'il existe, `utils/routeManager.jsx`, `isAuthenticated`/`toggleAuth` de `use-theme.js` et `dev-role` ; corriger l'import `./layout.module.css` → `./Layout.module.css` ; vérifier qu'aucun usage ne subsiste (grep de 1.2)
+- [x] 8.4 `npm run check` vert (lint + tests + build)
+- [x] 8.5 Commit `refactor: remove simulated auth, role switcher and legacy routes`
 
 ## 9. Documentation et passage manuel
 

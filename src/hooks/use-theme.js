@@ -6,7 +6,6 @@ const DEFAULT_STATE = {
   isDark: false,
   fontSize: "normal",
   highContrast: false,
-  isAuthenticated: false,
 };
 
 function getInitialState() {
@@ -19,7 +18,6 @@ function getInitialState() {
         isDark: parsed.isDark ?? false,
         fontSize: parsed.fontSize ?? "normal",
         highContrast: parsed.highContrast ?? false,
-        isAuthenticated: parsed.isAuthenticated ?? false,
       };
     }
   } catch {
@@ -66,16 +64,11 @@ export function useTheme() {
     setTheme({ highContrast: !theme.highContrast });
   }, [theme.highContrast, setTheme]);
 
-  const toggleAuth = useCallback(() => {
-    setTheme({ isAuthenticated: !theme.isAuthenticated });
-  }, [theme.isAuthenticated, setTheme]);
-
   return {
     ...theme,
     setTheme,
     toggleDarkMode,
     toggleFontSize,
     toggleHighContrast,
-    toggleAuth,
   };
 }
