@@ -8,7 +8,7 @@ import LoginPage from "../components/Pages/LoginPage/LoginPage";
 import ManagementMenu from "../components/Pages/ManagementMenu/ManagementMenu";
 import FormationsPage from "../components/Pages/FormationsPage/FormationsPage";
 import FormationDetails from "../components/Pages/FormationDetails/FormationDetails";
-import Layout from "../Layout/layout";
+import Layout from "../Layout/Layout";
 import CategoryManagement from "../components/Pages/Categories/CategoryManagement";
 
 export const router = createBrowserRouter([
