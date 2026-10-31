@@ -41,8 +41,7 @@ describe('feuilles de style : couleurs', () => {
 })
 
 describe('feuilles de style : focus', () => {
-  // Suspendu jusqu'à la tâche 6 (focus visible) : les `outline: none` actuels y sont retirés.
-  it.skip('aucun `outline: none` sans indicateur de remplacement dans la même feuille', () => {
+  it('aucun `outline: none` sans indicateur de remplacement dans la même feuille', () => {
     const violations = []
     for (const [file, raw] of Object.entries(cssSheets)) {
       const rules = rulesOf(stripComments(raw))

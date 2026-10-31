@@ -34,9 +34,9 @@
 
 ## 6. Focus visible (TDD)
 
-- [ ] 6.1 RED : la garde `outline: none` de 2.1 doit échouer sur les champs ; ajouter un test d'équivalent (règle globale `:focus-visible` à 2 px avec `--ring` dans `index.css`, anneau `:focus-within` sur les conteneurs de recherche) ; confirmer RED
+- [x] 6.1 RED : la garde `outline: none` de 2.1 doit échouer sur les champs ; ajouter un test d'équivalent (règle globale `:focus-visible` à 2 px avec `--ring` dans `index.css`, anneau `:focus-within` sur les conteneurs de recherche) ; confirmer RED
 - [ ] 6.2 Ajouter la règle globale, retirer les `outline: none` de `FormInput`, des sélecteurs et champs de création de formation, de Formations (`searchContainer`, tri) et des comptes ; ajouter `:focus-within` aux conteneurs de recherche ; GREEN ; vérifier au clavier (Tab) sur Formations
-- [ ] 6.3 Commit `fix: restore a visible keyboard focus ring everywhere`
+- [x] 6.3 Commit `fix: restore a visible keyboard focus ring everywhere`
 
 ## 7. Documentation et passage manuel
 

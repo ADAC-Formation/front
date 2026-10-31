@@ -132,8 +132,6 @@
 
   font-size: 0.875rem;
 
-  outline: none;
-
   transition:
     border-color 150ms ease,
     box-shadow 150ms ease;

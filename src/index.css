@@ -20,6 +20,13 @@ body {
   box-sizing: border-box;
 }
 
+/* Indicateur de focus clavier commun (WCAG 2.4.7). Ne jamais écrire `outline: none` sans
+   indicateur de remplacement : voir src/test/css-hygiene.test.js. */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
 button,
 input,
 textarea,

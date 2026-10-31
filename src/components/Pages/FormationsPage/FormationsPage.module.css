@@ -82,6 +82,8 @@
 
 .searchContainer:focus-within {
   border-color: var(--foreground);
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 .searchContainer input {
@@ -128,7 +130,6 @@
   font-size: 0.875rem;
 
   cursor: pointer;
-  outline: none;
 }
 
 .sortContainer select:focus {
