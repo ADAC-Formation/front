@@ -351,3 +351,10 @@
 - **Décision** : `docs/dev/` contient `docker-compose.dev.yml` (profil `dev`, port 8080 publié, service `frontend` désactivé), `seed-local-admin.sql` (4 comptes fictifs, mot de passe de dev) et `README.md` (commandes). Seul le `.env` (secrets) reste hors des deux dépôts, dans `ADAC/dev-compose/.env`. Les comptes de test : `chargee.dev@adac.test` (SUPER_ADMIN), `formateur.dev@adac.test` (ADMIN), `stagiaire.dev@adac.test`, `inactif.dev@adac.test` (non activé), mot de passe `DevAdmin2026` — local uniquement.
 - **Pourquoi** : la surcharge est reproductible et ne se perd pas ; `back-readonly` n'est jamais modifié (`git status` propre) et son compose, orienté production, n'a pas de parcours « développeuse front ».
 - **Alternatives écartées** : tout hors dépôt (fragile) ; modifier le compose de Charlotte.
+
+## D54 — Comptes : le formateur consulte en lecture seule, périmètre de `feature/users`
+- Date : 2026-10-31
+- **Décision** : (1) SUPER_ADMIN crée, modifie (`PUT`), suspend et réactive ; ADMIN consulte listes (comptes actifs renvoyés par le back) et détails sans aucune action — `tech.md` l'autorise en lecture, le ticket 021 ne le prévoyait pas ; (2) suspendre / réactiver suivent `tech.md` (`PATCH /users/{id}/deactivate|reactivate`), pas le ticket 021 (`PATCH /users/{id}` avec `isActive`), D40 ; (3) chemins conservés : `/admin/formateurs[/nouveau|/:id]`, `/admin/stagiaires[/nouveau|/:id]` (le renommage `/gestion/*` reste à TICKET-043) ; (4) le filtre « Suspendus » est côté client (l'API n'a que `?active=true`) ; (5) la création de stagiaire envoie `formationIds: []` ; (6) reportés : colonne formations et choix de formations (`feature/formations`), « Envoyer un message » (`feature/messagerie`), profil / `PATCH /users/me`, import Excel (D14).
+- **Pourquoi** : livrer les comptes sans dépendre de fonctionnalités pas encore construites, en gardant `tech.md` comme contrat.
+- **Alternatives écartées** : comptes réservés au SUPER_ADMIN (écart avec `tech.md`) ; pages dupliquées par rôle (une page paramétrée suffit).
+- Change OpenSpec : `users-account-management`.
