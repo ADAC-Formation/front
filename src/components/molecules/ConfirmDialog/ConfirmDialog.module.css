@@ -11,6 +11,7 @@
   box-sizing: border-box;
 
   background-color: rgb(0 0 0 / 50%);
+  overscroll-behavior: contain;
 }
 
 .dialog {
@@ -23,7 +24,7 @@
   gap: 16px;
 
   padding: 24px;
-  border-radius: 16px;
+  border-radius: 30px;
 
   background-color: var(--card);
   color: var(--card-foreground);
@@ -54,7 +55,7 @@
   min-height: 44px;
   padding: 0 20px;
 
-  border-radius: 24px;
+  border-radius: 14px;
 
   font-family: var(--font-display);
   font-size: 14px;

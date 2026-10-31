@@ -25,10 +25,10 @@ describe('AccountListPage', () => {
     renderList('formateurs', 'SUPER_ADMIN')
     expect(screen.getByText('Chargement…')).toBeInTheDocument()
     expect(await screen.findByRole('heading', { level: 1, name: 'Formateurs' })).toBeInTheDocument()
-    const row = (await screen.findByRole('link', { name: 'Anne Martin' })).closest('tr')
+    const row = (await screen.findByRole('link', { name: 'Anne Martin' })).closest('li')
     expect(within(row).getByText('anne@adac.test')).toBeInTheDocument()
     expect(within(row).getByText('Actif')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('tr')).toHaveTextContent('Inactif')
+    expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('li')).toHaveTextContent('Inactif')
   })
 
   it('liste les stagiaires', async () => {
@@ -57,6 +57,49 @@ describe('AccountListPage', () => {
     mockAccountList('formateurs', FORMATEURS)
     renderList('formateurs', 'ADMIN')
     expect(await screen.findByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/admin/gestion')
+  })
+
+  describe('recherche et tri', () => {
+    it('filtre par prénom, nom ou e-mail sans appel supplémentaire', async () => {
+      const calls = mockAccountList('formateurs', FORMATEURS)
+      renderList('formateurs', 'SUPER_ADMIN')
+      await screen.findByRole('link', { name: 'Anne Martin' })
+      const search = screen.getByRole('searchbox', { name: 'Rechercher un formateur' })
+      await userEvent.type(search, 'durand')
+      expect(screen.queryByRole('link', { name: 'Anne Martin' })).not.toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Paul Durand' })).toBeInTheDocument()
+      await userEvent.clear(search)
+      await userEvent.type(search, 'ANNE@adac')
+      expect(screen.getByRole('link', { name: 'Anne Martin' })).toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: 'Paul Durand' })).not.toBeInTheDocument()
+      expect(calls.count).toBe(1)
+    })
+
+    it('affiche un état vide quand la recherche ne trouve rien', async () => {
+      mockAccountList('formateurs', FORMATEURS)
+      renderList('formateurs', 'SUPER_ADMIN')
+      await screen.findByRole('link', { name: 'Anne Martin' })
+      await userEvent.type(screen.getByRole('searchbox'), 'zzz')
+      expect(screen.getByText('Aucun formateur trouvé')).toBeInTheDocument()
+    })
+
+    it('affiche le nombre de comptes', async () => {
+      mockAccountList('stagiaires', STAGIAIRES)
+      renderList('stagiaires', 'SUPER_ADMIN')
+      expect(await screen.findByText('2 stagiaires')).toBeInTheDocument()
+    })
+
+    it('organise par nom, prénom ou e-mail', async () => {
+      mockAccountList('formateurs', FORMATEURS)
+      renderList('formateurs', 'SUPER_ADMIN')
+      await screen.findByRole('link', { name: 'Anne Martin' })
+      const names = () => screen.getAllByRole('listitem').map((item) => within(item).getByRole('link').textContent)
+      expect(names()).toEqual(['Paul Durand', 'Anne Martin']) // nom A-Z : Durand < Martin
+      await userEvent.selectOptions(screen.getByLabelText('Organiser par :'), 'prenom')
+      expect(names()).toEqual(['Anne Martin', 'Paul Durand'])
+      await userEvent.selectOptions(screen.getByLabelText('Organiser par :'), 'email')
+      expect(names()).toEqual(['Anne Martin', 'Paul Durand']) // anne@ < paul@
+    })
   })
 
   describe('SUPER_ADMIN', () => {
@@ -126,7 +169,7 @@ describe('AccountListPage', () => {
       renderList('formateurs', 'SUPER_ADMIN')
       await userEvent.click(await screen.findByRole('button', { name: 'Réactiver Paul Durand' }))
       expect(await screen.findByRole('alert')).toHaveTextContent('Accès refusé')
-      expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('tr')).toHaveTextContent('Inactif')
+      expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('li')).toHaveTextContent('Inactif')
     })
   })
 

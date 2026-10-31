@@ -1,7 +1,6 @@
 import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
-import FormButton from '../../../components/atoms/FormButton/FormButton'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import FormField from '../../../components/molecules/FormField/FormField'
 import { validateEmail, validateRequired } from '../../../utils/validation'
@@ -66,47 +65,61 @@ const AccountForm = ({ config, account }) => {
         <BackButton to={config.basePath}>Retour aux {config.title.toLowerCase()}</BackButton>
       )}
 
-      <h1 className={styles.title}>
+      <h1 className={`${styles.title} ${styles.pageTitle}`}>
         {account ? `Modifier ${fullName(account)}` : config.createLabel}
       </h1>
+      {!account && (
+        <p className={styles.intro}>
+          Renseignez les informations du compte : un e-mail d&apos;activation sera envoyé à l&apos;adresse saisie.
+        </p>
+      )}
 
       <form className={styles.card} onSubmit={handleSubmit(submit)} noValidate>
         {otherError && <Alert variant="error">{otherError.message}</Alert>}
 
-        <FormField
-          label="Prénom"
-          autoComplete="off"
-          required
-          error={errors.prenom?.message}
-          {...register('prenom', { validate: (value) => validateRequired(value, 'Le prénom') ?? true })}
-        />
-        <FormField
-          label="Nom"
-          autoComplete="off"
-          required
-          error={errors.nom?.message}
-          {...register('nom', { validate: (value) => validateRequired(value, 'Le nom') ?? true })}
-        />
-        <FormField
-          label="Adresse e-mail"
-          type="email"
-          autoComplete="off"
-          required
-          error={errors.email?.message}
-          {...register('email', { validate: (value) => validateEmail(value) ?? true })}
-        />
+        <div className={styles.formGrid}>
+          <FormField
+            label="Prénom"
+            autoComplete="off"
+            required
+            error={errors.prenom?.message}
+            {...register('prenom', { validate: (value) => validateRequired(value, 'Le prénom') ?? true })}
+          />
+          <FormField
+            label="Nom"
+            autoComplete="off"
+            required
+            error={errors.nom?.message}
+            {...register('nom', { validate: (value) => validateRequired(value, 'Le nom') ?? true })}
+          />
+          <div className={styles.fullWidth}>
+            <FormField
+              label="Adresse e-mail"
+              type="email"
+              autoComplete="off"
+              spellCheck={false}
+              required
+              error={errors.email?.message}
+              {...register('email', { validate: (value) => validateEmail(value) ?? true })}
+            />
+          </div>
 
-        {mustWarnAboutSessions && (
-          <Alert variant="info">
-            Ce compte est actif : après le changement d&apos;adresse, la personne devra se reconnecter.
-          </Alert>
-        )}
+          {mustWarnAboutSessions && (
+            <div className={styles.formNotice}>
+              <Alert variant="info">
+                Ce compte est actif : après le changement d&apos;adresse, la personne devra se reconnecter.
+              </Alert>
+            </div>
+          )}
+        </div>
 
         <div className={styles.actions}>
-          <FormButton type="submit" disabled={mutation.isPending}>
+          <Link className={styles.cancelButton} to={account ? `${config.basePath}/${account.id}` : config.basePath}>
+            Annuler
+          </Link>
+          <button type="submit" className={styles.submitButton} disabled={mutation.isPending}>
             {account ? 'Enregistrer' : 'Créer le compte'}
-          </FormButton>
-          <Link to={account ? `${config.basePath}/${account.id}` : config.basePath}>Annuler</Link>
+          </button>
         </div>
       </form>
     </div>
@@ -120,7 +133,13 @@ const AccountFormPage = ({ kind }) => {
   const { data: account, isLoading, isError, error } = useAccount(id, { enabled: Boolean(id) })
 
   if (!id) return <AccountForm config={config} />
-  if (isLoading) return <p role="status">Chargement…</p>
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <p role="status">Chargement…</p>
+      </div>
+    )
+  }
   if (isError) {
     return error.status === 404 ? (
       <AccountNotFound backPath={config.basePath} backLabel={`Retour aux ${config.title.toLowerCase()}`} />

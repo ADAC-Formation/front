@@ -1,0 +1,166 @@
+.row {
+  position: relative;
+
+  display: flex;
+  align-items: stretch;
+  gap: 1rem;
+
+  min-height: 90px;
+  padding: 1rem 0.75rem;
+
+  border-radius: 16px;
+
+  transition: background-color 150ms ease;
+}
+
+.row:hover {
+  background-color: var(--muted);
+}
+
+.bar {
+  width: 5px;
+  flex-shrink: 0;
+
+  border-radius: 5px;
+
+  background-color: var(--accent);
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.status {
+  display: inline-block;
+
+  margin-bottom: 0.35rem;
+
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+
+  color: var(--foreground);
+}
+
+.active {
+  color: var(--color-green);
+}
+
+.name {
+  margin: 0;
+  overflow-wrap: anywhere;
+
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.link {
+  color: var(--card-foreground);
+  text-decoration: none;
+}
+
+/* Toute la ligne ouvre le détail. */
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.link:focus-visible::after {
+  outline: 2px solid var(--ring);
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  margin-top: 0.6rem;
+
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+
+  overflow-wrap: anywhere;
+}
+
+.detail svg {
+  flex-shrink: 0;
+}
+
+.actions {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.actions button {
+  touch-action: manipulation;
+  min-height: 40px;
+  padding: 0 1rem;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background-color: var(--background);
+  color: var(--foreground);
+
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    border-color 150ms ease,
+    background-color 150ms ease,
+    transform 150ms ease;
+}
+
+.actions button:hover {
+  border-color: var(--foreground);
+  background-color: var(--muted);
+  transform: translateY(-1px);
+}
+
+.actions button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 639px) {
+  .row {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .content {
+    flex-basis: calc(100% - 5px - 0.75rem);
+  }
+
+  .actions {
+    margin-left: calc(5px + 0.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .actions button {
+    transition: none;
+  }
+
+  .actions button:hover {
+    transform: none;
+  }
+}
