@@ -25,9 +25,9 @@
 
 ## 5. Gardes de routes (TDD)
 
-- [ ] 5.1 RED : tests de `RequireAuth` (chargement, visiteur → `/login`, connecté → contenu, `/auth/me` en 500 → erreur avec « Réessayer » sans redirection), `RequireRole` (rôle autorisé / « Accès refusé »), `PublicOnly` (connecté → `/`)
-- [ ] 5.2 Confirmer RED ; créer `guards/` et la page « Accès refusé » ; confirmer GREEN
-- [ ] 5.3 Commit `feat: add RequireAuth, RequireRole and PublicOnly route guards`
+- [x] 5.1 RED : tests de `RequireAuth` (chargement, visiteur → `/login`, connecté → contenu, `/auth/me` en 500 → erreur avec « Réessayer » sans redirection), `RequireRole` (rôle autorisé / « Accès refusé »), `PublicOnly` (connecté → `/`)
+- [x] 5.2 Confirmer RED ; créer `guards/` et la page « Accès refusé » ; confirmer GREEN
+- [x] 5.3 Commit `feat: add RequireAuth, RequireRole and PublicOnly route guards`
 
 ## 6. Page de connexion (TDD)
 
