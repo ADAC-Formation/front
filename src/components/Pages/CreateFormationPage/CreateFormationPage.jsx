@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 
 import styles from "./CreateFormationPage.module.css";
 import categories from "../../../utils/categories";
+import { PageShell } from "../../../templates/PageShell/PageShell";
 
 const CreateFormationPage = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const CreateFormationPage = () => {
   };
 
   return (
-    <main className={styles.container}>
+    <PageShell>
       <button
         type="button"
         className={styles.back}
@@ -368,7 +369,7 @@ const CreateFormationPage = () => {
 
         </form>
       </div>
-    </main>
+    </PageShell>
   );
 };
 

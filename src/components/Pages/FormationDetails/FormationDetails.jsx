@@ -9,6 +9,7 @@ import { Link, useParams } from "react-router";
 import categories from "../../../utils/categories";
 import formations from "../../../utils/simFormations";
 import styles from "./FormationDetails.module.css";
+import { PageShell } from "../../../templates/PageShell/PageShell";
 
 const FormationDetails = () => {
   const { formationId } = useParams();
@@ -19,9 +20,9 @@ const FormationDetails = () => {
 
   if (!formation) {
     return (
-      <div className={styles.container}>
+      <PageShell>
         <h1>Formation introuvable</h1>
-      </div>
+      </PageShell>
     );
   }
 
@@ -30,7 +31,7 @@ const category = categories.find(
 );
 
   return (
-    <div className={styles.container}>
+    <PageShell>
       <Link to="/formations" className={styles.back}>
         <ArrowLeft size={16} />
         Retour aux formations
@@ -94,7 +95,7 @@ const category = categories.find(
           </div>
         </div>
       </article>
-    </div>
+    </PageShell>
   );
 };
 

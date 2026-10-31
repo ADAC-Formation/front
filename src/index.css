@@ -57,6 +57,8 @@ select {
 
   /* Layout */
   --logo-space: 220px;
+  /* Dégagement sous le logo (position absolue) : 6rem de marge + 180px de logo. Voir PageShell. */
+  --page-top: calc(6rem + 180px);
 
   /* Semantic UI colors */
   --background: oklch(0.9880 0.0040 91.62);
@@ -78,6 +80,12 @@ select {
   /* Boutons d'action orange doux : fond et texte (redéfinis en contraste élevé). */
   --color-action: var(--color-soft-orange);
   --color-on-action: var(--background);
+}
+
+@media (max-width: 639px) {
+  :root {
+    --page-top: calc(5rem + 180px);
+  }
 }
 
 .dark {

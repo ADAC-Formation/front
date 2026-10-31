@@ -1,7 +1,14 @@
+/*
+ * Le logo est en position absolue : il ne prend pas de place dans le flux. Le dégagement
+ * --page-top (index.css) pousse donc le contenu de toute page sous lui. Ne pas le redéfinir
+ * dans une page.
+ */
 .shell {
+  box-sizing: border-box;
+  width: min(85rem, 100%); /* 80rem de contenu + 2 × 2,5rem de marges */
   min-height: 100vh;
-  padding: 6rem 2.5rem 3rem;
-  
+  margin: 0 auto;
+  padding: var(--page-top) 2.5rem 3rem;
 }
 
 .center {
@@ -9,17 +16,16 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
 }
 
 @media (max-width: 1023px) {
   .shell {
-    padding: 6rem 1.5rem 3rem;
+    padding-inline: 1.5rem;
   }
 }
 
 @media (max-width: 639px) {
   .shell {
-    padding: 5rem 1rem 3rem;
+    padding-inline: 1rem;
   }
 }

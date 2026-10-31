@@ -1,16 +1,3 @@
-.loginPage {
-  min-height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  box-sizing: border-box;
-
-  padding-top: 120px;
-  
-}
-
 body {
   background: var(--background);
 }

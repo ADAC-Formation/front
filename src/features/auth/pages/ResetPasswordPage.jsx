@@ -2,13 +2,14 @@ import { useSearchParams } from 'react-router'
 import CodePasswordForm from '../components/CodePasswordForm'
 import { useResetPassword } from '../hooks'
 import styles from '../components/AuthForm.module.css'
+import { PageShell } from '../../../templates/PageShell/PageShell'
 
 const ResetPasswordPage = () => {
   const [params] = useSearchParams()
   const reset = useResetPassword()
 
   return (
-    <div className={styles.page}>
+    <PageShell center>
       <div className={styles.content}>
         <h1 className={styles.title}>Nouveau mot de passe</h1>
         <p className={styles.intro}>
@@ -23,7 +24,7 @@ const ResetPasswordPage = () => {
           submitLabel="Changer le mot de passe"
         />
       </div>
-    </div>
+    </PageShell>
   )
 }
 

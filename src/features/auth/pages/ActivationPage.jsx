@@ -4,6 +4,7 @@ import FormButton from '../../../components/atoms/FormButton/FormButton'
 import CodePasswordForm from '../components/CodePasswordForm'
 import { useActivate, useResendActivation } from '../hooks'
 import styles from '../components/AuthForm.module.css'
+import { PageShell } from '../../../templates/PageShell/PageShell'
 
 // L'adresse peut être fournie par le lien reçu par e-mail (?email=…, question Q2 ouverte
 // avec Charlotte) ; le champ reste toujours visible et modifiable.
@@ -13,7 +14,7 @@ const ActivationPage = () => {
   const resend = useResendActivation()
 
   return (
-    <div className={styles.page}>
+    <PageShell center>
       <div className={styles.content}>
         <h1 className={styles.title}>Activation du compte</h1>
         <p className={styles.intro}>
@@ -42,7 +43,7 @@ const ActivationPage = () => {
           )}
         />
       </div>
-    </div>
+    </PageShell>
   )
 }
 

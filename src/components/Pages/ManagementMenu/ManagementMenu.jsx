@@ -2,6 +2,7 @@ import { BookOpen, UserRound,GraduationCap} from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks";
 import { canManageAccounts } from "../../../features/accounts/accountKinds";
 import ManagementTile from "../../molecules/ManagementTiles/ManagementTiles";
+import { PageShell } from "../../../templates/PageShell/PageShell";
 import styles from "./ManagementMenu.module.css";
 
 const managementTiles = [
@@ -42,7 +43,7 @@ const ManagementMenu = () => {
   const canCreateAccounts = canManageAccounts(user);
 
   return (
-    <main className={styles.gestionPage}>
+    <PageShell center className={styles.gestionPage}>
       <h1 className={styles.title}> Gestion</h1>
 
       <div className={styles.tileContainer}>
@@ -56,7 +57,7 @@ const ManagementMenu = () => {
           />
         ))}
       </div>
-    </main>
+    </PageShell>
   );
 };
 

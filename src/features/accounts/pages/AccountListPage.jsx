@@ -10,6 +10,7 @@ import AccountRow from '../components/AccountRow'
 import { ACCOUNT_KINDS, canManageAccounts, fullName } from '../accountKinds'
 import { useAccounts, useSetAccountActive } from '../hooks'
 import styles from './AccountPages.module.css'
+import { PageShell } from '../../../templates/PageShell/PageShell'
 
 const FILTERS = [
   { value: 'all', label: 'Tous', color: 'var(--color-soft-orange)' },
@@ -83,7 +84,7 @@ const AccountListPage = ({ kind }) => {
     ))
 
   return (
-    <div className={styles.page}>
+    <PageShell className={styles.page}>
       <BackButton to="/admin/gestion" />
 
       <div className={styles.header}>
@@ -203,7 +204,7 @@ const AccountListPage = ({ kind }) => {
           {`${fullName(toSuspend)} ne pourra plus se connecter tant que le compte est suspendu.`}
         </ConfirmDialog>
       )}
-    </div>
+    </PageShell>
   )
 }
 

@@ -1,5 +1,5 @@
 import TileGroup from "../../molecules/TileGroup/TileGroup";
-import style from "./HomePage.module.css";
+import { PageShell } from "../../../templates/PageShell/PageShell";
 import { BookOpen, MonitorCog } from "lucide-react";
 import { ROLES } from "../../../utils/roles";
 
@@ -11,9 +11,9 @@ const HomePage = ({ role }) => {
   const path = isStagiaire ? "/formations" : "/admin/gestion";
 
   return (
-    <div className={style.homePage}>
+    <PageShell center>
       <TileGroup label={label} icon={icon} largeTilePath={path} />
-    </div>
+    </PageShell>
   );
 };
 

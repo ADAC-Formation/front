@@ -18,13 +18,13 @@
 
 ## 4. Gabarit de page unique (TDD)
 
-- [ ] 4.1 RED : `src/templates/PageShell/PageShell.test.jsx` (rend un `div`, pas un `main` ; variante `center` ; jest-axe) et `src/router/single-main.test.jsx` (chaque route — connexion, activation, tableau de bord, menu Gestion, formations, détail, catégories, création, listes / détail / formulaires de comptes — contient exactement un `main`, pour le rôle autorisé) ; confirmer RED
-- [ ] 4.2 Ajouter `--page-top` (276 px, 5rem + 180px sous 640 px) à `index.css` ; réécrire `PageShell` (div, dégagement, marges 2.5 / 1.5 / 1 rem, largeur 80rem, variante `center`) ; vérifier le test `PageShell`
-- [ ] 4.3 Migrer Formations et Catégories (retirer `.container` et `padding-top`, garder le contenu) ; tests de ces deux pages (un `main`, contenu inchangé) verts
-- [ ] 4.4 Migrer création de formation (remplacer son `<main>`) et détail de formation (retirer `padding-top: 250px`) ; tests verts
-- [ ] 4.5 Migrer accueil, menu Gestion (remplacer son `<main>`, retirer le `padding-top: 160px` du `h1`) et les trois pages d'auth + connexion en variante `center` ; tests existants de `HomePage` et `LoginPage` toujours verts
-- [ ] 4.6 Migrer les pages de comptes (`.page` → `PageShell`, retirer les valeurs recopiées) ; les 59 tests de comptes restent verts ; `single-main.test.jsx` GREEN
-- [ ] 4.7 Commit `refactor: use one PageShell for every page and a single main landmark`
+- [x] 4.1 RED : `src/templates/PageShell/PageShell.test.jsx` (rend un `div`, pas un `main` ; variante `center` ; jest-axe) et `src/router/single-main.test.jsx` (chaque route — connexion, activation, tableau de bord, menu Gestion, formations, détail, catégories, création, listes / détail / formulaires de comptes — contient exactement un `main`, pour le rôle autorisé) ; confirmer RED
+- [x] 4.2 Ajouter `--page-top` (276 px, 5rem + 180px sous 640 px) à `index.css` ; réécrire `PageShell` (div, dégagement, marges 2.5 / 1.5 / 1 rem, largeur 80rem, variante `center`) ; vérifier le test `PageShell`
+- [x] 4.3 Migrer Formations et Catégories (retirer `.container` et `padding-top`, garder le contenu) ; tests de ces deux pages (un `main`, contenu inchangé) verts
+- [x] 4.4 Migrer création de formation (remplacer son `<main>`) et détail de formation (retirer `padding-top: 250px`) ; tests verts
+- [x] 4.5 Migrer accueil, menu Gestion (remplacer son `<main>`, retirer le `padding-top: 160px` du `h1`) et les trois pages d'auth + connexion en variante `center` ; tests existants de `HomePage` et `LoginPage` toujours verts
+- [x] 4.6 Migrer les pages de comptes (`.page` → `PageShell`, retirer les valeurs recopiées) ; les 59 tests de comptes restent verts ; `single-main.test.jsx` GREEN
+- [x] 4.7 Commit `refactor: use one PageShell for every page and a single main landmark`
 
 ## 5. Lien « Retour » commun (TDD)
 

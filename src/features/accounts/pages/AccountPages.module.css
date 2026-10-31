@@ -1,14 +1,8 @@
 /* Pages de comptes : même gabarit visuel que la page Formations (contenu sous le logo,
    carte arrondie, pastilles de filtre, recherche, « Organiser par »). */
 
-/* Mêmes valeurs que Formations : `PageShell` (6rem / 2.5rem / 3rem) + conteneur (180px de haut,
-   largeur 80rem). Ici les deux sont fusionnés pour ne pas imbriquer deux <main>. */
+/* Le gabarit (dégagement sous le logo, marges, largeur) vient de `PageShell`. */
 .page {
-  box-sizing: border-box;
-  width: min(calc(80rem + 5rem), 100%);
-  margin: 0 auto;
-  padding: calc(6rem + 180px) 2.5rem 3rem;
-
   display: flex;
   flex-direction: column;
 }
@@ -446,18 +440,7 @@
 
 /* ---------- Responsive ---------- */
 
-@media (max-width: 1023px) {
-  .page {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-}
-
 @media (max-width: 639px) {
-  .page {
-    padding: calc(5rem + 180px) 1rem 3rem;
-  }
-
   .title {
     font-size: 1.875rem;
   }

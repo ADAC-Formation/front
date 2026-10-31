@@ -32,11 +32,6 @@
   transform: translateY(-1px);
 }
 
-.container {
-  width: min(80rem, 100%);
-  margin: 0 auto;
-  padding-top: 180px;
-}
 
 .back {
   display: inline-flex;
