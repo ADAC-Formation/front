@@ -17,10 +17,11 @@ export function useAccounts(kind, { active = false } = {}) {
   })
 }
 
-export function useAccount(id) {
+export function useAccount(id, { enabled = true } = {}) {
   return useQuery({
     queryKey: accountDetailKey(id),
     queryFn: () => fetchAccount(id),
+    enabled,
   })
 }
 

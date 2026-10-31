@@ -4,6 +4,7 @@ import Alert from '../../../components/atoms/Alert/Alert'
 import FormButton from '../../../components/atoms/FormButton/FormButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { useCurrentUser } from '../../auth/hooks'
+import AccountNotice from '../components/AccountNotice'
 import { ACCOUNT_KINDS, canManageAccounts, fullName } from '../accountKinds'
 import { useAccounts, useSetAccountActive } from '../hooks'
 import styles from './AccountPages.module.css'
@@ -64,7 +65,9 @@ const AccountListPage = ({ kind }) => {
         </fieldset>
       )}
 
-      {setActive.error && <Alert variant="error">{setActive.error.message}</Alert>}
+      <AccountNotice />
+
+      {setActive.error &&<Alert variant="error">{setActive.error.message}</Alert>}
 
       {isLoading && <p role="status">Chargement…</p>}
 

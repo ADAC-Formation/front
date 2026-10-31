@@ -19,9 +19,9 @@
 
 ## 4. Création et édition (TDD)
 
-- [ ] 4.1 RED : `AccountFormPage.test.jsx` — champs vides / e-mail invalide sans appel, succès 201 → retour à la liste avec confirmation annoncée, `409` en ligne avec valeurs conservées, stagiaire envoie `formationIds: []`, édition préremplie, avertissement de changement d'e-mail d'un compte actif, check jest-axe ; confirmer RED
-- [ ] 4.2 Créer `AccountFormPage` (React Hook Form + `validateRequired`/`validateEmail`) pour création et édition ; GREEN
-- [ ] 4.3 Commit `feat: add account creation and edit forms`
+- [x] 4.1 RED : `AccountFormPage.test.jsx` — champs vides / e-mail invalide sans appel, succès 201 → retour à la liste avec confirmation annoncée, `409` en ligne avec valeurs conservées, stagiaire envoie `formationIds: []`, édition préremplie, avertissement de changement d'e-mail d'un compte actif, check jest-axe ; confirmer RED
+- [x] 4.2 Créer `AccountFormPage` (React Hook Form + `validateRequired`/`validateEmail`) pour création et édition ; GREEN
+- [x] 4.3 Commit `feat: add account creation and edit forms`
 
 ## 5. Détail d'un compte (TDD)
 
