@@ -22,7 +22,7 @@ Les routes `/admin/formateurs`, `/admin/stagiaires` et leurs détails SHALL êtr
 - **THEN** il est redirigé vers `/login`
 
 ### Requirement: Liste des formateurs et des stagiaires
-La page `/admin/formateurs` SHALL lister les comptes de `GET /users/formateurs` et `/admin/stagiaires` ceux de `GET /users/stagiaires`, avec nom, prénom, e-mail et statut (« Actif » / « Suspendu »). Pendant le chargement un état de chargement SHALL s'afficher ; en cas d'erreur un message avec « Réessayer » ; sans résultat un état vide.
+La page `/admin/formateurs` SHALL lister les comptes de `GET /users/formateurs` et `/admin/stagiaires` ceux de `GET /users/stagiaires`, avec nom, prénom, e-mail et statut (« Actif » / « Inactif »). Pendant le chargement un état de chargement SHALL s'afficher ; en cas d'erreur un message avec « Réessayer » ; sans résultat un état vide.
 
 #### Scenario: Liste affichée
 - **WHEN** le back répond `200` avec deux formateurs
@@ -36,15 +36,15 @@ La page `/admin/formateurs` SHALL lister les comptes de `GET /users/formateurs` 
 - **WHEN** le back répond `500`
 - **THEN** un message d'erreur annoncé et un bouton « Réessayer » s'affichent
 
-### Requirement: Filtre actifs / suspendus pour la chargée de formation
-Pour `SUPER_ADMIN`, chaque liste SHALL proposer un filtre « Tous / Actifs / Suspendus ». « Actifs » SHALL envoyer `?active=true` ; « Suspendus » SHALL afficher uniquement les comptes dont `isActive` est `false`. Pour `ADMIN`, le filtre SHALL être absent et seuls les comptes actifs renvoyés par le back SHALL être affichés.
+### Requirement: Filtre actifs / inactifs pour la chargée de formation
+Pour `SUPER_ADMIN`, chaque liste SHALL proposer un filtre « Tous / Actifs / Inactifs ». « Actifs » SHALL envoyer `?active=true` ; « Inactifs » SHALL afficher uniquement les comptes dont `isActive` est `false`. Pour `ADMIN`, le filtre SHALL être absent et seuls les comptes actifs renvoyés par le back SHALL être affichés.
 
 #### Scenario: Filtrer les actifs
 - **WHEN** la chargée de formation choisit « Actifs »
 - **THEN** la requête contient `active=true` et seuls des comptes actifs sont affichés
 
-#### Scenario: Filtrer les suspendus
-- **WHEN** la chargée de formation choisit « Suspendus »
+#### Scenario: Filtrer les inactifs
+- **WHEN** la chargée de formation choisit « Inactifs »
 - **THEN** seuls les comptes avec `isActive: false` sont affichés
 
 #### Scenario: Formateur sans filtre
@@ -93,11 +93,11 @@ Pour `SUPER_ADMIN`, le détail SHALL permettre de corriger nom, prénom et e-mai
 - **THEN** un avertissement sur la reconnexion nécessaire est affiché avant l'enregistrement
 
 ### Requirement: Suspension et réactivation
-Pour `SUPER_ADMIN`, la liste et le détail SHALL proposer « Suspendre » sur un compte actif (`PATCH /users/{id}/deactivate`) et « Réactiver » sur un compte suspendu (`PATCH /users/{id}/reactivate`). La suspension SHALL demander une confirmation. Le statut affiché SHALL être mis à jour avec la réponse du back.
+Le statut « Inactif » (`isActive: false`) regroupe les comptes suspendus et les comptes jamais activés, que le back ne distingue pas dans `UserResponse`. Pour `SUPER_ADMIN`, la liste et le détail SHALL proposer « Suspendre » sur un compte actif (`PATCH /users/{id}/deactivate`) et « Réactiver » sur un compte suspendu (`PATCH /users/{id}/reactivate`). La suspension SHALL demander une confirmation. Le statut affiché SHALL être mis à jour avec la réponse du back.
 
 #### Scenario: Suspension confirmée
 - **WHEN** la chargée de formation confirme « Suspendre » sur un compte actif et le back répond `200`
-- **THEN** le compte passe à « Suspendu » et le bouton devient « Réactiver »
+- **THEN** le compte passe à « Inactif » et le bouton devient « Réactiver »
 
 #### Scenario: Suspension annulée
 - **WHEN** elle annule la confirmation

@@ -52,8 +52,8 @@ Voir `CLAUDE.md` § « Known state / traps » et `plan-de-proyecto.md` § 10.
 Source : TICKET-021 (front), TICKET-050 (édition), `tech.md` § 2. Détail testable : `openspec/changes/users-account-management/specs/account-management/spec.md`.
 
 ### TICKET-021 — Gestion des comptes formateurs et stagiaires
-- [ ] Listes `/admin/formateurs` et `/admin/stagiaires` : nom, prénom, e-mail, statut Actif / Suspendu ; états chargement, vide, erreur avec « Réessayer ».
-- [ ] SUPER_ADMIN : filtre Tous / Actifs (`?active=true`) / Suspendus (filtré côté client) ; ADMIN : comptes actifs renvoyés par le back, sans filtre ni bouton de gestion.
+- [ ] Listes `/admin/formateurs` et `/admin/stagiaires` : nom, prénom, e-mail, statut Actif / Inactif (suspendu ou jamais activé, D55) ; états chargement, vide, erreur avec « Réessayer ».
+- [ ] SUPER_ADMIN : filtre Tous / Actifs (`?active=true`) / Inactifs (filtré côté client) ; ADMIN : comptes actifs renvoyés par le back, sans filtre ni bouton de gestion.
 - [ ] Création (SUPER_ADMIN) : nom, prénom, e-mail obligatoires, e-mail valide ; `409` « Cet email est déjà utilisé » en ligne ; succès → « Compte créé, e-mail d'activation envoyé ».
 - [ ] Suspendre (avec confirmation) / Réactiver via `PATCH /users/{id}/deactivate|reactivate` (SUPER_ADMIN).
 - [ ] Détail `/admin/.../:id` (SUPER_ADMIN et ADMIN) ; `404` → « Compte introuvable ».

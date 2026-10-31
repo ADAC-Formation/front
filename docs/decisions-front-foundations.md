@@ -358,3 +358,10 @@
 - **Pourquoi** : livrer les comptes sans dépendre de fonctionnalités pas encore construites, en gardant `tech.md` comme contrat.
 - **Alternatives écartées** : comptes réservés au SUPER_ADMIN (écart avec `tech.md`) ; pages dupliquées par rôle (une page paramétrée suffit).
 - Change OpenSpec : `users-account-management`.
+
+## D55 — Comptes : « Inactif » plutôt que « Suspendu » (précise D54)
+- Date : 2026-10-31
+- **Décision** : le front affiche « Inactif » pour tout compte `isActive: false` et propose le filtre « Inactifs » ; l'action « Suspendre » (avec confirmation) reste pour les comptes actifs, « Réactiver » pour les inactifs, et le `409` du back sur un compte jamais activé est affiché tel quel. Une demande de champ distinguant « jamais activé » et « suspendu » est adressée à Charlotte (`points-pour-charlotte.md` Q8).
+- **Pourquoi** : constaté contre le vrai back local, un compte fraîchement créé a `isActive: false`, comme un compte suspendu ; l'appeler « Suspendu » serait faux et son bouton « Réactiver » échouerait.
+- **Alternatives écartées** : garder « Suspendu » (trompeur) ; deviner l'état par un autre appel ; ajouter « Renvoyer le code » (le bouton apparaîtrait aussi pour un compte réellement suspendu).
+- Change OpenSpec : `users-account-management`.

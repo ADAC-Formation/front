@@ -36,7 +36,7 @@ describe('AccountDetailPage', () => {
     renderDetail('stagiaires', 21, 'SUPER_ADMIN')
     expect(await screen.findByRole('heading', { level: 1, name: 'Omar Benali' })).toBeInTheDocument()
     expect(screen.getByText('Stagiaire')).toBeInTheDocument()
-    expect(screen.getByText('Suspendu')).toBeInTheDocument()
+    expect(screen.getByText('Inactif')).toBeInTheDocument()
   })
 
   it('rend les contenus en texte, jamais en HTML', async () => {
@@ -76,7 +76,7 @@ describe('AccountDetailPage', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Suspendre' }))
       expect(calls.count).toBe(0)
       await userEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Suspendre' }))
-      expect(await screen.findByText('Suspendu')).toBeInTheDocument()
+      expect(await screen.findByText('Inactif')).toBeInTheDocument()
       expect(await screen.findByRole('button', { name: 'Réactiver' })).toBeInTheDocument()
     })
 
@@ -96,7 +96,7 @@ describe('AccountDetailPage', () => {
       renderDetail('formateurs', 11, 'SUPER_ADMIN')
       await userEvent.click(await screen.findByRole('button', { name: 'Réactiver' }))
       expect(await screen.findByRole('alert')).toHaveTextContent('Accès refusé')
-      expect(screen.getByText('Suspendu')).toBeInTheDocument()
+      expect(screen.getByText('Inactif')).toBeInTheDocument()
     })
   })
 

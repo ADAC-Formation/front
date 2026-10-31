@@ -12,11 +12,12 @@ import styles from './AccountPages.module.css'
 const FILTERS = [
   { value: 'all', label: 'Tous' },
   { value: 'active', label: 'Actifs' },
-  { value: 'suspended', label: 'Suspendus' },
+  { value: 'inactive', label: 'Inactifs' },
 ]
 
 // Liste des formateurs ou des stagiaires. La chargée de formation filtre et gère les comptes ;
-// le formateur consulte seulement (D54). « Suspendus » est filtré côté client : l'API n'a que
+// le formateur consulte seulement (D54). « Inactif » regroupe comptes suspendus et jamais activés :
+// le back les distingue par le seul 409 de `reactivate` (D55). « Inactifs » est filtré côté client : l'API n'a que
 // `?active=true`.
 const AccountListPage = ({ kind }) => {
   const config = ACCOUNT_KINDS[kind]
@@ -28,7 +29,7 @@ const AccountListPage = ({ kind }) => {
   const { data, isLoading, isError, error, refetch } = useAccounts(kind, { active: filter === 'active' })
   const setActive = useSetAccountActive()
 
-  const accounts = (data ?? []).filter((account) => filter !== 'suspended' || !account.isActive)
+  const accounts = (data ?? []).filter((account) => filter !== 'inactive' || !account.isActive)
 
   const close = () => setToSuspend(null)
   const changeStatus = (account, active) => {
@@ -102,7 +103,7 @@ const AccountListPage = ({ kind }) => {
                   <Link to={`${config.basePath}/${account.id}`}>{fullName(account)}</Link>
                 </td>
                 <td data-label="E-mail">{account.email}</td>
-                <td data-label="Statut">{account.isActive ? 'Actif' : 'Suspendu'}</td>
+                <td data-label="Statut">{account.isActive ? 'Actif' : 'Inactif'}</td>
                 {canManage && (
                   <td data-label="Actions">
                     {account.isActive ? (

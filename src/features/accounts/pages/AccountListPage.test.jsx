@@ -28,7 +28,7 @@ describe('AccountListPage', () => {
     const row = (await screen.findByRole('link', { name: 'Anne Martin' })).closest('tr')
     expect(within(row).getByText('anne@adac.test')).toBeInTheDocument()
     expect(within(row).getByText('Actif')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('tr')).toHaveTextContent('Suspendu')
+    expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('tr')).toHaveTextContent('Inactif')
   })
 
   it('liste les stagiaires', async () => {
@@ -71,11 +71,11 @@ describe('AccountListPage', () => {
       expect(calls.urls.at(-1)).toContain('active=true')
     })
 
-    it('filtre sur les comptes suspendus côté client', async () => {
+    it('filtre sur les comptes inactifs côté client', async () => {
       mockAccountList('formateurs', FORMATEURS)
       renderList('formateurs', 'SUPER_ADMIN')
       await screen.findByRole('link', { name: 'Anne Martin' })
-      await userEvent.click(screen.getByRole('radio', { name: 'Suspendus' }))
+      await userEvent.click(screen.getByRole('radio', { name: 'Inactifs' }))
       expect(screen.queryByRole('link', { name: 'Anne Martin' })).not.toBeInTheDocument()
       expect(screen.getByRole('link', { name: 'Paul Durand' })).toBeInTheDocument()
     })
@@ -120,7 +120,7 @@ describe('AccountListPage', () => {
       renderList('formateurs', 'SUPER_ADMIN')
       await userEvent.click(await screen.findByRole('button', { name: 'Réactiver Paul Durand' }))
       expect(await screen.findByRole('alert')).toHaveTextContent('Accès refusé')
-      expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('tr')).toHaveTextContent('Suspendu')
+      expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('tr')).toHaveTextContent('Inactif')
     })
   })
 

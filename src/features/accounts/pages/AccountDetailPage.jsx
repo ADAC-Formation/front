@@ -54,7 +54,7 @@ const AccountDetailPage = ({ kind }) => {
         <dt>Rôle</dt>
         <dd>{roleLabels[account.role] ?? account.role}</dd>
         <dt>Statut</dt>
-        <dd>{account.isActive ? 'Actif' : 'Suspendu'}</dd>
+        <dd>{account.isActive ? 'Actif' : 'Inactif'}</dd>
       </dl>
 
       <div className={styles.actions}>
