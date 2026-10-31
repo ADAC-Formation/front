@@ -11,10 +11,10 @@
 
 ## 3. Options d'affichage effectives (TDD)
 
-- [ ] 3.1 RED : `src/test/display-preferences.test.js` — `index.css` contient `html.text-large` avec `font-size: 125%` ; aucune déclaration `font-size` en `px` dans les feuilles ; `html.high-contrast` et `html.dark.high-contrast` définissent `--background`, `--foreground`, `--muted-foreground`, `--border`, `--ring` en hexadécimal et le test calcule les rapports (texte et texte atténué ≥ 7:1, bordure ≥ 3:1) ; confirmer RED
-- [ ] 3.2 Ajouter les règles `text-large` et `high-contrast` (clair et sombre) à `index.css` ; convertir les 12 `font-size` en `px` des 9 feuilles en `rem` ; GREEN ; `npm run test -- display-preferences` vert
-- [ ] 3.3 Test de bascule (`Accessibility` / `use-theme`) : activer « Grand texte » et « Contraste élevé » pose les classes sur `<html>` et le stockage ne contient que les préférences d'affichage ; vérifier qu'il passe
-- [ ] 3.4 Commit `feat: make large text and high contrast preferences effective`
+- [x] 3.1 RED : `src/test/display-preferences.test.js` — `index.css` contient `html.text-large` avec `font-size: 125%` ; aucune déclaration `font-size` en `px` dans les feuilles ; `html.high-contrast` et `html.dark.high-contrast` définissent `--background`, `--foreground`, `--muted-foreground`, `--border`, `--ring` en hexadécimal et le test calcule les rapports (texte et texte atténué ≥ 7:1, bordure ≥ 3:1) ; confirmer RED
+- [x] 3.2 Ajouter les règles `text-large` et `high-contrast` (clair et sombre) à `index.css` ; convertir les 12 `font-size` en `px` des 9 feuilles en `rem` ; GREEN ; `npm run test -- display-preferences` vert
+- [x] 3.3 Test de bascule (`Accessibility` / `use-theme`) : activer « Grand texte » et « Contraste élevé » pose les classes sur `<html>` et le stockage ne contient que les préférences d'affichage ; vérifier qu'il passe
+- [x] 3.4 Commit `feat: make large text and high contrast preferences effective`
 
 ## 4. Gabarit de page unique (TDD)
 

@@ -9,7 +9,7 @@
   background: var(--card);
   color: var(--card-foreground);
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .error {

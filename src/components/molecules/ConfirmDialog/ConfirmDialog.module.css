@@ -33,13 +33,13 @@
 .title {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .message {
   margin: 0;
   font-family: var(--font-sans);
-  font-size: 14px;
+  font-size: 0.875rem;
   line-height: 1.5;
 }
 
@@ -58,7 +58,7 @@
   border-radius: 14px;
 
   font-family: var(--font-display);
-  font-size: 14px;
+  font-size: 0.875rem;
   font-weight: 600;
 
   cursor: pointer;
