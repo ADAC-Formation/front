@@ -13,9 +13,9 @@
 
 ## 3. Liste des formateurs et des stagiaires (TDD)
 
-- [ ] 3.1 RED : `AccountListPage.test.jsx` — chargement, liste, vide, erreur + « Réessayer », filtre Tous/Actifs/Suspendus (SUPER_ADMIN), absence de filtre et de boutons de gestion (ADMIN), suspension avec confirmation et annulation, réactivation, check jest-axe ; confirmer RED
-- [ ] 3.2 Créer `AccountListPage` (tableau desktop, cartes mobile) et la molécule `ConfirmDialog` accessible (focus, Échap, retour du focus) avec son test ; `npm run test -- accounts` GREEN
-- [ ] 3.3 Commit `feat: add formateur and stagiaire list pages`
+- [x] 3.1 RED : `AccountListPage.test.jsx` — chargement, liste, vide, erreur + « Réessayer », filtre Tous/Actifs/Suspendus (SUPER_ADMIN), absence de filtre et de boutons de gestion (ADMIN), suspension avec confirmation et annulation, réactivation, check jest-axe ; confirmer RED
+- [x] 3.2 Créer `AccountListPage` (tableau desktop, cartes mobile) et la molécule `ConfirmDialog` accessible (focus, Échap, retour du focus) avec son test ; `npm run test -- accounts` GREEN
+- [x] 3.3 Commit `feat: add formateur and stagiaire list pages`
 
 ## 4. Création et édition (TDD)
 
