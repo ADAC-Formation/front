@@ -16,6 +16,9 @@ import PublicOnly from "../features/auth/guards/PublicOnly";
 import ActivationPage from "../features/auth/pages/ActivationPage";
 import ForgotPasswordPage from "../features/auth/pages/ForgotPasswordPage";
 import ResetPasswordPage from "../features/auth/pages/ResetPasswordPage";
+import AccountListPage from "../features/accounts/pages/AccountListPage";
+import AccountDetailPage from "../features/accounts/pages/AccountDetailPage";
+import AccountFormPage from "../features/accounts/pages/AccountFormPage";
 import { MANAGEMENT_ROLES, ROLES } from "../utils/roles";
 
 // Exportées pour pouvoir être testées avec un routeur en mémoire.
@@ -50,6 +53,11 @@ export const routes = [
             children: [
               { path: "admin/gestion", element: <ManagementMenu /> },
               { path: "admin/formations", element: <FormationsPage /> },
+              // Comptes : consultation pour les deux rôles de gestion (D54).
+              { path: "admin/formateurs", element: <AccountListPage kind="formateurs" /> },
+              { path: "admin/formateurs/:id", element: <AccountDetailPage kind="formateurs" /> },
+              { path: "admin/stagiaires", element: <AccountListPage kind="stagiaires" /> },
+              { path: "admin/stagiaires/:id", element: <AccountDetailPage kind="stagiaires" /> },
             ],
           },
 
@@ -59,6 +67,11 @@ export const routes = [
             children: [
               { path: "formations/creer", element: <CreateFormationPage /> },
               { path: "formations/categories", element: <CategoryManagement /> },
+              // Comptes : création et modification (D54). « nouveau » est déclaré avant « :id ».
+              { path: "admin/formateurs/nouveau", element: <AccountFormPage kind="formateurs" /> },
+              { path: "admin/formateurs/:id/modifier", element: <AccountFormPage kind="formateurs" /> },
+              { path: "admin/stagiaires/nouveau", element: <AccountFormPage kind="stagiaires" /> },
+              { path: "admin/stagiaires/:id/modifier", element: <AccountFormPage kind="stagiaires" /> },
             ],
           },
         ],

@@ -31,10 +31,10 @@
 
 ## 6. Routes et menu Gestion (TDD)
 
-- [ ] 6.1 RED : tests du routeur (visiteur → `/login`, `STAGIAIRE` refusé sur les listes, `ADMIN` accepté sur listes/détails et refusé sur `/nouveau`, `SUPER_ADMIN` accepté partout) et de `ManagementMenu` (liens « Créer » des formateurs/stagiaires absents pour `ADMIN`) ; confirmer RED
-- [ ] 6.2 Ajouter les routes `/admin/formateurs[/nouveau|/:id]` et `/admin/stagiaires[/nouveau|/:id]` dans `router.jsx`, adapter `ManagementMenu` ; GREEN
-- [ ] 6.3 `npm run check` vert (lint + tests + build)
-- [ ] 6.4 Commit `feat: route account screens and hide create links for formateurs`
+- [x] 6.1 RED : tests du routeur (visiteur → `/login`, `STAGIAIRE` refusé sur les listes, `ADMIN` accepté sur listes/détails et refusé sur `/nouveau`, `SUPER_ADMIN` accepté partout) et de `ManagementMenu` (liens « Créer » des formateurs/stagiaires absents pour `ADMIN`) ; confirmer RED
+- [x] 6.2 Ajouter les routes `/admin/formateurs[/nouveau|/:id]` et `/admin/stagiaires[/nouveau|/:id]` dans `router.jsx`, adapter `ManagementMenu` ; GREEN
+- [x] 6.3 `npm run check` vert (lint + tests + build)
+- [x] 6.4 Commit `feat: route account screens and hide create links for formateurs`
 
 ## 7. Documentation et passage manuel
 

@@ -25,10 +25,12 @@ const ManagementTile = ({
       </div>
 
       <div className={styles.actions}>
-        <Link to={createPath} className={styles.action}>
-          <Plus size={24} />
-          <span>{createLabel}</span>
-        </Link>
+        {createPath && (
+          <Link to={createPath} className={styles.action}>
+            <Plus size={24} />
+            <span>{createLabel}</span>
+          </Link>
+        )}
 
         <Link to={listPath} className={styles.action}>
           <List size={24} />
