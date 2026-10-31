@@ -45,6 +45,7 @@
 }
 
 .createButton {
+  touch-action: manipulation;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -492,5 +493,23 @@
 
   .actions > * {
     flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .createButton,
+  .pill,
+  .cancelButton,
+  .submitButton,
+  .secondaryButton {
+    transition: none;
+  }
+
+  .createButton:hover,
+  .pill:hover,
+  .cancelButton:hover,
+  .submitButton:hover,
+  .secondaryButton:hover {
+    transform: none;
   }
 }

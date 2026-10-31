@@ -103,7 +103,7 @@ const AccountListPage = ({ kind }) => {
           <input
             type="search"
             aria-label={`Rechercher un ${config.singular}`}
-            placeholder={`Rechercher un ${config.singular}...`}
+            placeholder={`Rechercher un ${config.singular}…`}
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />

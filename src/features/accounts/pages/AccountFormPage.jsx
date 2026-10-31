@@ -97,6 +97,7 @@ const AccountForm = ({ config, account }) => {
               label="Adresse e-mail"
               type="email"
               autoComplete="off"
+              spellCheck={false}
               required
               error={errors.email?.message}
               {...register('email', { validate: (value) => validateEmail(value) ?? true })}
@@ -132,7 +133,13 @@ const AccountFormPage = ({ kind }) => {
   const { data: account, isLoading, isError, error } = useAccount(id, { enabled: Boolean(id) })
 
   if (!id) return <AccountForm config={config} />
-  if (isLoading) return <p role="status">Chargement…</p>
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <p role="status">Chargement…</p>
+      </div>
+    )
+  }
   if (isError) {
     return error.status === 404 ? (
       <AccountNotFound backPath={config.basePath} backLabel={`Retour aux ${config.title.toLowerCase()}`} />

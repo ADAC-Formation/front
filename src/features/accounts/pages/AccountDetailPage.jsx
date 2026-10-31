@@ -23,7 +23,13 @@ const AccountDetailPage = ({ kind }) => {
   const { data: account, isLoading, isError, error, refetch } = useAccount(id)
   const setActive = useSetAccountActive()
 
-  if (isLoading) return <p role="status">Chargement…</p>
+  if (isLoading) {
+    return (
+      <div className={styles.page}>
+        <p role="status">Chargement…</p>
+      </div>
+    )
+  }
 
   if (isError) {
     return error.status === 404 ? (
