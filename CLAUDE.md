@@ -70,7 +70,7 @@ Rôles du back (source de vérité, rôle lu via `GET /auth/me`) :
 - `STAGIAIRE` — Apprenant : lecture de ses formations + messagerie
 
 Libellés affichés : Chargée de formation / Formateur / Stagiaire (D33). Cible (D46, demande de changement au back) : le formateur voit toutes les formations en lecture seule, « Mes formations » par défaut ; en attendant, `tech.md` (ses formations seulement) fait foi.
-⚠️ Les rôles actuels du front (`ADMIN/FORMATEUR/STAGIAIRE` dans `utils/roles.js`) ≠ rôles du back : à aligner.
+Les rôles du front (`utils/roles.js` : `ROLES`, `roleLabels`) sont alignés sur ceux du back.
 
 ## Back-end en LECTURE SEULE — règle absolue
 
@@ -95,7 +95,7 @@ Stack de test : Vitest + Testing Library + MSW + jest-axe (D4, D15) — install�
 ## Démarrer le frontend en local — checklist
 
 1. `npm install`
-2. **Le back doit tourner** sur `http://localhost:8080` (Docker compose depuis `../../back-readonly` + override dev externe — voir « Back en local » ci-dessous). Docker Desktop n'est pas encore installé.
+2. **Le back doit tourner** sur `http://localhost:8080` (Docker compose depuis `../../back-readonly` + `docs/dev/docker-compose.dev.yml` — voir « Back en local » ci-dessous et `docs/dev/README.md`).
 3. `.env` git-ignoré à la racine si besoin (ex : `VITE_API_URL`)
 4. `npm run dev` — le serveur Vite démarre sur `http://localhost:5173` (origine CORS par défaut du back, ne pas changer de port)
 5. Vérifier : la page s'affiche et `GET /auth/me` répond (401 si non connecté, c'est normal)
@@ -125,7 +125,7 @@ Le `Dockerfile` (build node20 → nginx:alpine + `curl` pour le healthcheck), `.
 
 ## Back en local (D16–D20)
 
-- Docker compose depuis `../../back-readonly` + override dev externe + `.env` git-ignoré avec des comptes dev personnels Mailtrap/Supabase.
+- Docker compose depuis `../../back-readonly` + `docs/dev/docker-compose.dev.yml` (D53) + `ADAC/dev-compose/.env` hors dépôts (secrets, comptes dev personnels Mailtrap/Supabase). Commandes : `docs/dev/README.md`.
 - Le back ne crée aucun SUPER_ADMIN : utiliser `docs/dev/seed-local-admin.sql`.
 
 ## Auth — point clé
@@ -164,7 +164,7 @@ Route (react-router 8, createBrowserRouter — src/router/router.jsx)
 - Nouveau code dans `src/features/<nom>/`, l'UI partagée reste dans `src/components/` (D32).
 - État : TanStack Query + axios (données serveur) ; contextes React pour le reste : `ThemeProvider` (mode sombre, taille de police, contraste élevé, persistés dans localStorage) et `UserProvider` (contexte d'auth visé).
 - Formulaires : React Hook Form + validateurs écrits à la main dans `src/utils/validation.js` (D8, D13).
-- Routes sans préfixe de rôle ; `RoleSwitcher` à supprimer (D9, D10). Garder les coques UI des pages existantes et les rebrancher sur les DTOs ; supprimer `simFormations.jsx` / `categories.js` après rebranchement (D11).
+- Routes sans préfixe de rôle ; `RoleSwitcher` supprimé (D9, D10, D52). Garder les coques UI des pages existantes et les rebrancher sur les DTOs ; supprimer `simFormations.jsx` / `categories.js` après rebranchement (D11).
 - Desktop-first mais responsive, bonne UX tablette et mobile (D42) ; WCAG 2.1 AA, `lang="fr"` (D15). Le design est une décision du front, décrit dans `docs/design-front.md` (D2, D41) ; pour le reste, aligner sur le back (D1).
 - Vie privée : aucune donnée personnelle dans le stockage navigateur, polices auto-hébergées, aucun tracker (D31).
 
@@ -182,13 +182,10 @@ npm run test -- NomTest       # un test spécifique
 
 ## État actuel / pièges (travail en cours)
 
-- `src/api/Axiosclient.js` est conforme au cookie (`withCredentials`, `VITE_API_URL`) et normalise les erreurs en `ApiError` (D12) ; `setUnauthorizedHandler` attend d'être branché par le futur `UserProvider` (redirection `/login`). `QueryClientProvider` est monté, mais les hooks TanStack Query par ressource ne sont pas encore écrits.
-- `UserProvider`, `ProtectedRoute`, `utils/routeManager.jsx` importent des fichiers inexistants (`UserContext`, `services/UserService`) et contiennent des restes espagnols/ONG d'un autre projet ; `UserProvider` n'est pas monté et aucune route n'est gardée.
-- `npm run lint` est propre (0 erreur) ; `UserProvider` et `routeManager` ne sont que rendus lint-propres, ils seront remplacés par le change « auth ».
+- Auth branchée (change `auth-real-backend`, D52) : la session est la requête `['auth','me']` (`features/auth/hooks.js`, `useCurrentUser`) ; `features/auth/UserProvider.jsx` branche le 401 de `Axiosclient.js` (`setUnauthorizedHandler`, `ApiError` D12) ; gardes `RequireAuth` / `RequireRole` / `PublicOnly` ; pages connexion, activation, mot de passe oublié, réinitialisation. Les hooks TanStack Query des autres ressources ne sont pas encore écrits.
+- `npm run lint` est propre (0 erreur) ; `npm run check` vert (lint + tests + build).
 - `text-large` et `high-contrast` sont posées sur `<html>` sans règle CSS ; le bouton principal utilise la variable inexistante `--color-accent` (voir `docs/design-front.md`).
-- `RoleSwitcher` est un overlay dev-only encore rendu dans le layout ; à retirer/garder hors prod.
 - Données encore mockées (`utils/simFormations.jsx`, `utils/categories.js`).
-- `ThemeProvider` contient un faux `isAuthenticated`.
 
 ## Git & process
 

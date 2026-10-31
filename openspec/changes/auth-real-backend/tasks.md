@@ -51,8 +51,8 @@
 
 ## 9. Documentation et passage manuel
 
-- [ ] 9.1 Consigner les décisions dans `docs/decisions-front-foundations.md` (session = requête `['auth','me']`, handler 401 sous le routeur, gardes, bandeaux via `location.state`, bouton « SE CONNECTER » conservé, e-mail au lieu d'identifiant)
-- [ ] 9.2 Mettre à jour `docs/points-pour-charlotte.md` (Q2 toujours ouverte avec la solution retenue ; incohérences US-001 AC-01 « Commencer la session » et « identifiant » vs e-mail) et `CLAUDE.md` (section « État actuel » : auth, gardes, `RoleSwitcher` supprimé)
-- [ ] 9.3 Commit `docs: record auth decisions and update project context`
+- [x] 9.1 Consigner les décisions dans `docs/decisions-front-foundations.md` (session = requête `['auth','me']`, handler 401 sous le routeur, gardes, bandeaux via `location.state`, bouton « SE CONNECTER » conservé, e-mail au lieu d'identifiant)
+- [x] 9.2 Mettre à jour `docs/points-pour-charlotte.md` (Q2 toujours ouverte avec la solution retenue ; incohérences US-001 AC-01 « Commencer la session » et « identifiant » vs e-mail) et `CLAUDE.md` (section « État actuel » : auth, gardes, `RoleSwitcher` supprimé)
+- [x] 9.3 Commit `docs: record auth decisions and update project context`
 - [ ] 9.4 Passage manuel contre le vrai back local (Docker requis) : connexion des trois rôles, mauvais mot de passe, compte non activé, activation par code, mot de passe oublié/réinitialisation, déconnexion, expiration de session, garde par rôle — bloqué tant que Docker Desktop n'est pas installé ; ne pas cocher sans l'avoir fait
 - [ ] 9.5 Relecture de Manon ; PR/merge vers `dev` uniquement à sa demande

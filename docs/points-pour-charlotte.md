@@ -56,6 +56,8 @@ Faut-il ajouter un endpoint (par ex. `PATCH /api/users/me/password` avec `{oldPa
 ### Q2 — Activation et réinitialisation : d'où vient l'e-mail ?
 `POST /auth/activate` et `/auth/reset-password` exigent `{email, code, newPassword}`, mais TICKET-017/018 ne prévoient que `activate(code, password)`. Le lien reçu par e-mail (`/activation`, `/reinitialisation`) contient-il l'adresse en paramètre (par ex. `?email=…`) ? Je n'ai pas trouvé le gabarit de l'e-mail dans le code. À défaut, le front demandera à l'utilisateur de saisir son adresse.
 
+**Solution retenue par le front (2026-10-31)** : les pages `/activation` et `/reinitialisation` affichent toujours un champ « Adresse e-mail », prérempli et modifiable si le lien contient `?email=…`. Sans effet sur le contrat : la question reste ouverte pour que le lien contienne l'adresse (meilleure UX).
+
 ### Q3 — Portée des formations pour le rôle ADMIN (formateur) — demande de changement
 Décision du front : **le formateur voit toutes les formations en lecture seule, avec « Mes formations » en filtre par défaut** (PRD, USERFLOW, TICKET-024).
 `tech.md` dit l'inverse (« ADMIN : uniquement les siennes », 404 sinon). Pour appliquer la décision il faudrait :
@@ -104,3 +106,9 @@ _Dernière mise à jour : 2026-10-31._
 ## 5. CI du front : `npm run check` (TICKET-010)
 
 La CI du front (`.github/workflows/ci.yml`) exécute désormais `npm run check` (lint + tests Vitest + build avec `VITE_API_URL=/api`) à la place de lint + build seuls. Aucune action requise de ta part ; à confirmer avec toi si tu veux conserver ces étapes dans ton flux de déploiement (TICKET-010).
+
+## 6. Écarts relevés pendant le branchement de l'authentification (change `auth-real-backend`)
+
+- **Libellé du bouton de connexion** : US-001 AC-01 dit « Commencer la session » ; la coque du front dit « SE CONNECTER » et a été conservée (D11).
+- **« Identifiant » vs e-mail** : le plan parlait d'un « identifiant donné par ADAC » ; `tech.md` n'accepte que l'e-mail à la connexion (D40).
+- **Développement local** : le `docker-compose.yml` du back est orienté production (profil `prod`, aucun port publié, image front absente). Le front le complète par une surcharge versionnée dans `docs/dev/` (D53), sans rien modifier dans le repo `back`. Un court paragraphe « développer le front contre le back en local » dans ta documentation éviterait ce détour — à ta convenance.
