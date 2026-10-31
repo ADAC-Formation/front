@@ -19,9 +19,8 @@ jobs:
           cache: npm
 
       - run: npm ci
-      - run: npm run lint
-      # TODO: ajouter `npm test` une fois Vitest installé (D4) — puis remplacer lint/test/build par `npm run check`
-      - run: npm run build
+      # lint + test + build (D26, D30) ; VITE_API_URL pour le build de production
+      - run: npm run check
         env:
           VITE_API_URL: /api
 
