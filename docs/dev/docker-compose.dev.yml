@@ -1,0 +1,18 @@
+# Surcharge de DÉVELOPPEMENT LOCAL du docker-compose.yml du back (D18).
+# Le compose du back est orienté production : on ne le modifie pas (back-readonly est en lecture seule),
+# on le complète avec ce fichier. Voir docs/dev/README.md pour les commandes.
+#
+# Ce que fait cette surcharge :
+#   - backend : profil Spring `dev` (Swagger actif, cookie jwt non « Secure »), port 8080 publié sur l'hôte
+#   - db      : reste interne au réseau Docker (accès via `docker compose exec db psql`)
+#   - frontend: désactivé (profil jamais activé) ; le front tourne avec `npm run dev` sur 5173
+
+services:
+  backend:
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    ports:
+      - "8080:8080"
+
+  frontend:
+    profiles: ["disabled"]
