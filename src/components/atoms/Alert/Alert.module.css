@@ -1,0 +1,21 @@
+/* Texte toujours --foreground sur --card (contraste vérifiable dans les 3 thèmes) ;
+   la couleur de la bordure porte le sens, pas seulement le texte. */
+.alert {
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-left-width: 5px;
+  border-radius: 14px;
+  background: var(--card);
+  color: var(--card-foreground);
+  font-family: var(--font-display);
+  font-size: 14px;
+}
+
+.error {
+  border-left-color: var(--color-red);
+}
+
+.success {
+  border-left-color: var(--color-green);
+}

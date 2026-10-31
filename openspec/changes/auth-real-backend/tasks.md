@@ -12,9 +12,9 @@
 
 ## 3. Composants de formulaire accessibles (TDD)
 
-- [ ] 3.1 RED : tests de `FormField` (étiquette liée, `error` → `aria-invalid` + `aria-describedby` + message) et de l'atome `Alert` (`role="alert"` / `role="status"`, contenu rendu en texte, jamais en HTML)
-- [ ] 3.2 Confirmer RED ; adapter `FormField`/`FormInput` (`error`, `ref`, props transmises) et créer `Alert` ; confirmer GREEN
-- [ ] 3.3 Commit `feat: make form fields accessible and add Alert component`
+- [x] 3.1 RED : tests de `FormField` (étiquette liée, `error` → `aria-invalid` + `aria-describedby` + message) et de l'atome `Alert` (`role="alert"` / `role="status"`, contenu rendu en texte, jamais en HTML)
+- [x] 3.2 Confirmer RED ; adapter `FormField`/`FormInput` (`error`, `ref`, props transmises) et créer `Alert` ; confirmer GREEN
+- [x] 3.3 Commit `feat: make form fields accessible and add Alert component`
 
 ## 4. Session : API, hooks et provider (TDD)
 

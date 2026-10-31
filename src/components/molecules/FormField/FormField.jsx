@@ -1,15 +1,21 @@
 import FormInput from "../../atoms/FormInput/FormInput";
+import Alert from "../../atoms/Alert/Alert";
 import styles from "./FormField.module.css";
 
+// `...inputProps` (onChange, onBlur, autoComplete, value, defaultValue…) et `ref` sont transmis
+// au champ : compatible avec `register` de React Hook Form comme avec un champ contrôlé.
 const FormField = ({
   label,
   type = "text",
   name,
-  value,
-  onChange,
   placeholder,
   required = false,
+  error,
+  ref,
+  ...inputProps
 }) => {
+  const errorId = `${name}-error`;
+
   return (
     <div className={styles.field}>
       <label htmlFor={name} className={styles.label}>
@@ -18,13 +24,21 @@ const FormField = ({
 
       <FormInput
         id={name}
+        ref={ref}
         type={type}
         name={name}
-        value={value}
-        onChange={onChange}
         placeholder={placeholder}
         required={required}
+        aria-invalid={error ? "true" : undefined}
+        aria-describedby={error ? errorId : undefined}
+        {...inputProps}
       />
+
+      {error && (
+        <Alert variant="error" id={errorId}>
+          {error}
+        </Alert>
+      )}
     </div>
   );
 };

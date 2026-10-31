@@ -1,21 +1,18 @@
 import styles from "./FormInput.module.css";
 
+// `ref` est une prop ordinaire en React 19 : elle permet à React Hook Form (register) de piloter le champ.
 const FormInput = ({
   type = "text",
-  name,
-  value,
-  onChange,
   placeholder = "",
   required = false,
+  ref,
   ...props
 }) => {
   return (
     <input
+      ref={ref}
       className={styles.input}
       type={type}
-      name={name}
-      value={value}
-      onChange={onChange}
       placeholder={placeholder}
       required={required}
       {...props}
