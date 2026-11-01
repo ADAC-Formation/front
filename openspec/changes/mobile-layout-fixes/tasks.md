@@ -25,10 +25,10 @@
 
 ## 5. Accueil : tuiles qui tiennent (TDD)
 
-- [ ] 5.1 RED : tests — feuille de style : `TileGroup.module.css` n'a plus `width: 60%` en dehors d'un contexte `@container` et contient une requête `@container (min-width: …rem)` pour la grille `2fr 1fr` ; test de composant `HomePage` : les quatre tuiles (grande tuile selon le rôle, Messages, Notifications, Profile) sont présentes ; jest-axe ; confirmer RED
-- [ ] 5.2 Ajouter l'élément conteneur dans `TileGroup`, une colonne par défaut (grande tuile puis les trois petites, hauteurs réduites), grille `2fr 1fr` à partir du seuil, largeur `min(100%, 45rem)` (identique à 60 % à 1280 px) ; retirer `height: 50%` si sans effet ; GREEN
+- [x] 5.1 RED : tests — feuille de style : `TileGroup.module.css` n'a plus `width: 60%` en dehors d'un contexte `@container` et contient une requête `@container (min-width: …rem)` pour la grille `2fr 1fr` ; test de composant `HomePage` : les quatre tuiles (grande tuile selon le rôle, Messages, Notifications, Profile) sont présentes ; jest-axe ; confirmer RED
+- [x] 5.2 Ajouter l'élément conteneur dans `TileGroup`, une colonne par défaut (grande tuile puis les trois petites, hauteurs réduites), grille `2fr 1fr` à partir du seuil, largeur `min(100%, 45rem)` (identique à 60 % à 1280 px) ; retirer `height: 50%` si sans effet ; GREEN
 - [ ] 5.3 Vérification navigateur : `/` à 320, 390, 600, 768, 1024, 1100, 1280, 1920 px, texte 100 % et 150 % : « Messages », « Notifications », « Profile » entiers ; à 1280 px aspect identique à la mesure « Avant » (largeur du groupe 720 px) ; rôle `STAGIAIRE` aussi. Joindre les chiffres à D61
-- [ ] 5.4 Commit `fix: let the dashboard tiles fit narrow screens and large text`
+- [x] 5.4 Commit `fix: let the dashboard tiles fit narrow screens and large text`
 
 ## 6. Garde-fou d'ensemble et documentation
 

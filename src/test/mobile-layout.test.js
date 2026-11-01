@@ -69,3 +69,20 @@ describe('tuiles du menu Gestion', () => {
     expect(sheet(tiles)).toMatch(/overflow-wrap:\s*anywhere/)
   })
 })
+
+describe('tuiles du tableau de bord (TileGroup)', () => {
+  const file = 'src/components/molecules/TileGroup/TileGroup.module.css'
+
+  it('n’impose plus width: 60 % et déclare un conteneur de requête', () => {
+    const css = sheet(file)
+    expect(css).not.toMatch(/width:\s*60%/)
+    expect(css).toMatch(/container-type:\s*inline-size/)
+  })
+
+  it('la grille 2fr 1fr n’existe que dans une requête @container en rem', () => {
+    const css = sheet(file)
+    expect(css).toMatch(/@container\s*\(min-width:\s*[\d.]+rem\)\s*\{[^@]*2fr 1fr/)
+    const base = css.slice(0, css.indexOf('@container'))
+    expect(base).not.toMatch(/2fr 1fr/)
+  })
+})
