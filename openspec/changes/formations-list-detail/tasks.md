@@ -9,13 +9,13 @@
 - [x] 2.1 Créer `src/test/formations.js` (formations et inscrits fictifs au format de `tech.md`, `mockFormationList` avec `?status`, `mockFormationDetail` 200/403/404, `mockInscriptions` 200/500, `mockArchive` 200/409) ; vérifier qu'un appel non déclaré fait échouer le test
 - [x] 2.2 RED : `src/features/formations/hooks.test.jsx` — la liste transmet `status`, le détail remonte `404` et `403` en `ApiError`, les inscrits ne sont pas demandés quand `enabled` est faux, l'archivage appelle `PATCH …/archive` et invalide la liste et le détail, le `409` remonte ; confirmer RED
 - [x] 2.3 Créer `api.js` et `hooks.js` (`useFormations`, `useFormation`, `useInscriptions`, `useArchiveFormation`) ; `npm run test -- formations` GREEN
-- [ ] 2.4 Commit `feat: add formations API and query hooks`
+- [x] 2.4 Commit `feat: add formations API and query hooks`
 
 ## 3. Logique d'affichage de la liste (TDD)
 
-- [ ] 3.1 RED : `listView.test.js` — recherche (intitulé, formateur, catégorie, insensible à la casse), tri (date, intitulé, formateur), filtre « Mes formations » par `formateur.id`, formatage des dates et libellés de modalité (`formationLabels.js`) ; confirmer RED
-- [ ] 3.2 Créer `listView.js` et `formationLabels.js` (fonctions pures) ; GREEN
-- [ ] 3.3 Commit `feat: add formation list filtering and labels`
+- [x] 3.1 RED : `listView.test.js` — recherche (intitulé, formateur, catégorie, insensible à la casse), tri (date, intitulé, formateur), filtre « Mes formations » par `formateur.id`, formatage des dates et libellés de modalité (`formationLabels.js`) ; confirmer RED
+- [x] 3.2 Créer `listView.js` et `formationLabels.js` (fonctions pures) ; GREEN
+- [x] 3.3 Commit `feat: add formation list filtering and labels`
 
 ## 4. Liste des formations (TDD)
 
