@@ -5,9 +5,9 @@
 
 ## 2. Bouton de session toujours nommé (TDD)
 
-- [ ] 2.1 RED : test de feuille de style (`src/test/`) — dans `LoginButton.module.css`, aucune règle de `.label` ne contient `display: none` et le masquage visuel du libellé est de type « lecteur d'écran seulement » (position absolue, 1 px, `clip-path`), annulé à partir de `1100px` ; test de composant `LoginButton` — nom accessible « Se déconnecter » (session) et « Se connecter » (visiteur, hors `/login`) ; confirmer RED sur le test de feuille de style (le test de composant passe déjà en jsdom : il documente le contrat)
-- [ ] 2.2 Remplacer `display: none` par le masquage visuel, déplacer le seuil du libellé de `800px` à `1100px` ; GREEN ; vérifier que jest-axe du `Header` reste vert
-- [ ] 2.3 Commit `fix: keep the session button accessible name when its label is hidden`
+- [x] 2.1 RED : test de feuille de style (`src/test/`) — dans `LoginButton.module.css`, aucune règle de `.label` ne contient `display: none` et le masquage visuel du libellé est de type « lecteur d'écran seulement » (position absolue, 1 px, `clip-path`), annulé à partir de `1100px` ; test de composant `LoginButton` — nom accessible « Se déconnecter » (session) et « Se connecter » (visiteur, hors `/login`) ; confirmer RED sur le test de feuille de style (le test de composant passe déjà en jsdom : il documente le contrat)
+- [x] 2.2 Remplacer `display: none` par le masquage visuel, déplacer le seuil du libellé de `800px` à `1100px` ; GREEN ; vérifier que jest-axe du `Header` reste vert
+- [x] 2.3 Commit `fix: keep the session button accessible name when its label is hidden`
 
 ## 3. En-tête et logo sans chevauchement (TDD)
 
