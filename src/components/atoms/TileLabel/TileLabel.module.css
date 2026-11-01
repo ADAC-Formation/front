@@ -4,6 +4,7 @@
   letter-spacing: -0.025em;
   font-size: 1.125rem;
   color: var(--color-white);
+  overflow-wrap: anywhere;
 }
 
 .hero {

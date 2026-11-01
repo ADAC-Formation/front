@@ -35,27 +35,26 @@ const managementTiles = [
   },
 ];
 
-// Seule la chargée de formation crée des comptes ; le formateur les consulte (D54).
-const ACCOUNT_TILES = ["Formateurs", "Stagiaires"];
+// Seule la chargée de formation crée comptes et formations ; le formateur consulte (D54, D46).
 
 const ManagementMenu = () => {
   const { user } = useCurrentUser();
-  const canCreateAccounts = canManageAccounts(user);
+  const canCreate = canManageAccounts(user);
 
   return (
     <PageShell center className={styles.gestionPage}>
       <h1 className={styles.title}> Gestion</h1>
 
-      <div className={styles.tileContainer}>
-        {managementTiles.map((tile) => (
-          <ManagementTile
-            key={tile.label}
-            {...tile}
-            createPath={
-              ACCOUNT_TILES.includes(tile.label) && !canCreateAccounts ? undefined : tile.createPath
-            }
-          />
-        ))}
+      <div className={styles.gridHost}>
+        <div className={styles.tileContainer}>
+          {managementTiles.map((tile) => (
+            <ManagementTile
+              key={tile.label}
+              {...tile}
+              createPath={canCreate ? tile.createPath : undefined}
+            />
+          ))}
+        </div>
       </div>
     </PageShell>
   );
