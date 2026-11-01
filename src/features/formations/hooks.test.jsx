@@ -5,11 +5,20 @@ import {
   FORMATIONS,
   INSCRITS,
   mockArchive,
+  mockCreateFormation,
   mockFormationDetail,
   mockFormationList,
   mockInscriptions,
+  mockUpdateFormation,
 } from '../../test/formations'
-import { useArchiveFormation, useFormation, useFormations, useInscriptions } from './hooks'
+import {
+  useArchiveFormation,
+  useCreateFormation,
+  useFormation,
+  useFormations,
+  useInscriptions,
+  useUpdateFormation,
+} from './hooks'
 
 function ListProbe({ status }) {
   const { data, isLoading, isError } = useFormations({ status })
@@ -119,6 +128,79 @@ describe('useArchiveFormation', () => {
     renderWithProviders(<ArchiveProbe id={101} />)
     await screen.findByText('2 actives')
     await userEvent.click(screen.getByRole('button', { name: 'archiver' }))
+    expect(await screen.findByText('erreur 409')).toBeInTheDocument()
+  })
+})
+
+const REQUEST = {
+  intitule: 'Nouvelle formation',
+  description: null,
+  dateDebut: '2026-05-04',
+  dateFin: '2026-05-05',
+  modalite: 'VISIO',
+  categoryId: 2,
+  formateurId: null,
+}
+
+function CreateProbe() {
+  const create = useCreateFormation()
+  const list = useFormations({ status: 'ACTIVE' })
+  return (
+    <div>
+      <button onClick={() => create.mutate(REQUEST)}>créer</button>
+      {create.data && <p>créée {create.data.id}</p>}
+      {create.isError && <p>erreur {create.error.status}</p>}
+      <p>{list.data ? `${list.data.length} actives` : 'chargement'}</p>
+    </div>
+  )
+}
+
+describe('useCreateFormation', () => {
+  it('envoie le corps, renvoie la formation créée et recharge les listes', async () => {
+    const listCalls = mockFormationList()
+    const createCalls = mockCreateFormation({ id: 77 })
+    renderWithProviders(<CreateProbe />)
+    await screen.findByText('2 actives')
+    await userEvent.click(screen.getByRole('button', { name: 'créer' }))
+    expect(await screen.findByText('créée 77')).toBeInTheDocument()
+    expect(createCalls.body).toEqual(REQUEST)
+    expect(listCalls.count).toBeGreaterThanOrEqual(2)
+  })
+
+  it('remonte le 400 en ApiError', async () => {
+    mockFormationList()
+    mockCreateFormation({ errorStatus: 400 })
+    renderWithProviders(<CreateProbe />)
+    await screen.findByText('2 actives')
+    await userEvent.click(screen.getByRole('button', { name: 'créer' }))
+    expect(await screen.findByText('erreur 400')).toBeInTheDocument()
+  })
+})
+
+function UpdateProbe() {
+  const update = useUpdateFormation(101)
+  return (
+    <div>
+      <button onClick={() => update.mutate({ intitule: 'Renommée' })}>modifier</button>
+      {update.data && <p>modifiée {update.data.intitule}</p>}
+      {update.isError && <p>erreur {update.error.status}</p>}
+    </div>
+  )
+}
+
+describe('useUpdateFormation', () => {
+  it('envoie PUT avec les champs donnés et renvoie la formation', async () => {
+    const calls = mockUpdateFormation(FORMATIONS[0])
+    renderWithProviders(<UpdateProbe />)
+    await userEvent.click(screen.getByRole('button', { name: 'modifier' }))
+    expect(await screen.findByText('modifiée Renommée')).toBeInTheDocument()
+    expect(calls.body).toEqual({ intitule: 'Renommée' })
+  })
+
+  it('remonte le 409 en ApiError', async () => {
+    mockUpdateFormation(FORMATIONS[0], { errorStatus: 409 })
+    renderWithProviders(<UpdateProbe />)
+    await userEvent.click(screen.getByRole('button', { name: 'modifier' }))
     expect(await screen.findByText('erreur 409')).toBeInTheDocument()
   })
 })

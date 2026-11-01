@@ -119,3 +119,32 @@ export function mockArchive(formation, { errorStatus } = {}) {
   )
   return calls
 }
+
+// POST /formations : 201 avec la formation créée (id fourni), ou l'erreur demandée (400...).
+// `calls.body` garde le corps JSON reçu.
+export function mockCreateFormation({ id = 55, errorStatus, errorMessage = 'Requête invalide' } = {}) {
+  const calls = { count: 0, body: null }
+  server.use(
+    http.post(`${API_URL}/formations`, async ({ request }) => {
+      calls.count += 1
+      calls.body = await request.json()
+      if (errorStatus) return apiError(errorStatus, errorMessage)
+      return HttpResponse.json({ ...FORMATIONS[0], id, ...calls.body }, { status: 201 })
+    }),
+  )
+  return calls
+}
+
+// PUT /formations/{id} : 200 avec la formation modifiée, ou l'erreur demandée (400, 409...).
+export function mockUpdateFormation(formation, { errorStatus, errorMessage = 'Modifiée entre-temps' } = {}) {
+  const calls = { count: 0, body: null }
+  server.use(
+    http.put(`${API_URL}/formations/${formation.id}`, async ({ request }) => {
+      calls.count += 1
+      calls.body = await request.json()
+      if (errorStatus) return apiError(errorStatus, errorMessage)
+      return HttpResponse.json({ ...formation, ...calls.body })
+    }),
+  )
+  return calls
+}

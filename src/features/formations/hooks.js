@@ -1,5 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { archiveFormation, fetchFormation, listFormations, listInscriptions } from './api'
+import {
+  archiveFormation,
+  createFormation,
+  fetchFormation,
+  listFormations,
+  listInscriptions,
+  updateFormation,
+} from './api'
 
 // Toutes les clés commencent par ['formations'] : une seule invalidation les couvre (design § 2).
 const FORMATIONS_KEY = ['formations']
@@ -31,6 +38,22 @@ export function useArchiveFormation(id) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: () => archiveFormation(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: FORMATIONS_KEY }),
+  })
+}
+
+export function useCreateFormation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: createFormation,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: FORMATIONS_KEY }),
+  })
+}
+
+export function useUpdateFormation(id) {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (changes) => updateFormation(id, changes),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: FORMATIONS_KEY }),
   })
 }

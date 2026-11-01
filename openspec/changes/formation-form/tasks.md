@@ -11,10 +11,10 @@
 
 ## 3. Catégories et mutations (TDD)
 
-- [ ] 3.1 Créer `src/test/categories.js` (catégories fictives au format `CategoryResponse`, `mockCategories` avec `?active=true`, erreur 500) et étendre `src/test/formations.js` (`mockCreateFormation` 201/400, `mockUpdateFormation` 200/400/409) ; vérifier qu'un appel non déclaré fait échouer le test
-- [ ] 3.2 RED : `src/features/categories/hooks.test.jsx` (liste des catégories actives, `active=true` transmis, erreur) et complément de `src/features/formations/hooks.test.jsx` (`useCreateFormation` envoie le corps et invalide `['formations']`, `useUpdateFormation` envoie `PUT`, `400` et `409` remontent en `ApiError`) ; confirmer RED
-- [ ] 3.3 Créer `features/categories/{api,hooks}.js` (`useCategories`) et ajouter `createFormation` / `updateFormation` à `features/formations/api.js` et `useCreateFormation` / `useUpdateFormation` à `hooks.js` ; GREEN
-- [ ] 3.4 Commit `feat: add categories and formation write hooks`
+- [x] 3.1 Créer `src/test/categories.js` (catégories fictives au format `CategoryResponse`, `mockCategories` avec `?active=true`, erreur 500) et étendre `src/test/formations.js` (`mockCreateFormation` 201/400, `mockUpdateFormation` 200/400/409) ; vérifier qu'un appel non déclaré fait échouer le test
+- [x] 3.2 RED : `src/features/categories/hooks.test.jsx` (liste des catégories actives, `active=true` transmis, erreur) et complément de `src/features/formations/hooks.test.jsx` (`useCreateFormation` envoie le corps et invalide `['formations']`, `useUpdateFormation` envoie `PUT`, `400` et `409` remontent en `ApiError`) ; confirmer RED
+- [x] 3.3 Créer `features/categories/{api,hooks}.js` (`useCategories`) et ajouter `createFormation` / `updateFormation` à `features/formations/api.js` et `useCreateFormation` / `useUpdateFormation` à `hooks.js` ; GREEN
+- [x] 3.4 Commit `feat: add categories and formation write hooks`
 
 ## 4. Champs de formulaire (TDD)
 

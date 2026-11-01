@@ -24,3 +24,15 @@ export async function archiveFormation(id) {
   const { data } = await apiClient.patch(`/formations/${id}/archive`)
   return data
 }
+
+// SUPER_ADMIN seulement. `body` : champs du contrat (voir `toRequest` dans formationForm.js).
+export async function createFormation(body) {
+  const { data } = await apiClient.post('/formations', body)
+  return data
+}
+
+// `changes` ne contient que les champs modifiés : le back laisse inchangé un champ absent.
+export async function updateFormation(id, changes) {
+  const { data } = await apiClient.put(`/formations/${id}`, changes)
+  return data
+}
