@@ -19,9 +19,9 @@
 
 ## 4. Liste des formations (TDD)
 
-- [ ] 4.1 RED : `FormationListPage.test.jsx` — chargement, cartes (intitulé, dates, formateur, inscrits, catégorie), vide, erreur + « Réessayer », « Archivées » appelle `status=ARCHIVED` et affiche le badge, recherche sans nouvel appel, `ADMIN` : « Mes formations » par défaut puis « Toutes », `STAGIAIRE` : titre « Mes formations » sans lien « Créer » ni « Gérer les catégories », `SUPER_ADMIN` : les deux liens, catégorie désactivée lisible, check jest-axe ; confirmer RED
-- [ ] 4.2 Adapter `ListItem` (couleur de catégorie en propriété `categoryColor`, plus d'import de `utils/categories`) avec son test, créer `FormationListPage` (même design que la page actuelle, D41/D56, `PageShell`, `BackButton`) ; GREEN
-- [ ] 4.3 Commit `feat: wire formation list to the API`
+- [x] 4.1 RED : `FormationListPage.test.jsx` — chargement, cartes (intitulé, dates, formateur, inscrits, catégorie), vide, erreur + « Réessayer », « Archivées » appelle `status=ARCHIVED` et affiche le badge, recherche sans nouvel appel, `ADMIN` : « Mes formations » par défaut puis « Toutes », `STAGIAIRE` : titre « Mes formations » sans lien « Créer » ni « Gérer les catégories », `SUPER_ADMIN` : les deux liens, catégorie désactivée lisible, check jest-axe ; confirmer RED
+- [x] 4.2 Adapter `ListItem` (couleur de catégorie en propriété `categoryColor`, plus d'import de `utils/categories`) avec son test, créer `FormationListPage` (même design que la page actuelle, D41/D56, `PageShell`, `BackButton`) ; GREEN
+- [x] 4.3 Commit `feat: wire formation list to the API`
 
 ## 5. Détail et archivage (TDD)
 

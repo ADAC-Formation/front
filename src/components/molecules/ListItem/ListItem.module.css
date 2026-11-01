@@ -44,15 +44,39 @@
   min-width: 0;
 }
 
-/* ---------- Category label ---------- */
+/* ---------- Labels (catégorie, badge de statut) ---------- */
 
+.labels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
 
+  margin-bottom: 0.35rem;
+}
+
+.labels:empty {
+  display: none;
+}
+
+.badge {
+  display: inline-block;
+
+  padding: 0.1rem 0.5rem;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+
+  font-size: 0.7rem;
+  font-weight: 700;
+}
 
 .category {
   display: inline-block;
   color: var(--category-color);
-
-  margin-bottom: 0.35rem;
 
   font-size: 0.7rem;
   font-weight: 700;

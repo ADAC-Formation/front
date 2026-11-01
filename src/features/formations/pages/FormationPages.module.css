@@ -1,0 +1,595 @@
+/* Pages de formations : même gabarit visuel que la page Formations (contenu sous le logo,
+   carte arrondie, pastilles de filtre, recherche, « Organiser par »). */
+
+/* Le gabarit (dégagement sous le logo, marges, largeur) vient de `PageShell`. */
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Header ---------- */
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  margin-top: 1.5rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.15;
+
+  color: var(--foreground);
+}
+
+.pageTitle {
+  margin-top: 1.5rem;
+}
+
+.intro {
+  margin: 1rem 0 0;
+
+  color: var(--muted-foreground);
+  line-height: 1.6;
+}
+
+.createButton {
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0.7rem 1rem;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--color-action);
+  color: var(--color-on-action);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.createButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ---------- Barre d'outils : recherche + « Organiser par » ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  margin-top: 2rem;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 0.625rem;
+
+  height: 46px;
+  padding: 0 0.875rem;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background-color: var(--card);
+  color: var(--muted-foreground);
+}
+
+.searchContainer:focus-within {
+  border-color: var(--foreground);
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.searchContainer input {
+  width: 100%;
+
+  border: none;
+  outline: none;
+
+  background: transparent;
+
+  font-size: 0.875rem;
+  color: var(--foreground);
+}
+
+.searchContainer input::placeholder {
+  color: var(--muted-foreground);
+}
+
+.sortContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  white-space: nowrap;
+
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.sortContainer select {
+  height: 46px;
+  padding: 0 2rem 0 0.75rem;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background-color: var(--card);
+  color: var(--foreground);
+
+  font-size: 0.875rem;
+
+  cursor: pointer;
+}
+
+.sortContainer select:focus {
+  border-color: var(--foreground);
+}
+
+/* ---------- Filtre de statut : pastilles comme les catégories ---------- */
+
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+
+  margin: 1.25rem 0 0;
+  padding: 0;
+
+  border: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.5rem 0.8rem;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background-color: var(--card);
+  color: var(--muted-foreground);
+
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    color 150ms ease,
+    transform 150ms ease;
+}
+
+.pill input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--pill-color);
+  color: var(--foreground);
+}
+
+.pill:has(input:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.pillDot {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--pill-color);
+}
+
+.pill:has(input:checked) {
+  border-color: var(--pill-color);
+  background-color: color-mix(in srgb, var(--pill-color) 12%, var(--card));
+  color: var(--foreground);
+}
+
+.pill:has(input:checked) .pillDot {
+  width: 10px;
+  height: 10px;
+}
+
+/* ---------- Carte principale ---------- */
+
+.card {
+  margin-top: 2.5rem;
+  padding: 2rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+  color: var(--card-foreground);
+
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader h2 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.cardHeader p {
+  margin: 0.25rem 0 0;
+
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 3rem 1rem;
+
+  text-align: center;
+  color: var(--muted-foreground);
+}
+
+.emptyState svg {
+  margin-bottom: 0.75rem;
+}
+
+.emptyState h2 {
+  margin: 0 0 0.375rem;
+
+  font-family: var(--font-display);
+  font-size: 1rem;
+
+  color: var(--card-foreground);
+}
+
+.emptyState p {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+}
+
+.notices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+}
+
+.notices:empty {
+  display: none;
+}
+
+/* ---------- Détail ---------- */
+
+.definition {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.75rem 1.5rem;
+
+  margin: 0;
+
+  font-size: 0.95rem;
+}
+
+.definition dt {
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
+.definition dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Boutons d'action (comme la création de formation) ---------- */
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+
+  border-top: 1px solid var(--border);
+}
+
+.cancelButton,
+.submitButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+  padding: 0.7rem 1.25rem;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  cursor: pointer;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.cancelButton,
+.secondaryButton {
+  border: 1px solid var(--border);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.submitButton {
+  border: 1px solid var(--foreground);
+
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.cancelButton:hover,
+.submitButton:hover,
+.secondaryButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 639px) {
+  .title {
+    font-size: 1.875rem;
+  }
+
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .createButton {
+    width: 100%;
+  }
+
+  .toolbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .sortContainer {
+    justify-content: space-between;
+  }
+
+  .sortContainer select {
+    flex: 1;
+  }
+
+  .card {
+    padding: 1.25rem;
+    border-radius: 24px;
+  }
+
+  .actions > * {
+    flex: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .createButton,
+  .pill,
+  .cancelButton,
+  .submitButton,
+  .secondaryButton {
+    transition: none;
+  }
+
+  .createButton:hover,
+  .pill:hover,
+  .cancelButton:hover,
+  .submitButton:hover,
+  .secondaryButton:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Formations ---------- */
+
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background-color: var(--muted);
+  color: var(--muted-foreground);
+
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.category {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  margin: 0 0 0.75rem;
+
+  color: var(--foreground);
+
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.categoryDot {
+  width: 10px;
+  height: 10px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--category-color);
+}
+
+.description {
+  margin: 1.25rem 0 0;
+
+  color: var(--card-foreground);
+  line-height: 1.6;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+
+  border-top: 1px solid var(--border);
+}
+
+.section h2 {
+  margin: 0 0 0.75rem;
+
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.sectionNote {
+  margin: 0;
+
+  color: var(--muted-foreground);
+  font-size: 0.9rem;
+}
+
+.inscrits {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.inscrits li {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+
+  padding: 0.6rem 0.9rem;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  overflow-wrap: anywhere;
+}
+
+.inscrits span:last-child {
+  color: var(--muted-foreground);
+}
