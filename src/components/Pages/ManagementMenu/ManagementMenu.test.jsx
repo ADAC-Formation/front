@@ -55,14 +55,6 @@ describe('ManagementMenu', () => {
       expect(screen.getByText('Catégories')).toBeInTheDocument()
     })
 
-    it('est jaune avec un texte foncé lisible (le blanc ne passe pas sur le jaune)', async () => {
-      renderMenu('SUPER_ADMIN')
-      await screen.findByRole('link', { name: 'Gérer les catégories' })
-      const tile = screen.getByText('Catégories').closest('article')
-      expect(tile.style.getPropertyValue('--tile-color')).toBe('var(--color-yellow)')
-      expect(tile.style.getPropertyValue('--tile-text')).toBe('var(--color-on-yellow)')
-    })
-
     it("le formateur n'a pas la tuile Catégories", async () => {
       renderMenu('ADMIN')
       await screen.findByRole('link', { name: 'Consulter formations existantes' })

@@ -35,19 +35,7 @@ describe('tuiles de gestion : actions accessibles au clavier', () => {
   it('le lien focalisé a un contour blanc visible sur la couleur de la tuile', () => {
     const rule = find(TILES, /\.action:focus-visible/)
     expect(rule, '.action:focus-visible').toBeDefined()
-    expect(rule.body).toMatch(/outline:\s*3px\s+solid/)
-  })
-})
-
-describe('tuiles de gestion : couleur du texte par tuile', () => {
-  it.each(['.title', '.icon', '.action'])('%s prend --tile-text, blanc par défaut', (selector) => {
-    const rule = rulesIn(TILES).find(({ selector: s }) => s.trim() === selector)
-    expect(rule, selector).toBeDefined()
-    expect(rule.body).toMatch(/color:\s*var\(--tile-text,\s*var\(--color-white\)\)/)
-  })
-
-  it('le contour de focus suit la couleur du texte de la tuile', () => {
-    expect(find(TILES, /\.action:focus-visible/).body).toMatch(/outline:\s*3px\s+solid\s+var\(--tile-text/)
+    expect(rule.body).toMatch(/outline:\s*3px\s+solid\s+var\(--color-white\)/)
   })
 })
 

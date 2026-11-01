@@ -37,8 +37,7 @@ const managementTiles = [
   {
     label: "Catégories",
     icon: <Tags />,
-    color: "var(--color-yellow)",
-    textColor: "var(--color-on-yellow)",
+    color: "var(--color-green)",
     listLabel: "Gérer les catégories",
     listPath: "/formations/categories",
     superAdminOnly: true,

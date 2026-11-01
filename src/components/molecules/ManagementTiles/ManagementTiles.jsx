@@ -6,7 +6,6 @@ const ManagementTile = ({
   label,
   icon,
   color,
-  textColor,
   createLabel,
   listLabel,
   createPath,
@@ -15,7 +14,7 @@ const ManagementTile = ({
   return (
     <article
       className={styles.tile}
-      style={{ "--tile-color": color, "--tile-text": textColor }}
+      style={{ "--tile-color": color }}
     >
       <div className={styles.icon}>
         {icon}
