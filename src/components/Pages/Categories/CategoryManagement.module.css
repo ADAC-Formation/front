@@ -360,11 +360,114 @@
   gap: 0.5rem;
 }
 
-input{
-  margin-left: 0.5rem;
+/* ---------- Champs et boutons du formulaire de modification ---------- */
 
-  border-radius: 6px;
-  border: 1px solid;
+.field,
+.colorField {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.5rem;
+}
+
+.field label,
+.colorField label {
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.field input {
+  width: 100%;
+  min-height: 46px;
+
+  padding: 0.7rem 0.875rem;
+
+  border: 1px solid var(--border);
+  border-radius: 14px;
+
+  background-color: var(--background);
+  color: var(--foreground);
+
+  font-size: 0.875rem;
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.field input:focus {
+  border-color: var(--foreground);
+}
+
+.colorInput {
+  width: 70px;
+  height: 46px;
+
+  padding: 0.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background-color: var(--background);
+
+  cursor: pointer;
+}
+
+.cancelButton,
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+  padding: 0.7rem 1.25rem;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.cancelButton {
+  border: 1px solid var(--border);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.submitButton {
+  border: 1px solid var(--foreground);
+
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.cancelButton:hover,
+.submitButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cancelButton,
+  .submitButton {
+    transition: none;
+  }
+
+  .cancelButton:hover,
+  .submitButton:hover {
+    transform: none;
+  }
 }
 
 
@@ -404,6 +507,18 @@ input{
 
   .actions {
     gap: 0.75rem;
+  }
+
+  .editForm {
+    grid-template-columns: 1fr;
+  }
+
+  .editFormActions {
+    align-items: stretch;
+  }
+
+  .editFormActions > * {
+    flex: 1;
   }
 
   .editButton {
