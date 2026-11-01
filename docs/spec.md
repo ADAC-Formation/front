@@ -75,3 +75,19 @@ Source : TICKET-024 (front), `tech.md` §4–5, décisions F1–F7 (`decisions-f
 - [ ] STAGIAIRE (F6) : titre « Mes formations », aucune action ; détail avec nombre d'inscrits seulement ; `403` → « Accès refusé ».
 - [ ] Détail : titre, description, dates, modalité, catégorie, formateur ; liste des inscrits (SUPER_ADMIN et ADMIN seulement, F3) ; section « Documents » réservée, sans appel (027) ; contenu rendu en texte.
 - Reporté : création et import Excel (025), « Modifier », filtre et gestion des catégories (048/049), documents (027), inscrire / désinscrire, code de référence (Q9).
+
+## Critères d'acceptation du formulaire de formation (change `formation-form`)
+
+Source : TICKET-025 (front, hors import Excel reporté, F11), `tech.md` §2–4, décisions F9–F13. À valider par Manon (D49). Détail testable : `openspec/changes/formation-form/specs/formation-management/spec.md`.
+
+### TICKET-025 — Créer et modifier une formation
+- [ ] Routes `/formations/creer` et `/formations/:id/modifier` réservées à SUPER_ADMIN (autres rôles → « Accès refusé », visiteur → `/login`).
+- [ ] Champs : intitulé, description (facultative), « Du » / « Au » (F10), modalité, catégorie, formateur facultatif ; pas de référence, public, lieu ni dépôt de documents.
+- [ ] « Au » se préremplit avec « Du » ; « Au » ne précède pas « Du » ; une formation d'un jour = même date.
+- [ ] Catégories = `GET /categories?active=true` (F12) ; une catégorie désactivée déjà portée reste affichée en modification.
+- [ ] Formateur = `GET /users/formateurs?active=true` ; sans choix : `formateurId: null` (F13).
+- [ ] Création : `POST /formations`, redirection vers le détail de la formation créée avec « Formation créée » (F9).
+- [ ] Modification : préremplie, `PUT` avec les seuls champs modifiés, retour au détail avec « Formation mise à jour » ; formation archivée non modifiable.
+- [ ] Erreurs : `400` en bandeau sans perdre la saisie, `409` → recharger ; erreurs liées aux champs (accessibilité).
+- [ ] Détail : bouton « Modifier » pour SUPER_ADMIN sur formation active.
+- Reporté : import Excel (F11), documents (027), création de catégories (049), code de référence (Q9).

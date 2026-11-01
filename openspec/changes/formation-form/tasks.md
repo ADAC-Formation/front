@@ -1,13 +1,13 @@
 ## 1. Préparation
 
-- [ ] 1.1 Vérifier que l'on est sur `feature/formations`, que `npm run check` est vert au départ et que `git -C ../../back-readonly status` est propre ; rafraîchir le back (`git -C ../../back-readonly pull`) et relire `tech.md` §2–4 (`POST` / `PUT /formations`, `GET /categories`, `GET /users/formateurs`)
-- [ ] 1.2 Écrire dans `docs/spec.md` les critères de TICKET-025 (hors import Excel, reporté, F11) tirés de la spec `formation-management`, pour validation de Manon ; vérifier que le fichier les contient
+- [x] 1.1 Vérifier que l'on est sur `feature/formations`, que `npm run check` est vert au départ et que `git -C ../../back-readonly status` est propre ; rafraîchir le back (`git -C ../../back-readonly pull`) et relire `tech.md` §2–4 (`POST` / `PUT /formations`, `GET /categories`, `GET /users/formateurs`)
+- [x] 1.2 Écrire dans `docs/spec.md` les critères de TICKET-025 (hors import Excel, reporté, F11) tirés de la spec `formation-management`, pour validation de Manon ; vérifier que le fichier les contient
 
 ## 2. Logique pure du formulaire (TDD)
 
-- [ ] 2.1 RED : `src/features/formations/formationForm.test.js` — `valuesFromFormation`, `toRequest` (trim, description vide → `null`, `formateurId` vide → `null`, identifiants en nombres), `changedFields` (rien de modifié → `{}`, un seul champ, formateur repassé à « auto » → `formateurId: null`), `validateDateRange` (valide, inversée, un seul jour) ; confirmer RED
-- [ ] 2.2 Créer `formationForm.js` ; GREEN
-- [ ] 2.3 Commit `feat: add formation form logic`
+- [x] 2.1 RED : `src/features/formations/formationForm.test.js` — `valuesFromFormation`, `toRequest` (trim, description vide → `null`, `formateurId` vide → `null`, identifiants en nombres), `changedFields` (rien de modifié → `{}`, un seul champ, formateur repassé à « auto » → `formateurId: null`), `validateDateRange` (valide, inversée, un seul jour) ; confirmer RED
+- [x] 2.2 Créer `formationForm.js` ; GREEN
+- [x] 2.3 Commit `feat: add formation form logic`
 
 ## 3. Catégories et mutations (TDD)
 
