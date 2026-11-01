@@ -42,7 +42,7 @@
 }
 
 /* Le libellé élargit l'en-tête : il n'apparaît que lorsque l'en-tête ne rencontre plus le logo. */
-@media (min-width: 1100px) {
+@media (min-width: 1150px) {
   .label {
     position: static;
     width: auto;

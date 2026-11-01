@@ -5,8 +5,8 @@
 
 ## 2. Bouton de session toujours nommé (TDD)
 
-- [x] 2.1 RED : test de feuille de style (`src/test/`) — dans `LoginButton.module.css`, aucune règle de `.label` ne contient `display: none` et le masquage visuel du libellé est de type « lecteur d'écran seulement » (position absolue, 1 px, `clip-path`), annulé à partir de `1100px` ; test de composant `LoginButton` — nom accessible « Se déconnecter » (session) et « Se connecter » (visiteur, hors `/login`) ; confirmer RED sur le test de feuille de style (le test de composant passe déjà en jsdom : il documente le contrat)
-- [x] 2.2 Remplacer `display: none` par le masquage visuel, déplacer le seuil du libellé de `800px` à `1100px` ; GREEN ; vérifier que jest-axe du `Header` reste vert
+- [x] 2.1 RED : test de feuille de style (`src/test/`) — dans `LoginButton.module.css`, aucune règle de `.label` ne contient `display: none` et le masquage visuel du libellé est de type « lecteur d'écran seulement » (position absolue, 1 px, `clip-path`), annulé à partir de `1150px` ; test de composant `LoginButton` — nom accessible « Se déconnecter » (session) et « Se connecter » (visiteur, hors `/login`) ; confirmer RED sur le test de feuille de style (le test de composant passe déjà en jsdom : il documente le contrat)
+- [x] 2.2 Remplacer `display: none` par le masquage visuel, déplacer le seuil du libellé de `800px` à `1150px` ; GREEN ; vérifier que jest-axe du `Header` reste vert
 - [x] 2.3 Commit `fix: keep the session button accessible name when its label is hidden`
 
 ## 3. En-tête et logo sans chevauchement (TDD)
@@ -32,7 +32,7 @@
 
 ## 6. Garde-fou d'ensemble et documentation
 
-- [ ] 6.1 Rejouer la matrice complète du passage scripté (1.2) et compléter D61 (« Après », protocole, tableau de chiffres, constat sur l'étiquette de tablette) ; mettre à jour `docs/design-front.md` (seuils : tuiles à 56 rem / 40 rem de conteneur, libellé d'en-tête à 1100 px, logo sous la rangée d'icônes sous 640 px, bouton de session nommé) et `CLAUDE.md` (« État actuel » : tuiles par requêtes de conteneur en `rem`, ne pas écrire de libellé en `display: none`) ; vérifier que les chiffres de D61 viennent des mesures
+- [ ] 6.1 Rejouer la matrice complète du passage scripté (1.2) et compléter D61 (« Après », protocole, tableau de chiffres, constat sur l'étiquette de tablette) ; mettre à jour `docs/design-front.md` (seuils : tuiles à 56 rem / 40 rem de conteneur, libellé d’en-tête à 1150 px, logo sous la rangée d'icônes sous 640 px, bouton de session nommé) et `CLAUDE.md` (« État actuel » : tuiles par requêtes de conteneur en `rem`, ne pas écrire de libellé en `display: none`) ; vérifier que les chiffres de D61 viennent des mesures
 - [ ] 6.2 `npm run check` vert (lint, tests, build, budget du bundle) ; commit `docs: record the responsive layout rules and measurements`
 
 ## 7. Passage manuel et relecture

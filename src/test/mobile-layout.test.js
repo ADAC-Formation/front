@@ -22,9 +22,9 @@ describe('bouton de session (LoginButton)', () => {
     expect(hidden.body).toMatch(/clip-path:/)
   })
 
-  it('affiche le libellé à partir de 1100 px seulement', () => {
+  it('affiche le libellé à partir de 1150 px seulement', () => {
     const css = sheet(file)
-    expect(css).toMatch(/@media\s*\(min-width:\s*1100px\)\s*\{[^@]*\.label/)
+    expect(css).toMatch(/@media\s*\(min-width:\s*1150px\)\s*\{[^@]*\.label/)
     expect(css).not.toMatch(/min-width:\s*800px/)
   })
 })
