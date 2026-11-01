@@ -34,7 +34,7 @@
 - [x] 6.2 Créer `bundle-budget.json` (taille mesurée + 10 %), ajouter `node scripts/check-bundle.mjs` à `npm run check` après le build ; `npm run check` vert (lint + tests + build + budget) ; vérifier qu'une page ré-importée statiquement le ferait échouer (essai local annulé aussitôt)
 - [x] 6.3 Compléter D59 (avant / après, budget), noter dans `docs/points-pour-charlotte.md` la recommandation de cache (`index.html` non mis en cache long, `assets/*` hachés en cache long ; information seulement), mettre à jour `CLAUDE.md` (« État actuel » et commande `check`) ; vérifier que les chiffres de D59 viennent de la mesure
 - [x] 6.3b Commit `docs: record bundle measurement and enforce the entry budget`
-- [ ] 6.4 Passage manuel contre le vrai back local : onglet Réseau — `/login` ne télécharge aucun chunk de formations / comptes ; connexion puis navigation sur chaque page ; connexion lente (Slow 3G) : « Chargement… » visible et annoncé ; réseau coupé puis clic vers une page non chargée : message d'erreur et « Réessayer » ; `GET /auth/me` part avant le chunk de la page et une seule fois — ne pas cocher sans l'avoir fait
+- [x] 6.4 Passage manuel contre le vrai back local : onglet Réseau — `/login` ne télécharge aucun chunk de formations / comptes ; connexion puis navigation sur chaque page ; connexion lente (Slow 3G) : « Chargement… » visible et annoncé ; réseau coupé puis clic vers une page non chargée : message d'erreur et « Réessayer » ; `GET /auth/me` part avant le chunk de la page et une seule fois — ne pas cocher sans l'avoir fait
 - [ ] 6.5 Relecture de Manon ; merge dans `dev` uniquement à sa demande
 
 ## Workflow follow-up
