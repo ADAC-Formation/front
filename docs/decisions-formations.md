@@ -58,3 +58,10 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Pourquoi** : constaté par Manon au passage manuel : le formulaire actuel (coque mockée, `console.log` seulement) donne l'impression que rien ne s'est passé.
 - **Alternatives écartées** : retour à la liste ; rester sur le formulaire avec un message.
 - **Application** : critère de TICKET-025, à reprendre dans sa spec et ses tâches (le bandeau demandera d'ajouter la clé `formation-created` à `FormationNotice`, qui s'affichera sur le détail).
+
+## F10 — Formulaire de création : une date de début et une date de fin
+- Date : 2026-11-01
+- **Décision** : le formulaire de création (TICKET-025) remplace le champ unique « Date » (`dateValue`) par deux champs obligatoires, « Du » (`dateDebut`) et « Au » (`dateFin`), comme le contrat (`POST /formations`, `tech.md` §4). Une formation d'un jour a la même date dans les deux champs ; à la saisie de « Du », « Au » est préremplie avec la même date. Validation côté client : `dateFin` ne précède pas `dateDebut` (le back répond aussi `400`). Le formulaire de modification (`PUT`) reprend les deux champs.
+- **Pourquoi** : constaté par Manon : le formulaire actuel (coque mockée) ne permet de saisir qu'une journée ; les formations d'ADAC durent souvent plusieurs jours et le détail affiche déjà une plage de dates.
+- **Alternatives écartées** : un champ « durée en jours » (le back attend deux dates) ; une seule date avec case « plusieurs jours ».
+- **Application** : critère de TICKET-025, à reprendre dans sa spec, ses tests (`dateFin` avant `dateDebut`, formation d'un jour) et ses tâches.
