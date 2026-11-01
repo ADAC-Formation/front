@@ -40,3 +40,9 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 
 ## Points laissés ouverts
 - [NEEDS CLARIFICATION: code de référence des formations (ES01, MI02…) — champ `reference` absent de `tech.md` ; question Q9 à Charlotte. Le front n'affiche que l'intitulé tant qu'elle n'a pas répondu.]
+
+## F7 — Catégorie lue dans la formation, pas d'appel à `GET /categories` (précise F1)
+- Date : 2026-11-01
+- **Décision** : `FormationResponse` contient déjà `category` complète (`nom`, `couleur`, `isActive`, toujours renseignée, même désactivée). Le change `formations-list-detail` lit donc la catégorie dans la formation et n'appelle pas `/categories` ; cet endpoint sert au sélecteur (048) et à la gestion (049). `ListItem` reçoit la couleur en propriété ; `utils/simFormations.jsx` est supprimé, `utils/categories.js` reste jusqu'à 048/049 car `CreateFormationPage` et `CategoryManagement` l'utilisent.
+- **Pourquoi** : pas d'appel ni de jointure inutiles ; une seule source (le back).
+- **Alternatives écartées** : appeler `GET /categories` et joindre par id.

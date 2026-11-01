@@ -62,3 +62,16 @@ Source : TICKET-021 (front), TICKET-050 (édition), `tech.md` § 2. Détail test
 
 ### TICKET-050 — Modification d'un compte (front)
 - [ ] SUPER_ADMIN corrige nom, prénom, e-mail via `PUT /users/{id}` (champs modifiés seulement) ; avertissement de reconnexion si l'e-mail d'un compte actif change ; `409` en ligne.
+
+## Critères d'acceptation des tickets de formations (change `formations-list-detail`)
+
+Source : TICKET-024 (front), `tech.md` §4–5, décisions F1–F7 (`decisions-formations.md`), D46. À valider par Manon (D49). Détail testable : `openspec/changes/formations-list-detail/specs/formation-browsing/spec.md`.
+
+### TICKET-024 — Liste et détail des formations
+- [ ] Liste `/formations` (tous rôles connectés) : intitulé, dates, modalité, formateur, nombre d'inscrits, catégorie (pastille couleur + nom, lue dans la formation) ; états chargement, vide, erreur avec « Réessayer ».
+- [ ] Pastilles Actives (défaut) / Archivées (`?status=`), badge « Archivée » ; recherche (intitulé, formateur, catégorie) et tri côté client, sans nouvel appel.
+- [ ] SUPER_ADMIN : toutes les formations, liens « Créer une nouvelle formation » et « Gérer les catégories », bouton « Archiver » sur le détail (confirmation, `PATCH …/archive`, retour à la liste, `409` → recharger).
+- [ ] ADMIN (D46, F2) : « Mes formations » (défaut) / « Toutes » filtrés côté client, aucune action de gestion ; `404` sur le détail → « Formation introuvable ou non accessible ».
+- [ ] STAGIAIRE (F6) : titre « Mes formations », aucune action ; détail avec nombre d'inscrits seulement ; `403` → « Accès refusé ».
+- [ ] Détail : titre, description, dates, modalité, catégorie, formateur ; liste des inscrits (SUPER_ADMIN et ADMIN seulement, F3) ; section « Documents » réservée, sans appel (027) ; contenu rendu en texte.
+- Reporté : création et import Excel (025), « Modifier », filtre et gestion des catégories (048/049), documents (027), inscrire / désinscrire, code de référence (Q9).
