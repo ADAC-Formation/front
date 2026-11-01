@@ -38,7 +38,7 @@
 ## 7. Passage manuel et relecture
 
 - [x] 7.1 Passage manuel contre le vrai back local, sur écran réel ou émulation tactile : menu Gestion et accueil à 390 et 768 px (au doigt : toutes les actions atteignables), en-tête sans chevauchement à 390 et 850 px, « Grand texte » 150 %, mode sombre, contraste élevé, Tab sur toutes les actions — ne pas cocher sans l'avoir fait
-- [ ] 7.2 Relecture de Manon : présentation d'une tuile de Gestion en colonne unique, disparition du libellé « Se déconnecter » entre 800 et 1099 px ; merge dans `dev` uniquement à sa demande
+- [x] 7.2 Relecture de Manon : présentation d'une tuile de Gestion en colonne unique, disparition du libellé « Se déconnecter » entre 800 et 1099 px ; merge dans `dev` uniquement à sa demande
 
 ## Workflow follow-up
 
