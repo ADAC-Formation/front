@@ -7,6 +7,7 @@ import { ThemeProvider } from '../context/ThemeProvider'
 import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList, mockRequest } from '../test/accounts'
 import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
+import { mockCategories } from '../test/categories'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -24,6 +25,7 @@ function mockFormations() {
   mockFormationList()
   mockFormationDetail(FORMATIONS[0])
   mockInscriptions(101)
+  mockCategories()
 }
 
 function mockAccounts() {

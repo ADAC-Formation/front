@@ -5,6 +5,8 @@ import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockSession } from '../test/session'
 import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
+import { FORMATEURS, mockAccountList } from '../test/accounts'
+import { mockCategories } from '../test/categories'
 import { cssSheets, rulesOf, stripComments } from '../test/css-sheets'
 
 function renderApp(path) {
@@ -32,6 +34,8 @@ describe.each([
     mockFormationList()
     mockFormationDetail(FORMATIONS[0])
     mockInscriptions(101)
+    mockCategories()
+    mockAccountList('formateurs', FORMATEURS)
     renderApp(path)
     const link = await screen.findByRole('link', { name: new RegExp(`^${label}$`) })
     expect(link).toHaveAttribute('href', destination)

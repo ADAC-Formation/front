@@ -16,14 +16,17 @@ import {
 
 const [secours, excel, postures] = FORMATIONS
 
-function renderDetail(role, formation) {
+function renderDetail(role, formation, { notice } = {}) {
   mockSession(role)
+  const route = notice
+    ? { pathname: `/formations/${formation.id}`, state: { notice } }
+    : `/formations/${formation.id}`
   return renderWithProviders(
     <Routes>
       <Route path="/formations/:formationId" element={<FormationDetailPage />} />
       <Route path="/formations" element={<FormationListPage />} />
     </Routes>,
-    { route: `/formations/${formation.id}`, withSession: true },
+    { route, withSession: true },
   )
 }
 
@@ -211,6 +214,57 @@ describe('FormationDetailPage', () => {
       await userEvent.click(screen.getByRole('button', { name: 'Recharger' }))
       await waitFor(() => expect(detail.count).toBe(2))
       expect(screen.queryByText(/modifiée entre-temps/)).not.toBeInTheDocument()
+    })
+  })
+
+  describe('modification', () => {
+    it("propose « Modifier » à la chargée de formation sur une formation active", async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours)
+      expect(await screen.findByRole('link', { name: 'Modifier' })).toHaveAttribute(
+        'href',
+        '/formations/101/modifier',
+      )
+    })
+
+    it.each(['ADMIN', 'STAGIAIRE'])("ne propose pas « Modifier » à %s", async (role) => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail(role, secours)
+      await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })
+      if (role === 'ADMIN') await screen.findByText('Léa Petit')
+      expect(screen.queryByRole('link', { name: 'Modifier' })).not.toBeInTheDocument()
+    })
+
+    it("ne propose pas « Modifier » sur une formation archivée", async () => {
+      mockFormationDetail(postures)
+      mockInscriptions(103, [])
+      renderDetail('SUPER_ADMIN', postures)
+      await screen.findByRole('heading', { level: 1, name: 'Gestes et postures' })
+      await screen.findByText('Aucun stagiaire inscrit')
+      expect(screen.queryByRole('link', { name: 'Modifier' })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('bandeaux de confirmation', () => {
+    it.each([
+      ['formation-created', 'Formation créée'],
+      ['formation-updated', 'Formation mise à jour'],
+    ])('annonce « %s » reçu par navigation', async (notice, text) => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours, { notice })
+      expect(await screen.findByText(text)).toHaveAttribute('role', 'status')
+    })
+
+    it("n'affiche aucun bandeau sans navigation", async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours)
+      await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })
+      expect(screen.queryByText('Formation créée')).not.toBeInTheDocument()
+      expect(screen.queryByText('Formation mise à jour')).not.toBeInTheDocument()
     })
   })
 

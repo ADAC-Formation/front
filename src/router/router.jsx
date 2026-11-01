@@ -56,7 +56,8 @@ export const routes = [
           {
             element: <RequireRole roles={[ROLES.SUPER_ADMIN]} />,
             children: [
-              { path: "formations/creer", ...lazyPage(() => import("../components/Pages/CreateFormationPage/CreateFormationPage")) },
+              { path: "formations/creer", ...lazyPage(() => import("../features/formations/pages/FormationFormPage")) },
+              { path: "formations/:formationId/modifier", ...lazyPage(() => import("../features/formations/pages/FormationFormPage")) },
               { path: "formations/categories", ...lazyPage(() => import("../components/Pages/Categories/CategoryManagement")) },
               // Comptes : création et modification (D54). « nouveau » est déclaré avant « :id ».
               { path: "admin/formateurs/nouveau", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "formateurs" }) },

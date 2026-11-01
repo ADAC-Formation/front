@@ -30,11 +30,11 @@
 
 ## 6. Détail, routes et nettoyage (TDD)
 
-- [ ] 6.1 RED : compléter `FormationDetailPage.test.jsx` (lien « Modifier » pour `SUPER_ADMIN` sur formation active, absent pour `ADMIN`, `STAGIAIRE` et formation archivée ; bandeaux « Formation créée » / « Formation mise à jour » reçus par navigation) et `router.test.jsx` (création et modification : formateur → « Accès refusé », stagiaire → « Accès refusé », visiteur → `/login`, chargée de formation → formulaire) ; confirmer RED
-- [ ] 6.2 Ajouter « Modifier » et `FormationNotice` au détail, étendre `FormationNotice` (`formation-created`, `formation-updated`), pointer `formations/creer` sur `FormationFormPage` et ajouter `formations/:formationId/modifier` dans `router.jsx` (`lazyPage`, derrière `RequireRole` `SUPER_ADMIN`) ; GREEN
-- [ ] 6.3 Supprimer `components/Pages/CreateFormationPage/` ; vérifier qu'aucun import ne subsiste (`grep CreateFormationPage src`) ; `utils/categories.js` reste pour `CategoryManagement` ; adapter les tests de routeur et de feuilles de style qui citaient l'ancienne page
-- [ ] 6.4 `npm run check` vert (lint + tests + build + budget du bundle)
-- [ ] 6.5 Commit `feat: route the formation form and remove the mocked create page`
+- [x] 6.1 RED : compléter `FormationDetailPage.test.jsx` (lien « Modifier » pour `SUPER_ADMIN` sur formation active, absent pour `ADMIN`, `STAGIAIRE` et formation archivée ; bandeaux « Formation créée » / « Formation mise à jour » reçus par navigation) et `router.test.jsx` (création et modification : formateur → « Accès refusé », stagiaire → « Accès refusé », visiteur → `/login`, chargée de formation → formulaire) ; confirmer RED
+- [x] 6.2 Ajouter « Modifier » et `FormationNotice` au détail, étendre `FormationNotice` (`formation-created`, `formation-updated`), pointer `formations/creer` sur `FormationFormPage` et ajouter `formations/:formationId/modifier` dans `router.jsx` (`lazyPage`, derrière `RequireRole` `SUPER_ADMIN`) ; GREEN
+- [x] 6.3 Supprimer `components/Pages/CreateFormationPage/` ; vérifier qu'aucun import ne subsiste (`grep CreateFormationPage src`) ; `utils/categories.js` reste pour `CategoryManagement` ; adapter les tests de routeur et de feuilles de style qui citaient l'ancienne page
+- [x] 6.4 `npm run check` vert (lint + tests + build + budget du bundle)
+- [x] 6.5 Commit `feat: route the formation form and remove the mocked create page`
 
 ## 7. Documentation et passage manuel
 

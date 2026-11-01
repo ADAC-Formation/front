@@ -9,6 +9,8 @@ import { ThemeProvider } from '../context/ThemeProvider'
 import { server } from '../test/msw/server'
 import { API_URL, mockSession, mockNoSession } from '../test/session'
 import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
+import { FORMATEURS, mockAccountList } from '../test/accounts'
+import { mockCategories } from '../test/categories'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -105,11 +107,47 @@ describe('routes réservées par rôle', () => {
 
   it('la chargée de formation accède à la création et aux catégories', async () => {
     mockSession('SUPER_ADMIN')
+    mockCategories()
+    mockAccountList('formateurs', FORMATEURS)
     const first = renderApp('/formations/creer')
-    expect(await screen.findByRole('heading', { level: 1 })).not.toHaveTextContent('Accès refusé')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Créer une nouvelle formation' })).toBeInTheDocument()
     first.unmount()
     renderApp('/formations/categories')
     expect(await screen.findByRole('heading', { name: 'Catégories' })).toBeInTheDocument()
+  })
+})
+
+describe('formulaire de formation : accès par rôle', () => {
+  it.each(['/formations/creer', '/formations/101/modifier'])(
+    'un stagiaire voit « Accès refusé » sur %s',
+    async (path) => {
+      mockSession('STAGIAIRE')
+      renderApp(path)
+      expect(await accessDenied()).toBeInTheDocument()
+    },
+  )
+
+  it('un formateur voit « Accès refusé » sur la modification', async () => {
+    mockSession('ADMIN')
+    renderApp('/formations/101/modifier')
+    expect(await accessDenied()).toBeInTheDocument()
+  })
+
+  it('un visiteur est redirigé de la modification vers la connexion', async () => {
+    mockNoSession()
+    const { router } = renderApp('/formations/101/modifier')
+    expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/login')
+  })
+
+  it('la chargée de formation accède à la modification, préremplie', async () => {
+    mockSession('SUPER_ADMIN')
+    mockCategories()
+    mockAccountList('formateurs', FORMATEURS)
+    mockFormationDetail(FORMATIONS[0])
+    renderApp('/formations/101/modifier')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Modifier la formation' })).toBeInTheDocument()
+    expect(await screen.findByLabelText('Intitulé')).toHaveValue('Premiers secours PSC1')
   })
 })
 

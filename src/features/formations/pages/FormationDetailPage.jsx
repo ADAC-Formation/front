@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useParams } from 'react-router'
+import { Link, useNavigate, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
@@ -7,6 +7,7 @@ import { PageShell } from '../../../templates/PageShell/PageShell'
 import { MANAGEMENT_ROLES, ROLES } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
 import AccessDeniedPage from '../../auth/pages/AccessDeniedPage'
+import FormationNotice from '../components/FormationNotice'
 import { formatDateRange, formateurName, modaliteLabel } from '../formationLabels'
 import { useArchiveFormation, useFormation, useInscriptions } from '../hooks'
 import styles from './FormationPages.module.css'
@@ -111,6 +112,10 @@ const FormationDetailPage = () => {
     <PageShell className={styles.page}>
       <BackButton to={BACK_TO_LIST}>{BACK_LABEL}</BackButton>
 
+      <div className={styles.notices}>
+        <FormationNotice />
+      </div>
+
       <article className={styles.card} style={{ '--category-color': formation.category.couleur }}>
         <p className={styles.category}>
           <span className={styles.categoryDot} aria-hidden="true" />
@@ -159,6 +164,9 @@ const FormationDetailPage = () => {
 
         {canArchive && (
           <div className={styles.actions}>
+            <Link className={styles.secondaryButton} to={`/formations/${formation.id}/modifier`}>
+              Modifier
+            </Link>
             <button type="button" className={styles.secondaryButton} onClick={() => setConfirming(true)}>
               Archiver
             </button>

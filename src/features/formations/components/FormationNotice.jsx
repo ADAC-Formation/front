@@ -4,6 +4,8 @@ import Alert from '../../../components/atoms/Alert/Alert'
 // Confirmations transmises par navigation (`navigate(path, { state: { notice } })`) : rien n'est
 // stocké dans le navigateur (D31) ; un rechargement de la page efface le bandeau.
 const NOTICES = {
+  'formation-created': 'Formation créée',
+  'formation-updated': 'Formation mise à jour',
   'formation-archived': 'Formation archivée',
 }
 
