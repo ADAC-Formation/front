@@ -65,3 +65,21 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Pourquoi** : constaté par Manon : le formulaire actuel (coque mockée) ne permet de saisir qu'une journée ; les formations d'ADAC durent souvent plusieurs jours et le détail affiche déjà une plage de dates.
 - **Alternatives écartées** : un champ « durée en jours » (le back attend deux dates) ; une seule date avec case « plusieurs jours ».
 - **Application** : critère de TICKET-025, à reprendre dans sa spec, ses tests (`dateFin` avant `dateDebut`, formation d'un jour) et ses tâches.
+
+## F11 — Périmètre du change 025 : création + modification, import Excel plus tard
+- Date : 2026-11-01
+- **Décision** : le change `formation-form` (TICKET-025, partie formulaire) branche la création (`POST /formations`) et réutilise le même formulaire pour « Modifier » (`PUT /formations/{id}`, reporté par F4). L'import Excel (`POST /formations/import`) fait l'objet d'un change ultérieur : les colonnes du back sont un placeholder et le vrai fichier du client n'est pas arrivé (D14 ; ordre de coupe D24, import coupé avant le reste).
+- **Pourquoi** : livrer le cœur utile (créer, corriger) sans risquer de refaire l'import.
+- **Alternatives écartées** : tout 025 d'un coup ; création seule (sans « Modifier »).
+
+## F12 — Sélecteur de catégorie : lecture de `GET /categories?active=true`
+- Date : 2026-11-01
+- **Décision** : la catégorie (obligatoire, `categoryId`) se choisit dans la liste des catégories actives de l'API (partie « sélecteur » de 048). Le lien « + Créer une catégorie » du formulaire est retiré : les catégories se créent sur la page de gestion, branchée en 049. En modification, une formation dont la catégorie est désactivée garde son choix affiché tant qu'on ne le change pas.
+- **Pourquoi** : le formulaire ne peut pas fonctionner sans catégories réelles ; la création en ligne tirerait 049 dans ce change.
+- **Alternatives écartées** : sélecteur + création en ligne.
+
+## F13 — Formateur au choix, dépôt de documents retiré du formulaire
+- Date : 2026-11-01
+- **Décision** : le formulaire propose le formateur parmi les formateurs actifs (`GET /users/formateurs?active=true`) ; sans choix, le back assigne la chargée de formation. La zone de dépôt de documents de la coque est retirée du formulaire et reviendra avec 027.
+- **Pourquoi** : le contrat l'impose ; les documents dépendent d'un autre ticket.
+- **Alternatives écartées** : pas de choix du formateur (toujours auto-assigné) ; zone de dépôt factice.
