@@ -1,4 +1,4 @@
-import { BookOpen, GraduationCap, Tags, UserRound } from "lucide-react";
+import { BookOpen, GraduationCap, UserRound } from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks";
 import { canManageAccounts } from "../../../features/accounts/accountKinds";
 import BackButton from "../../molecules/BackButton/BackButton";
@@ -15,6 +15,8 @@ const managementTiles = [
     listLabel: "Consulter formations existantes",
     createPath: "/formations/creer",
     listPath: "/admin/formations",
+    manageLabel: "Gérer les catégories",
+    managePath: "/formations/categories",
   },
   {
     label: "Formateurs",
@@ -34,25 +36,19 @@ const managementTiles = [
     createPath: "/admin/stagiaires/nouveau",
     listPath: "/admin/stagiaires",
   },
-  {
-    label: "Catégories",
-    icon: <Tags />,
-    color: "var(--color-green)",
-    listLabel: "Gérer les catégories",
-    listPath: "/formations/categories",
-    superAdminOnly: true,
-  },
 ];
 
-// Création et catégories : chargée de formation seulement (le formateur consulte, D46/D54).
+// Création et gestion des catégories : chargée de formation seulement (le formateur consulte, D46/D54).
 // Le formateur ne voit donc aucune action menant à « Accès refusé ».
 const ManagementMenu = () => {
   const { user } = useCurrentUser();
   const isSuperAdmin = canManageAccounts(user);
 
-  const tiles = managementTiles
-    .filter((tile) => !tile.superAdminOnly || isSuperAdmin)
-    .map((tile) => ({ ...tile, createPath: isSuperAdmin ? tile.createPath : undefined }));
+  const tiles = managementTiles.map((tile) => ({
+    ...tile,
+    createPath: isSuperAdmin ? tile.createPath : undefined,
+    managePath: isSuperAdmin ? tile.managePath : undefined,
+  }));
 
   return (
     <PageShell center className={styles.gestionPage}>

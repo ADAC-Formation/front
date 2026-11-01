@@ -1,4 +1,4 @@
-import { List, Plus } from "lucide-react";
+import { List, Plus, Tags } from "lucide-react";
 import { Link } from "react-router";
 import styles from "./ManagementTiles.module.css";
 
@@ -10,6 +10,8 @@ const ManagementTile = ({
   listLabel,
   createPath,
   listPath,
+  manageLabel,
+  managePath,
 }) => {
   return (
     <article
@@ -36,6 +38,13 @@ const ManagementTile = ({
           <List size={24} />
           <span>{listLabel}</span>
         </Link>
+
+        {managePath && (
+          <Link to={managePath} className={styles.action}>
+            <Tags size={24} />
+            <span>{manageLabel}</span>
+          </Link>
+        )}
       </div>
     </article>
   );

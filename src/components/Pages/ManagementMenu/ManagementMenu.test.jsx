@@ -45,20 +45,24 @@ describe('ManagementMenu', () => {
     })
   })
 
-  describe('tuile Catégories', () => {
-    it('la chargée de formation y accède et gère les catégories', async () => {
+  describe('gestion des catégories (action de la tuile Formations)', () => {
+    it('la chargée de formation gère les catégories depuis la tuile Formations', async () => {
       renderMenu('SUPER_ADMIN')
-      expect(await screen.findByRole('link', { name: 'Gérer les catégories' })).toHaveAttribute(
-        'href',
-        '/formations/categories',
-      )
-      expect(screen.getByText('Catégories')).toBeInTheDocument()
+      const link = await screen.findByRole('link', { name: 'Gérer les catégories' })
+      expect(link).toHaveAttribute('href', '/formations/categories')
+      expect(link.closest('article')).toHaveTextContent('Formations')
     })
 
-    it("le formateur n'a pas la tuile Catégories", async () => {
+    it("n'ajoute pas de tuile « Catégories » : les catégories ne concernent que les formations", async () => {
+      renderMenu('SUPER_ADMIN')
+      await screen.findByRole('link', { name: 'Gérer les catégories' })
+      expect(screen.queryByText('Catégories')).not.toBeInTheDocument()
+      expect(screen.getAllByRole('article')).toHaveLength(3)
+    })
+
+    it("le formateur n'a pas l'action", async () => {
       renderMenu('ADMIN')
       await screen.findByRole('link', { name: 'Consulter formations existantes' })
-      expect(screen.queryByText('Catégories')).not.toBeInTheDocument()
       expect(screen.queryByRole('link', { name: 'Gérer les catégories' })).not.toBeInTheDocument()
     })
   })
