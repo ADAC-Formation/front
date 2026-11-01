@@ -19,10 +19,11 @@ export function useFormations({ status } = {}) {
   })
 }
 
-export function useFormation(id) {
+export function useFormation(id, { enabled = true } = {}) {
   return useQuery({
     queryKey: formationDetailKey(id),
     queryFn: () => fetchFormation(id),
+    enabled,
   })
 }
 

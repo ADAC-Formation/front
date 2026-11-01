@@ -1,0 +1,236 @@
+/* Formulaire de formation (création et modification) : design de l'ancienne coque (D41),
+   sans la zone de documents ni la création de catégorie en ligne. */
+
+/* Le gabarit (dégagement sous le logo, marges, largeur) vient de `PageShell`. */
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- En-tête ---------- */
+
+.header {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  font-weight: 700;
+
+  color: var(--foreground);
+}
+
+.intro {
+  max-width: 700px;
+
+  margin: 0.75rem 0 0;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  color: var(--muted-foreground);
+}
+
+/* ---------- Carte ---------- */
+
+.card {
+  padding: 3rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------- Sections ---------- */
+
+.section {
+  margin: 0 0 2.5rem;
+  padding: 0;
+
+  border: none;
+}
+
+.section:last-of-type {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  margin: 0 0 0.35rem;
+
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.sectionDescription {
+  margin: 0 0 1.5rem;
+
+  font-size: 0.85rem;
+  line-height: 1.5;
+
+  color: var(--muted-foreground);
+}
+
+/* ---------- Grille ---------- */
+
+.formGrid {
+  display: grid;
+
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  gap: 1.5rem;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Messages ---------- */
+
+.notices {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  margin-bottom: 1.5rem;
+}
+
+.notices:empty {
+  display: none;
+}
+
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+}
+
+.fieldNotice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 0.75rem;
+
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+
+  border-top: 1px solid var(--border);
+}
+
+.cancelButton,
+.submitButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+  padding: 0.7rem 1.25rem;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.cancelButton,
+.secondaryButton {
+  border: 1px solid var(--border);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.submitButton {
+  border: 1px solid var(--foreground);
+
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.cancelButton:hover,
+.submitButton:hover,
+.secondaryButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+  .card {
+    padding: 2rem 1.5rem;
+
+    border-radius: 24px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .fullWidth {
+    grid-column: auto;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cancelButton,
+  .submitButton,
+  .secondaryButton {
+    transition: none;
+  }
+
+  .cancelButton:hover,
+  .submitButton:hover,
+  .secondaryButton:hover {
+    transform: none;
+  }
+}

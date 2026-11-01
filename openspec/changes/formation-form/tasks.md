@@ -24,9 +24,9 @@
 
 ## 5. Formulaire de création et de modification (TDD)
 
-- [ ] 5.1 RED : `src/features/formations/pages/FormationFormPage.test.jsx` — champs du contrat sans référence / public / lieu / documents, champs obligatoires vides sans appel, « Au » préremplie par « Du », plage inversée refusée, formation d'un jour, catégories actives listées (+ erreur avec « Réessayer »), formateur facultatif (`formateurId: null`) et choisi, corps de `POST`, création → redirection vers `/formations/<id>` avec « Formation créée », `400` en bandeau avec saisie conservée, bouton désactivé pendant l'envoi, annulation sans appel ; modification : préremplissage, seuls les champs modifiés, rien modifié → aucun appel, catégorie désactivée conservée, formation archivée refusée, `404`, `409` avec « Recharger », retour au détail avec « Formation mise à jour » ; erreurs liées aux champs ; un check jest-axe en création et un en modification ; confirmer RED
-- [ ] 5.2 Créer `FormationFormPage` et `FormationForm.module.css` (design de la coque, sections « Informations générales » et « Organisation », reprise de `CreateFormationPage.module.css` sans la section documents) ; GREEN
-- [ ] 5.3 Commit `feat: wire the formation form to the API`
+- [x] 5.1 RED : `src/features/formations/pages/FormationFormPage.test.jsx` — champs du contrat sans référence / public / lieu / documents, champs obligatoires vides sans appel, « Au » préremplie par « Du », plage inversée refusée, formation d'un jour, catégories actives listées (+ erreur avec « Réessayer »), formateur facultatif (`formateurId: null`) et choisi, corps de `POST`, création → redirection vers `/formations/<id>` avec « Formation créée », `400` en bandeau avec saisie conservée, bouton désactivé pendant l'envoi, annulation sans appel ; modification : préremplissage, seuls les champs modifiés, rien modifié → aucun appel, catégorie désactivée conservée, formation archivée refusée, `404`, `409` avec « Recharger », retour au détail avec « Formation mise à jour » ; erreurs liées aux champs ; un check jest-axe en création et un en modification ; confirmer RED
+- [x] 5.2 Créer `FormationFormPage` et `FormationForm.module.css` (design de la coque, sections « Informations générales » et « Organisation », reprise de `CreateFormationPage.module.css` sans la section documents) ; GREEN
+- [x] 5.3 Commit `feat: wire the formation form to the API`
 
 ## 6. Détail, routes et nettoyage (TDD)
 
