@@ -152,18 +152,27 @@
     inset 0 -14px 28px -12px rgba(0, 0, 0, 0.30);
 }
 
-.tile:hover::after {
+.tile:hover::after,
+.tile:focus-within::after {
   transform: translateY(0);
 }
 
-.tile:hover .title {
+.tile:hover .title,
+.tile:focus-within .title {
   opacity: 0;
   transform: translateY(-20px);
 }
 
-.tile:hover .actions {
+.tile:hover .actions,
+.tile:focus-within .actions {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* Le focus clavier doit se voir sur la couleur de la tuile (l'anneau global y est peu contrasté). */
+.action:focus-visible {
+  outline: 3px solid var(--color-white);
+  outline-offset: 2px;
 }
 
 
@@ -193,4 +202,65 @@
 
 .tile:hover .icon {
   transform: scale(1.1);
+}
+
+/* Petits écrans : tuiles moins hautes et titres moins grands. Avant le bloc tactile : sur un
+   téléphone, la hauteur automatique de ce dernier doit l'emporter. */
+@media (max-width: 700px) {
+  .tile {
+    height: 260px;
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+
+  .icon svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .action {
+    padding: 12px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Sans survol possible (tablette, téléphone) : les actions restent affichées dans la tuile,
+   sous le titre, au lieu d'attendre un survol qui n'arrive pas. */
+@media (hover: none) {
+  .tile {
+    height: auto;
+    min-height: 260px;
+    gap: 1.25rem;
+  }
+
+  .tile::after {
+    display: none;
+  }
+
+  .tile:hover {
+    transform: none;
+  }
+
+  .actions {
+    position: static;
+    inset: auto;
+
+    padding: 0;
+
+    opacity: 1;
+    transform: none;
+  }
+
+  .tile:hover .title,
+  .tile:focus-within .title {
+    opacity: 1;
+    transform: none;
+  }
+
+  .action:hover {
+    transform: none;
+  }
 }

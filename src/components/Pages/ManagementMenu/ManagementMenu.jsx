@@ -1,4 +1,4 @@
-import { BookOpen, UserRound,GraduationCap} from "lucide-react";
+import { BookOpen, GraduationCap, Tags, UserRound } from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks";
 import { canManageAccounts } from "../../../features/accounts/accountKinds";
 import BackButton from "../../molecules/BackButton/BackButton";
@@ -34,14 +34,25 @@ const managementTiles = [
     createPath: "/admin/stagiaires/nouveau",
     listPath: "/admin/stagiaires",
   },
+  {
+    label: "Catégories",
+    icon: <Tags />,
+    color: "var(--color-green)",
+    listLabel: "Gérer les catégories",
+    listPath: "/formations/categories",
+    superAdminOnly: true,
+  },
 ];
 
-// Seule la chargée de formation crée des comptes ; le formateur les consulte (D54).
-const ACCOUNT_TILES = ["Formateurs", "Stagiaires"];
-
+// Création et catégories : chargée de formation seulement (le formateur consulte, D46/D54).
+// Le formateur ne voit donc aucune action menant à « Accès refusé ».
 const ManagementMenu = () => {
   const { user } = useCurrentUser();
-  const canCreateAccounts = canManageAccounts(user);
+  const isSuperAdmin = canManageAccounts(user);
+
+  const tiles = managementTiles
+    .filter((tile) => !tile.superAdminOnly || isSuperAdmin)
+    .map((tile) => ({ ...tile, createPath: isSuperAdmin ? tile.createPath : undefined }));
 
   return (
     <PageShell center className={styles.gestionPage}>
@@ -50,14 +61,8 @@ const ManagementMenu = () => {
       <h1 className={styles.title}>Gestion</h1>
 
       <div className={styles.tileContainer}>
-        {managementTiles.map((tile) => (
-          <ManagementTile
-            key={tile.label}
-            {...tile}
-            createPath={
-              ACCOUNT_TILES.includes(tile.label) && !canCreateAccounts ? undefined : tile.createPath
-            }
-          />
+        {tiles.map((tile) => (
+          <ManagementTile key={tile.label} {...tile} />
         ))}
       </div>
     </PageShell>
