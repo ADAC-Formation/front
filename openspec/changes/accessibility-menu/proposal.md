@@ -25,7 +25,7 @@ Le site de l'association (`adac.asso.fr`) propose une barre d'accessibilité ét
 - `accessibility-menu`: options, état et persistance du menu d'accessibilité, plan de site.
 
 ### Modified Capabilities
-- `display-preferences` (delta du change `ui-structure-cleanup`, pas encore archivé) : l'exigence « Grand texte » est remplacée par les paliers de taille de texte.
+- `display-preferences` : l'exigence « Grand texte » est remplacée par les paliers de taille de texte (delta dans ce change, spec principal déjà aligné).
 
 ## Impact
 
