@@ -83,7 +83,7 @@
   font-size: 2rem;
   font-weight: 700;
 
-  color: var(--color-white);
+  color: var(--tile-text, var(--color-white));
 
   transition:
     opacity 0.2s ease,
@@ -121,13 +121,13 @@
 
   border-radius: 16px;
 
-  color: var(--color-white);
+  color: var(--tile-text, var(--color-white));
   text-decoration: none;
 
   font-size: 1rem;
   font-weight: 600;
 
-  background: rgba(255, 255, 255, 0.15);
+  background: color-mix(in srgb, var(--tile-text, var(--color-white)) 15%, transparent);
 
   transition:
     background 0.2s ease,
@@ -135,7 +135,7 @@
 }
 
 .action:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: color-mix(in srgb, var(--tile-text, var(--color-white)) 25%, transparent);
   transform: translateX(5px);
 }
 
@@ -171,7 +171,7 @@
 
 /* Le focus clavier doit se voir sur la couleur de la tuile (l'anneau global y est peu contrasté). */
 .action:focus-visible {
-  outline: 3px solid var(--color-white);
+  outline: 3px solid var(--tile-text, var(--color-white));
   outline-offset: 2px;
 }
 
@@ -190,7 +190,7 @@
   align-items: center;
   justify-content: center;
 
-  color: var(--color-white);
+  color: var(--tile-text, var(--color-white));
 
   transition: transform 0.3s ease;
 }
