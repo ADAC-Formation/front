@@ -6,6 +6,9 @@
 
   width: clamp(220px, 66vw, 580px);
   height: auto;
+
+  /* Décoratif : son rectangle transparent dépasse sur le contenu et ne doit capter aucun clic (D63). */
+  pointer-events: none;
 }
 
 /* Sous 768 px l’en-tête (jusqu’à 260 px à 150 % de texte) recouvrirait la partie visible du logo : il passe sous la rangée d'icônes (D61). */
