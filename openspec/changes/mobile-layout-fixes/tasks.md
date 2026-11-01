@@ -11,10 +11,10 @@
 
 ## 3. En-tête et logo sans chevauchement (TDD)
 
-- [ ] 3.1 RED : test de feuille de style — `index.css` définit `--header-row` ; `Logo.module.css` contient, sous `max-width: 639px`, `top: var(--header-row)` ; confirmer RED
-- [ ] 3.2 Ajouter `--header-row` (4.5rem) dans `index.css` et la règle de décalage dans `Logo.module.css` ; GREEN
+- [x] 3.1 RED : test de feuille de style — `index.css` définit `--header-row` ; `Logo.module.css` contient, sous `max-width: 639px`, `top: var(--header-row)` ; confirmer RED
+- [x] 3.2 Ajouter `--header-row` (4.5rem) dans `index.css` et la règle de décalage dans `Logo.module.css` ; GREEN
 - [ ] 3.3 Vérification navigateur : à 320, 360, 390, 430, 600, 639 px puis 640, 768, 850, 1024, 1100, 1920 px (texte 100 % et 150 %), aucun rectangle d'icône d'en-tête ne recoupe la zone visible du logo, et la zone visible du logo reste au-dessus de `--page-top` (≤ 260 px sous 640 px) ; consigner les chiffres pour D61. Ajuster `--header-row` si besoin
-- [ ] 3.4 Commit `fix: stop the header from covering the logo on phones and small tablets`
+- [x] 3.4 Commit `fix: stop the header from covering the logo on phones and small tablets`
 
 ## 4. Menu Gestion : tuiles empilées, actions sans survol (TDD)
 

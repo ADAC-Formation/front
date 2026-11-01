@@ -28,3 +28,14 @@ describe('bouton de session (LoginButton)', () => {
     expect(css).not.toMatch(/min-width:\s*800px/)
   })
 })
+
+describe('logo sous la rangée d’icônes sur téléphone', () => {
+  it('index.css définit le jeton --header-row', () => {
+    expect(sheet('src/index.css')).toMatch(/--header-row:\s*[\d.]+rem/)
+  })
+
+  it('Logo.module.css décale le logo sous --header-row sous 640 px', () => {
+    const css = sheet('src/components/atoms/Logo/Logo.module.css')
+    expect(css).toMatch(/@media\s*\(max-width:\s*639px\)\s*\{[^@]*\.logo[^{]*\{[^}]*top:\s*var\(--header-row\)/)
+  })
+})

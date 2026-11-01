@@ -66,6 +66,8 @@ select {
   --logo-space: 220px;
   /* Dégagement sous le logo (position absolue) : 6rem de marge + 180px de logo. Voir PageShell. */
   --page-top: calc(6rem + 180px);
+  /* Rangée d'icônes de l'en-tête ; sous 640 px le logo passe dessous (D61). */
+  --header-row: 4.5rem;
 
   /* Semantic UI colors */
   --background: oklch(0.9880 0.0040 91.62);
