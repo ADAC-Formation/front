@@ -1,5 +1,6 @@
+import { existsSync, statSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { cssSheets, rulesOf, stripComments } from './css-sheets'
+import { cssSheets, jsxSources, rulesOf, stripComments } from './css-sheets'
 
 // Garde-fous de la mise en page mobile (D61). jsdom n'applique pas le CSS : ces tests lisent les feuilles de style ;
 // la géométrie réelle est vérifiée par le passage scripté consigné dans D61.
@@ -49,6 +50,23 @@ describe('taille du logo', () => {
 
   it('grandit avec la fenêtre sur tablette (66 vw, plafond 580 px)', () => {
     expect(css()).toMatch(/width:\s*clamp\(220px,\s*66vw,\s*580px\)/)
+  })
+})
+
+describe('logo décoratif', () => {
+  it('ne capte pas les clics : son rectangle transparent dépasse sur le contenu', () => {
+    const rule = rulesOf(sheet('src/components/atoms/Logo/Logo.module.css')).find(({ selector }) => /^\s*\.logo\s*$/.test(selector))
+    expect(rule.body).toMatch(/pointer-events:\s*none/)
+  })
+
+  it('les logos sont des WebP légers (D63)', () => {
+    const jsx = jsxSources['src/components/atoms/Logo/Logo.jsx']
+    expect(jsx).toMatch(/Logo-Blanc\.webp/)
+    expect(jsx).toMatch(/Logo-Dark\.webp/)
+    expect(existsSync('src/assets/Logo/Logo-Dark.png')).toBe(false)
+    expect(existsSync('src/assets/Logo/Logo-Blanc.png')).toBe(false)
+    expect(statSync('src/assets/Logo/Logo-Dark.webp').size).toBeLessThan(80 * 1024)
+    expect(statSync('src/assets/Logo/Logo-Blanc.webp').size).toBeLessThan(40 * 1024)
   })
 })
 

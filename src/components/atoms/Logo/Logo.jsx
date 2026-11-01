@@ -1,5 +1,5 @@
-import logoLight from "../../../assets/Logo/Logo-Blanc.png";
-import logoDark from "../../../assets/Logo/Logo-Dark.png";
+import logoLight from "../../../assets/Logo/Logo-Blanc.webp";
+import logoDark from "../../../assets/Logo/Logo-Dark.webp";
 import { useThemeContext } from "../../../hooks/use-theme-context";
 import styles from "./Logo.module.css";
 
