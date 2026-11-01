@@ -89,9 +89,9 @@ describe('changedFields', () => {
     expect(changedFields(secours, values)).toEqual({ categoryId: 2, formateurId: 12 })
   })
 
-  it('renvoie formateurId: null quand on repasse à « assigné à la chargée de formation »', () => {
+  it("envoie l'identifiant de la chargée de formation quand on repasse à « assigné à la chargée de formation » (le back ignore null en PUT)", () => {
     const values = { ...valuesFromFormation(secours), formateurId: '' }
-    expect(changedFields(secours, values)).toEqual({ formateurId: null })
+    expect(changedFields(secours, values, { trainingOfficerId: 1 })).toEqual({ formateurId: 1 })
   })
 
   it('ne renvoie rien pour le formateur quand la formation est déjà assignée à la chargée de formation', () => {

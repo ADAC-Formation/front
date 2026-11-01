@@ -8,6 +8,7 @@ import { PageShell } from '../../../templates/PageShell/PageShell'
 import { ROLES } from '../../../utils/roles'
 import { validateRequired } from '../../../utils/validation'
 import { useAccounts } from '../../accounts/hooks'
+import { useCurrentUser } from '../../auth/hooks'
 import { useCategories } from '../../categories/hooks'
 import { EMPTY_VALUES, changedFields, nextEndDate, toRequest, validateDateRange, valuesFromFormation } from '../formationForm'
 import { modaliteLabel } from '../formationLabels'
@@ -58,6 +59,7 @@ const ChoiceNotice = ({ query, loadingLabel }) => {
 
 const FormationForm = ({ formation, onReload }) => {
   const navigate = useNavigate()
+  const { user } = useCurrentUser()
   const create = useCreateFormation()
   const update = useUpdateFormation(formation?.id)
   const mutation = formation ? update : create
@@ -75,7 +77,7 @@ const FormationForm = ({ formation, onReload }) => {
   const submit = async (values) => {
     try {
       if (formation) {
-        const changes = changedFields(formation, values)
+        const changes = changedFields(formation, values, { trainingOfficerId: user?.id ?? null })
         if (Object.keys(changes).length === 0) return goTo(formation.id)
         await update.mutateAsync(changes)
         goTo(formation.id, 'formation-updated')

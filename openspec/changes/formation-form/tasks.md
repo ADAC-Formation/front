@@ -38,7 +38,7 @@
 
 ## 7. Documentation et passage manuel
 
-- [ ] 7.1 Mettre à jour `CLAUDE.md` (« État actuel » : formulaire de formation branché ; reste mocké : `utils/categories.js` pour 049), `docs/decisions-formations.md` si une décision a évolué, et `docs/points-pour-charlotte.md` (comportement observé de `PUT` avec `formateurId: null`)
+- [x] 7.1 Mettre à jour `CLAUDE.md` (« État actuel » : formulaire de formation branché ; reste mocké : `utils/categories.js` pour 049), `docs/decisions-formations.md` si une décision a évolué, et `docs/points-pour-charlotte.md` (comportement observé de `PUT` avec `formateurId: null`)
 - [ ] 7.2 Commit `docs: record the formation form`
 - [ ] 7.3 Passage manuel contre le vrai back local (comptes de `docs/dev/seed-local-admin.sql`, voir `docs/dev/README.md`) : créer une formation d'un jour et de plusieurs jours, sans formateur et avec un formateur, redirection vers le détail avec le bandeau, modifier un champ, repasser le formateur à « Assigné à la chargée de formation » (tester `formateurId: null`), erreur `400`, catégorie désactivée, formation archivée, lecture au clavier et zoom 200 % — ne pas cocher sans l'avoir fait (Docker requis)
 - [ ] 7.4 Relecture de Manon ; PR unique vers `dev` à sa demande seulement, aucun push avant

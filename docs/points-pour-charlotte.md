@@ -93,6 +93,14 @@ Le catalogue du site officiel numérote chaque formation par un code de référe
 ### Q10 — Sens de « PCB »
 Le site de l'ADAC parle d'« intervenants PCB » et d'une série « Spécial PCB » (PCB1 à PCB3) sans jamais définir le sigle. Que signifie-t-il, et faut-il en tenir compte dans le modèle (public cible, catégorie) ?
 
+### Q11 — Changer le formateur d'une formation : `PUT` ignore `null`, `PATCH /formateur` répond 500 (change `formation-form`)
+Constaté le 2026-11-01 contre le vrai back local (`dev`) :
+- `PUT /api/formations/{id}` avec `{"formateurId": null}` répond `200` mais **ne change rien** : `null` est traité comme « champ absent ». Seul un identifiant de formateur actif (ou de la chargée de formation) est pris en compte.
+- `PATCH /api/formations/{id}/formateur` (documenté « pas encore implémenté » dans `tech.md`) répond **`500`** au lieu d'un `404`/`501`.
+- À la **création**, `formateurId: null` fonctionne : la chargée de formation est assignée.
+
+Le front contourne : en modification, l'option « Assigné à la chargée de formation » envoie l'identifiant de la chargée connectée. Si le back préfère traiter `null` comme « auto-assigner » (comme à la création), ou implémenter le `PATCH`, le front pourra retirer ce détour. À confirmer.
+
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
 Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.

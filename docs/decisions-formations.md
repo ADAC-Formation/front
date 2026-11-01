@@ -88,3 +88,9 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - Date : 2026-11-01
 - **Décision** : le passage manuel contre le vrai back local (3 rôles, liste, détail, archivage, 404 formateur, 403 stagiaire, clavier, zoom) est validé par Manon. Deux ajustements demandés et faits : un espace entre le message « Formation introuvable ou non accessible » et le bouton « Retour » ; la page « Accès refusé » placée dans le gabarit de page (`PageShell`), sous le logo comme les autres contenus (valable pour toutes les pages qui l'affichent).
 - **Pourquoi** : constaté au passage manuel.
+
+## F15 — Modification : « Assigné à la chargée de formation » envoie l'identifiant de la chargée
+- Date : 2026-11-01
+- **Décision** : constaté sur le vrai back local, `PUT /formations/{id}` ignore `formateurId: null` (réponse `200`, aucun changement) et `PATCH /formations/{id}/formateur` répond `500`. En modification, l'option « Assigné à la chargée de formation » envoie donc l'identifiant de l'utilisatrice connectée ; à la création, `formateurId: null` reste correct (le back auto-assigne). Demande consignée : `points-pour-charlotte.md` Q11.
+- **Pourquoi** : sans cela, repasser une formation à la chargée de formation semblerait réussir sans rien changer.
+- **Alternatives écartées** : retirer l'option en modification ; utiliser le `PATCH` (non implémenté).

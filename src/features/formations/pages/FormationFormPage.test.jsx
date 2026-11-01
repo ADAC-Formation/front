@@ -6,7 +6,7 @@ import { Route, Routes, useLocation, useParams } from 'react-router'
 import FormationFormPage from './FormationFormPage'
 import { renderWithProviders } from '../../../test/render'
 import { server } from '../../../test/msw/server'
-import { API_URL, mockSession } from '../../../test/session'
+import { API_URL, USERS, mockSession } from '../../../test/session'
 import { FORMATEURS, mockAccountList } from '../../../test/accounts'
 import { mockCategories } from '../../../test/categories'
 import {
@@ -323,7 +323,7 @@ describe('FormationFormPage — modification', () => {
     expect(screen.getByRole('option', { name: 'Ancienne catégorie (désactivée)' })).toBeInTheDocument()
   })
 
-  it('repasse à « Assigné à la chargée de formation » en envoyant formateurId: null', async () => {
+  it("repasse à « Assigné à la chargée de formation » en envoyant l'id de la chargée (le back ignore null en PUT)", async () => {
     mockLists()
     mockFormationDetail(secours)
     const calls = mockUpdateFormation(secours)
@@ -333,7 +333,7 @@ describe('FormationFormPage — modification', () => {
     await userEvent.selectOptions(screen.getByLabelText('Formateur'), 'Assigné à la chargée de formation')
     await submit('Enregistrer')
     await screen.findByText(/détail 101/)
-    expect(calls.body).toEqual({ formateurId: null })
+    expect(calls.body).toEqual({ formateurId: USERS.SUPER_ADMIN.id })
   })
 
   it('refuse de modifier une formation archivée', async () => {

@@ -117,6 +117,10 @@ La route `/formations/:formationId/modifier` SHALL afficher le même formulaire,
 - **WHEN** elle ne change que l'intitulé puis valide
 - **THEN** `PUT /formations/101` reçoit uniquement `intitule`
 
+#### Scenario: Retour à la chargée de formation
+- **WHEN** elle choisit « Assigné à la chargée de formation » pour une formation qui avait un formateur
+- **THEN** `PUT /formations/101` reçoit `formateurId` égal à l'identifiant de la chargée connectée (le back ignore `formateurId: null` en `PUT`, `points-pour-charlotte.md` Q11)
+
 #### Scenario: Aucune modification
 - **WHEN** elle valide sans rien changer
 - **THEN** aucun appel n'est émis et elle revient au détail

@@ -43,10 +43,14 @@ export function toRequest(values) {
 }
 
 // Le back traite un champ absent comme « inchangé » : on n'envoie que ce qui a changé.
-export function changedFields(formation, values) {
+// `PUT` ignore aussi `formateurId: null` (constaté sur le vrai back, `points-pour-charlotte.md`) :
+// pour repasser une formation à la chargée de formation, on envoie son identifiant.
+export function changedFields(formation, values, { trainingOfficerId = null } = {}) {
   const original = toRequest(valuesFromFormation(formation))
   const edited = toRequest(values)
-  return Object.fromEntries(Object.entries(edited).filter(([field, value]) => value !== original[field]))
+  const changes = Object.fromEntries(Object.entries(edited).filter(([field, value]) => value !== original[field]))
+  if (changes.formateurId === null && trainingOfficerId !== null) changes.formateurId = trainingOfficerId
+  return changes
 }
 
 // Les champs vides sont signalés par la règle « obligatoire », pas ici.

@@ -65,7 +65,7 @@ Helpers MSW dans `src/test/formations.js` (`mockCreateFormation`, `mockUpdateFor
 
 ## Risks / Trade-offs
 
-- [`PUT` avec `formateurId: null` pour repasser à « chargée de formation » : le contrat ne le précise que pour `PATCH /formateur`] → on n'envoie `formateurId` que s'il a changé ; à vérifier au passage manuel ; en cas de refus du back, le consigner dans `points-pour-charlotte.md` et retirer l'option en modification.
+- [`PUT` ignore `formateurId: null` (constaté sur le vrai back le 2026-11-01 ; `PATCH /formateur` répond 500)] → en modification, « Assigné à la chargée de formation » envoie l'identifiant de la chargée connectée ; à la création `null` fonctionne. Consigné dans `points-pour-charlotte.md` Q11.
 - [Perte de la saisie au « Recharger » après un `409`] → le message l'annonce ; cas rare (deux modifications simultanées).
 - [`FormField` est partagé : l'étendre peut régresser les pages d'auth et de comptes] → l'ajout est rétrocompatible (`as="input"` par défaut) et leurs tests restent dans la suite.
 - [Catégorie ou formateur désactivés après chargement de la liste] → le `400` du back s'affiche tel quel.
@@ -77,4 +77,4 @@ Aucune donnée à migrer. Suppression de `CreateFormationPage` dans le commit qu
 
 ## Open Questions
 
-- Comportement du back pour `PUT` avec `formateurId: null` (voir Risques) : tranché au passage manuel, sans changer les specs.
+- Aucune : le comportement de `PUT` avec `formateurId: null` est tranché (voir Risques).
