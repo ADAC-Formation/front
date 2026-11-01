@@ -19,10 +19,11 @@ describe('ManagementMenu', () => {
     expect(screen.getAllByRole('link', { name: /^Consulter/ })).toHaveLength(3)
   })
 
-  it('le formateur ne peut que consulter les comptes (D54)', async () => {
+  it('le formateur ne peut que consulter : ni comptes (D54) ni formation à créer (D46)', async () => {
     renderMenu('ADMIN')
     expect(await screen.findAllByRole('link', { name: /^Consulter/ })).toHaveLength(3)
     expect(screen.queryByRole('link', { name: 'Créer un nouveau profil' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'Créer une nouvelle formation' })).not.toBeInTheDocument()
   })
 
   it('n’a aucune violation d’accessibilité (jest-axe)', async () => {
