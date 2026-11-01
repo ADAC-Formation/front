@@ -20,6 +20,13 @@ body {
   box-sizing: border-box;
 }
 
+/* Indicateur de focus clavier commun (WCAG 2.4.7). Ne jamais écrire `outline: none` sans
+   indicateur de remplacement : voir src/test/css-hygiene.test.js. */
+:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
 button,
 input,
 textarea,
@@ -45,6 +52,10 @@ select {
   --color-blue: #12427c;
   --color-soft-orange: #F7A062;
   --color-green:  #439224;
+  --color-neutral: #ccc;
+
+  /* Texte sur le jaune de marque : toujours sombre, quel que soit le mode. */
+  --color-on-yellow: oklch(0.2630 0.0115 225.65);
 
 
   /* Typography */
@@ -53,6 +64,8 @@ select {
 
   /* Layout */
   --logo-space: 220px;
+  /* Dégagement sous le logo (position absolue) : 6rem de marge + 180px de logo. Voir PageShell. */
+  --page-top: calc(6rem + 180px);
 
   /* Semantic UI colors */
   --background: oklch(0.9880 0.0040 91.62);
@@ -70,6 +83,16 @@ select {
   --accent-foreground: var(--foreground);
 
   --ring: var(--foreground);
+
+  /* Boutons d'action orange doux : fond et texte (redéfinis en contraste élevé). */
+  --color-action: var(--color-soft-orange);
+  --color-on-action: var(--background);
+}
+
+@media (max-width: 639px) {
+  :root {
+    --page-top: calc(5rem + 180px);
+  }
 }
 
 .dark {
@@ -116,5 +139,42 @@ select {
   --tile-dark: oklch(0.2630 0.0115 225.65);
 }
 
+/* Option « Grand texte » : toutes les tailles de police sont en rem et suivent cette base. */
+html.text-large {
+  font-size: 125%;
+}
 
+/*
+ * Option « Contraste élevé » (WCAG 1.4.6) : texte 7:1, bordures et anneau de focus 3:1.
+ * Valeurs en hexadécimal pour que les tests calculent les rapports (src/test/display-preferences.test.js).
+ * La spécificité (html + classes) l'emporte sur :root et .dark.
+ */
+html.high-contrast {
+  --background: #ffffff;
+  --foreground: #000000;
+  --card: #ffffff;
+  --card-foreground: #000000;
+  --muted: #ffffff;
+  --muted-foreground: #3a3a3a;
+  --border: #595959;
+  --input: #595959;
+  --ring: #000000;
+  --color-action: #ffe600;
+  --color-on-action: #000000;
+}
 
+html.dark.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --popover: #000000;
+  --popover-foreground: #ffffff;
+  --muted: #000000;
+  --muted-foreground: #d6d6d6;
+  --border: #a6a6a6;
+  --input: #a6a6a6;
+  --ring: #ffe600;
+  --color-action: #ffe600;
+  --color-on-action: #000000;
+}

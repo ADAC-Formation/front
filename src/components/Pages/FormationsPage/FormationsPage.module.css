@@ -17,8 +17,8 @@
   justify-content: center;
   padding: 0.7rem 1rem;
   border-radius: 12px;
-  background-color: var(--color-soft-orange);
-  color: var(--background);
+  background-color: var(--color-action);
+  color: var(--color-on-action);
   font-size: 0.875rem;
   font-weight: 500;
   text-decoration: none;
@@ -32,33 +32,6 @@
   transform: translateY(-1px);
 }
 
-.container {
-  width: min(80rem, 100%);
-  margin: 0 auto;
-  padding-top: 180px;
-}
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  text-decoration: none;
-  color: var(--muted-foreground);
-  transition: color 150ms ease;
-
-  /* Reset button styling */
-  border: none;
-  padding: 0;
-  background: none;
-  font-family: inherit;
-  cursor: pointer;
-}
-
-.back:hover {
-  color: var(--foreground);
-}
 
 
 .title {
@@ -109,6 +82,8 @@
 
 .searchContainer:focus-within {
   border-color: var(--foreground);
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
 }
 
 .searchContainer input {
@@ -155,7 +130,6 @@
   font-size: 0.875rem;
 
   cursor: pointer;
-  outline: none;
 }
 
 .sortContainer select:focus {

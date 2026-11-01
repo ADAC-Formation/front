@@ -8,6 +8,7 @@ import { ACCOUNT_KINDS, fullName } from '../accountKinds'
 import AccountNotFound from '../components/AccountNotFound'
 import { useAccount, useCreateAccount, useUpdateAccount } from '../hooks'
 import styles from './AccountPages.module.css'
+import { PageShell } from '../../../templates/PageShell/PageShell'
 
 const EMPTY_VALUES = { prenom: '', nom: '', email: '' }
 
@@ -58,7 +59,7 @@ const AccountForm = ({ config, account }) => {
   const otherError = mutation.error && mutation.error.status !== 409 ? mutation.error : null
 
   return (
-    <div className={styles.page}>
+    <PageShell className={styles.page}>
       {account ? (
         <BackButton to={`${config.basePath}/${account.id}`} />
       ) : (
@@ -122,7 +123,7 @@ const AccountForm = ({ config, account }) => {
           </button>
         </div>
       </form>
-    </div>
+    </PageShell>
   )
 }
 
@@ -135,18 +136,18 @@ const AccountFormPage = ({ kind }) => {
   if (!id) return <AccountForm config={config} />
   if (isLoading) {
     return (
-      <div className={styles.page}>
+      <PageShell className={styles.page}>
         <p role="status">Chargement…</p>
-      </div>
+      </PageShell>
     )
   }
   if (isError) {
     return error.status === 404 ? (
       <AccountNotFound backPath={config.basePath} backLabel={`Retour aux ${config.title.toLowerCase()}`} />
     ) : (
-      <div className={styles.page}>
+      <PageShell className={styles.page}>
         <Alert variant="error">{error.message}</Alert>
-      </div>
+      </PageShell>
     )
   }
 

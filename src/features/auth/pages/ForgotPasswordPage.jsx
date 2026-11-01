@@ -6,6 +6,7 @@ import TextLink from '../../../components/atoms/TextLink/TextLink'
 import { validateEmail } from '../../../utils/validation'
 import { useForgotPassword } from '../hooks'
 import styles from '../components/AuthForm.module.css'
+import { PageShell } from '../../../templates/PageShell/PageShell'
 
 // Message identique que le compte existe ou non (anti-énumération, US-003 AC-02) :
 // on n'affiche jamais le corps de la réponse, seulement ce texte fixe.
@@ -23,7 +24,7 @@ const ForgotPasswordPage = () => {
   const resetLink = `/reinitialisation?${new URLSearchParams({ email: getValues('email').trim() })}`
 
   return (
-    <div className={styles.page}>
+    <PageShell center>
       <div className={styles.content}>
         <h1 className={styles.title}>Mot de passe oublié</h1>
         <p className={styles.intro}>
@@ -54,7 +55,7 @@ const ForgotPasswordPage = () => {
         {forgot.isSuccess && <TextLink to={resetLink}>J&apos;ai déjà un code</TextLink>}
         <TextLink to="/login">Retour à la connexion</TextLink>
       </div>
-    </div>
+    </PageShell>
   )
 }
 

@@ -1,14 +1,15 @@
 import {
-  ArrowLeft,
   CalendarDays,
   UserRound,
   MapPin,
   UsersRound,
 } from "lucide-react";
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 import categories from "../../../utils/categories";
 import formations from "../../../utils/simFormations";
+import BackButton from "../../molecules/BackButton/BackButton";
 import styles from "./FormationDetails.module.css";
+import { PageShell } from "../../../templates/PageShell/PageShell";
 
 const FormationDetails = () => {
   const { formationId } = useParams();
@@ -19,9 +20,9 @@ const FormationDetails = () => {
 
   if (!formation) {
     return (
-      <div className={styles.container}>
+      <PageShell>
         <h1>Formation introuvable</h1>
-      </div>
+      </PageShell>
     );
   }
 
@@ -30,11 +31,8 @@ const category = categories.find(
 );
 
   return (
-    <div className={styles.container}>
-      <Link to="/formations" className={styles.back}>
-        <ArrowLeft size={16} />
-        Retour aux formations
-      </Link>
+    <PageShell>
+      <BackButton to="/formations">Retour aux formations</BackButton>
 
       <article
         className={styles.card}
@@ -94,7 +92,7 @@ const category = categories.find(
           </div>
         </div>
       </article>
-    </div>
+    </PageShell>
   );
 };
 

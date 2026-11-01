@@ -1,47 +1,13 @@
 
 /* ---------- Page ---------- */
 
-.container {
-  width: min(80rem, 100%);
-  margin: 0 auto;
 
-  padding-top: 220px;
-  padding-bottom: 60px;
-}
-
-
-/* ---------- Back ---------- */
-
-.back {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  margin-bottom: 1.5rem;
-
-  border: none;
-  padding: 0;
-
-  background: none;
-
-  font-size: 0.875rem;
-  font-weight: 500;
-
-  color: var(--muted-foreground);
-
-  cursor: pointer;
-
-  transition: color 150ms ease;
-}
-
-.back:hover {
-  color: var(--foreground);
-}
 
 
 /* ---------- Header ---------- */
 
 .header {
+  margin-top: 1.5rem;
   margin-bottom: 2rem;
 }
 
@@ -165,8 +131,6 @@
   color: var(--foreground);
 
   font-size: 0.875rem;
-
-  outline: none;
 
   transition:
     border-color 150ms ease,

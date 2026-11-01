@@ -10,6 +10,7 @@ import AccountNotFound from '../components/AccountNotFound'
 import AccountNotice from '../components/AccountNotice'
 import { useAccount, useSetAccountActive } from '../hooks'
 import styles from './AccountPages.module.css'
+import { PageShell } from '../../../templates/PageShell/PageShell'
 
 // Détail d'un compte. La chargée de formation peut le modifier, le suspendre ou le réactiver ;
 // le formateur le consulte seulement (D54). Tout le contenu est rendu en texte.
@@ -25,9 +26,9 @@ const AccountDetailPage = ({ kind }) => {
 
   if (isLoading) {
     return (
-      <div className={styles.page}>
+      <PageShell className={styles.page}>
         <p role="status">Chargement…</p>
-      </div>
+      </PageShell>
     )
   }
 
@@ -35,12 +36,12 @@ const AccountDetailPage = ({ kind }) => {
     return error.status === 404 ? (
       <AccountNotFound backPath={config.basePath} backLabel={`Retour aux ${config.title.toLowerCase()}`} />
     ) : (
-      <div className={styles.page}>
+      <PageShell className={styles.page}>
         <Alert variant="error">{error.message}</Alert>
         <button type="button" className={styles.submitButton} onClick={() => refetch()}>
           Réessayer
         </button>
-      </div>
+      </PageShell>
     )
   }
 
@@ -50,7 +51,7 @@ const AccountDetailPage = ({ kind }) => {
   }
 
   return (
-    <div className={styles.page}>
+    <PageShell className={styles.page}>
       <BackButton to={config.basePath}>Retour aux {config.title.toLowerCase()}</BackButton>
 
       <div className={styles.header}>
@@ -108,7 +109,7 @@ const AccountDetailPage = ({ kind }) => {
           {`${fullName(account)} ne pourra plus se connecter tant que le compte est suspendu.`}
         </ConfirmDialog>
       )}
-    </div>
+    </PageShell>
   )
 }
 
