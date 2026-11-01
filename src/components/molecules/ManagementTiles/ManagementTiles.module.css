@@ -101,7 +101,9 @@
   justify-content: center;
   gap: 18px;
 
+  /* Descendues sous le centre de la tuile (+3 rem en haut). */
   padding: 32px;
+  padding-top: calc(32px + 3rem);
 
   opacity: 0;
   transform: translateY(25px);
@@ -219,6 +221,10 @@
   .icon svg {
     width: 40px;
     height: 40px;
+  }
+
+  .actions {
+    padding: 24px;
   }
 
   .action {

@@ -39,6 +39,18 @@ describe('tuiles de gestion : actions accessibles au clavier', () => {
   })
 })
 
+describe('tuiles de gestion : position des actions', () => {
+  it('les actions sont descendues sous le centre de la tuile', () => {
+    const rule = find(TILES, /^\s*\.actions\s*$/)
+    expect(rule.body).toMatch(/padding-top:\s*calc\(32px\s*\+\s*3rem\)/)
+  })
+
+  it('sur petit écran, elles reprennent un remplissage normal pour tenir dans la tuile', () => {
+    const block = mediaBlock(TILES, '@media (max-width: 700px)')
+    expect(block).toMatch(/\.actions\s*\{[^}]*padding:\s*24px/)
+  })
+})
+
 describe('tuiles de gestion : écrans tactiles et petits écrans', () => {
   it('sans survol possible, les actions sont toujours visibles dans la tuile', () => {
     const block = mediaBlock(TILES, '@media (hover: none)')
