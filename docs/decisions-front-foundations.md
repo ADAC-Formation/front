@@ -404,3 +404,14 @@
 - **Pourquoi** : cohérence avec le site de l'association et meilleure couverture WCAG 1.4.4 / 1.4.3 / 1.4.12 pour des stagiaires aux besoins variés.
 - **Alternatives écartées** : intégrer le mode sombre au menu (recoupe « Contraste négatif »), garder deux tailles seulement, pointer le plan de site vers le site ADAC.
 - Branche : `feature/accessibility`.
+
+## D61 — Mise en page mobile : tuiles empilées, actions sans survol, en-tête et logo
+- Date : 2026-11-01
+- Change OpenSpec : `mobile-layout-fixes` (branche `feature/mobile-layout`).
+
+### Avant (mesure du 2026-11-01, `dev` au commit `307ca9e`)
+- **Protocole** : Chrome sans interface piloté par un script hors dépôt (`puppeteer-core`, aucune dépendance ajoutée), contre le vrai back local, session chargée de formation. Largeurs 320, 360, 390, 430, 600, 768, 850, 1024, 1100, 1280 et 1920 px, texte à 100 % puis 150 % (`text-step-3`). Pour chaque page (`/admin/gestion`, `/`) : largeur du texte de chaque libellé contre la largeur disponible dans la tuile, défilement horizontal, boîtes des boutons d'en-tête contre la zone visible du logo (rectangle des pixels non transparents de l'image).
+- **Libellés coupés, Gestion, texte 100 %** : coupés de 320 à 850 px (« Formateurs » 205 px de texte pour 6 à 161 px disponibles), encore « Formateurs » à 1024 px (205 > 203) ; entiers à partir de 1100 px. À 150 % : coupés jusqu'à 1280 px.
+- **Libellés coupés, accueil, texte 100 %** : coupés de 320 à 850 px (« Notifications » 112 à 125 px de texte pour 0 à 90 px), encore « Notifications » à 1024 px (125 > 118) ; entiers à partir de 1100 px. À 150 % : coupés jusqu'à 1280 px.
+- **Chevauchement en-tête / logo** : un bouton recoupe la zone visible du logo à 320, 360, 390 et 430 px (1 à 2 boutons), à 100 % comme à 150 % ; à 150 % aussi à 600, 850, 1024 et 1100 px. Pas de défilement horizontal, sauf accueil à 150 % et 320 / 360 px. À 850 px et 100 % la boîte de l'en-tête (516–850 px) recoupe la zone visible du logo (290–560 px) mais aucun bouton ne la touche : la bande 800–910 px relevée au proposal tient à la boîte avec le libellé « Se déconnecter » ; à garder en tête pour la mesure « Après ».
+- **Dégagement** : bas de la zone visible du logo à 251 px à partir de 1024 px (`--page-top` = 276 px, 260 px sous 640 px).

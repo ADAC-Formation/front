@@ -1,7 +1,7 @@
 ## 1. Préparation et mesure de départ
 
-- [ ] 1.1 Partir de `dev` à jour (branche `feature/mobile-layout` déjà créée) ; `npm run check` vert au départ (relancer si seul un test lent échoue sous charge). Vérifier : sortie de `npm run check`
-- [ ] 1.2 Relever la mesure « Avant » avec le passage scripté (Chrome sans interface, vrai back local, `npm run dev`) à 320, 360, 390, 430, 600, 768, 850, 1024, 1100, 1280 et 1920 px, texte à 100 % puis 150 % : libellés coupés (largeur du texte contre largeur disponible, menu Gestion et accueil), chevauchement en-tête / zone visible du logo, défilement horizontal. L'inscrire dans `docs/decisions-front-foundations.md` sous D61 (section « Avant ») ; vérifier qu'elle retrouve les constats du proposal (libellés coupés sous 1100 px, chevauchement ≤ 530 px et 800–910 px)
+- [x] 1.1 Partir de `dev` à jour (branche `feature/mobile-layout` déjà créée) ; `npm run check` vert au départ (relancer si seul un test lent échoue sous charge). Vérifier : sortie de `npm run check`
+- [x] 1.2 Relever la mesure « Avant » avec le passage scripté (Chrome sans interface, vrai back local, `npm run dev`) à 320, 360, 390, 430, 600, 768, 850, 1024, 1100, 1280 et 1920 px, texte à 100 % puis 150 % : libellés coupés (largeur du texte contre largeur disponible, menu Gestion et accueil), chevauchement en-tête / zone visible du logo, défilement horizontal. L'inscrire dans `docs/decisions-front-foundations.md` sous D61 (section « Avant ») ; vérifier qu'elle retrouve les constats du proposal (libellés coupés sous 1100 px, chevauchement ≤ 530 px et 800–910 px)
 
 ## 2. Bouton de session toujours nommé (TDD)
 
