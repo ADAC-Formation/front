@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import FormField from './FormField'
 
@@ -36,6 +37,68 @@ describe('FormField', () => {
     const { container, rerender } = render(<FormField label="Adresse e-mail" name="email" />)
     expect(await axe(container)).toHaveNoViolations()
     rerender(<FormField label="Adresse e-mail" name="email" error="Obligatoire." />)
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('FormField : liste déroulante et zone de texte (prop as)', () => {
+  it('rend une liste déroulante avec ses options quand as="select"', async () => {
+    render(
+      <FormField as="select" label="Modalité" name="modalite" defaultValue="">
+        <option value="">Choisir</option>
+        <option value="VISIO">Visio</option>
+        <option value="MIXTE">Mixte</option>
+      </FormField>,
+    )
+    const select = screen.getByLabelText('Modalité')
+    expect(select.tagName).toBe('SELECT')
+    expect(screen.getAllByRole('option')).toHaveLength(3)
+    await userEvent.selectOptions(select, 'MIXTE')
+    expect(select).toHaveValue('MIXTE')
+  })
+
+  it('rend une zone de texte quand as="textarea"', async () => {
+    render(<FormField as="textarea" label="Description" name="description" rows={4} />)
+    const textarea = screen.getByLabelText('Description')
+    expect(textarea.tagName).toBe('TEXTAREA')
+    await userEvent.type(textarea, 'Bonjour')
+    expect(textarea).toHaveValue('Bonjour')
+  })
+
+  it.each([
+    ['input', {}],
+    ['select', { as: 'select' }],
+    ['textarea', { as: 'textarea' }],
+  ])("relie l'erreur au champ (%s) par aria-invalid et aria-describedby", (_name, props) => {
+    render(
+      <FormField label="Champ" name="champ" error="Ce champ est obligatoire." {...props}>
+        {props.as === 'select' ? <option value="">Choisir</option> : undefined}
+      </FormField>,
+    )
+    const field = screen.getByLabelText('Champ')
+    expect(field).toHaveAttribute('aria-invalid', 'true')
+    expect(field).toHaveAttribute('aria-describedby', 'champ-error')
+    expect(screen.getByRole('alert')).toHaveTextContent('Ce champ est obligatoire.')
+    expect(screen.getByRole('alert')).toHaveAttribute('id', 'champ-error')
+  })
+
+  it("n'a pas d'attribut d'erreur sans erreur", () => {
+    render(<FormField as="select" label="Champ" name="champ" />)
+    const field = screen.getByLabelText('Champ')
+    expect(field).not.toHaveAttribute('aria-invalid')
+    expect(field).not.toHaveAttribute('aria-describedby')
+  })
+
+  it("n'a aucune violation d'accessibilité (jest-axe)", async () => {
+    const { container } = render(
+      <div>
+        <FormField label="Intitulé" name="intitule" required />
+        <FormField as="select" label="Modalité" name="modalite" error="Obligatoire.">
+          <option value="">Choisir</option>
+        </FormField>
+        <FormField as="textarea" label="Description" name="description" />
+      </div>,
+    )
     expect(await axe(container)).toHaveNoViolations()
   })
 })

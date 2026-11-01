@@ -2,9 +2,11 @@ import FormInput from "../../atoms/FormInput/FormInput";
 import Alert from "../../atoms/Alert/Alert";
 import styles from "./FormField.module.css";
 
+// `as` : "input" (défaut), "select" (avec ses <option> en enfants) ou "textarea".
 // `...inputProps` (onChange, onBlur, autoComplete, value, defaultValue…) et `ref` sont transmis
 // au champ : compatible avec `register` de React Hook Form comme avec un champ contrôlé.
 const FormField = ({
+  as,
   label,
   type = "text",
   name,
@@ -23,6 +25,7 @@ const FormField = ({
       </label>
 
       <FormInput
+        as={as}
         id={name}
         ref={ref}
         type={type}

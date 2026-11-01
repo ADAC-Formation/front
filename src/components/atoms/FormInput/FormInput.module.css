@@ -23,3 +23,14 @@
 .input::placeholder {
   color: var(--muted-foreground);
 }
+
+/* Zone de texte : hauteur libre, redimensionnable à la verticale. */
+.textarea {
+  height: auto;
+  min-height: 7.5rem;
+
+  padding: 0.7rem 14px;
+
+  resize: vertical;
+  line-height: 1.5;
+}

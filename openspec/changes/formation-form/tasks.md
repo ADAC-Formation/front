@@ -18,9 +18,9 @@
 
 ## 4. Champs de formulaire (TDD)
 
-- [ ] 4.1 RED : `src/components/molecules/FormField/FormField.test.jsx` — `as="select"` rend un `<select>` avec ses options, `as="textarea"` une zone de texte, étiquette associée, `aria-invalid` et `aria-describedby` sur erreur, comportement par défaut inchangé (`<input>`) ; confirmer RED
-- [ ] 4.2 Étendre `FormField` (prop `as`, `children`) et les styles de `FormInput` aux deux balises ; `npm run test -- FormField auth accounts` GREEN (pas de régression sur les pages d'auth et de comptes)
-- [ ] 4.3 Commit `feat: let FormField render select and textarea controls`
+- [x] 4.1 RED : `src/components/molecules/FormField/FormField.test.jsx` — `as="select"` rend un `<select>` avec ses options, `as="textarea"` une zone de texte, étiquette associée, `aria-invalid` et `aria-describedby` sur erreur, comportement par défaut inchangé (`<input>`) ; confirmer RED
+- [x] 4.2 Étendre `FormField` (prop `as`, `children`) et les styles de `FormInput` aux deux balises ; `npm run test -- FormField auth accounts` GREEN (pas de régression sur les pages d'auth et de comptes)
+- [x] 4.3 Commit `feat: let FormField render select and textarea controls`
 
 ## 5. Formulaire de création et de modification (TDD)
 
