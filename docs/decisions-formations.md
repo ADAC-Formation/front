@@ -46,3 +46,8 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Décision** : `FormationResponse` contient déjà `category` complète (`nom`, `couleur`, `isActive`, toujours renseignée, même désactivée). Le change `formations-list-detail` lit donc la catégorie dans la formation et n'appelle pas `/categories` ; cet endpoint sert au sélecteur (048) et à la gestion (049). `ListItem` reçoit la couleur en propriété ; `utils/simFormations.jsx` est supprimé, `utils/categories.js` reste jusqu'à 048/049 car `CreateFormationPage` et `CategoryManagement` l'utilisent.
 - **Pourquoi** : pas d'appel ni de jointure inutiles ; une seule source (le back).
 - **Alternatives écartées** : appeler `GET /categories` et joindre par id.
+
+## F8 — Constats d'implémentation de `formations-list-detail`
+- Date : 2026-11-01
+- **Décision** : (1) `ListItem` reçoit `categoryColor` et un `badge` optionnel (texte « Archivée ») au lieu de chercher la couleur dans `categories.js` ; (2) la feuille de style de la liste et du détail (`FormationPages.module.css`) reprend celle des comptes (D56) : même design, pas de feuille partagée entre features ; (3) la recherche ignore la casse et les accents (en plus de F5) ; (4) `src/components/Pages/Stagiaire/Formations/FormationsPage.jsx`, un espace réservé inutilisé, est laissé tel quel (hors périmètre) ; (5) le passage manuel contre le vrai back local reste à faire (Docker) : tâche 7.3 non cochée.
+- **Pourquoi** : garder le change borné et noter ce qui s'écarte du design initial.
