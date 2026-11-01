@@ -415,3 +415,13 @@
 - **Libellés coupés, accueil, texte 100 %** : coupés de 320 à 850 px (« Notifications » 112 à 125 px de texte pour 0 à 90 px), encore « Notifications » à 1024 px (125 > 118) ; entiers à partir de 1100 px. À 150 % : coupés jusqu'à 1280 px.
 - **Chevauchement en-tête / logo** : un bouton recoupe la zone visible du logo à 320, 360, 390 et 430 px (1 à 2 boutons), à 100 % comme à 150 % ; à 150 % aussi à 600, 850, 1024 et 1100 px. Pas de défilement horizontal, sauf accueil à 150 % et 320 / 360 px. À 850 px et 100 % la boîte de l'en-tête (516–850 px) recoupe la zone visible du logo (290–560 px) mais aucun bouton ne la touche : la bande 800–910 px relevée au proposal tient à la boîte avec le libellé « Se déconnecter » ; à garder en tête pour la mesure « Après ».
 - **Dégagement** : bas de la zone visible du logo à 251 px à partir de 1024 px (`--page-top` = 276 px, 260 px sous 640 px).
+
+### Après (mesure du 2026-11-01, branche `feature/mobile-layout`, mêmes largeurs et mêmes paliers)
+- **Résultat** : sur `/admin/gestion` et `/` (chargée de formation, 11 largeurs × 100 % et 150 % = 44 mesures) : 0 libellé coupé, 0 défilement horizontal, 0 bouton d'en-tête sur la zone visible du logo. Accueil en stagiaire (22 mesures) : idem. Gestion en formateur à 390, 768 et 1280 px, 100 % et 150 % : idem.
+- **Logo** : sous 640 px la zone visible du logo descend jusqu'à 167–183 px (100 %) et 203–264 px (150 %) ; `--page-top` vaut 260 px à 100 % et 5 rem + 180 px à 150 % (= 300 px), le contenu n'est donc pas recouvert. À partir de 640 px : inchangé (199 px à 768, 251 px à partir de 1024).
+- **Écart avec la conception** : l'en-tête avec libellé fait 436 px à 150 % (et non 345 px estimés) ; à 1100 px il touchait encore le logo. Seuil du libellé porté de 1100 à **1150 px** (balayage 1000–1400 px × 100, 112, 125, 150 % : plus aucun chevauchement).
+- **Interaction** (Gestion, 1280 px) : souris, 0/6 action visible au repos, le survol d'une tuile révèle les siennes ; Tab : chaque action focalisée est visible ; émulation tactile (390, 768 et 1280 px, `hover: none`) : 6/6 actions visibles, pas de défilement horizontal.
+- **Accueil à 1280 et 1920 px** : groupe de tuiles de 720 px de large, identique à « Avant ».
+- **Constat sur l'étiquette de tablette** : entre 640 et 1149 px l'en-tête n'a que les trois icônes ; le libellé « Se déconnecter » reste lu par les lecteurs d'écran. À valider par Manon (revue 7.2).
+- **Décision annexe** : le formateur ne voit plus « Créer une nouvelle formation » dans le menu Gestion (D46, confirmé par Manon) ; la garde de la route `/formations/creer` n'a pas été vérifiée dans ce change.
+- **Alternatives écartées** : voir `design.md` du change.
