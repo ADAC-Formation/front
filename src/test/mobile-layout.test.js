@@ -34,9 +34,21 @@ describe('logo sous la rangée d’icônes sur téléphone', () => {
     expect(sheet('src/index.css')).toMatch(/--header-row:\s*[\d.]+rem/)
   })
 
-  it('Logo.module.css décale le logo sous --header-row sous 640 px', () => {
+  it('Logo.module.css décale le logo sous --header-row sous 768 px', () => {
     const css = sheet('src/components/atoms/Logo/Logo.module.css')
-    expect(css).toMatch(/@media\s*\(max-width:\s*639px\)\s*\{[^@]*\.logo[^{]*\{[^}]*top:\s*var\(--header-row\)/)
+    expect(css).toMatch(/@media\s*\(max-width:\s*767px\)\s*\{[^@]*\.logo[^{]*\{[^}]*top:\s*var\(--header-row\)/)
+  })
+})
+
+describe('taille du logo', () => {
+  const css = () => sheet('src/components/atoms/Logo/Logo.module.css')
+
+  it('prend presque toute la largeur sur téléphone (plafond 420 px pour rester sous --page-top)', () => {
+    expect(css()).toMatch(/@media\s*\(max-width:\s*767px\)\s*\{[^@]*\.logo[^{]*\{[^}]*width:\s*min\(96vw,\s*420px\)/)
+  })
+
+  it('grandit avec la fenêtre sur tablette (66 vw, plafond 580 px)', () => {
+    expect(css()).toMatch(/width:\s*clamp\(220px,\s*66vw,\s*580px\)/)
   })
 })
 

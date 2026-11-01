@@ -17,7 +17,7 @@ Ces défauts ne sont pas dus à `ui-structure-cleanup` ; ils étaient hors de so
 
 - **Tuiles qui tiennent toujours** : le menu Gestion passe d'une grille de 3 colonnes à une seule colonne quand il n'y a pas la place, et l'accueil empile ses tuiles ; les seuils sont exprimés en `rem` dans des requêtes de conteneur, donc ils suivent « Grand texte » (jusqu'à 150 %). Aucun libellé coupé, à aucune largeur, à aucun palier de taille de texte.
 - **Actions des tuiles toujours accessibles** : sur écran tactile, en colonne unique et au focus clavier, les liens « Créer… » / « Consulter… » du menu Gestion sont visibles sans survol ; la révélation au survol est conservée sur grand écran avec souris.
-- **En-tête et logo ne se chevauchent plus** : sous 640 px le logo descend sous la rangée d'icônes ; le libellé « Se déconnecter » n'apparaît qu'à partir de 1150 px (au lieu de 800 px), là où il ne rencontre plus le logo, y compris en grand texte.
+- **En-tête et logo ne se chevauchent plus** : sous 768 px le logo descend sous la rangée d'icônes ; le libellé « Se déconnecter » n'apparaît qu'à partir de 1150 px (au lieu de 800 px), là où il ne rencontre plus le logo, y compris en grand texte.
 - **Bouton de session nommé partout** : le libellé reste dans l'arbre d'accessibilité quand il est masqué visuellement (masquage « lecteur d'écran seulement », pas `display: none`).
 - **Garde-fous** : tests de feuilles de style (seuils, masquage non destructif) et mesure géométrique en navigateur consignée dans une décision (D61).
 
@@ -37,7 +37,7 @@ Ces défauts ne sont pas dus à `ui-structure-cleanup` ; ils étaient hors de so
 
 ## Impact
 
-- **Code** : `components/molecules/ManagementTiles/` et `components/Pages/ManagementMenu/` (grille, mode statique, focus), `components/molecules/TileGroup/` et `components/atoms/Tile/` (accueil), `components/atoms/Logo/Logo.module.css` (décalage sous 640 px), `components/atoms/LoginButton/` (libellé masqué visuellement, seuil 1150 px), `index.css` (jeton de hauteur de la rangée d'en-tête, classe utilitaire « lecteur d'écran seulement » si elle y est mise en commun).
+- **Code** : `components/molecules/ManagementTiles/` et `components/Pages/ManagementMenu/` (grille, mode statique, focus), `components/molecules/TileGroup/` et `components/atoms/Tile/` (accueil), `components/atoms/Logo/Logo.module.css` (décalage sous 768 px), `components/atoms/LoginButton/` (libellé masqué visuellement, seuil 1150 px), `index.css` (jeton de hauteur de la rangée d'en-tête, classe utilitaire « lecteur d'écran seulement » si elle y est mise en commun).
 - **Tests** : garde-fous sur feuilles de style (`src/test/`), tests de composants (nom accessible du bouton de session, actions du menu Gestion présentes dans le DOM), jest-axe sur le menu Gestion et l'accueil ; vérification géométrique en navigateur (hors suite, consignée dans D61).
 - **Docs** : `docs/decisions-front-foundations.md` (D61), `docs/design-front.md` (seuils et comportement des tuiles), `CLAUDE.md` si une règle d'usage s'ajoute.
 - **Dépendances** : aucune.

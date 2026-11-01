@@ -32,7 +32,7 @@
 
 ## 6. Garde-fou d'ensemble et documentation
 
-- [x] 6.1 Rejouer la matrice complète du passage scripté (1.2) et compléter D61 (« Après », protocole, tableau de chiffres, constat sur l'étiquette de tablette) ; mettre à jour `docs/design-front.md` (seuils : tuiles à 56 rem / 40 rem de conteneur, libellé d’en-tête à 1150 px, logo sous la rangée d'icônes sous 640 px, bouton de session nommé) et `CLAUDE.md` (« État actuel » : tuiles par requêtes de conteneur en `rem`, ne pas écrire de libellé en `display: none`) ; vérifier que les chiffres de D61 viennent des mesures
+- [x] 6.1 Rejouer la matrice complète du passage scripté (1.2) et compléter D61 (« Après », protocole, tableau de chiffres, constat sur l'étiquette de tablette) ; mettre à jour `docs/design-front.md` (seuils : tuiles à 56 rem / 40 rem de conteneur, libellé d’en-tête à 1150 px, logo sous la rangée d'icônes sous 768 px, bouton de session nommé) et `CLAUDE.md` (« État actuel » : tuiles par requêtes de conteneur en `rem`, ne pas écrire de libellé en `display: none`) ; vérifier que les chiffres de D61 viennent des mesures
 - [x] 6.2 `npm run check` vert (lint, tests, build, budget du bundle) ; commit `docs: record the responsive layout rules and measurements`
 
 ## 7. Passage manuel et relecture
