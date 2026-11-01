@@ -7,6 +7,7 @@ import ListItem from '../../../components/molecules/ListItem/ListItem'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 import { MANAGEMENT_ROLES, ROLES } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
+import FormationNotice from '../components/FormationNotice'
 import { formatDateRange, formateurName, modaliteLabel } from '../formationLabels'
 import { useFormations } from '../hooks'
 import { SORT_OPTIONS, filterFormations, sortFormations } from '../listView'
@@ -120,6 +121,10 @@ const FormationListPage = () => {
       {isFormateur && (
         <RadioPills legend="Périmètre" name="perimetre-formations" filters={SCOPE_FILTERS} value={scope} onChange={setScope} />
       )}
+
+      <div className={styles.notices}>
+        <FormationNotice />
+      </div>
 
       <section className={styles.card}>
         {isLoading && <p role="status">Chargement…</p>}

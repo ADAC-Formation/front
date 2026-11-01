@@ -1,0 +1,217 @@
+import { screen, waitFor, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { axe } from 'jest-axe'
+import { Route, Routes } from 'react-router'
+import FormationDetailPage from './FormationDetailPage'
+import FormationListPage from './FormationListPage'
+import { renderWithProviders } from '../../../test/render'
+import { mockSession } from '../../../test/session'
+import {
+  FORMATIONS,
+  mockArchive,
+  mockFormationDetail,
+  mockFormationList,
+  mockInscriptions,
+} from '../../../test/formations'
+
+const [secours, excel, postures] = FORMATIONS
+
+function renderDetail(role, formation) {
+  mockSession(role)
+  return renderWithProviders(
+    <Routes>
+      <Route path="/formations/:formationId" element={<FormationDetailPage />} />
+      <Route path="/formations" element={<FormationListPage />} />
+    </Routes>,
+    { route: `/formations/${formation.id}`, withSession: true },
+  )
+}
+
+const archiveButton = () => screen.queryByRole('button', { name: 'Archiver' })
+
+describe('FormationDetailPage', () => {
+  it('affiche un état de chargement puis les informations de la formation', async () => {
+    mockFormationDetail(secours)
+    mockInscriptions(101)
+    renderDetail('SUPER_ADMIN', secours)
+    expect(screen.getByText('Chargement…')).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
+    expect(screen.getByText('Secourisme')).toBeInTheDocument()
+    expect(screen.getByText('Gestes de premiers secours.')).toBeInTheDocument()
+    expect(screen.getByText('du 10 mars 2026 au 12 mars 2026')).toBeInTheDocument()
+    expect(screen.getByText('Présentiel')).toBeInTheDocument()
+    expect(screen.getByText('Formateur Dev')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Retour aux formations' })).toHaveAttribute('href', '/formations')
+  })
+
+  it("n'affiche pas de description absente et indique l'absence d'inscrits", async () => {
+    mockFormationDetail(excel)
+    mockInscriptions(102, [])
+    renderDetail('SUPER_ADMIN', excel)
+    await screen.findByRole('heading', { level: 1, name: 'Excel niveau 1' })
+    expect(screen.queryByText('null')).not.toBeInTheDocument()
+    expect(await screen.findByText('Aucun stagiaire inscrit')).toBeInTheDocument()
+  })
+
+  it('rend le contenu du back en texte, jamais en HTML', async () => {
+    const hostile = { ...secours, description: '<script>alert(1)</script><b>gras</b>' }
+    mockFormationDetail(hostile)
+    mockInscriptions(101)
+    const { container } = renderDetail('SUPER_ADMIN', hostile)
+    expect(await screen.findByText('<script>alert(1)</script><b>gras</b>')).toBeInTheDocument()
+    expect(container.querySelector('script')).toBeNull()
+    expect(container.querySelector('b')).toBeNull()
+  })
+
+  it('affiche le badge « Archivée » sans action sur une formation archivée', async () => {
+    mockFormationDetail(postures)
+    mockInscriptions(103)
+    renderDetail('SUPER_ADMIN', postures)
+    await screen.findByRole('heading', { level: 1, name: 'Gestes et postures' })
+    expect(screen.getByText('Archivée')).toBeInTheDocument()
+    expect(screen.getByText('Ancienne catégorie')).toBeInTheDocument()
+    expect(archiveButton()).not.toBeInTheDocument()
+  })
+
+  it('affiche « Formation introuvable ou non accessible » sur un 404', async () => {
+    mockFormationDetail(secours, { errorStatus: 404 })
+    renderDetail('ADMIN', secours)
+    expect(await screen.findByText('Formation introuvable ou non accessible')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Retour aux formations' })).toHaveAttribute('href', '/formations')
+  })
+
+  it('affiche « Accès refusé » sur un 403', async () => {
+    mockFormationDetail(secours, { errorStatus: 403 })
+    renderDetail('STAGIAIRE', secours)
+    expect(await screen.findByRole('heading', { name: 'Accès refusé' })).toBeInTheDocument()
+  })
+
+  it('affiche une autre erreur avec « Réessayer »', async () => {
+    mockFormationDetail(secours, { errorStatus: 500 })
+    renderDetail('SUPER_ADMIN', secours)
+    expect(await screen.findByRole('alert')).toBeInTheDocument()
+    mockFormationDetail(secours)
+    mockInscriptions(101)
+    await userEvent.click(screen.getByRole('button', { name: 'Réessayer' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
+  })
+
+  it('réserve une section « Documents » sans appel au back', async () => {
+    mockFormationDetail(secours)
+    mockInscriptions(101)
+    renderDetail('SUPER_ADMIN', secours)
+    expect(await screen.findByRole('heading', { level: 2, name: 'Documents' })).toBeInTheDocument()
+    expect(screen.getByText(/arriveront bientôt/)).toBeInTheDocument()
+  })
+
+  describe('inscrits', () => {
+    it('liste les stagiaires pour la chargée de formation', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours)
+      const section = (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
+      expect(await within(section).findByText('Léa Petit')).toBeInTheDocument()
+      expect(within(section).getByText('lea@adac.test')).toBeInTheDocument()
+      expect(within(section).getByText('Omar Benali')).toBeInTheDocument()
+    })
+
+    it('liste les stagiaires pour le formateur', async () => {
+      mockFormationDetail(secours)
+      const calls = mockInscriptions(101)
+      renderDetail('ADMIN', secours)
+      expect(await screen.findByText('Léa Petit')).toBeInTheDocument()
+      expect(calls.count).toBe(1)
+    })
+
+    it("n'appelle pas les inscriptions pour un stagiaire et n'affiche que le nombre", async () => {
+      mockFormationDetail(secours)
+      const calls = mockInscriptions(101)
+      renderDetail('STAGIAIRE', secours)
+      await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })
+      expect(await screen.findByText('2 inscrits')).toBeInTheDocument()
+      await new Promise((resolve) => setTimeout(resolve, 50))
+      expect(calls.count).toBe(0)
+      expect(screen.queryByText('lea@adac.test')).not.toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: 'Stagiaires inscrits' })).not.toBeInTheDocument()
+    })
+
+    it('isole une erreur de la liste des inscrits', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101, [], { errorStatus: 500 })
+      renderDetail('SUPER_ADMIN', secours)
+      const section = (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
+      expect(await within(section).findByRole('alert')).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
+      mockInscriptions(101)
+      await userEvent.click(within(section).getByRole('button', { name: 'Réessayer' }))
+      expect(await within(section).findByText('Léa Petit')).toBeInTheDocument()
+    })
+  })
+
+  describe('archivage', () => {
+    it("n'est proposé qu'à la chargée de formation", async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('ADMIN', secours)
+      await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })
+      expect(archiveButton()).not.toBeInTheDocument()
+    })
+
+    it("n'est pas proposé au stagiaire", async () => {
+      mockFormationDetail(secours)
+      renderDetail('STAGIAIRE', secours)
+      await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })
+      expect(archiveButton()).not.toBeInTheDocument()
+    })
+
+    it('demande confirmation, archive puis revient à la liste avec une confirmation', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockFormationList()
+      const calls = mockArchive(secours)
+      renderDetail('SUPER_ADMIN', secours)
+      await userEvent.click(await screen.findByRole('button', { name: 'Archiver' }))
+      const dialog = screen.getByRole('dialog')
+      expect(calls.count).toBe(0)
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Archiver' }))
+      expect(await screen.findByRole('heading', { level: 1, name: 'Formations' })).toBeInTheDocument()
+      expect(calls.count).toBe(1)
+      expect(await screen.findByText('Formation archivée')).toBeInTheDocument()
+    })
+
+    it("n'appelle rien quand on annule et rend le focus au bouton", async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      const calls = mockArchive(secours)
+      renderDetail('SUPER_ADMIN', secours)
+      const button = await screen.findByRole('button', { name: 'Archiver' })
+      await userEvent.click(button)
+      await userEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Annuler' }))
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      expect(calls.count).toBe(0)
+      expect(button).toHaveFocus()
+    })
+
+    it('invite à recharger sur un 409 et reste sur le détail', async () => {
+      const detail = mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockArchive(secours, { errorStatus: 409 })
+      renderDetail('SUPER_ADMIN', secours)
+      await userEvent.click(await screen.findByRole('button', { name: 'Archiver' }))
+      await userEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Archiver' }))
+      expect(await screen.findByText(/modifiée entre-temps/)).toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
+      await userEvent.click(screen.getByRole('button', { name: 'Recharger' }))
+      await waitFor(() => expect(detail.count).toBe(2))
+      expect(screen.queryByText(/modifiée entre-temps/)).not.toBeInTheDocument()
+    })
+  })
+
+  it('ne présente aucune violation d’accessibilité', async () => {
+    mockFormationDetail(secours)
+    mockInscriptions(101)
+    const { container } = renderDetail('SUPER_ADMIN', secours)
+    await screen.findByText('Léa Petit')
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
