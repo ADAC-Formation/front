@@ -51,3 +51,10 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - Date : 2026-11-01
 - **Décision** : (1) `ListItem` reçoit `categoryColor` et un `badge` optionnel (texte « Archivée ») au lieu de chercher la couleur dans `categories.js` ; (2) la feuille de style de la liste et du détail (`FormationPages.module.css`) reprend celle des comptes (D56) : même design, pas de feuille partagée entre features ; (3) la recherche ignore la casse et les accents (en plus de F5) ; (4) `src/components/Pages/Stagiaire/Formations/FormationsPage.jsx`, un espace réservé inutilisé, est laissé tel quel (hors périmètre) ; (5) le passage manuel contre le vrai back local reste à faire (Docker) : tâche 7.3 non cochée.
 - **Pourquoi** : garder le change borné et noter ce qui s'écarte du design initial.
+
+## F9 — Après la création : redirection vers la formation créée
+- Date : 2026-11-01
+- **Décision** : à la validation du formulaire de création (TICKET-025), la chargée de formation est redirigée vers le détail de la formation qu'elle vient de créer (`/formations/:id`, id renvoyé par le `201` de `POST /formations`), avec le bandeau « Formation créée » passé par `location.state` (rien dans le stockage, D31). Pas de retour à la liste, pas de page qui reste affichée : l'action doit visiblement avoir réussi. Une erreur (400, 409) reste en ligne sur le formulaire, valeurs conservées.
+- **Pourquoi** : constaté par Manon au passage manuel : le formulaire actuel (coque mockée, `console.log` seulement) donne l'impression que rien ne s'est passé.
+- **Alternatives écartées** : retour à la liste ; rester sur le formulaire avec un message.
+- **Application** : critère de TICKET-025, à reprendre dans sa spec et ses tâches (le bandeau demandera d'ajouter la clé `formation-created` à `FormationNotice`, qui s'affichera sur le détail).
