@@ -98,3 +98,17 @@ describe('tuiles du tableau de bord (TileGroup)', () => {
     expect(base).not.toMatch(/2fr 1fr/)
   })
 })
+
+describe('grands écrans : l’espace est mieux occupé (D62)', () => {
+  it('le groupe de tuiles de l’accueil fait jusqu’à 60 rem', () => {
+    expect(sheet('src/components/molecules/TileGroup/TileGroup.module.css')).toMatch(/width:\s*min\(100%,\s*60rem\)/)
+  })
+
+  it('la grille de Gestion prend toute la largeur du gabarit et le titre ne flotte plus au milieu', () => {
+    const css = sheet('src/components/Pages/ManagementMenu/ManagementMenu.module.css')
+    const host = rulesOf(css).find(({ selector }) => /\.gridHost/.test(selector))
+    expect(host.body).toMatch(/width:\s*100%/)
+    const page = rulesOf(css).find(({ selector }) => /^\s*\.gestionPage\s*$/.test(selector))
+    expect(page.body).toMatch(/justify-content:\s*flex-start/)
+  })
+})

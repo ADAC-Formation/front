@@ -425,3 +425,11 @@
 - **Constat sur l'étiquette de tablette** : entre 640 et 1149 px l'en-tête n'a que les trois icônes ; le libellé « Se déconnecter » reste lu par les lecteurs d'écran. À valider par Manon (revue 7.2).
 - **Décision annexe** : le formateur ne voit plus « Créer une nouvelle formation » dans le menu Gestion (D46, confirmé par Manon) ; la garde de la route `/formations/creer` n'a pas été vérifiée dans ce change.
 - **Alternatives écartées** : voir `design.md` du change.
+
+## D62 — Grands écrans : tuiles plus larges, titre de Gestion sous le logo (précise D61)
+- Date : 2026-11-01
+- **Décision** : le groupe de tuiles de l'accueil passe de 45 rem (720 px) à 60 rem (960 px) de large maximum ; la grille de Gestion prend toute la largeur du gabarit (80 rem = 1280 px, contre 1152 px : `min(1200px, 90%)` d'un parent déjà plafonné) ; le titre « Gestion » n'est plus centré verticalement (`justify-content: flex-start` sur la page) et se place sous le logo. `PageShell` et `--page-top` ne changent pas (D57).
+- **Pourquoi** : sur un écran d'ordinateur portable (1440 px) l'accueil laissait 360 px de vide de chaque côté, et le titre de Gestion flottait à environ 120 px sous le logo. Retour de Manon pendant la revue de D61.
+- **Mesuré** (Chrome piloté, vrai back) : groupe d'accueil de 960 px à 1280 et 1920 px ; matrice de 64 mesures de D61 inchangée (0 libellé coupé, 0 défilement horizontal, 0 chevauchement). Sous 1024 px rien ne bouge : le groupe est déjà limité par la fenêtre.
+- **Alternatives écartées** : élargir `PageShell` (touche toutes les pages, D57) ; agrandir les tuiles en hauteur (le vide vertical sous les tuiles reste, il vient de la hauteur de l'écran).
+- Change OpenSpec : `mobile-layout-fixes`.

@@ -1,4 +1,6 @@
 .gestionPage {
+  /* Titre sous le logo plutôt que centré verticalement : pas de grand vide sur écran haut (D62). */
+  justify-content: flex-start;
   gap: 40px;
 }
 
@@ -12,7 +14,7 @@
 /* Conteneur de requête : les colonnes dépendent de la place disponible et de la taille du texte (rem), pas de la fenêtre (D61). */
 .gridHost {
   container-type: inline-size;
-  width: min(1200px, 90%);
+  width: 100%;
 }
 
 /* Par défaut : une colonne. */

@@ -1,7 +1,7 @@
 /* Conteneur de requête : la grille suit la place disponible et la taille du texte (rem), pas la fenêtre (D61). */
 .host {
     container-type: inline-size;
-    width: min(100%, 45rem);
+    width: min(100%, 60rem);
 }
 
 /* Par défaut : une colonne (grande tuile, puis les trois petites). */
