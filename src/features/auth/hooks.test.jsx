@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { QueryClient, QueryClientProvider, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useLocation } from 'react-router'
+import { Route, Routes, useLocation } from 'react-router'
 import { render } from '@testing-library/react'
 import { renderWithProviders } from '../../test/render'
 import { server } from '../../test/msw/server'
@@ -121,10 +121,11 @@ describe('useLogin', () => {
   })
 })
 
-function LogoutProbe() {
+// Écran protégé : observe des données comme une vraie page. Après la déconnexion le routeur le
+// démonte (comme dans l'application) ; s'il restait monté, il relancerait sa requête et
+// repeuplerait le cache selon le hasard du calendrier.
+function FormationsScreen() {
   const logout = useLogout()
-  const queryClient = useQueryClient()
-  const { user } = useCurrentUser()
   const { data } = useQuery({
     queryKey: ['formations'],
     queryFn: async () => (await apiClient.get('/formations')).data,
@@ -132,9 +133,29 @@ function LogoutProbe() {
   return (
     <>
       <button onClick={() => logout.mutate()}>quitter</button>
-      <p>{user ? user.role : 'visiteur'}</p>
       <p>{data ? 'formations affichées' : 'pas de formations'}</p>
+    </>
+  )
+}
+
+function LoggedOutScreen() {
+  const queryClient = useQueryClient()
+  const { user } = useCurrentUser()
+  return (
+    <>
+      <p>{user ? user.role : 'visiteur'}</p>
       <p>{queryClient.getQueryData(['formations']) ? 'cache plein' : 'cache vide'}</p>
+    </>
+  )
+}
+
+function LogoutApp() {
+  return (
+    <>
+      <Routes>
+        <Route path="/formations" element={<FormationsScreen />} />
+        <Route path="/login" element={<LoggedOutScreen />} />
+      </Routes>
       <Where />
     </>
   )
@@ -153,7 +174,7 @@ describe('useLogout', () => {
       http.get(`${API_URL}/formations`, () => HttpResponse.json([{ id: 1 }])),
       http.post(`${API_URL}/auth/logout`, respond),
     )
-    renderWithProviders(<LogoutProbe />, { route: '/formations', withSession: true })
+    renderWithProviders(<LogoutApp />, { route: '/formations', withSession: true })
     expect(await screen.findByText('formations affichées')).toBeInTheDocument()
     await userEvent.click(screen.getByText('quitter'))
     await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/login'))
