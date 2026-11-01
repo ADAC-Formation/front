@@ -27,7 +27,7 @@
 
 - [x] 5.1 RED : `FormationDetailPage.test.jsx` — champs affichés, description absente non rendue, contenu `<script>` rendu en texte, badge « Archivée » sans action, `404` « Formation introuvable ou non accessible », `403` « Accès refusé », inscrits listés pour `SUPER_ADMIN` et `ADMIN`, aucun appel aux inscriptions pour `STAGIAIRE` (nombre seul), erreur des inscrits isolée avec « Réessayer », section « Documents » sans appel `/documents`, bouton « Archiver » seulement pour `SUPER_ADMIN` sur une formation active, confirmation / annulation (focus revient sur le bouton), succès → retour à la liste avec bandeau, `409` → message de rechargement, check jest-axe ; confirmer RED
 - [x] 5.2 Créer `FormationDetailPage` (réutilise `ConfirmDialog`, `Alert`) ; GREEN
-- [ ] 5.3 Commit `feat: wire formation detail and archiving to the API`
+- [x] 5.3 Commit `feat: wire formation detail and archiving to the API`
 
 ## 6. Routes, nettoyage et vérifications (TDD)
 
