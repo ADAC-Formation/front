@@ -18,10 +18,10 @@
 
 ## 4. Menu Gestion : tuiles empilées, actions sans survol (TDD)
 
-- [ ] 4.1 RED : tests — composant `ManagementMenu` : chaque tuile contient ses liens d'action dans le DOM pour `SUPER_ADMIN` (créer + consulter) et `ADMIN` (consulter seulement) ; jest-axe sur la page ; feuille de style : la grille à trois colonnes n'existe que dans une requête `@container (min-width: …rem)`, le recouvrement au survol (`.tile:hover`, `::after`, `.actions` à `opacity: 0`) n'existe que sous `@media (hover: hover)`, une règle `:focus-within` révèle les actions ; confirmer RED
-- [ ] 4.2 Ajouter l'élément conteneur autour de la grille (`ManagementMenu`) ; écrire le CSS statique par défaut (une colonne, hauteur selon le contenu, icône et titre sur une ligne, actions visibles dessous, `overflow-wrap: anywhere` sur le titre, padding en `rem`) ; déplacer le comportement actuel (3 colonnes, 420 px, survol) sous `@media (hover: hover)` et `@container (min-width: 56rem)`, avec `:focus-within` ; GREEN
+- [x] 4.1 RED : tests — composant `ManagementMenu` : chaque tuile contient ses liens d'action dans le DOM pour `SUPER_ADMIN` (créer + consulter) et `ADMIN` (consulter seulement) ; jest-axe sur la page ; feuille de style : la grille à trois colonnes n'existe que dans une requête `@container (min-width: …rem)`, le recouvrement au survol (`.tile:hover`, `::after`, `.actions` à `opacity: 0`) n'existe que sous `@media (hover: hover)`, une règle `:focus-within` révèle les actions ; confirmer RED
+- [x] 4.2 Ajouter l'élément conteneur autour de la grille (`ManagementMenu`) ; écrire le CSS statique par défaut (une colonne, hauteur selon le contenu, icône et titre sur une ligne, actions visibles dessous, `overflow-wrap: anywhere` sur le titre, padding en `rem`) ; déplacer le comportement actuel (3 colonnes, 420 px, survol) sous `@media (hover: hover)` et `@container (min-width: 56rem)`, avec `:focus-within` ; GREEN
 - [ ] 4.3 Vérification navigateur : `/admin/gestion` à 320, 390, 600, 768, 1024, 1100, 1280 et 1920 px, texte 100 % et 150 % : libellés entiers, pas de défilement horizontal ; en émulation tactile (sans survol) à 1280 px, actions visibles ; à 1280 px avec souris, comportement de survol inchangé ; Tab affiche chaque action. Joindre les chiffres à D61
-- [ ] 4.4 Commit `fix: stack the management tiles and show their actions without hover`
+- [x] 4.4 Commit `fix: stack the management tiles and show their actions without hover`
 
 ## 5. Accueil : tuiles qui tiennent (TDD)
 

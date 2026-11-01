@@ -39,3 +39,33 @@ describe('logo sous la rangée d’icônes sur téléphone', () => {
     expect(css).toMatch(/@media\s*\(max-width:\s*639px\)\s*\{[^@]*\.logo[^{]*\{[^}]*top:\s*var\(--header-row\)/)
   })
 })
+
+describe('tuiles du menu Gestion', () => {
+  const tiles = 'src/components/molecules/ManagementTiles/ManagementTiles.module.css'
+  const menu = 'src/components/Pages/ManagementMenu/ManagementMenu.module.css'
+  const before = (css, marker) => css.slice(0, css.indexOf(marker) === -1 ? css.length : css.indexOf(marker))
+
+  it('la grille à trois colonnes n’existe que dans une requête @container en rem', () => {
+    const css = sheet(menu)
+    expect(css).toMatch(/@container\s*\(min-width:\s*[\d.]+rem\)/)
+    expect(before(css, '@container')).not.toMatch(/repeat\(3/)
+    expect(css).toMatch(/container-type:\s*inline-size/)
+  })
+
+  it('le recouvrement au survol n’existe que sous @media (hover: hover)', () => {
+    const css = sheet(tiles)
+    expect(css).toMatch(/@media\s*\(hover:\s*hover\)/)
+    const base = before(css, '@media (hover: hover)')
+    expect(base).not.toMatch(/\.tile:hover/)
+    expect(base).not.toMatch(/::after/)
+    expect(base).not.toMatch(/opacity:\s*0\s*;/)
+  })
+
+  it('le focus clavier révèle les actions (:focus-within)', () => {
+    expect(sheet(tiles)).toMatch(/\.tile:focus-within/)
+  })
+
+  it('le titre peut passer à la ligne plutôt qu’être coupé', () => {
+    expect(sheet(tiles)).toMatch(/overflow-wrap:\s*anywhere/)
+  })
+})

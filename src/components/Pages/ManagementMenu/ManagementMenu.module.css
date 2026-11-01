@@ -9,10 +9,23 @@
   font-size: 3rem;
 }
 
+/* Conteneur de requête : les colonnes dépendent de la place disponible et de la taille du texte (rem), pas de la fenêtre (D61). */
+.gridHost {
+  container-type: inline-size;
+  width: min(1200px, 90%);
+}
+
+/* Par défaut : une colonne. */
 .tileContainer {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
 
-  width: min(1200px, 90%);
+/* 3 × 17,5 rem de tuile + 2 espaces. */
+@container (min-width: 56rem) {
+  .tileContainer {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
 }

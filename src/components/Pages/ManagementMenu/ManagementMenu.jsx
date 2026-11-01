@@ -46,16 +46,18 @@ const ManagementMenu = () => {
     <PageShell center className={styles.gestionPage}>
       <h1 className={styles.title}> Gestion</h1>
 
-      <div className={styles.tileContainer}>
-        {managementTiles.map((tile) => (
-          <ManagementTile
-            key={tile.label}
-            {...tile}
-            createPath={
-              ACCOUNT_TILES.includes(tile.label) && !canCreateAccounts ? undefined : tile.createPath
-            }
-          />
-        ))}
+      <div className={styles.gridHost}>
+        <div className={styles.tileContainer}>
+          {managementTiles.map((tile) => (
+            <ManagementTile
+              key={tile.label}
+              {...tile}
+              createPath={
+                ACCOUNT_TILES.includes(tile.label) && !canCreateAccounts ? undefined : tile.createPath
+              }
+            />
+          ))}
+        </div>
       </div>
     </PageShell>
   );
