@@ -20,10 +20,13 @@ const contrast = (a, b) => {
   return (light + 0.05) / (dark + 0.05)
 }
 
-describe('Grand texte', () => {
-  it('html.text-large porte la taille de base à 125 %', () => {
-    expect(bodyOf('html.text-large')).toMatch(/font-size:\s*125%/)
-  })
+describe('Taille du texte', () => {
+  it.each([['1', '112.5%'], ['2', '125%'], ['3', '150%']])(
+    'html.text-step-%s porte la taille de base à %s',
+    (step, size) => {
+      expect(bodyOf(`html.text-step-${step}`)).toContain(`font-size: ${size}`)
+    },
+  )
 
   it('aucune taille de police en pixels (tout suit la taille de base)', () => {
     const violations = []
@@ -76,5 +79,25 @@ describe('Contraste élevé : étiquettes de catégorie', () => {
 
   it('ListItem ne fixe pas la couleur du texte en ligne (une feuille ne pourrait pas la remplacer)', () => {
     expect(jsxSources['src/components/molecules/ListItem/ListItem.jsx']).not.toMatch(/style=\{\{\s*color:/)
+  })
+})
+
+describe('Options du menu Accessibilité (D60)', () => {
+  it.each([
+    ['html.grayscale', /filter:\s*grayscale\(1\)/],
+    ['html.negative-contrast', /filter:\s*invert\(1\)/],
+    ['html.readable-font', /--font-sans:/],
+  ])('%s a une règle effective', (selector, expected) => {
+    expect(bodyOf(selector)).toMatch(expected)
+  })
+
+  it('html.underline-links souligne les liens', () => {
+    expect(bodyOf('html.underline-links a')).toMatch(/text-decoration:\s*underline/)
+  })
+
+  it('html.light-background impose un fond clair, aussi en mode sombre', () => {
+    const rule = indexRules.find(({ selector }) => selector.includes('html.dark.light-background'))
+    expect(rule?.selector).toContain('html.light-background')
+    expect(rule?.body).toMatch(/--background:/)
   })
 })

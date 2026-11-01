@@ -10,7 +10,7 @@
 - **Ambiance** : chaleureuse, institutionnelle et accessible — fidèle à la charte graphique ADAC
 - **Référence** : charte officielle ADAC + maquette de Manon (tableau de bord à tuiles colorées)
 - **Slogan logo** : « Le social autrement » (logos clair et sombre dans `src/assets/Logo/`)
-- **Modes d'affichage** : clair, sombre, grand texte, contraste élevé — réglables par l'utilisateur
+- **Modes d'affichage** : clair, sombre, taille du texte par paliers, niveau de gris, haut contraste, contraste négatif, arrière-plan clair, liens soulignés, police lisible — réglables par l'utilisateur
   (menu d'accessibilité dans l'en-tête), préférences mémorisées dans le navigateur (aucune donnée personnelle, D31)
 
 ---
@@ -82,7 +82,7 @@ Teintes de tuiles en sombre : `--rouge`, `--rose`, `--orange`, `--jaune`, `--noi
 | Corps, champs, boutons | 14 px | 400 / 600 | Plus Jakarta Sans / Syne |
 | Petits libellés, liens | 11–12 px | 400 | Plus Jakarta Sans |
 
-> Option « Grand texte » : classe `text-large` sur `<html>` ; la base passe à 125 % et toutes les tailles de police sont en `rem` (aucune en `px`, vérifié par test). Option « Contraste élevé » : classe `high-contrast` (clair) ou `high-contrast` + `dark` (sombre) ; jetons en hexadécimal, texte 7:1, bordures et anneau de focus 3:1 (D58).
+> Taille du texte : classes `text-step-1..3` sur `<html>` ; la base passe à 112,5 / 125 / 150 % (D60) et toutes les tailles de police sont en `rem` (aucune en `px`, vérifié par test). Option « Contraste élevé » : classe `high-contrast` (clair) ou `high-contrast` + `dark` (sombre) ; jetons en hexadécimal, texte 7:1, bordures et anneau de focus 3:1 (D58).
 
 ---
 
@@ -149,8 +149,9 @@ Base : `rem` / multiples de 4 px. Valeurs courantes observées :
 - Logo ADAC à gauche (réserve d'espace `--logo-space`)
 
 ### Menu d'accessibilité (`molecules/Accessibility`)
-- Panneau déroulant : « Taille du texte » (Normal / Grand) et « Contraste élevé » (Activé / Désactivé)
-- Fermeture au clic extérieur ; `aria-label` et `aria-expanded` sur le déclencheur
+- Panneau déroulant aligné sur celui du site ADAC (D60) : Augmenter / Diminuer le texte (paliers 100, 112,5, 125, 150 %), Niveau de gris, Haut contraste, Contraste négatif, Arrière-plan clair, Liens soulignés, Police lisible, Réinitialiser ; puis Plan de site (`/plan-du-site`) et Retour d'expérience (lien externe ADAC)
+- Bascules en `aria-pressed`, boutons de taille désactivés aux bornes ; le mode sombre garde son bouton dans la barre
+- Fermeture au clic extérieur ou Échap ; `aria-label` et `aria-expanded` sur le déclencheur
 
 ### Pages applicatives
 - `templates/PageShell` : gabarit commun (marges, centrage, hauteur minimale)
@@ -217,7 +218,7 @@ Points de rupture déjà présents dans le code : 639, 640, 700, 800, 1023, 1024
 - Cible **WCAG 2.1 AA**, `lang="fr"`, parcours complet au clavier, focus visible, champs étiquetés
 - Contraste vérifié dans les trois thèmes (clair, sombre, contraste élevé)
 - `aria-live` pour les erreurs et les notifications ; contrôle `jest-axe` par page (D4, D30)
-- Bascules : mode sombre, grand texte, contraste élevé
+- Bascules : mode sombre et options du menu d'accessibilité (D60)
 
 ---
 
@@ -238,7 +239,7 @@ Points de rupture déjà présents dans le code : 639, 640, 700, 800, 1023, 1024
 | Couleur primaire | `#cc3d34` (boutons) | Jaune `#f6d628` pour le bouton principal ; rouge pour la grande tuile |
 | Fond / texte | `#faf8f5` / `#1f2629` | `oklch(0.988 …)` / `oklch(0.263 …)` — équivalents visuels |
 | Rayons | tuiles 24 px, boutons 12 px, champs 6 px | tuiles 28 px, boutons 24 px, champs 14 px |
-| Mode sombre | bascule prévue | bascule + grand texte + contraste élevé |
+| Mode sombre | bascule prévue | bascule + options du menu d'accessibilité (D60) |
 | Navigation | topbar fixe blanche | en-tête flottant (icônes) sur le fond de page |
 | Tableau de bord | 4 tuiles Formations / Messages / Notifications / Profil | 4 tuiles Gestion (ou Mes formations) / Messages / Notifications / Profil |
 

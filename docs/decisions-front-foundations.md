@@ -397,3 +397,10 @@
 - **Vérifié** (Chrome piloté contre le vrai back, 4 largeurs) : en contraste élevé, clair et sombre, plus aucun texte visible sous 7:1 sur Formations, comptes et création ; le texte des étiquettes de catégorie prend `--foreground` (la couleur reste sur la barre). En grand texte, pas de débordement à 1280 px ni sur les pages d'authentification.
 - **Alternatives écartées** : corriger le contraste du blanc sur orange doux en mode normal (décision de design) ; un vrai parseur CSS pour les tests (règles volontairement simples).
 - Change OpenSpec : `ui-structure-cleanup`.
+
+## D60 — Menu d'accessibilité aligné sur celui du site ADAC
+- Date : 2026-11-01
+- **Décision** : le menu « Accessibilité » reprend les options du site `adac.asso.fr` : Augmenter / Diminuer le texte (paliers 100, 112, 125, 150 %, remplace le bascule normal/grand de D58), Niveau de gris, Haut contraste, Contraste négatif, Arrière-plan clair, Liens soulignés, Police lisible, Réinitialiser ; puis Plan de site (page interne `/plan-du-site`, entrées selon le rôle) et Retour d'expérience (lien externe vers `https://www.adac.asso.fr/contact-nouvelle-version/`). Chaque option est une classe sur `<html>` (`grayscale`, `high-contrast`, `negative-contrast`, `light-background`, `underline-links`, `readable-font`, `text-step-N`). Le mode sombre garde son bouton dédié, hors menu. Préférences d'affichage uniquement dans `localStorage` (D31) ; l'ancien `fontSize: "large"` est migré vers le palier 125 %.
+- **Pourquoi** : cohérence avec le site de l'association et meilleure couverture WCAG 1.4.4 / 1.4.3 / 1.4.12 pour des stagiaires aux besoins variés.
+- **Alternatives écartées** : intégrer le mode sombre au menu (recoupe « Contraste négatif »), garder deux tailles seulement, pointer le plan de site vers le site ADAC.
+- Branche : `feature/accessibility`.

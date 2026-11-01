@@ -33,6 +33,7 @@ export const routes = [
           { index: true, ...lazyPage(() => import("../components/Pages/Home/HomeRoute")) },
           { path: "formations", ...lazyPage(() => import("../components/Pages/FormationsPage/FormationsPage")) },
           { path: "formations/:formationId", ...lazyPage(() => import("../components/Pages/FormationDetails/FormationDetails")) },
+          { path: "plan-du-site", ...lazyPage(() => import("../components/Pages/SiteMapPage/SiteMapPage")) },
           { path: "profile", ...lazyPage(() => import("../components/Pages/Stagiaire/ProfilePage/ProfilePage")) },
           { path: "notifications", ...lazyPage(() => import("../components/Pages/Stagiaire/NotifPage/NotifPage")) },
           { path: "messages", ...lazyPage(() => import("../components/Pages/Stagiaire/Messages/MessagesPage")) },

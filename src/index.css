@@ -139,9 +139,55 @@ select {
   --tile-dark: oklch(0.2630 0.0115 225.65);
 }
 
-/* Option « Grand texte » : toutes les tailles de police sont en rem et suivent cette base. */
-html.text-large {
+/* Option « Augmenter / Diminuer le texte » (D60) : toutes les tailles de police sont en rem et suivent cette base. */
+html.text-step-1 {
+  font-size: 112.5%;
+}
+
+html.text-step-2 {
   font-size: 125%;
+}
+
+html.text-step-3 {
+  font-size: 150%;
+}
+
+/* Options d'affichage du menu Accessibilité (D60). */
+html.grayscale {
+  filter: grayscale(1);
+}
+
+html.negative-contrast {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+html.grayscale.negative-contrast {
+  filter: grayscale(1) invert(1);
+}
+
+/* Fond clair même si le mode sombre est actif : mêmes jetons que le mode clair. */
+html.light-background,
+html.dark.light-background {
+  --background: oklch(0.984 0.003 247.858);
+  --foreground: oklch(0.2630 0.0115 225.65);
+  --card: #ffffff;
+  --card-foreground: oklch(0.2630 0.0115 225.65);
+  --popover: #ffffff;
+  --popover-foreground: oklch(0.2630 0.0115 225.65);
+  --muted-foreground: oklch(0.45 0.01 225);
+  --border: oklch(0 0 0 / 15%);
+  --input: oklch(0 0 0 / 20%);
+}
+
+html.underline-links a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Polices système à large lisibilité : rien à télécharger (D31). */
+html.readable-font {
+  --font-sans: Verdana, Tahoma, "Trebuchet MS", sans-serif;
+  --font-display: Verdana, Tahoma, "Trebuchet MS", sans-serif;
 }
 
 /*
