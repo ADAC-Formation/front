@@ -44,8 +44,10 @@ const ManagementMenu = () => {
   const canCreateAccounts = canManageAccounts(user);
 
   return (
-    <PageShell center className={styles.gestionPage}>
-      <BackButton to="/" />
+    <PageShell className={styles.gestionPage}>
+      <div className={styles.backRow}>
+        <BackButton to="/" />
+      </div>
 
       <h1 className={styles.title}>Gestion</h1>
 
