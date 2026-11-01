@@ -21,7 +21,7 @@ const ListItem = ({ title, category, details, to }) => {
           <span
             className={styles.category}
             style={{
-              color: categoryItem?.color,
+              "--category-color": categoryItem?.color,
             }}
           >
             {category}

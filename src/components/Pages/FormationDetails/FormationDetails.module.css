@@ -63,6 +63,9 @@
   line-height: 1.15;
   font-weight: 700;
 
+  /* Grand texte sur mobile : un mot long ne doit pas déborder de la carte. */
+  overflow-wrap: break-word;
+
   color: var(--card-foreground);
 }
 
@@ -157,4 +160,9 @@
   .divider {
     margin: 2rem 0;
   }
+}
+
+/* Contraste élevé : le texte prend la couleur du texte courant ; la couleur reste portée par la barre. */
+:global(html.high-contrast) .category {
+  color: var(--foreground);
 }

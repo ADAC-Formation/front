@@ -50,6 +50,7 @@
 
 .category {
   display: inline-block;
+  color: var(--category-color);
 
   margin-bottom: 0.35rem;
 
@@ -172,4 +173,8 @@
   .item:hover .arrow {
     transform: translateX(3px);
   }
+}
+/* Contraste élevé : le texte prend la couleur du texte courant ; la couleur reste portée par la barre. */
+:global(html.high-contrast) .category {
+  color: var(--foreground);
 }

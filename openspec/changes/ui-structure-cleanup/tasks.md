@@ -35,17 +35,18 @@
 ## 6. Focus visible (TDD)
 
 - [x] 6.1 RED : la garde `outline: none` de 2.1 doit échouer sur les champs ; ajouter un test d'équivalent (règle globale `:focus-visible` à 2 px avec `--ring` dans `index.css`, anneau `:focus-within` sur les conteneurs de recherche) ; confirmer RED
-- [ ] 6.2 Ajouter la règle globale, retirer les `outline: none` de `FormInput`, des sélecteurs et champs de création de formation, de Formations (`searchContainer`, tri) et des comptes ; ajouter `:focus-within` aux conteneurs de recherche ; GREEN ; vérifier au clavier (Tab) sur Formations
+- [x] 6.2 Ajouter la règle globale, retirer les `outline: none` de `FormInput`, des sélecteurs et champs de création de formation, de Formations (`searchContainer`, tri) et des comptes ; ajouter `:focus-within` aux conteneurs de recherche ; GREEN ; vérifier au clavier (Tab) sur Formations
 - [x] 6.3 Commit `fix: restore a visible keyboard focus ring everywhere`
 
 ## 7. Documentation et passage manuel
 
 - [x] 7.1 Mettre à jour `docs/design-front.md` (écarts levés), `CLAUDE.md` (section « État actuel » : gabarit, options d'affichage, garde-fous) et noter dans `docs/decisions-front-foundations.md` le changement de destination du « Retour » (Catégories, Création) ; vérifier que `design-front.md` ne liste plus ces écarts
 - [x] 7.2 `npm run check` vert (lancer deux fois si le test d'auth instable échoue seul) ; commit `docs: record layout and display preferences cleanup`
-- [ ] 7.3 Passage manuel sur le vrai back local, à ≥ 1280, 768 et 390 px puis à ≥ 1920 px : dégagement sous le logo identique sur toutes les pages (y compris comptes), aucune superposition avec le logo, « Retour » partout, Tab visible sur chaque champ, « Grand texte » sans débordement (formulaires d'auth, boutons), « Contraste élevé » en clair et en sombre — ne pas cocher sans l'avoir fait
+- [x] 7.3 Passage manuel sur le vrai back local, à ≥ 1280, 768 et 390 px puis à ≥ 1920 px : dégagement sous le logo identique sur toutes les pages (y compris comptes), aucune superposition avec le logo, « Retour » partout, Tab visible sur chaque champ, « Grand texte » sans débordement (formulaires d'auth, boutons), « Contraste élevé » en clair et en sombre — ne pas cocher sans l'avoir fait
 - [ ] 7.4 Relecture de Manon ; merge dans `dev` uniquement à sa demande
 
 ## Workflow follow-up
 
 - Archiver le change après relecture (`/opsx:archive`).
 - Ouvrir à part le correctif du test d'auth instable.
+- Passage manuel fait avec Chrome piloté par script (pas à la main) contre le vrai back local : 1920 / 1280 / 768 / 390 px, Tab sur Formations, grand texte, contraste élevé clair et sombre (rapports calculés sur tous les textes visibles). Trouvailles : étiquettes de catégorie sous 7:1 (corrigé), titre du détail qui déborde en grand texte à 390 px (corrigé). Reste ouvert, antérieur à ce change : les tuiles du menu Gestion ne sont pas adaptées au mobile (trois colonnes étroites, libellés coupés à 390 px, même en texte normal) ; le logo passe sous les icônes de l'en-tête à 390 px.
