@@ -9,6 +9,15 @@
   font-size: 3rem;
 }
 
+/* Rapproche « Gestion » du logo sans déplacer les tuiles : une translation ne change pas la
+   mise en page. Réservé aux grands écrans, où il y a de la place entre le logo et le titre ;
+   le décalage suit la hauteur de l'écran (9 % de la hauteur, 100 px au plus). */
+@media (min-width: 1024px) {
+  .gestionPage h1 {
+    transform: translateY(calc(-1 * min(100px, 9vh)));
+  }
+}
+
 .tileContainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
