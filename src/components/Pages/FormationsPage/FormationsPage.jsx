@@ -10,10 +10,15 @@ import ListItem from "../../../components/molecules/ListItem/ListItem";
 import formations from "../../../utils/simFormations";
 import categories from "../../../utils/categories";
 import BackButton from "../../molecules/BackButton/BackButton";
+import { useCurrentUser } from "../../../features/auth/hooks";
+import { MANAGEMENT_ROLES } from "../../../utils/roles";
 import styles from "./FormationsPage.module.css";
 import { PageShell } from "../../../templates/PageShell/PageShell";
 
 const FormationsPage = () => {
+  const { user } = useCurrentUser();
+  // Le menu Gestion est réservé aux rôles de gestion : le stagiaire revient au tableau de bord.
+  const backTo = MANAGEMENT_ROLES.includes(user?.role) ? "/admin/gestion" : "/";
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState("date");
   const [selectedCategory, setSelectedCategory] = useState("Toutes");
@@ -54,7 +59,7 @@ const FormationsPage = () => {
 
   return (
     <PageShell>
-      <BackButton to="/admin/gestion">Retour</BackButton>
+      <BackButton to={backTo}>Retour</BackButton>
 
       <div className={styles.header}>
         <h1 className={styles.title}>Formations</h1>

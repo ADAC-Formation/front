@@ -34,6 +34,19 @@ describe.each([
   })
 })
 
+describe('lien « Retour » de la liste des formations selon le rôle', () => {
+  it.each([
+    ['SUPER_ADMIN', '/admin/gestion'],
+    ['ADMIN', '/admin/gestion'],
+    ['STAGIAIRE', '/'],
+  ])('%s est renvoyé vers %s (jamais vers une page interdite)', async (role, destination) => {
+    mockSession(role)
+    renderApp('/formations')
+    const link = await screen.findByRole('link', { name: /^Retour$/ })
+    expect(link).toHaveAttribute('href', destination)
+  })
+})
+
 describe('feuilles de style des pages', () => {
   it('aucune page ne redéfinit une règle .back (celle de BackButton suffit)', () => {
     const violations = []
