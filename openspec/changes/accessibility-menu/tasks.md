@@ -19,6 +19,6 @@
 
 ## 4. À faire
 
-- [ ] 4.1 Passage manuel dans le navigateur sur le vrai back local : gris, négatif, fond clair en sombre, police lisible, plan de site par rôle (D30)
-- [ ] 4.2 Mettre à jour `docs/design-front.md` si le menu y est décrit
+- [x] 4.1 Passage manuel dans le navigateur sur le vrai back local : gris, négatif, fond clair en sombre, police lisible, plan de site par rôle (D30)
+- [x] 4.2 Mettre à jour `docs/design-front.md` si le menu y est décrit
 - [ ] 4.3 Commit `feat: align accessibility menu with the ADAC site` ; relecture
