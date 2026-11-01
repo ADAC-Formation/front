@@ -76,14 +76,16 @@ const FormationDetailPage = () => {
     return (
       <PageShell className={styles.page}>
         <BackButton to={BACK_TO_LIST}>{BACK_LABEL}</BackButton>
-        <Alert variant="error">
-          {error.status === 404 ? 'Formation introuvable ou non accessible' : error.message}
-        </Alert>
-        {error.status !== 404 && (
-          <button type="button" className={styles.submitButton} onClick={() => refetch()}>
-            Réessayer
-          </button>
-        )}
+        <div className={styles.errorState}>
+          <Alert variant="error">
+            {error.status === 404 ? 'Formation introuvable ou non accessible' : error.message}
+          </Alert>
+          {error.status !== 404 && (
+            <button type="button" className={styles.submitButton} onClick={() => refetch()}>
+              Réessayer
+            </button>
+          )}
+        </div>
       </PageShell>
     )
   }

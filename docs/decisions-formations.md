@@ -83,3 +83,8 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Décision** : le formulaire propose le formateur parmi les formateurs actifs (`GET /users/formateurs?active=true`) ; sans choix, le back assigne la chargée de formation. La zone de dépôt de documents de la coque est retirée du formulaire et reviendra avec 027.
 - **Pourquoi** : le contrat l'impose ; les documents dépendent d'un autre ticket.
 - **Alternatives écartées** : pas de choix du formateur (toujours auto-assigné) ; zone de dépôt factice.
+
+## F14 — Passage manuel de `formations-list-detail` : résultats
+- Date : 2026-11-01
+- **Décision** : le passage manuel contre le vrai back local (3 rôles, liste, détail, archivage, 404 formateur, 403 stagiaire, clavier, zoom) est validé par Manon. Deux ajustements demandés et faits : un espace entre le message « Formation introuvable ou non accessible » et le bouton « Retour » ; la page « Accès refusé » placée dans le gabarit de page (`PageShell`), sous le logo comme les autres contenus (valable pour toutes les pages qui l'affichent).
+- **Pourquoi** : constaté au passage manuel.

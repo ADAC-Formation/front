@@ -80,6 +80,13 @@ describe('FormationDetailPage', () => {
     expect(screen.getByRole('link', { name: 'Retour aux formations' })).toHaveAttribute('href', '/formations')
   })
 
+  it("espace le message d'erreur du bouton « Retour »", async () => {
+    mockFormationDetail(secours, { errorStatus: 404 })
+    renderDetail('ADMIN', secours)
+    const message = await screen.findByText('Formation introuvable ou non accessible')
+    expect(message.parentElement.className).toMatch(/errorState/)
+  })
+
   it('affiche « Accès refusé » sur un 403', async () => {
     mockFormationDetail(secours, { errorStatus: 403 })
     renderDetail('STAGIAIRE', secours)
