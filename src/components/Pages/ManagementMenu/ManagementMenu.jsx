@@ -1,6 +1,7 @@
 import { BookOpen, UserRound,GraduationCap} from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks";
 import { canManageAccounts } from "../../../features/accounts/accountKinds";
+import BackButton from "../../molecules/BackButton/BackButton";
 import ManagementTile from "../../molecules/ManagementTiles/ManagementTiles";
 import { PageShell } from "../../../templates/PageShell/PageShell";
 import styles from "./ManagementMenu.module.css";
@@ -44,7 +45,9 @@ const ManagementMenu = () => {
 
   return (
     <PageShell center className={styles.gestionPage}>
-      <h1 className={styles.title}> Gestion</h1>
+      <BackButton to="/" />
+
+      <h1 className={styles.title}>Gestion</h1>
 
       <div className={styles.tileContainer}>
         {managementTiles.map((tile) => (

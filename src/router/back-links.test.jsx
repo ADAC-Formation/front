@@ -21,6 +21,7 @@ function renderApp(path) {
 
 // Lien « Retour » commun : un lien (pas un bouton) avec une destination explicite.
 describe.each([
+  ['/admin/gestion', 'Retour', '/'],
   ['/formations', 'Retour', '/admin/gestion'],
   ['/formations/categories', 'Retour', '/formations'],
   ['/formations/creer', 'Retour', '/formations'],
