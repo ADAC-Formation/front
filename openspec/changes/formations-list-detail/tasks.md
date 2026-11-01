@@ -31,10 +31,10 @@
 
 ## 6. Routes, nettoyage et vérifications (TDD)
 
-- [ ] 6.1 RED : tests du routeur — visiteur redirigé vers `/login` sur `/formations` et `/formations/:id`, les trois rôles accèdent à la liste, `/formations/creer` et `/formations/categories` restent réservés à `SUPER_ADMIN` ; confirmer RED (ou GREEN si déjà couvert, le dire)
-- [ ] 6.2 Pointer `router.jsx` sur `features/formations` (`lazyPage`), supprimer `components/Pages/FormationsPage`, `components/Pages/FormationDetails` et `utils/simFormations.jsx` (déplacer leurs feuilles de style) ; vérifier qu'aucun import ne subsiste (`grep simFormations src`) ; `utils/categories.js` reste pour 025/048/049
-- [ ] 6.3 `npm run check` vert (lint + tests + build + budget du bundle, une page ajoutée via `lazyPage`)
-- [ ] 6.4 Commit `refactor: remove mocked formations data and old formation pages`
+- [x] 6.1 RED : tests du routeur — visiteur redirigé vers `/login` sur `/formations` et `/formations/:id`, les trois rôles accèdent à la liste, `/formations/creer` et `/formations/categories` restent réservés à `SUPER_ADMIN` ; confirmer RED (ou GREEN si déjà couvert, le dire)
+- [x] 6.2 Pointer `router.jsx` sur `features/formations` (`lazyPage`), supprimer `components/Pages/FormationsPage`, `components/Pages/FormationDetails` et `utils/simFormations.jsx` (déplacer leurs feuilles de style) ; vérifier qu'aucun import ne subsiste (`grep simFormations src`) ; `utils/categories.js` reste pour 025/048/049
+- [x] 6.3 `npm run check` vert (lint + tests + build + budget du bundle, une page ajoutée via `lazyPage`)
+- [x] 6.4 Commit `refactor: remove mocked formations data and old formation pages`
 
 ## 7. Documentation et passage manuel
 

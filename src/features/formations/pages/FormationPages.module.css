@@ -524,6 +524,11 @@
   letter-spacing: 0.04em;
 }
 
+/* Contraste élevé : le texte prend la couleur du texte courant ; la couleur reste portée par le point. */
+:global(html.high-contrast) .category {
+  color: var(--foreground);
+}
+
 .categoryDot {
   width: 10px;
   height: 10px;

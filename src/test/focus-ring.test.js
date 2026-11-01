@@ -13,7 +13,7 @@ describe('focus clavier visible', () => {
   })
 
   it.each([
-    'src/components/Pages/FormationsPage/FormationsPage.module.css',
+    'src/features/formations/pages/FormationPages.module.css',
     'src/features/accounts/pages/AccountPages.module.css',
   ])('le conteneur de recherche de %s reçoit l’anneau via :focus-within', (file) => {
     const rule = find(rulesIn(file), /\.searchContainer:focus-within/)

@@ -8,6 +8,7 @@ import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { server } from '../test/msw/server'
 import { API_URL, mockSession, mockNoSession } from '../test/session'
+import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -43,6 +44,37 @@ describe('routes protégées', () => {
     const { router } = renderApp('/login')
     expect(await screen.findByRole('link', { name: /formations/i })).toBeInTheDocument()
     expect(router.state.location.pathname).toBe('/')
+  })
+})
+
+describe('pages de formations branchées sur le back', () => {
+  it.each(['SUPER_ADMIN', 'ADMIN', 'STAGIAIRE'])('%s accède à la liste des formations du back', async (role) => {
+    mockSession(role)
+    mockFormationList()
+    renderApp('/formations')
+    expect(await screen.findByRole('link', { name: /Premiers secours PSC1/ })).toBeInTheDocument()
+  })
+
+  it('/admin/formations affiche la même liste pour la chargée de formation', async () => {
+    mockSession('SUPER_ADMIN')
+    mockFormationList()
+    renderApp('/admin/formations')
+    expect(await screen.findByRole('link', { name: /Premiers secours PSC1/ })).toBeInTheDocument()
+  })
+
+  it('le détail affiche la formation du back', async () => {
+    mockSession('SUPER_ADMIN')
+    mockFormationDetail(FORMATIONS[0])
+    mockInscriptions(101)
+    renderApp('/formations/101')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
+  })
+
+  it('un visiteur est redirigé du détail vers la connexion', async () => {
+    mockNoSession()
+    const { router } = renderApp('/formations/101')
+    expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/login')
   })
 })
 

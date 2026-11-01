@@ -31,8 +31,8 @@ export const routes = [
         element: <RequireAuth />,
         children: [
           { index: true, ...lazyPage(() => import("../components/Pages/Home/HomeRoute")) },
-          { path: "formations", ...lazyPage(() => import("../components/Pages/FormationsPage/FormationsPage")) },
-          { path: "formations/:formationId", ...lazyPage(() => import("../components/Pages/FormationDetails/FormationDetails")) },
+          { path: "formations", ...lazyPage(() => import("../features/formations/pages/FormationListPage")) },
+          { path: "formations/:formationId", ...lazyPage(() => import("../features/formations/pages/FormationDetailPage")) },
           { path: "plan-du-site", ...lazyPage(() => import("../components/Pages/SiteMapPage/SiteMapPage")) },
           { path: "profile", ...lazyPage(() => import("../components/Pages/Stagiaire/ProfilePage/ProfilePage")) },
           { path: "notifications", ...lazyPage(() => import("../components/Pages/Stagiaire/NotifPage/NotifPage")) },
@@ -43,7 +43,7 @@ export const routes = [
             element: <RequireRole roles={MANAGEMENT_ROLES} />,
             children: [
               { path: "admin/gestion", ...lazyPage(() => import("../components/Pages/ManagementMenu/ManagementMenu")) },
-              { path: "admin/formations", ...lazyPage(() => import("../components/Pages/FormationsPage/FormationsPage")) },
+              { path: "admin/formations", ...lazyPage(() => import("../features/formations/pages/FormationListPage")) },
               // Comptes : consultation pour les deux rôles de gestion (D54).
               { path: "admin/formateurs", ...lazyPage(() => import("../features/accounts/pages/AccountListPage"), { kind: "formateurs" }) },
               { path: "admin/formateurs/:id", ...lazyPage(() => import("../features/accounts/pages/AccountDetailPage"), { kind: "formateurs" }) },

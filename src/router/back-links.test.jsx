@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import { RouterProvider, createMemoryRouter } from 'react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockSession } from '../test/session'
+import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
 import { cssSheets, rulesOf, stripComments } from '../test/css-sheets'
 
 function renderApp(path) {
@@ -23,10 +24,13 @@ describe.each([
   ['/formations', 'Retour', '/admin/gestion'],
   ['/formations/categories', 'Retour', '/formations'],
   ['/formations/creer', 'Retour', '/formations'],
-  ['/formations/1', 'Retour aux formations', '/formations'],
+  ['/formations/101', 'Retour aux formations', '/formations'],
 ])('lien « Retour » sur %s', (path, label, destination) => {
   it(`est un lien « ${label} » vers ${destination}`, async () => {
     mockSession('SUPER_ADMIN')
+    mockFormationList()
+    mockFormationDetail(FORMATIONS[0])
+    mockInscriptions(101)
     renderApp(path)
     const link = await screen.findByRole('link', { name: new RegExp(`^${label}$`) })
     expect(link).toHaveAttribute('href', destination)
@@ -41,9 +45,12 @@ describe('lien « Retour » de la liste des formations selon le rôle', () => {
     ['STAGIAIRE', '/'],
   ])('%s est renvoyé vers %s (jamais vers une page interdite)', async (role, destination) => {
     mockSession(role)
+    mockFormationList()
     renderApp('/formations')
-    const link = await screen.findByRole('link', { name: /^Retour$/ })
-    expect(link).toHaveAttribute('href', destination)
+    await screen.findByRole('link', { name: /Premiers secours PSC1/ })
+    await waitFor(() =>
+      expect(screen.getByRole('link', { name: /^Retour$/ })).toHaveAttribute('href', destination),
+    )
   })
 })
 

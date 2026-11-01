@@ -68,7 +68,7 @@ describe.each([
 describe('Contraste élevé : étiquettes de catégorie', () => {
   it.each([
     'src/components/molecules/ListItem/ListItem.module.css',
-    'src/components/Pages/FormationDetails/FormationDetails.module.css',
+    'src/features/formations/pages/FormationPages.module.css',
   ])('le texte de .category prend --foreground dans %s', (file) => {
     const rule = rulesOf(stripComments(cssSheets[file])).find(
       ({ selector }) => /high-contrast/.test(selector) && /\.category/.test(selector),

@@ -6,6 +6,7 @@ import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList, mockRequest } from '../test/accounts'
+import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -17,6 +18,12 @@ function renderApp(path) {
       </ThemeProvider>
     </QueryClientProvider>,
   )
+}
+
+function mockFormations() {
+  mockFormationList()
+  mockFormationDetail(FORMATIONS[0])
+  mockInscriptions(101)
 }
 
 function mockAccounts() {
@@ -33,7 +40,7 @@ const PROTECTED_ROUTES = [
   '/admin/gestion',
   '/formations',
   '/admin/formations',
-  '/formations/1',
+  '/formations/101',
   '/formations/categories',
   '/formations/creer',
   '/admin/formateurs',
@@ -60,6 +67,7 @@ describe('un seul <main> par page', () => {
   it.each(PROTECTED_ROUTES)('chargée de formation sur %s', async (path) => {
     mockSession('SUPER_ADMIN')
     mockAccounts()
+    mockFormations()
     renderApp(path)
     await pageLoaded(path)
     expect(screen.getAllByRole('main')).toHaveLength(1)
