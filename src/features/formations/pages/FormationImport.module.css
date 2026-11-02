@@ -91,6 +91,79 @@
   color: var(--foreground);
 }
 
+/* ---------- Titre de section avec « ? », aide, modèle ---------- */
+
+.headingRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.helpButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 2rem;
+  height: 2rem;
+
+  border: 1px solid var(--border);
+  border-radius: 50%;
+
+  background-color: var(--background);
+  color: var(--foreground);
+
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.helpButton[aria-expanded='true'] {
+  border-color: var(--foreground);
+
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.help {
+  width: 100%;
+
+  padding: 1.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 20px;
+
+  background-color: var(--background);
+}
+
+.help[hidden] {
+  display: none;
+}
+
+.helpTitle {
+  margin: 0 0 0.5rem;
+
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+
+  color: var(--foreground);
+}
+
+.template {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.template .helpTitle {
+  margin: 0;
+}
+
 /* ---------- Tableaux ---------- */
 
 .tableWrapper {

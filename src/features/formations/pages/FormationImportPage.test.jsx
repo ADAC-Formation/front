@@ -68,8 +68,40 @@ describe('FormationImportPage — consignes et modèle', () => {
     expect(await screen.findByRole('link', { name: 'Annuler' })).toHaveAttribute('href', '/formations/creer')
   })
 
+  it('place un « ? » à côté de « Fichier à importer », fermé au départ', async () => {
+    renderImport()
+    const help = await screen.findByRole('button', { name: /aide/i })
+    expect(help).toHaveTextContent('?')
+    expect(help).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByRole('table', { name: /colonnes attendues/i })).not.toBeInTheDocument()
+    const heading = screen.getByRole('heading', { level: 2, name: 'Fichier à importer' })
+    expect(heading.compareDocumentPosition(help) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(help.parentElement).toBe(heading.parentElement)
+  })
+
+  it('ouvre et referme l’aide avec le « ? »', async () => {
+    renderImport()
+    const help = await screen.findByRole('button', { name: /aide/i })
+    await userEvent.click(help)
+    expect(help).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('table', { name: /colonnes attendues/i })).toBeInTheDocument()
+    await userEvent.click(help)
+    expect(help).toHaveAttribute('aria-expanded', 'false')
+    expect(screen.queryByRole('table', { name: /colonnes attendues/i })).not.toBeInTheDocument()
+  })
+
+  it('met le modèle sous « Fichier à importer », après le champ fichier', async () => {
+    renderImport()
+    const file = await screen.findByLabelText(/fichier excel/i)
+    const template = screen.getByRole('button', { name: 'Télécharger le modèle' })
+    expect(file.compareDocumentPosition(template) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(template.closest('form')).toBe(file.closest('form'))
+    expect(screen.queryByRole('heading', { level: 2, name: 'Modèle' })).not.toBeInTheDocument()
+  })
+
   it('liste les sept colonnes attendues avec leur caractère obligatoire et leur format', async () => {
     renderImport()
+    await userEvent.click(await screen.findByRole('button', { name: /aide/i }))
     const table = await screen.findByRole('table', { name: /colonnes attendues/i })
     const rows = within(table).getAllByRole('row').slice(1)
     expect(rows).toHaveLength(IMPORT_COLUMNS.length)
@@ -83,7 +115,9 @@ describe('FormationImportPage — consignes et modèle', () => {
 
   it('explique que la première ligne est ignorée et que le formateur vide est la chargée de formation', async () => {
     renderImport()
-    expect(await screen.findByText(/première ligne/i)).toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('button', { name: /aide/i }))
+    expect(await screen.findByRole('heading', { name: 'Format du fichier' })).toBeInTheDocument()
+    expect(screen.getByText(/première ligne/i)).toBeInTheDocument()
     expect(screen.getAllByText(/chargée de formation est assignée/i).length).toBeGreaterThan(0)
   })
 
@@ -284,6 +318,13 @@ describe('FormationImportPage — accessibilité', () => {
   it('n’a aucune violation (page seule)', async () => {
     const { container } = renderImport()
     await screen.findByRole('heading', { level: 1, name: 'Importer des formations' })
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('n’a aucune violation avec l’aide ouverte', async () => {
+    const { container } = renderImport()
+    await userEvent.click(await screen.findByRole('button', { name: /aide/i }))
+    await screen.findByRole('table', { name: /colonnes attendues/i })
     expect(await axe(container)).toHaveNoViolations()
   })
 

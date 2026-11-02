@@ -30,18 +30,22 @@ Le système SHALL réserver la page `/formations/importer` et le lien « Importe
 - **THEN** il est renvoyé vers la connexion
 
 ### Requirement: Consignes et colonnes attendues
-La page SHALL présenter le format attendu : une ligne d'en-tête ignorée puis une ligne par formation, avec pour chaque colonne son nom, son caractère obligatoire et son format (`intitule`, `description`, `dateDebut`, `dateFin`, `modalite`, `categorie`, `formateur`), d'après les colonnes provisoires de `tech.md`.
+La page SHALL présenter, dans une aide fermée au départ et ouverte par un bouton « ? » placé à côté du titre « Fichier à importer », le format attendu : une ligne d'en-tête ignorée puis une ligne par formation, avec pour chaque colonne son nom, son caractère obligatoire et son format (`intitule`, `description`, `dateDebut`, `dateFin`, `modalite`, `categorie`, `formateur`), d'après les colonnes provisoires de `tech.md`.
 
 #### Scenario: Colonnes affichées
-- **WHEN** la page est affichée
+- **WHEN** la chargée de formation active le bouton « ? » (aide)
 - **THEN** les sept colonnes sont listées avec leur format, les modalités acceptées (`VISIO`, `PRESENTIEL`, `MIXTE`) et la règle « formateur vide : la chargée de formation est assignée »
+
+#### Scenario: Aide fermée au départ
+- **WHEN** la page est affichée
+- **THEN** le bouton « ? » indique qu'il est replié et le tableau des colonnes n'est pas affiché ; l'activer de nouveau le referme
 
 #### Scenario: Retour à la création
 - **WHEN** la chargée de formation active « Retour » ou « Annuler »
 - **THEN** elle revient à `/formations/creer`
 
 ### Requirement: Modèle téléchargeable
-La page SHALL proposer le téléchargement d'un modèle `.xlsx` dont l'en-tête reprend exactement les colonnes attendues, suivi d'une ligne d'exemple.
+La page SHALL proposer, sous le champ fichier de la section « Fichier à importer », le téléchargement d'un modèle `.xlsx` dont l'en-tête reprend exactement les colonnes attendues, suivi d'une ligne d'exemple.
 
 #### Scenario: Téléchargement du modèle
 - **WHEN** la chargée de formation active « Télécharger le modèle »

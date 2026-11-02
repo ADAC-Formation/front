@@ -42,6 +42,7 @@ Découpe sur ` | `, applique `^ligne (\d+), colonne ([^:]+) : (.+)$` à chaque e
 - *Risque* : axios et jsdom/MSW gèrent le `FormData` différemment ; le test MSW lit `request.formData()` et le passage manuel contre le vrai back confirme le champ `file`.
 
 ### 5. Page `FormationImportPage`, sans React Hook Form
+Mise en page (F23) : section « Fichier à importer » avec un bouton « ? » qui ouvre l'aide (format et tableau des colonnes) ; le modèle se télécharge sous le champ fichier ; le lien de la page de création est un bouton d'action d'en-tête.
 La page tient un seul champ fichier (`<input type="file" accept=".xlsx">`, étiqueté) : son état (`file`, `fileError`) est local, sans RHF, qui n'apporterait ici ni validation de champs ni valeurs de formulaire ; la règle d'extension et de taille est une fonction pure `checkImportFile(file)` dans `importFile.js` (`MAX_IMPORT_BYTES = 2 * 1024 * 1024`), testée seule. Le bouton « Importer » est inactif sans fichier valide ou pendant l'envoi. Le modèle se télécharge par un bouton « Télécharger le modèle » ; une erreur de génération s'affiche dans un `Alert`.
 - *Pourquoi* : un formulaire à un seul champ ne justifie pas RHF (D8, D13 visent les formulaires à champs multiples) ; la logique pure garde la page mince.
 - *Alternative écartée* : RHF avec `register('file')` (état dupliqué entre RHF et l'affichage du nom du fichier).

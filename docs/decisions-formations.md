@@ -137,3 +137,9 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Pourquoi** : l'import est une autre façon de créer des formations ; il se découvre là où l'on les crée.
 - **Alternatives écartées** : import intégré au formulaire (deux parcours dans une page, F17) ; garder le lien sur la liste.
 - **Constaté en même temps** : sur la liste, « Créer une nouvelle formation » et « Importer un fichier Excel » n'étaient pas cliquables. Cause : le logo (image absolue de 385 px de haut à 580 px de large, dégagement de 276 px) recouvrait par sa zone transparente les deux boutons les plus au centre de l'en-tête. Corrigé par `pointer-events: none` sur le logo, protégé par `css-hygiene.test.js`.
+
+## F23 — Import Excel : bouton d'action, aide « ? » pour le format, modèle sous le champ fichier
+- Date : 2026-11-02
+- **Décision** : (1) dans « Créer une nouvelle formation », « Importer un fichier Excel » est un bouton d'action dans l'en-tête, du même style que « Créer une nouvelle formation » sur la liste (il reste un lien vers `/formations/importer`) ; (2) sur la page d'import, les consignes et le tableau des colonnes (« Format du fichier », « Colonnes attendues ») sont dans une aide ouverte par un bouton « ? » à côté de « Fichier à importer » (`aria-expanded`, `aria-controls`, fermée au départ) ; (3) le modèle (« Télécharger le modèle ») est dans la section « Fichier à importer », sous le champ fichier.
+- **Pourquoi** : demande de Manon au passage manuel ; la page d'import se réduit à l'essentiel (choisir un fichier), le format reste à un clic.
+- **Alternatives écartées** : info-bulle au survol (contient un tableau, inaccessible au clavier et au tactile) ; garder le format toujours visible.

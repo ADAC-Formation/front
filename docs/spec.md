@@ -98,7 +98,7 @@ Source : TICKET-025 (partie import, F11), US-005, `tech.md` §4, décisions F16�
 
 ### TICKET-025 — Importer des formations depuis un fichier Excel
 - [ ] Lien « Importer un fichier Excel » dans « Créer une nouvelle formation » (F22) et page `/formations/importer` réservés à SUPER_ADMIN (autres rôles → « Accès refusé », visiteur → `/login`).
-- [ ] La page présente les sept colonnes provisoires (A `intitule` … G `formateur`), leurs formats et les modalités ; « Télécharger le modèle » donne un `.xlsx` généré dans le navigateur (en-tête + une ligne d'exemple).
+- [ ] Le « ? » à côté de « Fichier à importer » ouvre l'aide : les sept colonnes provisoires (A `intitule` … G `formateur`), leurs formats et les modalités (F23) ; « Télécharger le modèle », sous le champ fichier, donne un `.xlsx` généré dans le navigateur (en-tête + une ligne d'exemple).
 - [ ] Seuls les fichiers `.xlsx` de 2 Mo au plus sont acceptés ; sinon message précis, aucun appel, bouton « Importer » inactif.
 - [ ] Envoi `POST /formations/import` (`multipart/form-data`, champ `file`), bouton désactivé pendant l'envoi.
 - [ ] `201` → retour à `/formations` avec « N formation(s) importée(s) » et liste rechargée.

@@ -246,15 +246,14 @@ const FormationFormPage = () => {
     return (
       <PageShell className={styles.page}>
         <BackButton to="/formations" />
-        <header className={styles.header}>
-          <h1 className={styles.title}>Créer une nouvelle formation</h1>
-          <p className={styles.intro}>Renseignez les informations nécessaires pour créer une nouvelle formation.</p>
-          <p className={styles.importHint}>
-            Plusieurs formations à créer ?{' '}
-            <Link className={styles.importLink} to="/formations/importer">
-              Importer un fichier Excel
-            </Link>
-          </p>
+        <header className={`${styles.header} ${styles.headerWithAction}`}>
+          <div>
+            <h1 className={styles.title}>Créer une nouvelle formation</h1>
+            <p className={styles.intro}>Renseignez les informations nécessaires pour créer une nouvelle formation.</p>
+          </div>
+          <Link className={styles.actionButton} to="/formations/importer">
+            Importer un fichier Excel
+          </Link>
         </header>
         <FormationForm />
       </PageShell>

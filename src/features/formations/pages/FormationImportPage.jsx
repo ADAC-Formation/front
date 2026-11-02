@@ -16,12 +16,10 @@ const TEMPLATE_ERROR = 'Le modèle n’a pas pu être généré. Réessayez.'
 
 const plural = (count, singular, pluralForm) => (count > 1 ? pluralForm : singular)
 
-// Consignes : colonnes attendues (provisoires, importColumns.js) et règle de la première ligne.
-const ColumnsGuide = () => (
-  <section className={styles.section} aria-labelledby="import-format">
-    <h2 id="import-format" className={styles.sectionTitle}>
-      Format du fichier
-    </h2>
+// Aide du « ? » : règle de la première ligne et colonnes attendues (provisoires, importColumns.js).
+const FormatHelp = ({ id, open }) => (
+  <div id={id} className={styles.help} hidden={!open}>
+    <h3 className={styles.helpTitle}>Format du fichier</h3>
     <p className={styles.sectionDescription}>
       Un fichier Excel (.xlsx) dont la première ligne (l’en-tête) est ignorée, puis une ligne par formation. Si la
       colonne <code>formateur</code> est vide, la chargée de formation est assignée.
@@ -49,7 +47,7 @@ const ColumnsGuide = () => (
         </tbody>
       </table>
     </div>
-  </section>
+  </div>
 )
 
 // Retour d'un fichier refusé (400) : tableau Ligne / Colonne / Problème, puis les entrées que
@@ -104,6 +102,7 @@ const FormationImportPage = () => {
   const importMutation = useImportFormations()
   const [file, setFile] = useState(null)
   const [templateError, setTemplateError] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
 
   const fileError = checkImportFile(file)
   const canSubmit = Boolean(file) && !fileError && !importMutation.isPending
@@ -147,23 +146,23 @@ const FormationImportPage = () => {
       </header>
 
       <div className={styles.card}>
-        <ColumnsGuide />
-
-        <section className={styles.section} aria-labelledby="import-template">
-          <h2 id="import-template" className={styles.sectionTitle}>
-            Modèle
-          </h2>
-          <p className={styles.sectionDescription}>Téléchargez un fichier prêt à remplir, avec les bonnes colonnes.</p>
-          <button type="button" className={styles.secondaryButton} onClick={handleTemplate}>
-            Télécharger le modèle
-          </button>
-          {templateError && <Alert variant="error">{TEMPLATE_ERROR}</Alert>}
-        </section>
-
         <form className={styles.section} onSubmit={handleSubmit} noValidate aria-labelledby="import-file">
-          <h2 id="import-file" className={styles.sectionTitle}>
-            Fichier à importer
-          </h2>
+          <div className={styles.headingRow}>
+            <h2 id="import-file" className={styles.sectionTitle}>
+              Fichier à importer
+            </h2>
+            <button
+              type="button"
+              className={styles.helpButton}
+              aria-label="Aide sur le format du fichier"
+              aria-expanded={helpOpen}
+              aria-controls="import-help"
+              onClick={() => setHelpOpen((open) => !open)}
+            >
+              ?
+            </button>
+          </div>
+          <FormatHelp id="import-help" open={helpOpen} />
 
           <FormField
             label="Fichier Excel (.xlsx, 2 Mo au plus)"
@@ -174,6 +173,15 @@ const FormationImportPage = () => {
             onChange={handleFileChange}
           />
           {file && !fileError && <p className={styles.fileName}>{`Fichier choisi : ${file.name}`}</p>}
+
+          <div className={styles.template}>
+            <h3 className={styles.helpTitle}>Modèle</h3>
+            <p className={styles.sectionDescription}>Téléchargez un fichier prêt à remplir, avec les bonnes colonnes.</p>
+            <button type="button" className={styles.secondaryButton} onClick={handleTemplate}>
+              Télécharger le modèle
+            </button>
+            {templateError && <Alert variant="error">{TEMPLATE_ERROR}</Alert>}
+          </div>
 
           {error &&
             (error.status === BAD_REQUEST ? (
