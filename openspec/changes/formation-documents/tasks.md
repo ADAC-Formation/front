@@ -20,9 +20,9 @@
 
 ## 4. Liste et téléchargement (TDD)
 
-- [ ] 4.1 RED : `components/DocumentList.test.jsx` — une ligne par document (type en texte, nom, taille, date, expéditeur sans e-mail), nom contenant du HTML rendu en texte, « Télécharger » nommé avec le fichier, « Supprimer » seulement si permis, jest-axe ; confirmer RED
-- [ ] 4.2 Créer `DocumentList.jsx` et sa feuille de style (jetons, `rem`, `overflow-wrap`) ; GREEN
-- [ ] 4.3 Commit `feat: add the document list`
+- [x] 4.1 RED : `components/DocumentList.test.jsx` — une ligne par document (type en texte, nom, taille, date, expéditeur sans e-mail), nom contenant du HTML rendu en texte, « Télécharger » nommé avec le fichier, « Supprimer » seulement si permis, jest-axe ; confirmer RED
+- [x] 4.2 Créer `DocumentList.jsx` et sa feuille de style (jetons, `rem`, `overflow-wrap`) ; GREEN
+- [x] 4.3 Commit `feat: add the document list`
 
 ## 5. Zone de dépôt (TDD)
 

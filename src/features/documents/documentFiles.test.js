@@ -6,6 +6,7 @@ import {
   canDeleteDocument,
   canUploadDocument,
   documentKind,
+  formatDocumentDate,
   formatFileSize,
   validateDocumentFile,
 } from './documentFiles'
@@ -47,6 +48,12 @@ describe('formatFileSize', () => {
     [10 * 1024 * 1024, '10 Mo'],
   ])('%i octets → %s', (bytes, label) => {
     expect(formatFileSize(bytes)).toBe(label)
+  })
+})
+
+describe('formatDocumentDate', () => {
+  it('écrit la date d’envoi en français', () => {
+    expect(formatDocumentDate('2026-02-20T10:30:00')).toBe('20 février 2026')
   })
 })
 

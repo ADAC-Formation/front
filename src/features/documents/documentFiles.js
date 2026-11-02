@@ -32,6 +32,11 @@ export function formatFileSize(bytes) {
   return `${decimal.format(bytes / (1024 * 1024))} Mo`
 }
 
+const longDate = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' })
+
+// `createdAt` : LocalDateTime ISO 8601 du back.
+export const formatDocumentDate = (createdAt) => longDate.format(new Date(createdAt))
+
 export const documentKind = (fileName) => KINDS[extensionOf(fileName)] ?? 'Fichier'
 
 const isActive = (formation) => formation.status !== 'ARCHIVED'
