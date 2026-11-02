@@ -12,14 +12,18 @@ const DocumentList = ({ documents, canDelete, onDownload, onDelete, downloadingI
     {documents.map((document) => {
       const kind = documentKind(document.fileName)
       const Icon = ICONS[kind] ?? File
-      const { prenom, nom } = document.uploadedBy
+      const sender = document.uploadedBy
+        ? `Envoyé par ${document.uploadedBy.prenom} ${document.uploadedBy.nom}`
+        : 'Expéditeur inconnu'
       return (
         <li key={document.id} className={styles.item}>
           <Icon className={styles.icon} size={22} aria-hidden="true" />
           <div className={styles.info}>
             <p className={styles.fileName}>{document.fileName}</p>
             <p className={styles.meta}>
-              {`${kind} · ${formatFileSize(document.fileSize)} · ${formatDocumentDate(document.createdAt)} · Envoyé par ${prenom} ${nom}`}
+              {[kind, formatFileSize(document.fileSize), formatDocumentDate(document.createdAt), sender]
+                .filter(Boolean)
+                .join(' · ')}
             </p>
           </div>
           <div className={styles.itemActions}>

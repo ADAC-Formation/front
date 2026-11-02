@@ -143,7 +143,7 @@ const FormationDetailPage = () => {
 
         {isManager && <InscritsSection formationId={formationId} />}
 
-        <DocumentSection formation={formation} className={styles.section} />
+        <DocumentSection key={formation.id} formation={formation} className={styles.section} />
 
         {archive.error && (
           <div className={styles.notices}>

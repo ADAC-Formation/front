@@ -8,5 +8,6 @@ export function saveBlob(blob, fileName) {
   window.document.body.append(link)
   link.click()
   link.remove()
-  URL.revokeObjectURL(url)
+  // Firefox et Safari lancent l'enregistrement après le clic : on ne révoque pas l'adresse tout de suite.
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
 }

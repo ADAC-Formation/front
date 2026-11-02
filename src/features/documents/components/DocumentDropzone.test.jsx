@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { createEvent, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { describe, expect, it, vi } from 'vitest'
@@ -50,6 +50,23 @@ describe('DocumentDropzone', () => {
     const notPrevented = fireEvent.drop(zone(), { dataTransfer: { files: [pdf('a.pdf'), pdf('b.pdf')] } })
     expect(notPrevented).toBe(false)
     expect(onFiles.mock.calls[0][0].map((file) => file.name)).toEqual(['a.pdf', 'b.pdf'])
+  })
+
+  it('garde la mise en évidence en passant sur un élément intérieur, la retire en sortant de la zone', () => {
+    renderZone()
+    fireEvent.dragOver(zone())
+    const highlighted = zone().className
+    const inner = screen.getByRole('button', { name: 'Choisir des fichiers' })
+    // jsdom ne transmet pas `relatedTarget` via fireEvent : on l'ajoute à l'événement.
+    const leaveTo = (target) => {
+      const event = createEvent.dragLeave(zone())
+      Object.defineProperty(event, 'relatedTarget', { value: target })
+      fireEvent(zone(), event)
+    }
+    leaveTo(inner)
+    expect(zone().className).toBe(highlighted)
+    leaveTo(document.body)
+    expect(zone().className).not.toBe(highlighted)
   })
 
   it('ignore un dépôt sans fichier', () => {

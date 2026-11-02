@@ -49,6 +49,12 @@ describe('DocumentList', () => {
     expect(screen.getByText('<img src=x onerror=alert(1)>.pdf')).toBeInTheDocument()
   })
 
+  it('ne plante pas quand l’expéditeur ou la date manque', () => {
+    renderList({ documents: [{ ...cours, uploadedBy: null, createdAt: null }] })
+    expect(screen.getByText('Support de cours.pdf')).toBeInTheDocument()
+    expect(screen.getByRole('listitem')).toHaveTextContent('Expéditeur inconnu')
+  })
+
   it('propose « Télécharger », nommé avec le fichier, et prévient le parent', async () => {
     const { onDownload } = renderList()
     const button = screen.getByRole('button', { name: 'Télécharger Support de cours.pdf' })

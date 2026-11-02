@@ -55,6 +55,12 @@ describe('formatDocumentDate', () => {
   it('écrit la date d’envoi en français', () => {
     expect(formatDocumentDate('2026-02-20T10:30:00')).toBe('20 février 2026')
   })
+
+  it('renvoie un texte vide plutôt que de planter sur une date absente ou invalide', () => {
+    expect(formatDocumentDate(undefined)).toBe('')
+    expect(formatDocumentDate(null)).toBe('')
+    expect(formatDocumentDate('pas une date')).toBe('')
+  })
 })
 
 describe('documentKind', () => {

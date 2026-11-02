@@ -38,7 +38,10 @@ const DocumentDropzone = ({ onFiles, isPending = false }) => {
       aria-label="Zone de dépôt de documents"
       className={`${styles.dropzone} ${isOver ? styles.dropzoneOver : ''}`}
       onDragOver={handleDragOver}
-      onDragLeave={() => setIsOver(false)}
+      onDragLeave={(event) => {
+        // `dragleave` part aussi en passant sur un élément intérieur : on ne retire la mise en évidence qu'en quittant la zone.
+        if (!event.currentTarget.contains(event.relatedTarget)) setIsOver(false)
+      }}
       onDrop={handleDrop}
     >
       <Upload size={28} aria-hidden="true" />

@@ -70,8 +70,8 @@ const DocumentSection = ({ formation, className }) => {
           <div role="alert" className={styles.rejections}>
             <p>Fichiers non envoyés :</p>
             <ul>
-              {result.rejections.map(({ name, message }) => (
-                <li key={name}>{`${name} : ${message}`}</li>
+              {result.rejections.map(({ name, message }, index) => (
+                <li key={`${index}-${name}`}>{`${name} : ${message}`}</li>
               ))}
             </ul>
           </div>

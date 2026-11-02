@@ -166,6 +166,20 @@ describe('DocumentSection — dépôt', () => {
   })
 })
 
+describe('DocumentSection — refus de fichiers de même nom', () => {
+  it('liste chaque refus, même quand deux fichiers portent le même nom', async () => {
+    const spy = vi.spyOn(console, 'error').mockImplementation(() => {})
+    mockDocumentApi()
+    renderSection('SUPER_ADMIN')
+    await screen.findByText('Support de cours.pdf')
+    dropFiles([new File(['x'], 'cours.exe'), new File(['y'], 'cours.exe')])
+    const alert = await screen.findByRole('alert')
+    expect(within(alert).getAllByRole('listitem')).toHaveLength(2)
+    expect(spy.mock.calls.flat().join(' ')).not.toMatch(/same key|unique "key"/)
+    spy.mockRestore()
+  })
+})
+
 describe('DocumentSection — téléchargement', () => {
   it('enregistre le fichier reçu sous son nom d’origine', async () => {
     const api = mockDocumentApi()
