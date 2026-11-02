@@ -6,6 +6,9 @@ export default defineConfig({
   plugins: [react()],
   // Le manifeste permet à scripts/check-bundle.mjs de vérifier le budget et le découpage par page.
   build: { manifest: true },
+  // Chargées à la demande par le modèle d'import : sans cela, le serveur de dev les découvre au premier
+  // clic, re-optimise ses dépendances et fait échouer les pages déjà ouvertes (504 « Outdated Optimize Dep »).
+  optimizeDeps: { include: ['write-excel-file/browser', '@onparallel/write-excel-file-data-validation'] },
   test: {
     environment: 'jsdom',
     globals: true,
