@@ -35,10 +35,10 @@
 
 ## 6. Route et nettoyage (TDD)
 
-- [ ] 6.1 RED : adapter `router.test.jsx` (la chargée de formation voit la page « Catégories » avec `mockCategories` ; formateur et stagiaire → « Accès refusé » sans appel aux catégories ; visiteur → `/login`) et `lazy-routes.test.jsx` si elle cite la page ; confirmer RED là où le comportement change
-- [ ] 6.2 Pointer `formations/categories` sur la nouvelle page (`lazyPage`, derrière `RequireRole` `SUPER_ADMIN`) ; supprimer `components/Pages/Categories/` et `utils/categories.js` ; vérifier qu'aucun import ne subsiste (`grep -r "utils/categories\|Pages/Categories" src`) ; GREEN
-- [ ] 6.3 `npm run check` vert (lint + tests + build + budget du bundle : la page reste hors de l'entrée)
-- [ ] 6.4 Commit `feat: route the category management page and remove the mock`
+- [x] 6.1 RED : adapter `router.test.jsx` (la chargée de formation voit la page « Catégories » avec `mockCategories` ; formateur et stagiaire → « Accès refusé » sans appel aux catégories ; visiteur → `/login`) et `lazy-routes.test.jsx` si elle cite la page ; confirmer RED là où le comportement change
+- [x] 6.2 Pointer `formations/categories` sur la nouvelle page (`lazyPage`, derrière `RequireRole` `SUPER_ADMIN`) ; supprimer `components/Pages/Categories/` et `utils/categories.js` ; vérifier qu'aucun import ne subsiste (`grep -r "utils/categories\|Pages/Categories" src`) ; GREEN
+- [x] 6.3 `npm run check` vert (lint + tests + build + budget du bundle : la page reste hors de l'entrée)
+- [x] 6.4 Commit `feat: route the category management page and remove the mock`
 
 ## 7. Documentation et passage manuel
 

@@ -263,3 +263,29 @@ describe('import de formations : accès par rôle', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Importer des formations' })).toBeInTheDocument()
   })
 })
+
+describe('gestion des catégories : accès par rôle', () => {
+  it.each(['STAGIAIRE', 'ADMIN'])('%s voit « Accès refusé » sur /formations/categories, sans appel au back', async (role) => {
+    mockSession(role)
+    const categories = mockCategories()
+    renderApp('/formations/categories')
+    expect(await accessDenied()).toBeInTheDocument()
+    expect(categories.count).toBe(0)
+  })
+
+  it('un visiteur est redirigé vers la connexion', async () => {
+    mockNoSession()
+    const { router } = renderApp('/formations/categories')
+    expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/login')
+  })
+
+  it('la chargée de formation voit les catégories du back, désactivées comprises', async () => {
+    mockSession('SUPER_ADMIN')
+    mockCategories()
+    renderApp('/formations/categories')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Catégories' })).toBeInTheDocument()
+    expect(await screen.findByText('Ancienne catégorie')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Créer une catégorie' })).toBeInTheDocument()
+  })
+})
