@@ -23,7 +23,8 @@ export function mockNotificationApi({
   failWrites = false,
   failReads = false,
 } = {}) {
-  const state = notifications.map((n) => ({ ...n, deletedFromBell: false }))
+  // `deletedFromBell: true` dans le jeu de départ simule une notification déjà retirée de la cloche.
+  const state = notifications.map((n) => ({ ...n, deletedFromBell: n.deletedFromBell ?? false }))
   const calls = {
     unread: 0,
     list: 0,

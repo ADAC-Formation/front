@@ -68,3 +68,11 @@
   background-color: var(--accent);
   color: var(--accent-foreground);
 }
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}

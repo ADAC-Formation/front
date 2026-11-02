@@ -21,7 +21,7 @@ export function NotificationItem({ notification, onOpen, onRemove, showStatus = 
   const date = new Date(notification.createdAt)
 
   return (
-    <li className={styles.item} data-unread={!notification.isRead}>
+    <li className={styles.item} data-unread={!notification.isRead} data-notification-id={notification.id}>
       <button type="button" className={styles.open} onClick={() => onOpen(notification)}>
         <Icon size={18} aria-hidden="true" className={styles.icon} data-kind={kind} />
         <span className={styles.text}>

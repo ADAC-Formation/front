@@ -74,6 +74,16 @@ Branche `feature/notifications` (créée depuis `dev`). Contrat : `tech.md` §8 
 - **Tests de routeur** : les fichiers de test qui rendent le gabarit complet avec une session déclarent désormais `mockNotificationApi()` en `beforeEach`.
 - **Budget du bundle** : 92,6 Ko → 94,5 Ko avec la cloche (attendu), puis 102,4 Ko après l'ajout de la page `/notifications` pourtant chargée à la demande. Mesuré : la page seule fait ~1,1 Ko gzip, et remplacer sa cible par une page vide ramène l'entrée à 94,5 Ko ; `Alert` n'est pas en cause. Cause non élucidée (probable regroupement de modules partagés par le bundler). Marge restante : ~6,6 Ko ; à surveiller avant d'ajouter d'autres éléments à l'en-tête.
 
+## N11 — Corrections après relecture des commits (2026-11-02)
+
+- **Panneau** : il affiche « Chargement… » (première charge) et, si le chargement échoue alors que rien n'est affiché, une erreur avec « Réessayer » ; il ne dit « Aucune nouvelle notification » qu'une fois les données reçues. Une relecture qui échoue alors que la liste est déjà là ne remplace pas la liste. « Tout marquer comme lu » n'est proposé que si la liste est prête et non vide (spec « Erreurs et chargement »).
+- **Focus clavier** : retirer une notification (« ✕ ») envoie le focus sur la suivante, sinon la précédente, sinon sur « Voir toutes les notifications » ; « Tout marquer comme lu » l'envoie sur ce même lien. Avant, le bouton focalisé disparaissait et le focus retombait sur `<body>` (WCAG 2.4.3).
+- **Annonces** : une seule région `role="status"`, dernier message gagnant. L'échec d'une action est annoncé par un rappel `onError` de l'appel (plus d'état « erreur » collant qui bloquait toute annonce ultérieure). Une « nouvelle notification » n'est annoncée que si le compteur **renvoyé par le back** augmente : les écritures optimistes portent `optimistic: true` dans le cache et leur retour arrière n'est plus pris pour une nouveauté ; le compteur de référence est oublié à la déconnexion.
+- **Compteur optimiste** : il ne baisse que si la notification est dans la cloche, ou si `count` dépasse la liste (plus de 50 non lues). Le back (`countByRecipientAndIsReadFalseAndDeletedFromBellFalse`) ne compte pas une non lue déjà retirée de la cloche.
+- **Piège TanStack Query** : la promesse renvoyée par `onSettled` est attendue avant que la mutation passe en succès / échec. `invalidateQueries` n'est donc plus renvoyée, sinon l'état d'échec (et son annonce) arrivait après la fin de la relecture ; c'est aussi ce qui masquait un retour arrière manquant dans les premiers tests.
+- **Tests** : les tests de retour arrière regardent la cloche pendant que la relecture est encore en cours ; ils échouent si on retire le retour arrière (3 tests) ou le drapeau `optimistic` (4 tests), et un test échoue si `onSettled` renvoie à nouveau la relecture.
+- **Non traité** : une `createdAt` nulle ferait échouer l'affichage de la date ; le contrat dit qu'elle ne l'est jamais.
+
 ## Constats sur le back (lecture de `back-readonly`, 2026-11-02)
 
 - `NotificationType` : `NEW_MESSAGE`, `DOCUMENT_UPLOADED`, `FORMATION_UPDATED`. `EntityType` : `FORMATION`, `MESSAGE`. Une notification de document utilise bien `EntityType.FORMATION` avec l'id de la formation (`DocumentServiceImpl`) : la navigation par `entityType` (N1, N7) couvre les trois types.

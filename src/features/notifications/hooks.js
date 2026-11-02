@@ -48,16 +48,29 @@ function useOptimisticBellMutation(mutationFn, update) {
     onError: (_error, _variable, context) => {
       if (context?.previous) queryClient.setQueryData(UNREAD_KEY, context.previous)
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY }),
+    // Sans `return` : TanStack Query attend la promesse renvoyée par `onSettled` avant de passer la
+    // mutation en succès / échec. Renvoyer la relecture retarderait d'autant l'annonce d'un échec.
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: NOTIFICATIONS_KEY })
+    },
   })
 }
 
-// Le `count` du back est le total réel (la liste est plafonnée à 50) : on le décrémente sans
-// jamais passer sous zéro ; la liste se complète au rafraîchissement suivant.
+// Les écritures optimistes portent `optimistic: true` : la cloche ne s'en sert pas pour annoncer
+// « nouvelle notification » (ni à l'aller, ni au retour arrière). Seules les réponses du back comptent.
+//
+// Le `count` du back est le total réel des non lues encore dans la cloche (la liste est plafonnée à
+// 50). Une notification absente de la liste alors que `count` tient dans la liste n'est pas comptée
+// (ex. non lue déjà retirée de la cloche, ouverte depuis l'historique) : on ne touche à rien. Sinon
+// on décrémente, sans passer sous zéro ; la liste se complète au rafraîchissement suivant.
 function withoutNotification(unread, id) {
+  const isListed = unread.notifications.some((notification) => notification.id === id)
+  const maybeCounted = unread.count > unread.notifications.length
+  if (!isListed && !maybeCounted) return unread
   return {
     count: Math.max(0, unread.count - 1),
     notifications: unread.notifications.filter((notification) => notification.id !== id),
+    optimistic: true,
   }
 }
 
@@ -70,5 +83,9 @@ export function useRemoveFromBell() {
 }
 
 export function useMarkAllAsRead() {
-  return useOptimisticBellMutation(markAllNotificationsAsRead, () => ({ count: 0, notifications: [] }))
+  return useOptimisticBellMutation(markAllNotificationsAsRead, () => ({
+    count: 0,
+    notifications: [],
+    optimistic: true,
+  }))
 }

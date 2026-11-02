@@ -19,8 +19,11 @@ function bellLabel(count) {
 // Cloche de l'en-tête (N2) : rien sans session, donc aucun appel /notifications pour un visiteur.
 export function NotificationBell() {
   const { user } = useCurrentUser()
-  const { data } = useUnreadNotifications({ enabled: Boolean(user) })
-  const { open: openNotification, isError: openFailed } = useOpenNotification()
+  const { data, isLoading, isError, error, refetch } = useUnreadNotifications({ enabled: Boolean(user) })
+  // Une seule région d'annonce : le dernier message l'emporte (nouvelle notification ou échec).
+  const [announcement, setAnnouncement] = useState('')
+  const announceFailure = () => setAnnouncement(ACTION_ERROR)
+  const { open: openNotification } = useOpenNotification({ onError: announceFailure })
   const markAll = useMarkAllAsRead()
   const remove = useRemoveFromBell()
   const { pathname } = useLocation()
@@ -36,19 +39,20 @@ export function NotificationBell() {
   const count = data?.count ?? 0
   const notifications = data?.notifications ?? []
 
-  // Annonce polie quand le compteur augmente (jamais à la première charge, ni quand il diminue
-  // par une action de l'utilisateur). État ajusté pendant le rendu plutôt que dans un effet.
-  const [lastCount, setLastCount] = useState(null)
-  const [announcement, setAnnouncement] = useState('')
-  const loadedCount = data ? data.count : null
-  if (loadedCount !== lastCount) {
-    setLastCount(loadedCount)
-    if (lastCount !== null && loadedCount !== null && loadedCount > lastCount) {
-      const added = loadedCount - lastCount
-      setAnnouncement(`${added} nouvelle${added > 1 ? 's' : ''} notification${added > 1 ? 's' : ''}, ${loadedCount} non lues`)
+  // Annonce polie quand le compteur RENVOYÉ PAR LE BACK augmente (jamais à la première charge, ni
+  // pour une écriture optimiste ou son retour arrière, ni quand il diminue). État ajusté pendant le
+  // rendu plutôt que dans un effet. Sans données (déconnexion), on oublie le compteur précédent.
+  const [lastServerCount, setLastServerCount] = useState(null)
+  const serverCount = data && !data.optimistic ? data.count : null
+  if (!data && lastServerCount !== null) {
+    setLastServerCount(null)
+  } else if (serverCount !== null && serverCount !== lastServerCount) {
+    setLastServerCount(serverCount)
+    if (lastServerCount !== null && serverCount > lastServerCount) {
+      const added = serverCount - lastServerCount
+      setAnnouncement(`${added} nouvelle${added > 1 ? 's' : ''} notification${added > 1 ? 's' : ''}, ${serverCount} non lues`)
     }
   }
-  const hasActionError = openFailed || markAll.isError || remove.isError
 
   useEffect(() => {
     if (!isOpen) return undefined
@@ -94,16 +98,19 @@ export function NotificationBell() {
       </IconButton>
 
       <div role="status" className={styles.srOnly}>
-        {hasActionError ? ACTION_ERROR : announcement}
+        {announcement}
       </div>
 
       {isOpen ? (
         <NotificationPanel
           id={panelId}
           notifications={notifications}
+          isLoading={isLoading}
+          errorMessage={isError && !data ? error.message : null}
+          onRetry={() => refetch()}
           onOpen={handleOpen}
-          onRemove={(notification) => remove.mutate(notification.id)}
-          onMarkAll={() => markAll.mutate()}
+          onRemove={(notification) => remove.mutate(notification.id, { onError: announceFailure })}
+          onMarkAll={() => markAll.mutate(undefined, { onError: announceFailure })}
           onNavigate={close}
         />
       ) : null}
