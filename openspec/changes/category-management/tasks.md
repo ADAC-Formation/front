@@ -20,9 +20,9 @@
 
 ## 4. Boîtes de dialogue accessibles (TDD)
 
-- [ ] 4.1 Vérifier que `ConfirmDialog.test.jsx` couvre le focus initial sur « Annuler », Échap, Tab bouclé et le retour du focus ; l'étendre si une de ces garanties manque (elles protègent le refactor)
-- [ ] 4.2 RED : `src/hooks/useModalFocus.test.jsx` — le hook boucle Tab / Maj+Tab sur boutons, champs, listes et liens non désactivés, ignore les éléments désactivés, place le focus initial demandé, ferme à Échap et rend le focus ; confirmer RED
-- [ ] 4.3 Extraire `useModalFocus` de `ConfirmDialog` et l'utiliser dans `ConfirmDialog` ; GREEN avec les tests existants des comptes et de l'archivage de formation (`npm run test -- ConfirmDialog accounts FormationDetailPage`)
+- [x] 4.1 Vérifier que `ConfirmDialog.test.jsx` couvre le focus initial sur « Annuler », Échap, Tab bouclé et le retour du focus ; l'étendre si une de ces garanties manque (elles protègent le refactor)
+- [x] 4.2 RED : `src/hooks/useModalFocus.test.jsx` — le hook boucle Tab / Maj+Tab sur boutons, champs, listes et liens non désactivés, ignore les éléments désactivés, place le focus initial demandé, ferme à Échap et rend le focus ; confirmer RED
+- [x] 4.3 Extraire `useModalFocus` de `ConfirmDialog` et l'utiliser dans `ConfirmDialog` ; GREEN avec les tests existants des comptes et de l'archivage de formation (`npm run test -- ConfirmDialog accounts FormationDetailPage`)
 - [ ] 4.4 RED : `src/features/categories/components/CategoryFormDialog.test.jsx` — création (champs vides, titre « Créer une catégorie »), modification (préremplie, titre « Modifier la catégorie »), focus initial sur « Nom », Tab bouclé dans la boîte, Échap, couleur : sélecteur et champ hexadécimal synchronisés et pastille, erreurs liées aux champs (nom vide, hexadécimal invalide, aucun appel), `409` et autres erreurs annoncés dans la boîte avec saisie conservée, bouton désactivé pendant l'envoi, un check jest-axe ; confirmer RED
 - [ ] 4.5 Créer `CategoryFormDialog.jsx` et sa feuille de style (habillage de `ConfirmDialog`, jetons, `rem`) ; GREEN
 - [ ] 4.6 Commit `feat: add the category form dialog`

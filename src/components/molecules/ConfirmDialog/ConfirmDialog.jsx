@@ -1,9 +1,10 @@
-import { useEffect, useId, useRef } from "react";
+import { useId, useRef } from "react";
+import { useModalFocus } from "../../../hooks/useModalFocus";
 import styles from "./ConfirmDialog.module.css";
 
 // Boîte de dialogue modale de confirmation : nommée par son titre, focus initial sur
 // « Annuler » (action sûre), Échap annule, Tab reste dans la boîte, le focus revient à
-// l'élément précédent à la fermeture. `children` est rendu en texte.
+// l'élément précédent à la fermeture (hook partagé `useModalFocus`). `children` est rendu en texte.
 const ConfirmDialog = ({
   title,
   confirmLabel,
@@ -17,31 +18,7 @@ const ConfirmDialog = ({
   const dialogRef = useRef(null);
   const cancelRef = useRef(null);
 
-  useEffect(() => {
-    const previous = document.activeElement;
-    cancelRef.current?.focus();
-    return () => previous?.focus?.();
-  }, []);
-
-  const handleKeyDown = (event) => {
-    if (event.key === "Escape") {
-      event.stopPropagation();
-      onCancel();
-      return;
-    }
-    if (event.key !== "Tab") return;
-
-    const focusable = dialogRef.current.querySelectorAll("button:not([disabled])");
-    const first = focusable[0];
-    const last = focusable[focusable.length - 1];
-    if (event.shiftKey && document.activeElement === first) {
-      event.preventDefault();
-      last.focus();
-    } else if (!event.shiftKey && document.activeElement === last) {
-      event.preventDefault();
-      first.focus();
-    }
-  };
+  const handleKeyDown = useModalFocus({ dialogRef, initialFocusRef: cancelRef, onCancel });
 
   return (
     <div className={styles.backdrop}>

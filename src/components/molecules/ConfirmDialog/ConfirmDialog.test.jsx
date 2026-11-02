@@ -58,6 +58,15 @@ describe('ConfirmDialog', () => {
     expect(screen.getByRole('button', { name: 'Annuler' })).toHaveFocus()
   })
 
+  it('garde le focus dans la boîte avec Maj+Tab', async () => {
+    renderDialog()
+    expect(screen.getByRole('button', { name: 'Annuler' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    expect(screen.getByRole('button', { name: 'Suspendre' })).toHaveFocus()
+    await userEvent.tab({ shift: true })
+    expect(screen.getByRole('button', { name: 'Annuler' })).toHaveFocus()
+  })
+
   it("rend le focus à l'élément précédent à la fermeture", () => {
     const { unmount } = render(<button>ouvrir</button>)
     screen.getByText('ouvrir').focus()
