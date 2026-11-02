@@ -38,8 +38,8 @@
 
 ## 7. Documentation et passage manuel
 
-- [ ] 7.1 Mettre à jour `CLAUDE.md` (« État actuel » : import branché sur les colonnes provisoires, R10 ouvert), `docs/decisions-formations.md` si une décision a évolué (le passage manuel peut en ajouter) et `docs/points-pour-charlotte.md` (Q12 à jour avec ce qui est constaté)
-- [ ] 7.2 Commit `docs: record the formation import`
+- [x] 7.1 Mettre à jour `CLAUDE.md` (« État actuel » : import branché sur les colonnes provisoires, R10 ouvert), `docs/decisions-formations.md` si une décision a évolué (le passage manuel peut en ajouter) et `docs/points-pour-charlotte.md` (Q12 à jour avec ce qui est constaté)
+- [x] 7.2 Commit `docs: record the formation import`
 - [ ] 7.3 Passage manuel contre le vrai back local (comptes de `docs/dev/seed-local-admin.sql`, voir `docs/dev/README.md`) : télécharger le modèle et l'ouvrir dans Excel ou LibreOffice ; compléter une ligne avec une catégorie et un formateur existants, importer → bandeau et formation dans la liste ; fichier avec une catégorie inconnue, une date invalide et une modalité invalide → tableau ligne / colonne sans aucune formation créée ; fichier `.txt` renommé en `.xlsx` ; fichier de plus de 2 Mo ; formateur et stagiaire refusés ; lecture au clavier et zoom 200 % — ne pas cocher sans l'avoir fait (Docker requis)
 - [ ] 7.4 Relecture de Manon ; PR unique vers `dev` à sa demande seulement, aucun push avant
 
