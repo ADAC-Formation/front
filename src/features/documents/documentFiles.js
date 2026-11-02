@@ -62,10 +62,26 @@ export function canDeleteDocument(user, formation, document) {
   return user.role === ROLES.ADMIN && document.uploadedBy?.id === user.id
 }
 
+const isId = (value) => typeof value === 'number' && Number.isFinite(value)
+
+// Raccourci de DÉVELOPPEMENT seulement (en attendant Q13) : `VITE_DEV_INSCRIPTION_IDS='{"101":7}'` dans
+// `.env` (git-ignoré) associe un id de formation à l'id réel d'inscription du compte de test. Jamais lu
+// hors `import.meta.env.DEV` : le build de production l'écarte. JSON invalide ou valeur non numérique : ignoré.
+function devInscriptionId(formationId) {
+  if (!import.meta.env.DEV) return null
+  try {
+    const map = JSON.parse(import.meta.env.VITE_DEV_INSCRIPTION_IDS ?? '{}')
+    const id = Array.isArray(map) ? undefined : map?.[formationId]
+    return isId(id) ? id : null
+  } catch {
+    return null
+  }
+}
+
 // Identifiant d'inscription du stagiaire sur la formation, ou `null` : seul point du front qui le lit
-// (G8, G11). Le back ne l'envoie pas encore (demande Q13) ; si le contrat change, seule cette fonction
-// et la source des formations changent.
+// (G8, G11). Le back ne l'envoie pas encore (demande Q13) ; le champ du back l'emporte toujours sur le
+// raccourci de développement. Si le contrat change, seule cette fonction et la source des formations changent.
 export function inscriptionIdOf(formation) {
   const id = formation?.inscriptionId
-  return typeof id === 'number' && Number.isFinite(id) ? id : null
+  return isId(id) ? id : devInscriptionId(formation?.id)
 }

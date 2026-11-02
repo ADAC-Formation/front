@@ -88,3 +88,10 @@ Suite du thème : mêmes composants et règles de fichier que 027 (G4), dépôt 
 - **Route** : la page de profil est `/profile` (route existante), déplacée dans `features/profile/pages/`, l'ancien dossier `components/Pages/Stagiaire/ProfilePage/` est supprimé.
 - **Passage manuel sur le vrai back : NON FAIT.** Le back local tourne, mais sans `inscriptionId` pour le stagiaire (Q13) le dépôt ne peut pas être essayé de bout en bout, et seul l'avis « Dépôt indisponible pour le moment » serait visible. À faire dès que Charlotte répond (champ sur la formation ou `GET /inscriptions/me`) : adapter `inscriptionIdOf` / la source des formations si le contrat diffère, puis vérifier dépôt, refus d'un `.exe` et de plus de 10 Mo, téléchargement, formation archivée, et la visibilité côté chargée de formation (`GET /documents?inscriptionId=`).
 
+## G14 — Raccourci de développement pour `inscriptionId` (temporaire, jusqu'à la réponse à Q13)
+- Date : 2026-11-02
+- **Décision** : pour continuer à construire et essayer « Mes documents » sur le vrai back local, `inscriptionIdOf` complète une formation sans `inscriptionId` d'après `VITE_DEV_INSCRIPTION_IDS` (JSON `{ "<idFormation>": <idInscription> }` dans `.env`, git-ignoré). Le champ du back l'emporte toujours ; le raccourci n'est lu que si `import.meta.env.DEV` (absent du build de production, vérifié) ; JSON invalide ou valeur non numérique : ignoré. L'id réel d'inscription se lit côté chargée de formation (`GET /formations/{id}/inscriptions`) : procédure dans `docs/dev/README.md`.
+- **Pourquoi** : le contrat actuel ne donne aucun moyen au stagiaire de connaître son id ; sans raccourci, le passage manuel (6.1) reste impossible alors que le reste est prêt. Un seul fichier de code et aucune donnée fictive dans l'application.
+- **À retirer** : `devInscriptionId`, la section du README dev et la ligne de `.env.example` quand Charlotte aura répondu (et adapter `inscriptionIdOf` si son contrat diffère).
+- **Alternatives écartées** : serveur MSW dans le navigateur (données fictives dans l'entrée de développement, D11 les veut supprimées) ; attendre sans rien essayer.
+

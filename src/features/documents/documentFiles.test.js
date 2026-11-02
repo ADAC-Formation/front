@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { AUTRE_FORMATEUR, FORMATIONS } from '../../test/formations'
 import { USERS } from '../../test/session'
 import {
@@ -157,5 +157,36 @@ describe('canUploadOwnDocument', () => {
 
   it('refuse sans inscriptionId (Q13)', () => {
     expect(canUploadOwnDocument({ status: 'ACTIVE' })).toBe(false)
+  })
+})
+
+// Raccourci de développement (en attendant Q13) : `VITE_DEV_INSCRIPTION_IDS='{"101":7}'` donne
+// l'inscriptionId d'une formation quand le back ne l'envoie pas ; jamais en production.
+describe('inscriptionIdOf : raccourci de développement', () => {
+  afterEach(() => vi.unstubAllEnvs())
+
+  it("complète une formation sans inscriptionId d'après VITE_DEV_INSCRIPTION_IDS", () => {
+    vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', '{"101":7}')
+    expect(inscriptionIdOf({ id: 101 })).toBe(7)
+    expect(inscriptionIdOf({ id: 102 })).toBeNull()
+  })
+
+  it("laisse le champ du back l'emporter sur le raccourci", () => {
+    vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', '{"101":7}')
+    expect(inscriptionIdOf({ id: 101, inscriptionId: 55 })).toBe(55)
+  })
+
+  it.each([['du JSON invalide', 'pas du json'], ['un tableau', '[1,2]'], ['une valeur non numérique', '{"101":"x"}']])(
+    'ignore %s',
+    (_label, value) => {
+      vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', value)
+      expect(inscriptionIdOf({ id: 101 })).toBeNull()
+    },
+  )
+
+  it('est ignoré hors développement (build de production)', () => {
+    vi.stubEnv('DEV', false)
+    vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', '{"101":7}')
+    expect(inscriptionIdOf({ id: 101 })).toBeNull()
   })
 })
