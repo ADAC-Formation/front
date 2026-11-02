@@ -58,6 +58,7 @@ export const routes = [
             children: [
               { path: "formations/creer", ...lazyPage(() => import("../features/formations/pages/FormationFormPage")) },
               { path: "formations/:formationId/modifier", ...lazyPage(() => import("../features/formations/pages/FormationFormPage")) },
+              { path: "formations/importer", ...lazyPage(() => import("../features/formations/pages/FormationImportPage")) },
               { path: "formations/categories", ...lazyPage(() => import("../components/Pages/Categories/CategoryManagement")) },
               // Comptes : création et modification (D54). « nouveau » est déclaré avant « :id ».
               { path: "admin/formateurs/nouveau", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "formateurs" }) },

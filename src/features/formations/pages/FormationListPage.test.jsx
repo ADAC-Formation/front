@@ -105,6 +105,12 @@ describe('FormationListPage', () => {
       expect(screen.queryByRole('radio', { name: 'Mes formations' })).not.toBeInTheDocument()
     })
 
+    it('propose d’importer un fichier Excel', async () => {
+      mockFormationList()
+      renderList('SUPER_ADMIN')
+      expect(await screen.findByRole('link', { name: 'Importer un fichier Excel' })).toHaveAttribute('href', '/formations/importer')
+    })
+
     it('revient au menu Gestion', async () => {
       mockFormationList()
       renderList('SUPER_ADMIN')
@@ -125,6 +131,7 @@ describe('FormationListPage', () => {
 
       expect(screen.queryByRole('link', { name: 'Créer une nouvelle formation' })).not.toBeInTheDocument()
       expect(screen.queryByRole('link', { name: 'Gérer les catégories' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: 'Importer un fichier Excel' })).not.toBeInTheDocument()
     })
 
     it('revient au menu Gestion', async () => {
@@ -143,6 +150,7 @@ describe('FormationListPage', () => {
       expect(screen.queryByRole('radio', { name: 'Toutes' })).not.toBeInTheDocument()
       expect(screen.queryByRole('link', { name: 'Créer une nouvelle formation' })).not.toBeInTheDocument()
       expect(screen.queryByRole('link', { name: 'Gérer les catégories' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: 'Importer un fichier Excel' })).not.toBeInTheDocument()
       expect(screen.getByRole('radio', { name: 'Actives' })).toBeChecked()
     })
 

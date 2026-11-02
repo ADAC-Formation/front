@@ -242,3 +242,24 @@ describe('aucune donnée de session dans le navigateur', () => {
     expect(localStorage.getItem('dev-role')).toBeNull()
   })
 })
+
+describe('import de formations : accès par rôle', () => {
+  it.each(['STAGIAIRE', 'ADMIN'])('%s voit « Accès refusé » sur /formations/importer', async (role) => {
+    mockSession(role)
+    renderApp('/formations/importer')
+    expect(await accessDenied()).toBeInTheDocument()
+  })
+
+  it('un visiteur est redirigé vers la connexion', async () => {
+    mockNoSession()
+    const { router } = renderApp('/formations/importer')
+    expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/login')
+  })
+
+  it('la chargée de formation accède à la page d’import, pas à un détail de formation', async () => {
+    mockSession('SUPER_ADMIN')
+    renderApp('/formations/importer')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Importer des formations' })).toBeInTheDocument()
+  })
+})
