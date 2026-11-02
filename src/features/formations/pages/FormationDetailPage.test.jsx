@@ -6,6 +6,7 @@ import FormationDetailPage from './FormationDetailPage'
 import FormationListPage from './FormationListPage'
 import { renderWithProviders } from '../../../test/render'
 import { mockCategories } from '../../../test/categories'
+import { mockDocumentApi } from '../../../test/documents'
 import { mockSession } from '../../../test/session'
 import {
   FORMATIONS,
@@ -20,6 +21,7 @@ const [secours, excel, postures] = FORMATIONS
 function renderDetail(role, formation, { notice } = {}) {
   mockSession(role)
   mockCategories() // la liste des formations, où l'on revient, charge les catégories du filtre
+  mockDocumentApi() // la section « Documents » du détail
   const route = notice
     ? { pathname: `/formations/${formation.id}`, state: { notice } }
     : `/formations/${formation.id}`
@@ -108,12 +110,31 @@ describe('FormationDetailPage', () => {
     expect(await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
   })
 
-  it('réserve une section « Documents » sans appel au back', async () => {
-    mockFormationDetail(secours)
-    mockInscriptions(101)
-    renderDetail('SUPER_ADMIN', secours)
-    expect(await screen.findByRole('heading', { level: 2, name: 'Documents' })).toBeInTheDocument()
-    expect(screen.getByText(/arriveront bientôt/)).toBeInTheDocument()
+  describe('documents', () => {
+    it.each(['SUPER_ADMIN', 'ADMIN', 'STAGIAIRE'])('%s voit les documents de la formation', async (role) => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail(role, secours)
+      expect(await screen.findByRole('heading', { level: 2, name: 'Documents' })).toBeInTheDocument()
+      expect(await screen.findByText('Support de cours.pdf')).toBeInTheDocument()
+      expect(screen.queryByText(/arriveront bientôt/)).not.toBeInTheDocument()
+    })
+
+    it('propose le dépôt à la chargée de formation seulement, ici', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours)
+      expect(await screen.findByRole('group', { name: 'Zone de dépôt de documents' })).toBeInTheDocument()
+    })
+
+    it('n’a aucune violation d’accessibilité avec les documents (jest-axe)', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      const { container } = renderDetail('SUPER_ADMIN', secours)
+      await screen.findByText('Support de cours.pdf')
+      await screen.findByRole('group', { name: 'Zone de dépôt de documents' })
+      expect(await axe(container)).toHaveNoViolations()
+    })
   })
 
   describe('inscrits', () => {

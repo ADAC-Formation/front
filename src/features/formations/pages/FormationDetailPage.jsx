@@ -7,6 +7,7 @@ import { PageShell } from '../../../templates/PageShell/PageShell'
 import { MANAGEMENT_ROLES, ROLES } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
 import AccessDeniedPage from '../../auth/pages/AccessDeniedPage'
+import DocumentSection from '../../documents/components/DocumentSection'
 import FormationNotice from '../components/FormationNotice'
 import { formatDateRange, formateurName, modaliteLabel } from '../formationLabels'
 import { useArchiveFormation, useFormation, useInscriptions } from '../hooks'
@@ -142,10 +143,7 @@ const FormationDetailPage = () => {
 
         {isManager && <InscritsSection formationId={formationId} />}
 
-        <section className={styles.section}>
-          <h2>Documents</h2>
-          <p className={styles.sectionNote}>Les documents de la formation arriveront bientôt.</p>
-        </section>
+        <DocumentSection formation={formation} className={styles.section} />
 
         {archive.error && (
           <div className={styles.notices}>

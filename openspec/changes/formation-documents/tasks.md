@@ -38,9 +38,9 @@
 
 ## 7. Intégration au détail de formation (TDD)
 
-- [ ] 7.1 RED : étendre `FormationDetailPage.test.jsx` — la section « Documents » liste les documents de la formation (appel `GET /documents?formationId=`) pour chaque rôle, plus de note « arriveront bientôt », un check jest-axe sur la page avec documents ; ajouter `mockDocumentApi()` aux tests du détail et du routeur qui rendent cette page ; confirmer RED
-- [ ] 7.2 Remplacer la section réservée de `FormationDetailPage.jsx` par `<DocumentSection formation={formation} />` ; GREEN avec `npm run test -- FormationDetailPage router back-links`
-- [ ] 7.3 Commit `feat: show the documents on the formation detail`
+- [x] 7.1 RED : étendre `FormationDetailPage.test.jsx` — la section « Documents » liste les documents de la formation (appel `GET /documents?formationId=`) pour chaque rôle, plus de note « arriveront bientôt », un check jest-axe sur la page avec documents ; ajouter `mockDocumentApi()` aux tests du détail et du routeur qui rendent cette page ; confirmer RED
+- [x] 7.2 Remplacer la section réservée de `FormationDetailPage.jsx` par `<DocumentSection formation={formation} />` ; GREEN avec `npm run test -- FormationDetailPage router back-links`
+- [x] 7.3 Commit `feat: show the documents on the formation detail`
 
 ## 8. Documentation et vérification
 

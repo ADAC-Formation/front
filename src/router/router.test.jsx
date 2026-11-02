@@ -11,6 +11,7 @@ import { API_URL, mockSession, mockNoSession } from '../test/session'
 import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
 import { FORMATEURS, mockAccountList } from '../test/accounts'
 import { mockCategories } from '../test/categories'
+import { mockDocumentApi } from '../test/documents'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -70,6 +71,7 @@ describe('pages de formations branchées sur le back', () => {
     mockSession('SUPER_ADMIN')
     mockFormationDetail(FORMATIONS[0])
     mockInscriptions(101)
+    mockDocumentApi()
     renderApp('/formations/101')
     expect(await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
   })

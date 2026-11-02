@@ -7,6 +7,7 @@ import { mockSession } from '../test/session'
 import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
 import { FORMATEURS, mockAccountList } from '../test/accounts'
 import { mockCategories } from '../test/categories'
+import { mockDocumentApi } from '../test/documents'
 import { cssSheets, rulesOf, stripComments } from '../test/css-sheets'
 
 function renderApp(path) {
@@ -34,6 +35,7 @@ describe.each([
     mockFormationList()
     mockFormationDetail(FORMATIONS[0])
     mockInscriptions(101)
+    mockDocumentApi()
     mockCategories()
     mockAccountList('formateurs', FORMATEURS)
     renderApp(path)
