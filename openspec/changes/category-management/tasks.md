@@ -44,7 +44,7 @@
 
 - [x] 7.1 Mettre à jour `CLAUDE.md` (« État actuel » : catégories branchées, plus de mock, boîtes de dialogue partagées), `docs/decisions-categories.md` si une décision a évolué
 - [x] 7.2 Commit `docs: record the category management`
-- [ ] 7.3 Passage manuel contre le vrai back local (comptes de `docs/dev/seed-local-admin.sql`, voir `docs/dev/README.md`) : lister les catégories ; créer ; créer avec un nom déjà pris (`409`) ; couleur par le sélecteur et par le code ; modifier nom et couleur puis vérifier la liste des formations ; désactiver (confirmation) puis vérifier qu'elle n'est plus proposée dans « Créer une formation » ; réactiver ; formateur et stagiaire refusés ; clavier (focus dans les boîtes, Échap, retour du focus) et zoom 200 % — ne pas cocher sans l'avoir fait (Docker requis)
+- [x] 7.3 Passage manuel contre le vrai back local (comptes de `docs/dev/seed-local-admin.sql`, voir `docs/dev/README.md`) : lister les catégories ; créer ; créer avec un nom déjà pris (`409`) ; couleur par le sélecteur et par le code ; modifier nom et couleur puis vérifier la liste des formations ; désactiver (confirmation) puis vérifier qu'elle n'est plus proposée dans « Créer une formation » ; réactiver ; formateur et stagiaire refusés ; clavier (focus dans les boîtes, Échap, retour du focus) et zoom 200 % — ne pas cocher sans l'avoir fait (Docker requis)
 - [ ] 7.4 Relecture de Manon ; la PR unique vers `dev` se fait au dernier change de la branche et à sa demande, aucun push avant
 
 ## Workflow follow-up
