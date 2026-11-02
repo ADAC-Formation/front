@@ -44,7 +44,7 @@ export function useUploadDocuments(target) {
     },
     onSettled: () => queryClient.invalidateQueries({ queryKey: documentsKey(target) }),
   })
-  return { upload: mutation.mutateAsync, isPending: mutation.isPending, result: mutation.data, reset: mutation.reset }
+  return { upload: mutation.mutate, isPending: mutation.isPending, result: mutation.data, reset: mutation.reset }
 }
 
 // Aucune mise à jour optimiste : la liste vient toujours du back. Un 404 (déjà supprimé) la recharge aussi.

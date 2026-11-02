@@ -33,9 +33,9 @@
 ## 6. Documentation et vérification
 
 - [ ] 6.1 Passage manuel sur le vrai back local : possible seulement si Charlotte a ajouté `inscriptionId` (Q13). Sinon, le consigner comme **bloqué** dans `docs/decisions-documents.md` (la sous-section affiche « Dépôt indisponible pour le moment » ; vérifier ce comportement sur le back actuel) et laisser la tâche ouverte ; si le champ existe, déposer plusieurs fichiers, refus d'un `.exe` et de plus de 10 Mo, télécharger, formation archivée, vérifier que le document est visible côté chargée de formation (`GET /documents?inscriptionId=`)
-- [ ] 6.2 Mettre à jour `CLAUDE.md` (« État actuel » : documents du stagiaire branchés, hypothèse `inscriptionId` isolée dans `inscriptionIdOf`, page de profil dans `features/profile/`, tout test qui rend la page de profil déclare `mockDocumentApi()` et les formations), `docs/decisions-documents.md` (constats d'implémentation) et `docs/points-pour-charlotte*.md` si le passage manuel révèle des écarts
-- [ ] 6.3 `npm run check` vert (lint + tests + build + budget du bundle) ; `git -C ../../back-readonly status` propre ; relecture (`/code-review`) et correction des remarques bloquantes
-- [ ] 6.4 Commit `docs: record the stagiaire documents`
+- [x] 6.2 Mettre à jour `CLAUDE.md` (« État actuel » : documents du stagiaire branchés, hypothèse `inscriptionId` isolée dans `inscriptionIdOf`, page de profil dans `features/profile/`, tout test qui rend la page de profil déclare `mockDocumentApi()` et les formations), `docs/decisions-documents.md` (constats d'implémentation) et `docs/points-pour-charlotte*.md` si le passage manuel révèle des écarts
+- [x] 6.3 `npm run check` vert (lint + tests + build + budget du bundle) ; `git -C ../../back-readonly status` propre ; relecture (`/code-review`) et correction des remarques bloquantes
+- [x] 6.4 Commit `docs: record the stagiaire documents`
 
 ## Workflow follow-up
 
