@@ -13,10 +13,10 @@
 
 ## 3. Appels, hooks et helpers MSW (TDD)
 
-- [ ] 3.1 Créer `src/test/documents.js` : `mockDocumentApi` (liste avec état en mémoire, `POST` multipart qui enregistre le nom et `formationId` reçus, téléchargement binaire, `DELETE`, erreurs `400` / `403` / `404`, erreur de téléchargement en JSON) ; vérifier qu'un appel non déclaré fait échouer le test
-- [ ] 3.2 RED : `src/features/documents/hooks.test.jsx` — `useDocuments` (clé par formation), `useUploadDocuments` (un `POST` par fichier valide dans l'ordre, refus client sans appel, `400` d'un fichier sans arrêter les suivants, rechargement unique à la fin), `useDeleteDocument` (rechargement après succès et après `404`), `downloadDocument` (blob reçu ; erreur `403` / `404` en blob relue en `ApiError` avec le message du back) ; confirmer RED
-- [ ] 3.3 Créer `api.js`, `hooks.js` et `saveBlob.js` (adresse d'objet, lien temporaire, révocation) ; GREEN
-- [ ] 3.4 Commit `feat: add document API and hooks`
+- [x] 3.1 Créer `src/test/documents.js` : `mockDocumentApi` (liste avec état en mémoire, `POST` multipart qui enregistre le nom et `formationId` reçus, téléchargement binaire, `DELETE`, erreurs `400` / `403` / `404`, erreur de téléchargement en JSON) ; vérifier qu'un appel non déclaré fait échouer le test
+- [x] 3.2 RED : `src/features/documents/hooks.test.jsx` — `useDocuments` (clé par formation), `useUploadDocuments` (un `POST` par fichier valide dans l'ordre, refus client sans appel, `400` d'un fichier sans arrêter les suivants, rechargement unique à la fin), `useDeleteDocument` (rechargement après succès et après `404`), `downloadDocument` (blob reçu ; erreur `403` / `404` en blob devenue une `ApiError` avec le même statut et un message français) ; confirmer RED
+- [x] 3.3 Créer `api.js`, `hooks.js` et `saveBlob.js` (adresse d'objet, lien temporaire, révocation) ; GREEN
+- [x] 3.4 Commit `feat: add document API and hooks`
 
 ## 4. Liste et téléchargement (TDD)
 

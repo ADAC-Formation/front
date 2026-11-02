@@ -35,7 +35,7 @@
 
 ### 3. Téléchargement : blob puis enregistrement (G1)
 `downloadDocument` demande le binaire par le client axios (cookie, intercepteur) ; `saveBlob(blob, fileName)` crée une adresse d'objet, clique un lien `download` temporaire, puis la révoque. Le nom vient de `DocumentResponse.fileName`, pas de l'en-tête.
-- *Piège* : avec `responseType: 'blob'`, le corps d'une erreur (`403` / `404`) arrive en `Blob` et non en JSON, donc l'intercepteur `ApiError` (D12) ne lit pas le `message`. `downloadDocument` relit le blob d'erreur (`await blob.text()` puis `JSON.parse` protégé) et relance une `ApiError` avec le `status` et le message du back, ou un message par défaut.
+- *Piège* : avec `responseType: 'blob'`, le corps d'une erreur (`403` / `404`) arrive en `Blob` et non en JSON, donc l'intercepteur `ApiError` (D12) ne lit pas le `message` du back (il garde le `status`). `downloadDocument` relance une `ApiError` avec le même `status` et un message français choisi d'après ce statut (`403` : pas d'accès ; `404` : introuvable, peut-être supprimé). Relire le blob d'erreur à la main obligerait à contourner l'intercepteur, donc la gestion du `401` (session expirée).
 - *Pourquoi* : le fichier est derrière la session ; l'erreur doit rester lisible dans l'interface.
 - *Alternative écartée* : lien `<a href>` direct (cookie entre origines en local, JSON brut affiché en cas d'erreur).
 
@@ -50,7 +50,7 @@
 `FormationDetailPage` remplace la `<section>` réservée par `<DocumentSection formation={formation} />`. Les tests existants du détail et du routeur qui rendent cette page déclarent `mockDocuments()` (un appel non déclaré fait échouer le test, `renderWithProviders`). La spec `formation-browsing` perd l'exigence « Emplacement des documents » (delta `REMOVED`). Les styles de la section vont dans `features/documents/` en jetons et `rem` (tests d'hygiène CSS existants).
 
 ### 6. Tests (TDD, avant le code)
-`documentFiles.test.js` (types, taille aux bornes, tailles lisibles, droits par rôle × formation × auteur × archivage), `api`/`hooks.test.jsx` (corps multipart, séquence, collecte des refus, invalidation unique, erreur de blob relue, `404` à la suppression), `DocumentDropzone.test.jsx` (glisser-déposer, bouton, refus, désactivation), `DocumentList.test.jsx`, `DocumentSection.test.jsx` (rôles, archivée, vide, erreur, envoi de plusieurs fichiers, suppression avec confirmation et annulation, nom de fichier en texte, jest-axe) et ceux du détail. Helpers MSW dans `src/test/documents.js` (liste avec état, `POST`, téléchargement binaire, `DELETE`, erreurs).
+`documentFiles.test.js` (types, taille aux bornes, tailles lisibles, droits par rôle × formation × auteur × archivage), `api`/`hooks.test.jsx` (corps multipart, séquence, collecte des refus, invalidation unique, erreur de blob traduite par statut, `404` à la suppression), `DocumentDropzone.test.jsx` (glisser-déposer, bouton, refus, désactivation), `DocumentList.test.jsx`, `DocumentSection.test.jsx` (rôles, archivée, vide, erreur, envoi de plusieurs fichiers, suppression avec confirmation et annulation, nom de fichier en texte, jest-axe) et ceux du détail. Helpers MSW dans `src/test/documents.js` (liste avec état, `POST`, téléchargement binaire, `DELETE`, erreurs).
 
 ## Risks / Trade-offs
 
