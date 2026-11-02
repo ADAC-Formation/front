@@ -13,10 +13,10 @@
 
 ## 3. Écritures et rafraîchissement (TDD)
 
-- [ ] 3.1 Étendre `src/test/categories.js` : `mockCreateCategory`, `mockUpdateCategory`, `mockSetCategoryActive` (corps reçu, `201` / `200`, `409`, `404`, erreur réseau) ; vérifier qu'un appel non déclaré fait échouer le test
-- [ ] 3.2 RED : compléter `src/features/categories/hooks.test.jsx` — `useCreateCategory` envoie `{ nom, couleur }`, `useUpdateCategory` envoie `PUT`, `useSetCategoryActive` appelle `activate` puis `deactivate`, chaque succès recharge la liste complète, la liste des actives et les formations, un `409` remonte en `ApiError` sans rechargement ; confirmer RED
-- [ ] 3.3 Ajouter `createCategory`, `updateCategory`, `setCategoryActive` à `api.js` et les trois hooks à `hooks.js` (invalidation de `['categories']` et `['formations']`) ; GREEN
-- [ ] 3.4 Commit `feat: add category write hooks`
+- [x] 3.1 Étendre `src/test/categories.js` : `mockCreateCategory`, `mockUpdateCategory`, `mockSetCategoryActive` (corps reçu, `201` / `200`, `409`, `404`, erreur réseau) ; vérifier qu'un appel non déclaré fait échouer le test
+- [x] 3.2 RED : compléter `src/features/categories/hooks.test.jsx` — `useCreateCategory` envoie `{ nom, couleur }`, `useUpdateCategory` envoie `PUT`, `useSetCategoryActive` appelle `activate` puis `deactivate`, chaque succès recharge la liste complète, la liste des actives et les formations, un `409` remonte en `ApiError` sans rechargement ; confirmer RED
+- [x] 3.3 Ajouter `createCategory`, `updateCategory`, `setCategoryActive` à `api.js` et les trois hooks à `hooks.js` (invalidation de `['categories']` et `['formations']`) ; GREEN
+- [x] 3.4 Commit `feat: add category write hooks`
 
 ## 4. Boîtes de dialogue accessibles (TDD)
 
