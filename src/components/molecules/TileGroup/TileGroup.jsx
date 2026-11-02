@@ -4,6 +4,7 @@ import style from "./TileGroup.module.css"
 
 const TileGroup = ({label, icon, largeTilePath}) => {
   return (
+    <div className={style.host}>
     <div className={style.group}>
 
       <div className={style.largeTile}>
@@ -41,6 +42,7 @@ const TileGroup = ({label, icon, largeTilePath}) => {
         label="Profile"
         />
 
+    </div>
     </div>
   )
 }

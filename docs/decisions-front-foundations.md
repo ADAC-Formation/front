@@ -404,3 +404,41 @@
 - **Pourquoi** : cohérence avec le site de l'association et meilleure couverture WCAG 1.4.4 / 1.4.3 / 1.4.12 pour des stagiaires aux besoins variés.
 - **Alternatives écartées** : intégrer le mode sombre au menu (recoupe « Contraste négatif »), garder deux tailles seulement, pointer le plan de site vers le site ADAC.
 - Branche : `feature/accessibility`.
+
+## D61 — Mise en page mobile : tuiles empilées, actions sans survol, en-tête et logo
+- Date : 2026-11-01
+- Change OpenSpec : `mobile-layout-fixes` (branche `feature/mobile-layout`).
+
+### Avant (mesure du 2026-11-01, `dev` au commit `307ca9e`)
+- **Protocole** : Chrome sans interface piloté par un script hors dépôt (`puppeteer-core`, aucune dépendance ajoutée), contre le vrai back local, session chargée de formation. Largeurs 320, 360, 390, 430, 600, 768, 850, 1024, 1100, 1280 et 1920 px, texte à 100 % puis 150 % (`text-step-3`). Pour chaque page (`/admin/gestion`, `/`) : largeur du texte de chaque libellé contre la largeur disponible dans la tuile, défilement horizontal, boîtes des boutons d'en-tête contre la zone visible du logo (rectangle des pixels non transparents de l'image).
+- **Libellés coupés, Gestion, texte 100 %** : coupés de 320 à 850 px (« Formateurs » 205 px de texte pour 6 à 161 px disponibles), encore « Formateurs » à 1024 px (205 > 203) ; entiers à partir de 1100 px. À 150 % : coupés jusqu'à 1280 px.
+- **Libellés coupés, accueil, texte 100 %** : coupés de 320 à 850 px (« Notifications » 112 à 125 px de texte pour 0 à 90 px), encore « Notifications » à 1024 px (125 > 118) ; entiers à partir de 1100 px. À 150 % : coupés jusqu'à 1280 px.
+- **Chevauchement en-tête / logo** : un bouton recoupe la zone visible du logo à 320, 360, 390 et 430 px (1 à 2 boutons), à 100 % comme à 150 % ; à 150 % aussi à 600, 850, 1024 et 1100 px. Pas de défilement horizontal, sauf accueil à 150 % et 320 / 360 px. À 850 px et 100 % la boîte de l'en-tête (516–850 px) recoupe la zone visible du logo (290–560 px) mais aucun bouton ne la touche : la bande 800–910 px relevée au proposal tient à la boîte avec le libellé « Se déconnecter » ; à garder en tête pour la mesure « Après ».
+- **Dégagement** : bas de la zone visible du logo à 251 px à partir de 1024 px (`--page-top` = 276 px, 260 px sous 640 px).
+
+### Après (mesure du 2026-11-01, branche `feature/mobile-layout`, mêmes largeurs et mêmes paliers)
+- **Résultat** : sur `/admin/gestion` et `/` (chargée de formation, 11 largeurs × 100 % et 150 % = 44 mesures) : 0 libellé coupé, 0 défilement horizontal, 0 bouton d'en-tête sur la zone visible du logo. Accueil en stagiaire (22 mesures) : idem. Gestion en formateur à 390, 768 et 1280 px, 100 % et 150 % : idem.
+- **Logo** : sous 768 px il passe sous la rangée d'icônes et mesure `min(96vw, 420px)` (234 → 374 px à 390 px, ses 53 % visibles passent de 124 à 198 px) ; sa zone visible descend jusqu'à 205–254 px (100 %) et 241–290 px (150 %), sous le dégagement `--page-top` (260 px sous 640 px, 276 px au-delà à 100 % ; ×1,15 à 150 % : 300 / 324 px), donc le contenu n'est pas recouvert. Le seuil est 768 px et non 640 px : à 150 % de texte l'en-tête (260 px) touchait encore le logo de 640 à 689 px. À partir de 768 px : largeur `clamp(220px, 66vw, 580px)` (60 vw avant : 461 → 507 px à 768 px), zone visible jusqu'à 219–251 px. Plafond de 420 px sur téléphone : au-delà la zone visible dépasserait `--page-top`.
+- **Écart avec la conception** : l'en-tête avec libellé fait 436 px à 150 % (et non 345 px estimés) ; à 1100 px il touchait encore le logo. Seuil du libellé porté de 1100 à **1150 px** (balayage 1000–1400 px × 100, 112, 125, 150 % : plus aucun chevauchement).
+- **Interaction** (Gestion, 1280 px) : souris, 0/6 action visible au repos, le survol d'une tuile révèle les siennes ; Tab : chaque action focalisée est visible ; émulation tactile (390, 768 et 1280 px, `hover: none`) : 6/6 actions visibles, pas de défilement horizontal.
+- **Accueil à 1280 et 1920 px** : groupe de tuiles de 720 px de large, identique à « Avant ».
+- **Constat sur l'étiquette de tablette** : entre 640 et 1149 px l'en-tête n'a que les trois icônes ; le libellé « Se déconnecter » reste lu par les lecteurs d'écran. À valider par Manon (revue 7.2).
+- **Décision annexe** : le formateur ne voit plus « Créer une nouvelle formation » dans le menu Gestion (D46, confirmé par Manon) ; la garde de la route `/formations/creer` n'a pas été vérifiée dans ce change.
+- **Alternatives écartées** : voir `design.md` du change.
+
+## D62 — Grands écrans : tuiles plus larges, titre de Gestion sous le logo (précise D61)
+- Date : 2026-11-01
+- **Décision** : le groupe de tuiles de l'accueil passe de 45 rem (720 px) à 60 rem (960 px) de large maximum ; la grille de Gestion prend toute la largeur du gabarit (80 rem = 1280 px, contre 1152 px : `min(1200px, 90%)` d'un parent déjà plafonné) ; le titre « Gestion » n'est plus centré verticalement (`justify-content: flex-start` sur la page) et se place sous le logo. `PageShell` et `--page-top` ne changent pas (D57).
+- **Pourquoi** : sur un écran d'ordinateur portable (1440 px) l'accueil laissait 360 px de vide de chaque côté, et le titre de Gestion flottait à environ 120 px sous le logo. Retour de Manon pendant la revue de D61.
+- **Mesuré** (Chrome piloté, vrai back) : groupe d'accueil de 960 px à 1280 et 1920 px ; matrice de 64 mesures de D61 inchangée (0 libellé coupé, 0 défilement horizontal, 0 chevauchement). Sous 1024 px rien ne bouge : le groupe est déjà limité par la fenêtre.
+- **Alternatives écartées** : élargir `PageShell` (touche toutes les pages, D57) ; agrandir les tuiles en hauteur (le vide vertical sous les tuiles reste, il vient de la hauteur de l'écran).
+- Change OpenSpec : `mobile-layout-fixes`.
+
+## D63 — Logos en WebP et logo qui ne capte plus les clics (précise D61)
+- Date : 2026-11-01
+- **Décision** : `Logo-Blanc` et `Logo-Dark` passent de PNG à **WebP qualité 85** (même canevas de 1312 × 871, mêmes marges transparentes : les calculs de D61 en dépendent) ; le logo reçoit `pointer-events: none`.
+- **Mesuré** : `Logo-Dark` 230 kB → 68 kB (−71 %), `Logo-Blanc` 70 kB → 26 kB (−63 %). Écart de couleur moyen 0,22 / 255 sur fond sombre et clair ; limites de la partie visible (seuils alpha 5, 20, 128) identiques au PNG. Seul le logo du thème actif est chargé : le gain du clair profite à tout le monde, celui du sombre aux utilisateurs du mode sombre.
+- **Pourquoi** : le logo sombre embarque un halo blanc doux (45 % de pixels semi-transparents) qui rend le texte sombre lisible sur fond sombre ; c'est lui qui pèse. Le rectangle transparent de l'image (hauteur 0,66 × largeur) dépasse sur le contenu de la page, davantage depuis D61 sur téléphone, et pouvait recouvrir un bouton : constaté à 390 px (bouton « Réessayer » de l'accueil recouvert par l'image).
+- **Vérifié** (Chrome piloté, vrai back, clair et sombre, 100 % et 150 %, 16 largeurs, accueil et Gestion : 128 mesures) : 0 défilement horizontal, 0 chevauchement de l'en-tête avec la partie solide du logo, 0 libellé coupé, 0 élément cliquable recouvert par l'image. La partie solide du logo reste au-dessus du début du contenu ; le halo du mode sombre le dépasse de 1 à 17 px selon la largeur (zone très faiblement opaque, sans effet sur le contenu).
+- **Alternatives écartées** : PNG 256 couleurs (22 kB, mais le halo se fige en bandes visibles) ; WebP sans perte (104 kB) ; rogner les marges transparentes (change toutes les mesures de D61) ; réduire la définition (source déjà proche de 2 × la largeur maximale affichée).
+- **Icône d'onglet** : `index.html` pointait vers `/Logo-Blanc.png`, un fichier absent de `public/` (l'icône ne s'affichait pas). Nouveau `public/favicon.png` (64 × 64) : les trois carrés colorés du logo, sans le « c » ni la signature, lisible à 32 px sur onglet clair et sombre. `public/favicon.svg` et `public/icons.svg` (fichiers par défaut de Vite, non utilisés) sont laissés tels quels.

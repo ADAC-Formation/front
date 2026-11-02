@@ -51,6 +51,7 @@ describe('lien « Retour » de la liste des formations selon le rôle', () => {
   ])('%s est renvoyé vers %s (jamais vers une page interdite)', async (role, destination) => {
     mockSession(role)
     mockFormationList()
+    mockCategories()
     renderApp('/formations')
     await screen.findByRole('link', { name: /Premiers secours PSC1/ })
     await waitFor(() =>

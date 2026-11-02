@@ -40,11 +40,14 @@ Toute réponse d'erreur de l'API SHALL être convertie en une erreur applicative
 - **THEN** l'appelant reçoit une erreur signalée comme erreur réseau (sans `status` HTTP) avec un `message` générique en français
 
 ### Requirement: Session expirée sur 401
-Une réponse `401` à une requête autre que `POST /auth/login` SHALL signaler une session expirée : la session de l'utilisateur est considérée comme terminée et l'application redirige vers `/login` avec le message « session expirée », sans rechargement complet de la page. Une réponse `401` à `POST /auth/login` (identifiants invalides) SHALL NOT déclencher cette redirection et SHALL être transmise à l'appelant pour affichage en ligne. `GET /auth/me` répondant `401` pour un visiteur non connecté SHALL NOT afficher le message « session expirée ».
+Une réponse `401` à une requête autre que `POST /auth/login` SHALL signaler une session expirée : la session de l'utilisateur est considérée comme terminée et l'application redirige vers `/login` avec le message « session expirée », sans rechargement complet de la page.
 
 #### Scenario: Session expirée pendant la navigation
 - **WHEN** une requête `GET /formations` reçoit `401`
 - **THEN** l'utilisateur est redirigé vers `/login` avec le message « session expirée », sans rechargement dur
+
+### Requirement: Les 401 de connexion et de visiteur ne sont pas une session expirée
+Une réponse `401` à `POST /auth/login` (identifiants invalides) SHALL NOT déclencher la redirection de session expirée et SHALL être transmise à l'appelant pour affichage en ligne. `GET /auth/me` répondant `401` pour un visiteur non connecté SHALL NOT afficher le message « session expirée ».
 
 #### Scenario: Identifiants invalides à la connexion
 - **WHEN** `POST /auth/login` reçoit `401`

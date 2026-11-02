@@ -56,10 +56,12 @@ const ManagementMenu = () => {
 
       <h1 className={styles.title}>Gestion</h1>
 
-      <div className={styles.tileContainer}>
-        {tiles.map((tile) => (
-          <ManagementTile key={tile.label} {...tile} />
-        ))}
+      <div className={styles.gridHost}>
+        <div className={styles.tileContainer}>
+          {tiles.map((tile) => (
+            <ManagementTile key={tile.label} {...tile} />
+          ))}
+        </div>
       </div>
     </PageShell>
   );
