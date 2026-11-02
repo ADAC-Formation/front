@@ -10,7 +10,7 @@
 - [x] 2.1 RED : `documentFiles.test.js` — `inscriptionIdOf` (champ présent, absent, `null`, non numérique) ; `hooks.test.jsx` — `uploadDocument` / `useUploadDocuments` avec `{ inscriptionId }` (champ multipart `inscriptionId`, jamais `formationId`), cible invalide (les deux ou aucun) refusée sans appel, `useDocuments({ inscriptionId })` (clé et paramètre `inscriptionId`, désactivable avec `enabled`) ; les tests de 027 doivent rester verts ; confirmer RED
 - [x] 2.2 Ajouter `inscriptionIdOf` à `documentFiles.js`, généraliser `api.js` et `hooks.js` à une cible `{ formationId }` ou `{ inscriptionId }` (appels de `DocumentSection` mis à jour) ; GREEN
 - [x] 2.3 Étendre `src/test/documents.js` : liste et dépôt par `inscriptionId` (état séparé), `calls.uploaded` avec `inscriptionId` ; vérifier qu'un appel non déclaré fait échouer le test
-- [ ] 2.4 Commit `feat: target documents by inscription`
+- [x] 2.4 Commit `feat: target documents by inscription`
 
 ## 3. Liste sans expéditeur ni suppression (TDD)
 
