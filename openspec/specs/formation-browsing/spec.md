@@ -117,13 +117,6 @@ Pour `SUPER_ADMIN` et `ADMIN`, le détail SHALL lister les stagiaires de `GET /f
 - **WHEN** l'appel aux inscriptions répond `500`
 - **THEN** un message avec « Réessayer » s'affiche dans la section des inscrits et le reste du détail reste visible
 
-### Requirement: Emplacement des documents
-Le détail SHALL réserver une section « Documents » indiquant que les documents arrivent bientôt, sans appel au back ni contenu fictif, jusqu'à la livraison des documents de formation.
-
-#### Scenario: Section réservée
-- **WHEN** le détail d'une formation s'affiche
-- **THEN** la section « Documents » est présente et aucun appel `/documents` n'est émis
-
 ### Requirement: Archivage d'une formation
 Pour `SUPER_ADMIN`, le détail d'une formation active SHALL proposer « Archiver ». Le bouton SHALL ouvrir une confirmation (focus initial sur « Annuler », Échap annule) ; la confirmation SHALL appeler `PATCH /formations/{id}/archive`, puis ramener à la liste, qui ne contient plus la formation parmi les actives. Un `409` SHALL inviter à recharger la page ; une autre erreur SHALL s'afficher sans quitter la page.
 
