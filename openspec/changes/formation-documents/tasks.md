@@ -26,9 +26,9 @@
 
 ## 5. Zone de dépôt (TDD)
 
-- [ ] 5.1 RED : `components/DocumentDropzone.test.jsx` — bouton « Choisir des fichiers » et champ fichier multiple avec types acceptés, `drop` de plusieurs fichiers transmet les fichiers, `dragover` n'ouvre pas le fichier dans le navigateur, texte des types et de la taille, désactivée pendant l'envoi avec « Envoi en cours… » annoncé, jest-axe ; confirmer RED
-- [ ] 5.2 Créer `DocumentDropzone.jsx` et sa feuille de style ; GREEN
-- [ ] 5.3 Commit `feat: add the document dropzone`
+- [x] 5.1 RED : `components/DocumentDropzone.test.jsx` — bouton « Choisir des fichiers » et champ fichier multiple avec types acceptés, `drop` de plusieurs fichiers transmet les fichiers, `dragover` n'ouvre pas le fichier dans le navigateur, texte des types et de la taille, désactivée pendant l'envoi avec « Envoi en cours… » annoncé, jest-axe ; confirmer RED
+- [x] 5.2 Créer `DocumentDropzone.jsx` et sa feuille de style ; GREEN
+- [x] 5.3 Commit `feat: add the document dropzone`
 
 ## 6. Section « Documents » (TDD)
 

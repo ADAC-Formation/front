@@ -81,3 +81,49 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* ---------- Zone de dépôt ---------- */
+
+.dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 1.5rem 1rem;
+
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+
+  text-align: center;
+}
+
+.dropzoneOver {
+  border-color: var(--foreground);
+  background-color: var(--card);
+}
+
+.dropzoneTitle {
+  margin: 0;
+
+  font-weight: 600;
+}
+
+.dropzoneHint {
+  margin: 0;
+
+  color: var(--muted-foreground);
+  font-size: 0.875rem;
+}
+
+/* Champ natif masqué visuellement : le bouton « Choisir des fichiers » l'ouvre. */
+.fileInput {
+  position: absolute;
+
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
