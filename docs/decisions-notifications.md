@@ -51,6 +51,29 @@ Branche `feature/notifications` (créée depuis `dev`). Contrat : `tech.md` §8 
 - **Pourquoi** : `NotificationType` n'est pas listé en entier dans `tech.md` ; deviner des chaînes casserait en silence à la prochaine valeur.
 - **Alternatives rejetées** : styler d'après `type` (s'appuie sur des chaînes à moitié documentées) ; une seule icône pour tout (perd la distinction demandée par US-015 AC-06).
 
+## N8 — Bascule e-mail (ticket 036) reportée à la branche profil
+
+- **Date** : 2026-11-02
+- **Décision** : cette branche livre le ticket 035 seulement (cloche + historique). Le toggle « Notifications par e-mail » (036, `PATCH /users/me` avec `emailNotificationsEnabled`) est construit avec la page profil (044), là où US-016 AC-01 le place (« Mon profil »). Consigné dans `docs/future-implementation-ideas.md`.
+- **Pourquoi** : la page profil n'existe pas encore (coque vide) ; la créer ici mélangerait deux thèmes, contre la règle « une branche par thème » (D3). Le plan classe 036 et 044 en « Could ».
+- **Alternatives rejetées** : toggle sur la page d'historique (éloigne le réglage de « Mon profil ») ; démarrer la page profil dans cette branche (couple deux thèmes).
+
+## N9 — Accessibilité et affichage de la cloche (valeurs par défaut retenues)
+
+- **Date** : 2026-11-02
+- **Décision** : bouton de cloche avec nom accessible « Notifications, N non lues » (ou « Notifications » si zéro) ; badge masqué à zéro, « 99+ » au-delà de 99 (le `count` du back reste le total réel) ; panneau en motif « disclosure » (`aria-expanded`, `aria-controls`), fermeture par Échap, clic extérieur et navigation, focus rendu au bouton ; mise à jour du compteur annoncée poliment (`role="status"`) seulement quand il augmente. Style en jetons (`--color-*`), `font-size` en `rem`, anneau `:focus-visible` conservé (D57–D60). Un check jest-axe par page et pour le panneau ouvert. Les tests déclarent les appels via un helper `mockNotificationApi()` (MSW), sur le modèle de `mockDocumentApi()`.
+- **Pourquoi** : exigences WCAG 2.1 AA du projet et tests de feuilles de style existants ; choix mineurs sans alternative réellement concurrente.
+- **Alternatives rejetées** : dialogue modal (piège de focus inutile pour une liste courte) ; compteur illimité (badge qui déborde en grand texte).
+
+## N10 — Écarts constatés à l'implémentation
+
+- **Date** : 2026-11-02
+- **Garde de session dans la cloche** : la cloche se garde elle-même (`useCurrentUser()` ; sans utilisateur elle ne rend rien et `enabled` est faux), plutôt que dans `SiteHeader`. Même comportement qu'en N2, mais le composant est sûr où qu'il soit monté.
+- **`useOpenNotification()`** renvoie `{ open, isError }` (et non une fonction seule) pour que la cloche, toujours montée, annonce l'échec du marquage après la navigation.
+- **Annonces** : la région `role="status"` de la cloche annonce « N nouvelle(s) notification(s), M non lues » quand le compteur augmente, et le message d'erreur quand un marquage, un retrait ou « tout lire » échoue. Elle ne dit rien pour une diminution.
+- **Tests de routeur** : les fichiers de test qui rendent le gabarit complet avec une session déclarent désormais `mockNotificationApi()` en `beforeEach`.
+- **Budget du bundle** : 92,6 Ko → 94,5 Ko avec la cloche (attendu), puis 102,4 Ko après l'ajout de la page `/notifications` pourtant chargée à la demande. Mesuré : la page seule fait ~1,1 Ko gzip, et remplacer sa cible par une page vide ramène l'entrée à 94,5 Ko ; `Alert` n'est pas en cause. Cause non élucidée (probable regroupement de modules partagés par le bundler). Marge restante : ~6,6 Ko ; à surveiller avant d'ajouter d'autres éléments à l'en-tête.
+
 ## Constats sur le back (lecture de `back-readonly`, 2026-11-02)
 
 - `NotificationType` : `NEW_MESSAGE`, `DOCUMENT_UPLOADED`, `FORMATION_UPDATED`. `EntityType` : `FORMATION`, `MESSAGE`. Une notification de document utilise bien `EntityType.FORMATION` avec l'id de la formation (`DocumentServiceImpl`) : la navigation par `entityType` (N1, N7) couvre les trois types.
