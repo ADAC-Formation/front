@@ -26,9 +26,9 @@
 
 ## 5. Page de profil et route (TDD)
 
-- [ ] 5.1 RED : `features/profile/pages/ProfilePage.test.jsx` — stagiaire : titre « Mon profil » et section « Mes documents » ; ADMIN et SUPER_ADMIN : titre seul, section absente, aucun appel `/documents` ; page enveloppée dans `PageShell` (un seul `<main>`, celui du `Layout`) ; jest-axe ; test de route : `/profile` charge la nouvelle page (router) ; confirmer RED
-- [ ] 5.2 Créer `features/profile/pages/ProfilePage.jsx`, supprimer `components/Pages/Stagiaire/ProfilePage/`, mettre à jour `router/router.jsx` (`lazyPage`, route `profile`) ; GREEN avec `npm run test -- ProfilePage router`
-- [ ] 5.3 Commit `feat: add Mes documents to the profile page`
+- [x] 5.1 RED : `features/profile/pages/ProfilePage.test.jsx` — stagiaire : titre « Mon profil » et section « Mes documents » ; ADMIN et SUPER_ADMIN : titre seul, section absente, aucun appel `/documents` ; page enveloppée dans `PageShell` (un seul `<main>`, celui du `Layout`) ; jest-axe ; test de route : `/profile` charge la nouvelle page (router) ; confirmer RED
+- [x] 5.2 Créer `features/profile/pages/ProfilePage.jsx`, supprimer `components/Pages/Stagiaire/ProfilePage/`, mettre à jour `router/router.jsx` (`lazyPage`, route `profile`) ; GREEN avec `npm run test -- ProfilePage router`
+- [x] 5.3 Commit `feat: add Mes documents to the profile page`
 
 ## 6. Documentation et vérification
 

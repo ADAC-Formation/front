@@ -293,3 +293,29 @@ describe('gestion des catégories : accès par rôle', () => {
     expect(screen.getByRole('button', { name: 'Créer une catégorie' })).toBeInTheDocument()
   })
 })
+
+describe('page de profil', () => {
+  it('un visiteur est redirigé de /profile vers la connexion', async () => {
+    mockNoSession()
+    const { router } = renderApp('/profile')
+    expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/login')
+  })
+
+  it('un stagiaire voit « Mon profil » et « Mes documents » sur /profile', async () => {
+    mockSession('STAGIAIRE')
+    mockFormationList([{ ...FORMATIONS[0], inscriptionId: 7 }])
+    mockDocumentApi([])
+    renderApp('/profile')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Mon profil' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 2, name: 'Mes documents' })).toBeInTheDocument()
+    expect(await screen.findByText('Aucun document déposé pour cette formation')).toBeInTheDocument()
+  })
+
+  it('la chargée de formation voit « Mon profil » sans « Mes documents »', async () => {
+    mockSession('SUPER_ADMIN')
+    renderApp('/profile')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Mon profil' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Mes documents' })).not.toBeInTheDocument()
+  })
+})
