@@ -94,3 +94,39 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Décision** : constaté sur le vrai back local, `PUT /formations/{id}` ignore `formateurId: null` (réponse `200`, aucun changement) et `PATCH /formations/{id}/formateur` répond `500`. En modification, l'option « Assigné à la chargée de formation » envoie donc l'identifiant de l'utilisatrice connectée ; à la création, `formateurId: null` reste correct (le back auto-assigne). Demande consignée : `points-pour-charlotte.md` Q11.
 - **Pourquoi** : sans cela, repasser une formation à la chargée de formation semblerait réussir sans rien changer.
 - **Alternatives écartées** : retirer l'option en modification ; utiliser le `PATCH` (non implémenté).
+
+## F16 — Import Excel : on construit sur les colonnes provisoires de `tech.md`
+- Date : 2026-11-02
+- **Décision** : le vrai fichier d'ADAC n'est pas arrivé (point #6 de `meeting-points-back.md`). Le change d'import suit D14 : colonnes provisoires A `intitule` … G `formateur`, modèle téléchargeable et tableau d'erreurs ligne / colonne. Le risque R10 reste ouvert ; la définition des colonnes vit dans un seul module pour être refaite sans toucher à l'UI.
+- **Pourquoi** : ne pas bloquer le ticket 025 ; le contrat côté back existe (TICKET-023 « Done »).
+- **Alternatives écartées** : attendre le vrai fichier ; partir d'un fichier fourni (il n'existe pas encore).
+
+## F17 — Import Excel : page dédiée `/formations/importer`
+- Date : 2026-11-02
+- **Décision** : un bouton « Importer un fichier Excel » sur la liste des formations (SUPER_ADMIN seulement, US-005 AC-01) mène à la page `/formations/importer`, dans `PageShell` avec un `BackButton` vers la liste. La page porte les consignes, le modèle à télécharger, le choix du fichier et le tableau d'erreurs ligne / colonne.
+- **Pourquoi** : même schéma que `/formations/creer` ; le tableau d'erreurs peut être long ; plus simple à rendre accessible qu'une modale.
+- **Alternatives écartées** : boîte de dialogue sur la liste ; section sous le formulaire de création.
+
+## F18 — Modèle Excel généré dans le navigateur
+- Date : 2026-11-02
+- **Décision** : le modèle téléchargeable (D14, US-005 AC-05) est un `.xlsx` généré au clic à partir de la définition unique des colonnes (F16) : ligne d'en-tête et une ligne d'exemple. Une bibliothèque xlsx est ajoutée, chargée à la demande avec la page (`lazyPage`) pour ne pas toucher au budget du bundle d'entrée (D59).
+- **Pourquoi** : le modèle ne peut pas diverger des colonnes attendues ; rien à refaire à la main quand le vrai fichier arrive.
+- **Alternatives écartées** : fichier statique dans `public/` (à refaire à la main, peut diverger) ; simple tableau des colonnes à l'écran, sans fichier.
+
+## F19 — Import réussi : retour à la liste avec un bandeau du nombre
+- Date : 2026-11-02
+- **Décision** : après un `201`, redirection vers `/formations` avec un bandeau « N formation(s) importée(s) » (même mécanisme que `formation-created`) ; la liste est invalidée et montre les nouvelles formations (US-005 AC-03).
+- **Pourquoi** : cohérent avec la création ; pas d'écran de plus.
+- **Alternatives écartées** : récapitulatif des formations créées sur la page d'import.
+
+## F20 — Import Excel : tableau d'erreurs obtenu en découpant le `message` du back
+- Date : 2026-11-02
+- **Décision** : le back renvoie les erreurs d'import dans un seul `message` (entrées jointes par ` | `, forme `ligne N, colonne X : texte`, 50 au plus ; `details[]` vide). Le front découpe sur ` | ` et lit chaque entrée pour un tableau Ligne / Colonne / Problème (US-005 AC-04) ; toute entrée non reconnue (format invalide, fichier trop volumineux, « ... et d'autres erreurs ») s'affiche telle quelle dans une liste. Le format est consigné comme dépendance fragile et demande `details[]` à Charlotte : `points-pour-charlotte.md` Q12.
+- **Pourquoi** : AC-04 veut la ligne et la colonne du problème ; ne pas bloquer sur le back.
+- **Alternatives écartées** : afficher le message brut ; attendre `details[]` du back.
+
+## F21 — Import Excel : contrôles avant envoi limités à l'extension et à la taille
+- Date : 2026-11-02
+- **Décision** : avant tout appel, le front refuse un fichier dont le nom ne finit pas par `.xlsx` (US-005 AC-02) ou qui dépasse 2 Mo (limite du back), avec un message précis. Le nombre de lignes (1000) et le contenu ne sont vérifiés que par le back, dont le message s'affiche (F20). Seul le bouton d'envoi est actif quand un fichier valide est choisi.
+- **Pourquoi** : refus immédiat sans dupliquer les règles du back qui peuvent changer ni lire le fichier dans le navigateur.
+- **Alternatives écartées** : extension seule ; compter les lignes côté navigateur.

@@ -101,6 +101,11 @@ Constaté le 2026-11-01 contre le vrai back local (`dev`) :
 
 Le front contourne : en modification, l'option « Assigné à la chargée de formation » envoie l'identifiant de la chargée connectée. Si le back préfère traiter `null` comme « auto-assigner » (comme à la création), ou implémenter le `PATCH`, le front pourra retirer ce détour. À confirmer.
 
+### Q12 — Import Excel : erreurs dans un seul `message` (change d'import des formations)
+Lu dans `ExcelImportUtil` (branche `dev`, lecture seule) : un fichier invalide répond `400` avec **une seule chaîne** `message` où les erreurs sont jointes par ` | `, chacune de la forme `ligne N, colonne X : texte` (50 erreurs au plus, puis « ... et d'autres erreurs »), et `details[]` n'est pas rempli. Limites : 2 Mo, 1000 lignes, `.xlsx` seulement.
+
+Le front découpe ce texte pour afficher un tableau Ligne / Colonne / Problème (F20) et affiche telle quelle toute entrée non reconnue. C'est fragile : si le format du message change, le tableau se réduit à une liste de texte. Demande : remplir `details[]` avec une entrée par erreur (idéalement `{ligne, colonne, message}`). Les colonnes restent le placeholder de `tech.md` tant que le fichier réel d'ADAC n'est pas arrivé (R10).
+
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
 Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.
