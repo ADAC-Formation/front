@@ -45,11 +45,30 @@ La page SHALL présenter, dans une aide fermée au départ et ouverte par un bou
 - **THEN** elle revient à `/formations/creer`
 
 ### Requirement: Modèle téléchargeable
-La page SHALL proposer, sous le champ fichier de la section « Fichier à importer », le téléchargement d'un modèle `.xlsx` dont l'en-tête reprend exactement les colonnes attendues, suivi d'une ligne d'exemple.
+La page SHALL proposer, sous le champ fichier de la section « Fichier à importer », le téléchargement d'un modèle `.xlsx` dont la première feuille « Import » a pour en-tête exactement les colonnes attendues, suivi d'une ligne d'exemple dont la catégorie et le formateur sont à choisir.
 
 #### Scenario: Téléchargement du modèle
 - **WHEN** la chargée de formation active « Télécharger le modèle »
-- **THEN** un fichier `.xlsx` est enregistré, avec en première ligne les sept noms de colonnes dans l'ordre A à G
+- **THEN** un fichier `.xlsx` est enregistré, avec en première ligne de la feuille « Import » les sept noms de colonnes dans l'ordre A à G
+
+### Requirement: Listes déroulantes du modèle
+Le modèle SHALL proposer, pour la modalité, la catégorie et le formateur, une liste déroulante qui refuse toute valeur hors liste : VISIO, PRESENTIEL, MIXTE ; les catégories actives ; les e-mails des formateurs actifs. Les catégories et les formateurs SHALL être lus dans l'API au moment du téléchargement et placés dans une seconde feuille « Listes ».
+
+#### Scenario: Listes alimentées par l'API
+- **WHEN** la chargée de formation télécharge le modèle
+- **THEN** les catégories actives et les formateurs actifs sont demandés à l'API, la feuille « Listes » les contient (catégories, e-mails, noms) et les colonnes catégorie et formateur de la feuille « Import » proposent ces valeurs sur les lignes 2 à 1001
+
+#### Scenario: Catégorie avec virgule
+- **WHEN** une catégorie contient une virgule ou des guillemets
+- **THEN** elle figure telle quelle dans la liste déroulante
+
+#### Scenario: Chargement impossible
+- **WHEN** les catégories ou les formateurs ne peuvent pas être chargés
+- **THEN** un message d'erreur est annoncé et aucun fichier n'est téléchargé
+
+#### Scenario: Aucune liste avant le clic
+- **WHEN** la page est affichée
+- **THEN** ni les catégories ni les formateurs ne sont demandés à l'API
 
 ### Requirement: Choix et contrôle du fichier
 Le système SHALL n'accepter que les fichiers `.xlsx` de 2 Mo au plus, et SHALL refuser les autres avant tout appel, avec un message précis.

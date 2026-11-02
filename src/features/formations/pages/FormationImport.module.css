@@ -292,7 +292,8 @@
   transform: translateY(-1px);
 }
 
-.submitButton:disabled {
+.submitButton:disabled,
+.secondaryButton:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;

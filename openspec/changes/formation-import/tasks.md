@@ -40,8 +40,14 @@
 
 - [x] 7.1 Mettre à jour `CLAUDE.md` (« État actuel » : import branché sur les colonnes provisoires, R10 ouvert), `docs/decisions-formations.md` si une décision a évolué (le passage manuel peut en ajouter) et `docs/points-pour-charlotte.md` (Q12 à jour avec ce qui est constaté)
 - [x] 7.2 Commit `docs: record the formation import`
-- [ ] 7.3 Passage manuel contre le vrai back local (comptes de `docs/dev/seed-local-admin.sql`, voir `docs/dev/README.md`) : télécharger le modèle et l'ouvrir dans Excel ou LibreOffice ; compléter une ligne avec une catégorie et un formateur existants, importer → bandeau et formation dans la liste ; fichier avec une catégorie inconnue, une date invalide et une modalité invalide → tableau ligne / colonne sans aucune formation créée ; fichier `.txt` renommé en `.xlsx` ; fichier de plus de 2 Mo ; formateur et stagiaire refusés ; lecture au clavier et zoom 200 % — ne pas cocher sans l'avoir fait (Docker requis)
+- [ ] 7.3 Passage manuel contre le vrai back local (comptes de `docs/dev/seed-local-admin.sql`, voir `docs/dev/README.md`) : télécharger le modèle et l'ouvrir dans Excel ou LibreOffice ; vérifier les listes déroulantes de la modalité, de la catégorie et du formateur (valeur hors liste refusée) ; compléter une ligne avec une catégorie et un formateur existants, importer → bandeau et formation dans la liste ; fichier avec une catégorie inconnue, une date invalide et une modalité invalide → tableau ligne / colonne sans aucune formation créée ; fichier `.txt` renommé en `.xlsx` ; fichier de plus de 2 Mo ; formateur et stagiaire refusés ; lecture au clavier et zoom 200 % — ne pas cocher sans l'avoir fait (Docker requis)
 - [ ] 7.4 Relecture de Manon ; PR unique vers `dev` à sa demande seulement, aucun push avant
+
+## 8. Listes déroulantes du modèle (F24, demande de Manon au passage manuel)
+
+- [x] 8.1 RED : `importTemplate.test.js` (feuilles « Import » puis « Listes », validations de la modalité, de la catégorie et du formateur sur les lignes 2 à 1001, catégories avec virgule, liste vide sans validation, exemple sans catégorie ni formateur) et `FormationImportPage.test.jsx` (listes actives chargées au clic, aucun appel avant, erreur annoncée sans téléchargement) ; confirmer RED
+- [x] 8.2 Installer `@onparallel/write-excel-file-data-validation` 1.0.2 (MIT, exact) ; adapter `importTemplate.js` et `FormationImportPage.jsx` ; GREEN
+- [x] 8.3 Vérifier le fichier réel (feuilles, XML des validations avec les vraies catégories) et son envoi au vrai back : seule la ligne d'exemple est signalée ; commit `feat: add dropdown lists to the import template`
 
 ## Workflow follow-up
 

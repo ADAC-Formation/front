@@ -4,6 +4,8 @@ import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import FormField from '../../../components/molecules/FormField/FormField'
 import { PageShell } from '../../../templates/PageShell/PageShell'
+import { listAccounts } from '../../accounts/api'
+import { listCategories } from '../../categories/api'
 import { useImportFormations } from '../hooks'
 import { IMPORT_COLUMNS } from '../importColumns'
 import { parseImportErrors } from '../importErrors'
@@ -13,6 +15,7 @@ import styles from './FormationImport.module.css'
 
 const BAD_REQUEST = 400
 const TEMPLATE_ERROR = 'Le modèle n’a pas pu être généré. Réessayez.'
+const LISTS_ERROR = 'Les listes de catégories et de formateurs n’ont pas pu être chargées. Réessayez.'
 
 const plural = (count, singular, pluralForm) => (count > 1 ? pluralForm : singular)
 
@@ -101,7 +104,8 @@ const FormationImportPage = () => {
   const navigate = useNavigate()
   const importMutation = useImportFormations()
   const [file, setFile] = useState(null)
-  const [templateError, setTemplateError] = useState(false)
+  const [templateError, setTemplateError] = useState(null)
+  const [templateBusy, setTemplateBusy] = useState(false)
   const [helpOpen, setHelpOpen] = useState(false)
 
   const fileError = checkImportFile(file)
@@ -113,13 +117,28 @@ const FormationImportPage = () => {
     importMutation.reset()
   }
 
+  // Les listes déroulantes du modèle reprennent les catégories et formateurs actifs du moment (F24).
   const handleTemplate = async () => {
-    setTemplateError(false)
+    setTemplateError(null)
+    setTemplateBusy(true)
+    let lists
     try {
-      await downloadImportTemplate()
+      const [categories, formateurs] = await Promise.all([
+        listCategories({ active: true }),
+        listAccounts('formateurs', { active: true }),
+      ])
+      lists = { categories, formateurs }
     } catch {
-      setTemplateError(true)
+      setTemplateError(LISTS_ERROR)
+      setTemplateBusy(false)
+      return
     }
+    try {
+      await downloadImportTemplate(lists)
+    } catch {
+      setTemplateError(TEMPLATE_ERROR)
+    }
+    setTemplateBusy(false)
   }
 
   const handleSubmit = (event) => {
@@ -176,11 +195,14 @@ const FormationImportPage = () => {
 
           <div className={styles.template}>
             <h3 className={styles.helpTitle}>Modèle</h3>
-            <p className={styles.sectionDescription}>Téléchargez un fichier prêt à remplir, avec les bonnes colonnes.</p>
-            <button type="button" className={styles.secondaryButton} onClick={handleTemplate}>
+            <p className={styles.sectionDescription}>
+              Téléchargez un fichier prêt à remplir, avec les bonnes colonnes et des listes déroulantes pour la modalité, la
+              catégorie et le formateur.
+            </p>
+            <button type="button" className={styles.secondaryButton} onClick={handleTemplate} disabled={templateBusy}>
               Télécharger le modèle
             </button>
-            {templateError && <Alert variant="error">{TEMPLATE_ERROR}</Alert>}
+            {templateError && <Alert variant="error">{templateError}</Alert>}
           </div>
 
           {error &&

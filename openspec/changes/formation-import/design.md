@@ -37,6 +37,11 @@ Découpe sur ` | `, applique `^ligne (\d+), colonne ([^:]+) : (.+)$` à chaque e
 - *Alternative écartée* : fichier statique dans `public/` (peut diverger des colonnes).
 - *Test* : la bibliothèque est mockée (`vi.mock`) et le test vérifie l'en-tête transmis et le nom du fichier ; le vrai contenu est vérifié au passage manuel.
 
+### 3bis. Listes déroulantes du modèle (F24)
+`downloadImportTemplate({ categories, formateurs })` produit deux feuilles : « Import » (première, la seule lue par le back) avec une validation de données de type liste sur les lignes 2 à 1001 (modalité en liste fixe ; catégorie et formateur en plage `Listes!$A$2:$A$n` / `$B$2:$B$n`) et « Listes » (catégories, e-mails, noms). La page charge les deux listes **au clic** (`listCategories({ active: true })`, `listAccounts('formateurs', { active: true })`), sans cache, pour refléter l'état du moment. Extension : `@onparallel/write-excel-file-data-validation` (MIT, officielle pour `write-excel-file`), importée dynamiquement avec lui.
+- *Pourquoi une feuille plutôt qu'une liste en ligne* : 255 caractères au plus et aucune virgule ni guillemet.
+- *Vérifié* : XML du fichier réel (`<formula1>Listes!$A$2:$A$7</formula1>`) et envoi au vrai back : seule la ligne 2 est signalée, la feuille « Listes » est ignorée.
+
 ### 4. Appel d'import
 `importFormations(file)` dans `api.js` construit un `FormData` (`file`) et fait `apiClient.post('/formations/import', formData, { headers: { 'Content-Type': undefined } })` : retirer l'en-tête JSON par défaut laisse le navigateur écrire `multipart/form-data` avec sa limite (boundary). `useImportFormations()` dans `hooks.js` : mutation qui, au succès, invalide `['formations']`.
 - *Risque* : axios et jsdom/MSW gèrent le `FormData` différemment ; le test MSW lit `request.formData()` et le passage manuel contre le vrai back confirme le champ `file`.

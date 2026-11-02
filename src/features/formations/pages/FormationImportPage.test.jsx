@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { Route, Routes, useLocation } from 'react-router'
@@ -10,6 +10,8 @@ import { downloadImportTemplate } from '../importTemplate'
 import { MAX_IMPORT_BYTES } from '../importFile'
 import { renderWithProviders } from '../../../test/render'
 import { mockSession } from '../../../test/session'
+import { FORMATEURS, mockAccountList } from '../../../test/accounts'
+import { mockCategories } from '../../../test/categories'
 import { mockImportFormations } from '../../../test/formations'
 
 // La génération du .xlsx est mockée ici (testée dans importTemplate.test.js).
@@ -121,17 +123,49 @@ describe('FormationImportPage — consignes et modèle', () => {
     expect(screen.getAllByText(/chargée de formation est assignée/i).length).toBeGreaterThan(0)
   })
 
-  it('télécharge le modèle', async () => {
+  it('télécharge le modèle avec les catégories et les formateurs actifs de l’API', async () => {
+    const categories = mockCategories()
+    const formateurs = mockAccountList('formateurs', FORMATEURS)
     renderImport()
     await userEvent.click(await screen.findByRole('button', { name: 'Télécharger le modèle' }))
-    expect(downloadImportTemplate).toHaveBeenCalledTimes(1)
+    await waitFor(() => expect(downloadImportTemplate).toHaveBeenCalledTimes(1))
+    const lists = vi.mocked(downloadImportTemplate).mock.calls[0][0]
+    expect(lists.categories.map((c) => c.nom)).toEqual(['Secourisme', 'Numérique'])
+    expect(lists.formateurs.map((f) => f.email)).toEqual(['anne@adac.test'])
+    expect(categories.urls[0]).toContain('active=true')
+    expect(formateurs.urls[0]).toContain('active=true')
+  })
+
+  it('ne charge pas les listes avant le clic', async () => {
+    const categories = mockCategories()
+    const formateurs = mockAccountList('formateurs', FORMATEURS)
+    renderImport()
+    await screen.findByRole('button', { name: 'Télécharger le modèle' })
+    expect(categories.count).toBe(0)
+    expect(formateurs.count).toBe(0)
+  })
+
+  it('affiche une erreur annoncée si les listes ne se chargent pas, sans télécharger', async () => {
+    mockCategories(undefined, { errorStatus: 500 })
+    mockAccountList('formateurs', FORMATEURS)
+    renderImport()
+    await userEvent.click(await screen.findByRole('button', { name: 'Télécharger le modèle' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent(/catégories et de formateurs/i)
+    expect(downloadImportTemplate).not.toHaveBeenCalled()
   })
 
   it('affiche une erreur annoncée si le modèle ne peut pas être généré', async () => {
+    mockCategories()
+    mockAccountList('formateurs', FORMATEURS)
     vi.mocked(downloadImportTemplate).mockRejectedValueOnce(new Error('boom'))
     renderImport()
     await userEvent.click(await screen.findByRole('button', { name: 'Télécharger le modèle' }))
     expect(await screen.findByRole('alert')).toHaveTextContent(/modèle/i)
+  })
+
+  it('explique que le modèle propose des listes déroulantes', async () => {
+    renderImport()
+    expect(await screen.findByText(/listes déroulantes/i)).toBeInTheDocument()
   })
 })
 
