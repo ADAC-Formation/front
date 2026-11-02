@@ -13,9 +13,9 @@
 
 ## 3. Modèle téléchargeable (TDD)
 
-- [ ] 3.1 Installer `write-excel-file` (version 4 exacte, vérifier `npm audit` et la licence) ; RED : `importTemplate.test.js` avec la bibliothèque mockée — l'en-tête transmis est exactement la liste des colonnes, une ligne d'exemple suit, le fichier s'appelle `modele-import-formations.xlsx` ; confirmer RED
-- [ ] 3.2 Créer `importTemplate.js` (import dynamique de `write-excel-file/browser`) ; GREEN
-- [ ] 3.3 Commit `feat: generate the formation import template`
+- [x] 3.1 Installer `write-excel-file` (version 4 exacte, vérifier `npm audit` et la licence) ; RED : `importTemplate.test.js` avec la bibliothèque mockée — l'en-tête transmis est exactement la liste des colonnes, une ligne d'exemple suit, le fichier s'appelle `modele-import-formations.xlsx` ; confirmer RED
+- [x] 3.2 Créer `importTemplate.js` (import dynamique de `write-excel-file/browser`) ; GREEN
+- [x] 3.3 Commit `feat: generate the formation import template`
 
 ## 4. Appel d'import (TDD)
 
