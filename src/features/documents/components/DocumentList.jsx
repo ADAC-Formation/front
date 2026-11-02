@@ -4,17 +4,27 @@ import styles from './Documents.module.css'
 
 const ICONS = { PDF: FileText, Word: FileText, Image: FileImage }
 
-// Liste des documents d'une formation. Le nom du fichier est rendu en texte (jamais en HTML) ; le
-// type est écrit en toutes lettres à côté de l'icône ; l'e-mail de l'expéditeur et `fileUrl` ne sont
-// jamais affichés. Les boutons sont nommés avec le fichier (« Télécharger cours.pdf »).
-const DocumentList = ({ documents, canDelete, onDownload, onDelete, downloadingId = null }) => (
+const senderLabel = (uploadedBy) =>
+  uploadedBy ? `Envoyé par ${uploadedBy.prenom} ${uploadedBy.nom}` : 'Expéditeur inconnu'
+
+// Liste de documents (formation, 027 ; inscription du stagiaire, 028). `showSender` : nom de
+// l'expéditeur (faux pour le stagiaire, qui ne voit que ses envois) ; sans `canDelete`, aucun
+// « Supprimer ». Le nom du fichier est rendu en texte (jamais en HTML) ; le type est écrit en toutes
+// lettres à côté de l'icône ; l'e-mail de l'expéditeur et `fileUrl` ne sont jamais affichés. Les
+// boutons sont nommés avec le fichier (« Télécharger cours.pdf »).
+const DocumentList = ({
+  documents,
+  canDelete = () => false,
+  onDownload,
+  onDelete,
+  downloadingId = null,
+  showSender = true,
+}) => (
   <ul className={styles.list}>
     {documents.map((document) => {
       const kind = documentKind(document.fileName)
       const Icon = ICONS[kind] ?? File
-      const sender = document.uploadedBy
-        ? `Envoyé par ${document.uploadedBy.prenom} ${document.uploadedBy.nom}`
-        : 'Expéditeur inconnu'
+      const sender = showSender ? senderLabel(document.uploadedBy) : null
       return (
         <li key={document.id} className={styles.item}>
           <Icon className={styles.icon} size={22} aria-hidden="true" />

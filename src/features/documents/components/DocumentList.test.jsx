@@ -86,3 +86,25 @@ describe('DocumentList', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+// Vue du stagiaire (028, G12) : ses propres envois, donc ni expéditeur ni « Supprimer ».
+describe('DocumentList du stagiaire', () => {
+  it('n’affiche aucun expéditeur avec showSender={false}', () => {
+    renderList({ showSender: false })
+    expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('Support de cours.pdf')
+    expect(screen.queryByText(/Envoyé par/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/Formateur Dev/)).not.toBeInTheDocument()
+  })
+
+  it('garde l’expéditeur par défaut (027 inchangé)', () => {
+    renderList()
+    expect(screen.getAllByRole('listitem')[0]).toHaveTextContent('Envoyé par Formateur Dev')
+  })
+
+  it('sans canDelete, aucun « Supprimer » n’est proposé', () => {
+    renderList({ canDelete: undefined, showSender: false })
+    expect(screen.queryByRole('button', { name: /Supprimer/ })).not.toBeInTheDocument()
+    expect(screen.getAllByRole('button', { name: /Télécharger/ })).toHaveLength(2)
+  })
+})
+

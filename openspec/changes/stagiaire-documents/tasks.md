@@ -14,9 +14,9 @@
 
 ## 3. Liste sans expéditeur ni suppression (TDD)
 
-- [ ] 3.1 RED : `DocumentList.test.jsx` — `showSender={false}` n'affiche aucun nom d'expéditeur, sans `canDelete` aucun « Supprimer » ; le comportement par défaut de 027 est inchangé ; confirmer RED
-- [ ] 3.2 Ajouter `showSender` (vrai par défaut) à `DocumentList.jsx` ; GREEN
-- [ ] 3.3 Commit `feat: let the document list hide the sender`
+- [x] 3.1 RED : `DocumentList.test.jsx` — `showSender={false}` n'affiche aucun nom d'expéditeur, sans `canDelete` aucun « Supprimer » ; le comportement par défaut de 027 est inchangé ; confirmer RED
+- [x] 3.2 Ajouter `showSender` (vrai par défaut) à `DocumentList.jsx` ; GREEN
+- [x] 3.3 Commit `feat: let the document list hide the sender`
 
 ## 4. Section « Mes documents » (TDD)
 
