@@ -32,9 +32,9 @@
 
 ## 6. Section « Documents » (TDD)
 
-- [ ] 6.1 RED : `components/DocumentSection.test.jsx` — chargement, erreur avec « Réessayer », liste vide « Aucun document disponible pour le moment » ; zone de dépôt par rôle (chargée de formation, formateur de la formation, formateur d'une autre, stagiaire) et absente sur formation archivée ; envoi de trois fichiers (ordre, « Envoi en cours… », liste rechargée) ; refus par fichier annoncés (type, taille, `400` du back) sans bloquer les autres ; téléchargement réussi (enregistrement simulé) et erreur `403` annoncée ; « Supprimer » par rôle et auteur, confirmation nommant le fichier, annulation (aucun appel, focus rendu), succès (« Document supprimé », liste rechargée), `404` et `403` ; confirmer RED
-- [ ] 6.2 Créer `DocumentSection.jsx` (état `deleting`, résultats d'envoi, message de suppression) ; GREEN
-- [ ] 6.3 Commit `feat: add the formation documents section`
+- [x] 6.1 RED : `components/DocumentSection.test.jsx` — chargement, erreur avec « Réessayer », liste vide « Aucun document disponible pour le moment » ; zone de dépôt par rôle (chargée de formation, formateur de la formation, formateur d'une autre, stagiaire) et absente sur formation archivée ; envoi de trois fichiers (ordre, « Envoi en cours… », liste rechargée) ; refus par fichier annoncés (type, taille, `400` du back) sans bloquer les autres ; téléchargement réussi (enregistrement simulé) et erreur `403` annoncée ; « Supprimer » par rôle et auteur, confirmation nommant le fichier, annulation (aucun appel, focus rendu), succès (« Document supprimé », liste rechargée), `404` et `403` ; confirmer RED
+- [x] 6.2 Créer `DocumentSection.jsx` (état `deleting`, résultats d'envoi, message de suppression) ; GREEN
+- [x] 6.3 Commit `feat: add the formation documents section`
 
 ## 7. Intégration au détail de formation (TDD)
 
