@@ -45,6 +45,7 @@ select {
   --color-red: #cc3d34;
   --color-pink: #F35E6C;
   --color-orange: #d9812c;
+  --color-amber: #e08f1f; /* tuile « Stagiaires » : orange plus jaune (le #d9812c virait au brun sous l'ombre de la tuile) */
   --color-yellow: #f6d628;
   --color-white: #fcfcfc;
   --color-purple: #7a2f7c;

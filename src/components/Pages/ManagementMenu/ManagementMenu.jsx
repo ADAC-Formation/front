@@ -30,7 +30,7 @@ const managementTiles = [
   {
     label: "Stagiaires",
     icon: <GraduationCap />,
-    color: "var(--color-orange)",
+    color: "var(--color-amber)",
     createLabel: "Créer un nouveau profil",
     listLabel: "Consulter profils existants",
     createPath: "/admin/stagiaires/nouveau",
