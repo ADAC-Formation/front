@@ -120,3 +120,17 @@ Source : TICKET-049 (front), US-017, `tech.md` §3, décisions C1–C5 (`decisio
 - [ ] Après chaque écriture : listes des catégories, choix de catégorie du formulaire de formation et formations rechargés (renommer / recolorer change l'affichage des formations).
 - [ ] Boîtes accessibles : focus piégé (champs compris), Échap, retour du focus ; jest-axe sans violation.
 - Reporté : création à la volée dans le formulaire de formation et filtre par catégorie (change `category-picker`, 048).
+
+## Critères d'acceptation des documents de formation (change `formation-documents`)
+
+Source : TICKET-027 (front), US-009, US-011, `tech.md` §6, décisions G1–G6 (`decisions-documents.md`). À valider par Manon (D49). Détail testable : `openspec/changes/formation-documents/specs/formation-documents/spec.md`.
+
+### TICKET-027 — Documents d'une formation
+- [ ] Le détail de chaque formation a une section « Documents » (`GET /documents?formationId=`) : type en texte, nom (rendu en texte), taille, date, expéditeur sans e-mail ; états chargement, erreur avec « Réessayer », vide « Aucun document disponible pour le moment ».
+- [ ] « Télécharger » : `GET /documents/{id}/download` par le client axios, fichier enregistré sous son nom d'origine ; `403` / `404` affichés ; jamais `fileUrl`.
+- [ ] Zone de dépôt : chargée de formation sur toute formation active ; formateur sur ses formations actives ; jamais le stagiaire ni sur une formation archivée.
+- [ ] Dépôt par glisser-déposer et « Choisir des fichiers » (clavier), plusieurs fichiers : contrôle pdf / jpg / jpeg / png / docx et 10 Mo avant envoi, un `POST /documents` par fichier, l'un après l'autre ; refus (client ou back) listés par fichier et annoncés sans bloquer les autres ; liste rechargée à la fin.
+- [ ] « Supprimer » : chargée de formation sur tous les documents d'une formation active, formateur sur ses propres envois seulement, jamais le stagiaire ; confirmation puis `DELETE /documents/{id}`, liste rechargée, « Document supprimé » annoncé ; `404` / `403` affichés.
+- [ ] Formation archivée : documents listés et téléchargeables, ni dépôt ni suppression (règle d'interface, à confirmer avec Charlotte).
+- [ ] Accessibilité : clavier, annonces d'état, boutons nommés avec le fichier ; jest-axe sans violation.
+- Reporté : documents ciblés par stagiaire et dépôt par le stagiaire (TICKET-028).
