@@ -21,3 +21,15 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète `decisions-forma
 - **Pourquoi** : toutes les couleurs sont possibles, y compris celles déjà en base (ex. `#271BB4`) ; le champ texte rend la saisie utilisable au clavier et au lecteur d'écran, et permet de coller une couleur connue.
 - **Alternatives écartées** : sélecteur natif seul (aperçu variable selon le navigateur, pas de saisie d'un code connu) ; palette de couleurs ADAC fixe (les couleurs libres existantes ne seraient plus éditables).
 - **Accessibilité** : la couleur ne porte jamais seule l'information (le nom est toujours affiché à côté de la pastille).
+
+## C4 — Activation : boutons texte, confirmation à la désactivation seulement
+- Date : 2026-11-02
+- **Décision** : chaque ligne a un bouton « Désactiver » ou « Réactiver » (texte explicite, nom accessible avec le nom de la catégorie). « Désactiver » ouvre une confirmation (`ConfirmDialog`) qui explique l'effet : la catégorie n'apparaît plus dans le choix de catégorie d'une formation mais reste affichée sur les formations qui la portent déjà. « Réactiver » est immédiat. L'interrupteur et l'info-bulle au survol de la coque sont abandonnés.
+- **Pourquoi** : la confirmation suit le ticket 049 ; l'info-bulle au survol est inaccessible au clavier et au tactile, le texte de la confirmation donne la même explication à tout le monde ; réactiver est sans risque.
+- **Alternatives écartées** : garder l'interrupteur et son info-bulle ; désactivation sans confirmation.
+
+## C5 — Hypothèses retenues pour le change `category-management` (à corriger si besoin)
+- Date : 2026-11-02
+- **Décision** : (1) la page `/formations/categories` reste réservée à la chargée de formation (`SUPER_ADMIN`, garde existante) ; le formateur et le stagiaire reçoivent « Accès refusé » ; (2) la liste affiche toutes les catégories (actives et désactivées) dans l'ordre du back, avec pastille, nom et état « Active » / « Désactivée » en texte ; aucune action de suppression (`tech.md` §3, US-017 AC-05) ; (3) création, modification, activation et désactivation confirment par un message annoncé (`role="status"`) sur la page, sans navigation ; (4) `409` (nom déjà utilisé) s'affiche dans la modale, qui reste ouverte avec la saisie ; (5) `utils/categories.js` (mock) est supprimé avec le rebranchement de `CategoryManagement` (D11) ; (6) la liste des catégories du sélecteur de formation (`['categories','list','active']`) est invalidée après toute écriture.
+- **Pourquoi** : suit `tech.md` §3, US-017 et les patrons des comptes et des formations ; ce sont des choix sans enjeu de périmètre.
+- **Alternatives écartées** : tri alphabétique côté client (l'ordre du back suffit pour l'instant) ; message de confirmation par navigation (la page ne change pas).
