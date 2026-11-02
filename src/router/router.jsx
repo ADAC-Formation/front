@@ -35,8 +35,11 @@ export const routes = [
           { path: "formations/:formationId", ...lazyPage(() => import("../components/Pages/FormationDetails/FormationDetails")) },
           { path: "plan-du-site", ...lazyPage(() => import("../components/Pages/SiteMapPage/SiteMapPage")) },
           { path: "profile", ...lazyPage(() => import("../components/Pages/Stagiaire/ProfilePage/ProfilePage")) },
-          { path: "notifications", ...lazyPage(() => import("../components/Pages/Stagiaire/NotifPage/NotifPage")) },
+          { path: "notifications", ...lazyPage(() => import("../features/notifications/pages/NotificationsPage")) },
           { path: "messages", ...lazyPage(() => import("../components/Pages/Stagiaire/Messages/MessagesPage")) },
+          // Cible d'une notification de message (entityId = autre participant, N1) : même coque
+          // vide en attendant feature/messagerie, qui la remplacera.
+          { path: "messages/:userId", ...lazyPage(() => import("../components/Pages/Stagiaire/Messages/MessagesPage")) },
 
           // Gestion : chargée de formation et formateurs.
           {

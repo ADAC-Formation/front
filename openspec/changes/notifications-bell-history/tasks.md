@@ -27,11 +27,11 @@ Branche `feature/notifications` (worktree `..\front-notifications`, depuis `dev`
 
 ## 4. Page d'historique et routes (TDD)
 
-- [ ] 4.1 RED : `NotificationsPage.test.jsx` — appel sans paramètre à l'ouverture et liste lues + non lues avec distinction textuelle ; « Non lues » → `?read=false`, « Lues » → `?read=true`, « Toutes » → sans paramètre ; tri récent / ancien sans nouvel appel ; clic = même effet que la cloche ; aucune action de suppression ; liste vide « Aucune notification » ; note du plafond de 200 ; chargement annoncé, erreur 500 + « Réessayer » ; un seul `<main>` (via le routeur) ; jest-axe ; confirmer RED
-- [ ] 4.2 Écrire `features/notifications/pages/NotificationsPage.jsx` (enveloppe `PageShell`, titre, filtre, tri, liste réutilisant `NotificationItem`) ; GREEN
-- [ ] 4.3 `router/router.jsx` : route `notifications` vers la nouvelle page (`lazyPage`), route `messages/:userId` vers `MessagesPage` ; supprimer `components/Pages/Stagiaire/NotifPage` ; test de routage : `/messages/7` n'affiche pas `RouteError`, `/notifications` exige une session, `single-main.test.jsx` mis à jour avec la nouvelle page ; GREEN
-- [ ] 4.4 Vérifier `npm run check` (lint + tests + build + budget) ; si l'entrée dépasse `bundle-budget.json`, rendre `NotificationPanel` `lazy` (D-N9) et le revérifier
-- [ ] 4.5 Commit `feat(notifications): add notification history page and message route`
+- [x] 4.1 RED : `NotificationsPage.test.jsx` — appel sans paramètre à l'ouverture et liste lues + non lues avec distinction textuelle ; « Non lues » → `?read=false`, « Lues » → `?read=true`, « Toutes » → sans paramètre ; tri récent / ancien sans nouvel appel ; clic = même effet que la cloche ; aucune action de suppression ; liste vide « Aucune notification » ; note du plafond de 200 ; chargement annoncé, erreur 500 + « Réessayer » ; un seul `<main>` (via le routeur) ; jest-axe ; confirmer RED
+- [x] 4.2 Écrire `features/notifications/pages/NotificationsPage.jsx` (enveloppe `PageShell`, titre, filtre, tri, liste réutilisant `NotificationItem`) ; GREEN
+- [x] 4.3 `router/router.jsx` : route `notifications` vers la nouvelle page (`lazyPage`), route `messages/:userId` vers `MessagesPage` ; supprimer `components/Pages/Stagiaire/NotifPage` ; test de routage : `/messages/7` n'affiche pas `RouteError`, `/notifications` exige une session, `single-main.test.jsx` mis à jour avec la nouvelle page ; GREEN
+- [x] 4.4 Vérifier `npm run check` (lint + tests + build + budget) ; si l'entrée dépasse `bundle-budget.json`, rendre `NotificationPanel` `lazy` (D-N9) et le revérifier
+- [x] 4.5 Commit `feat(notifications): add notification history page and message route`
 
 ## 5. Vérification d'ensemble et documentation
 
