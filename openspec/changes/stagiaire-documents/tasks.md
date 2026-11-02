@@ -20,9 +20,9 @@
 
 ## 4. Section « Mes documents » (TDD)
 
-- [ ] 4.1 RED : `components/StagiaireDocSection.test.jsx` — chargement et erreur des formations avec « Réessayer » ; aucune formation (« Vous n'êtes inscrit à aucune formation pour le moment ») ; une sous-section par formation, actives avant archivées ; liste des documents de l'inscription (type, nom, taille, date, sans expéditeur) ; liste vide (« Aucun document déposé pour cette formation ») ; erreur de liste limitée à sa formation ; zone de dépôt sur formation active, absente sur formation archivée ; dépôt valide (`POST` avec `inscriptionId`, succès annoncé, document dans la liste) ; `.exe` refusé sans appel ; `400` / `403` du back sur un fichier sans bloquer les autres ; téléchargement réussi et erreur `403` ; aucun « Supprimer » ; formation sans `inscriptionId` (« Dépôt indisponible pour le moment », aucun appel `/documents`) ; nom de fichier avec HTML rendu en texte ; jest-axe ; confirmer RED
-- [ ] 4.2 Extraire `UploadNotices` de `DocumentSection.jsx` (tests de 027 verts), créer `StagiaireDocSection.jsx` (et `InscriptionDocuments`) et sa feuille de style (jetons, `rem`) ; GREEN
-- [ ] 4.3 Commit `feat: add the stagiaire documents section`
+- [x] 4.1 RED : `components/StagiaireDocSection.test.jsx` — chargement et erreur des formations avec « Réessayer » ; aucune formation (« Vous n'êtes inscrit à aucune formation pour le moment ») ; une sous-section par formation, actives avant archivées ; liste des documents de l'inscription (type, nom, taille, date, sans expéditeur) ; liste vide (« Aucun document déposé pour cette formation ») ; erreur de liste limitée à sa formation ; zone de dépôt sur formation active, absente sur formation archivée ; dépôt valide (`POST` avec `inscriptionId`, succès annoncé, document dans la liste) ; `.exe` refusé sans appel ; `400` / `403` du back sur un fichier sans bloquer les autres ; téléchargement réussi et erreur `403` ; aucun « Supprimer » ; formation sans `inscriptionId` (« Dépôt indisponible pour le moment », aucun appel `/documents`) ; nom de fichier avec HTML rendu en texte ; jest-axe ; confirmer RED
+- [x] 4.2 Extraire `UploadNotices` de `DocumentSection.jsx` (tests de 027 verts), créer `StagiaireDocSection.jsx` (et `InscriptionDocuments`) et sa feuille de style (jetons, `rem`) ; GREEN
+- [x] 4.3 Commit `feat: add the stagiaire documents section`
 
 ## 5. Page de profil et route (TDD)
 

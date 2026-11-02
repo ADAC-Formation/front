@@ -44,6 +44,10 @@ export const documentKind = (fileName) => KINDS[extensionOf(fileName)] ?? 'Fichi
 
 const isActive = (formation) => formation.status !== 'ARCHIVED'
 
+// Stagiaire (028) : dépôt sur sa propre inscription, tant que la formation est active et que son
+// identifiant d'inscription est connu (G10, G11).
+export const canUploadOwnDocument = (formation) => isActive(formation) && inscriptionIdOf(formation) !== null
+
 // Chargée de formation : toute formation active. Formateur : la sienne seulement. Jamais le stagiaire.
 export function canUploadDocument(user, formation) {
   if (!user || !isActive(formation)) return false

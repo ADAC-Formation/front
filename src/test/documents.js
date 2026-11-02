@@ -33,7 +33,8 @@ export const DOCUMENTS = [
 // API des documents avec état en mémoire : GET (`?formationId=` ou `?inscriptionId=`), POST multipart, téléchargement
 // binaire, DELETE, comme le back. Chaque écriture change la liste renvoyée ensuite. `errors[opération]`
 // (`list`, `upload`, `download`, `delete`) vaut `{ status, message }`, ou `'network'` ; pour `upload`,
-// une fonction `(fileName) => erreur | null` permet de refuser certains fichiers seulement.
+// une fonction `(fileName) => erreur | null` permet de refuser certains fichiers seulement ; pour `list`, une fonction
+// `(inscriptionId ou formationId demandé) => erreur | null` limite l'erreur à une seule liste.
 // `calls` garde les listes (`list`, `listUrls`), les envois reçus (`uploaded` : nom, formationId, inscriptionId ; `null` si absent),
 // les identifiants téléchargés (`downloaded`) et supprimés (`deleted`) ; `state()` renvoie les documents.
 export function mockDocumentApi(initial = DOCUMENTS, { errors = {}, uploader = USERS.SUPER_ADMIN } = {}) {
@@ -52,9 +53,9 @@ export function mockDocumentApi(initial = DOCUMENTS, { errors = {}, uploader = U
     http.get(`${API_URL}/documents`, ({ request }) => {
       calls.list += 1
       calls.listUrls.push(request.url)
-      const error = failure('list')
-      if (error) return error
       const params = new URL(request.url).searchParams
+      const error = failure('list', Number(params.get('inscriptionId') ?? params.get('formationId')))
+      if (error) return error
       if (params.has('inscriptionId')) {
         const inscriptionId = Number(params.get('inscriptionId'))
         return HttpResponse.json(documents.filter((document) => document.inscriptionId === inscriptionId))

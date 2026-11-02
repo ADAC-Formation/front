@@ -4,6 +4,7 @@ import { USERS } from '../../test/session'
 import {
   MAX_FILE_SIZE,
   canDeleteDocument,
+  canUploadOwnDocument,
   canUploadDocument,
   documentKind,
   formatDocumentDate,
@@ -142,5 +143,19 @@ describe('inscriptionIdOf', () => {
     ['non numérique', { id: 101, inscriptionId: 'abc' }],
   ])('renvoie null quand le champ est %s', (_label, formation) => {
     expect(inscriptionIdOf(formation)).toBeNull()
+  })
+})
+
+describe('canUploadOwnDocument', () => {
+  it('autorise le dépôt sur une formation active dont l’inscription est connue', () => {
+    expect(canUploadOwnDocument({ status: 'ACTIVE', inscriptionId: 7 })).toBe(true)
+  })
+
+  it('refuse sur une formation archivée', () => {
+    expect(canUploadOwnDocument({ status: 'ARCHIVED', inscriptionId: 7 })).toBe(false)
+  })
+
+  it('refuse sans inscriptionId (Q13)', () => {
+    expect(canUploadOwnDocument({ status: 'ACTIVE' })).toBe(false)
   })
 })

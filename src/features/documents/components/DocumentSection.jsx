@@ -7,8 +7,7 @@ import { useDeleteDocument, useDocuments, useDownloadDocument, useUploadDocument
 import DocumentDropzone from './DocumentDropzone'
 import DocumentList from './DocumentList'
 import styles from './Documents.module.css'
-
-const sentLabel = (count) => `${count} document${count > 1 ? 's' : ''} envoyé${count > 1 ? 's' : ''}`
+import UploadNotices from './UploadNotices'
 
 // Section « Documents » du détail d'une formation (TICKET-027, G1–G6). Droits affichés = droits du
 // back : dépôt et suppression selon le rôle, l'auteur et l'état de la formation (documentFiles).
@@ -65,17 +64,7 @@ const DocumentSection = ({ formation, className }) => {
       )}
 
       <div className={styles.notices}>
-        {result?.uploaded > 0 && <Alert variant="success">{sentLabel(result.uploaded)}</Alert>}
-        {result?.rejections.length > 0 && (
-          <div role="alert" className={styles.rejections}>
-            <p>Fichiers non envoyés :</p>
-            <ul>
-              {result.rejections.map(({ name, message }, index) => (
-                <li key={`${index}-${name}`}>{`${name} : ${message}`}</li>
-              ))}
-            </ul>
-          </div>
-        )}
+        <UploadNotices result={result} />
         {download.isError && <Alert variant="error">{download.error.message}</Alert>}
         {remove.isError && <Alert variant="error">{remove.error.message}</Alert>}
         {deleted && <Alert variant="success">Document supprimé</Alert>}

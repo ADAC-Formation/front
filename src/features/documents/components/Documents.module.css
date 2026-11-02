@@ -178,3 +178,19 @@
   color: var(--muted-foreground);
   font-size: 0.9rem;
 }
+
+/* ---------- Sous-section d une formation (stagiaire, 028) ---------- */
+
+.subsection {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+
+  border-top: 1px solid var(--border);
+}
+
+.subsectionTitle {
+  margin: 0 0 0.75rem;
+
+  font-size: 1.1rem;
+  overflow-wrap: anywhere;
+}
