@@ -73,6 +73,12 @@ describe('FormationFormPage — création', () => {
     expect(screen.getByLabelText('Formateur')).not.toBeRequired()
   })
 
+  it('propose d’importer un fichier Excel, depuis la création seulement', async () => {
+    mockLists()
+    renderForm('/formations/creer')
+    expect(await screen.findByRole('link', { name: 'Importer un fichier Excel' })).toHaveAttribute('href', '/formations/importer')
+  })
+
   it('ne propose ni référence, ni public, ni lieu, ni dépôt de documents', async () => {
     mockLists()
     renderForm('/formations/creer')
@@ -272,6 +278,14 @@ describe('FormationFormPage — création', () => {
 })
 
 describe('FormationFormPage — modification', () => {
+  it('ne propose pas l’import Excel', async () => {
+    mockLists()
+    mockFormationDetail(secours)
+    renderForm('/formations/101/modifier')
+    await screen.findByRole('heading', { level: 1, name: 'Modifier la formation' })
+    expect(screen.queryByRole('link', { name: 'Importer un fichier Excel' })).not.toBeInTheDocument()
+  })
+
   it('préremplit le formulaire depuis la formation', async () => {
     mockLists()
     mockFormationDetail(secours)

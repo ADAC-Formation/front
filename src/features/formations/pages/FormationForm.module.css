@@ -25,6 +25,22 @@
   color: var(--foreground);
 }
 
+.importHint {
+  margin: 0.75rem 0 0;
+
+  font-size: 0.95rem;
+
+  color: var(--muted-foreground);
+}
+
+.importLink {
+  font-weight: 600;
+
+  color: var(--foreground);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 .intro {
   max-width: 700px;
 

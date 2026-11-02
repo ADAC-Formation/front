@@ -31,10 +31,10 @@
 
 ## 6. Lien, route et intégration (TDD)
 
-- [x] 6.1 RED : compléter `FormationListPage.test.jsx` (lien « Importer un fichier Excel » pour la chargée de formation, absent pour formateur et stagiaire) et `router.test.jsx` (`/formations/importer` : formateur et stagiaire → « Accès refusé », visiteur → `/login`, chargée de formation → page d'import) ; confirmer RED
-- [x] 6.2 Ajouter le lien à `FormationListPage` et la route `formations/importer` à `router.jsx` (`lazyPage`, `RequireRole` `SUPER_ADMIN`, avant `formations/:formationId`) ; GREEN
+- [x] 6.1 RED : compléter `FormationFormPage.test.jsx` (lien « Importer un fichier Excel » en création, absent en modification) et `FormationListPage.test.jsx` (aucun lien d'import) ; `css-hygiene.test.js` (logo sans capture de clic) et `router.test.jsx` (`/formations/importer` : formateur et stagiaire → « Accès refusé », visiteur → `/login`, chargée de formation → page d'import) ; confirmer RED
+- [x] 6.2 Ajouter le lien à `FormationFormPage` (création), `pointer-events: none` au logo et la route `formations/importer` à `router.jsx` (`lazyPage`, `RequireRole` `SUPER_ADMIN`, avant `formations/:formationId`) ; GREEN
 - [x] 6.3 `npm run check` vert (lint + tests + build + budget du bundle : la bibliothèque et la page restent hors de l'entrée)
-- [x] 6.4 Commit `feat: route the formation import and link it from the list`
+- [x] 6.4 Commit `feat: route the formation import and link it from the list` (puis `fix: …` pour F22)
 
 ## 7. Documentation et passage manuel
 

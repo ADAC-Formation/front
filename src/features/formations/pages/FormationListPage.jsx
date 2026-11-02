@@ -81,9 +81,6 @@ const FormationListPage = () => {
             <Link to="/formations/creer" className={styles.createButton}>
               Créer une nouvelle formation
             </Link>
-            <Link to="/formations/importer" className={styles.createButton}>
-              Importer un fichier Excel
-            </Link>
             <Link to="/formations/categories" className={styles.createButton}>
               Gérer les catégories
             </Link>

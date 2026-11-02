@@ -6,4 +6,8 @@
 
   width: clamp(220px, 60vw, 580px);
   height: auto;
+
+  /* Image décorative en position absolue, plus haute que le dégagement sous le logo
+     (--page-top) : sa zone transparente recouvrirait sinon les boutons d'en-tête de page. */
+  pointer-events: none;
 }

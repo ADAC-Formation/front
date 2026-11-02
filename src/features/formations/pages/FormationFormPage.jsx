@@ -249,6 +249,12 @@ const FormationFormPage = () => {
         <header className={styles.header}>
           <h1 className={styles.title}>Créer une nouvelle formation</h1>
           <p className={styles.intro}>Renseignez les informations nécessaires pour créer une nouvelle formation.</p>
+          <p className={styles.importHint}>
+            Plusieurs formations à créer ?{' '}
+            <Link className={styles.importLink} to="/formations/importer">
+              Importer un fichier Excel
+            </Link>
+          </p>
         </header>
         <FormationForm />
       </PageShell>

@@ -105,10 +105,11 @@ describe('FormationListPage', () => {
       expect(screen.queryByRole('radio', { name: 'Mes formations' })).not.toBeInTheDocument()
     })
 
-    it('propose d’importer un fichier Excel', async () => {
+    it('ne propose pas l’import Excel : il se trouve dans « Créer une nouvelle formation »', async () => {
       mockFormationList()
       renderList('SUPER_ADMIN')
-      expect(await screen.findByRole('link', { name: 'Importer un fichier Excel' })).toHaveAttribute('href', '/formations/importer')
+      await screen.findByRole('link', { name: 'Créer une nouvelle formation' })
+      expect(screen.queryByRole('link', { name: 'Importer un fichier Excel' })).not.toBeInTheDocument()
     })
 
     it('revient au menu Gestion', async () => {

@@ -51,10 +51,10 @@ Succès : `navigate('/formations', { state: { notice: 'formations-imported', cou
 - *Pourquoi* : même mécanisme que `formation-created` ; rien dans le stockage du navigateur (D31).
 
 ### 7. Route, lien et lazy
-`formations/importer` dans `router.jsx` (`lazyPage`, derrière `RequireRole` `SUPER_ADMIN`, avant `formations/:formationId` pour ne pas être pris pour un identifiant). `FormationListPage` ajoute le lien « Importer un fichier Excel » dans `headerActions` (SUPER_ADMIN).
+`formations/importer` dans `router.jsx` (`lazyPage`, derrière `RequireRole` `SUPER_ADMIN`, avant `formations/:formationId` pour ne pas être pris pour un identifiant). `FormationFormPage` (création seulement) affiche le lien « Importer un fichier Excel » sous l'introduction (F22) ; « Retour » et « Annuler » de la page d'import reviennent à `/formations/creer`. Le logo reçoit `pointer-events: none` : sa zone transparente recouvrait les boutons d'en-tête de la liste.
 
 ### 8. Tests (TDD, avant le code)
-Helper MSW `mockImportFormations` dans `src/test/formations.js` (201 avec N formations, 400 avec message, 403, erreur réseau, capture du `FormData`). Tests : `importColumns.test.js`, `importErrors.test.js`, `importFile.test.js` (logique pure), `importTemplate.test.js` (bibliothèque mockée), hooks, `FormationImportPage.test.jsx` (page + jest-axe sans et avec erreurs), liste (lien selon le rôle), routeur (accès par rôle), `FormationNotice` (nombre).
+Helper MSW `mockImportFormations` dans `src/test/formations.js` (201 avec N formations, 400 avec message, 403, erreur réseau, capture du `FormData`). Tests : `importColumns.test.js`, `importErrors.test.js`, `importFile.test.js` (logique pure), `importTemplate.test.js` (bibliothèque mockée), hooks, `FormationImportPage.test.jsx` (page + jest-axe sans et avec erreurs), création (lien présent en création, absent en modification) et liste (aucun lien d'import), routeur (accès par rôle), `FormationNotice` (nombre).
 
 ## Risks / Trade-offs
 

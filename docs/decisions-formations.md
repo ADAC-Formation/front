@@ -130,3 +130,10 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Décision** : avant tout appel, le front refuse un fichier dont le nom ne finit pas par `.xlsx` (US-005 AC-02) ou qui dépasse 2 Mo (limite du back), avec un message précis. Le nombre de lignes (1000) et le contenu ne sont vérifiés que par le back, dont le message s'affiche (F20). Seul le bouton d'envoi est actif quand un fichier valide est choisi.
 - **Pourquoi** : refus immédiat sans dupliquer les règles du back qui peuvent changer ni lire le fichier dans le navigateur.
 - **Alternatives écartées** : extension seule ; compter les lignes côté navigateur.
+
+## F22 — Import Excel : le lien est dans « Créer une nouvelle formation », pas sur la liste
+- Date : 2026-11-02
+- **Décision** : Manon (au passage manuel) veut l'import comme une action de « Créer une nouvelle formation ». Le lien « Importer un fichier Excel » est donc retiré de la liste et placé sous l'introduction du formulaire de création (`/formations/creer`, pas en modification) ; il mène toujours à la page `/formations/importer`. « Retour » et « Annuler » de cette page reviennent à `/formations/creer` ; un import réussi continue vers `/formations` (F19). Cette décision remplace la partie « bouton sur la liste » de F17 ; la page dédiée reste.
+- **Pourquoi** : l'import est une autre façon de créer des formations ; il se découvre là où l'on les crée.
+- **Alternatives écartées** : import intégré au formulaire (deux parcours dans une page, F17) ; garder le lien sur la liste.
+- **Constaté en même temps** : sur la liste, « Créer une nouvelle formation » et « Importer un fichier Excel » n'étaient pas cliquables. Cause : le logo (image absolue de 385 px de haut à 580 px de large, dégagement de 276 px) recouvrait par sa zone transparente les deux boutons les plus au centre de l'en-tête. Corrigé par `pointer-events: none` sur le logo, protégé par `css-hygiene.test.js`.

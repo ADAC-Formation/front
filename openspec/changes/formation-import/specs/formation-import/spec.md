@@ -7,11 +7,15 @@ Permet à la chargée de formation de créer plusieurs formations d'un coup en e
 ## ADDED Requirements
 
 ### Requirement: Accès réservé à la chargée de formation
-Le système SHALL réserver la page `/formations/importer` et le lien « Importer un fichier Excel » de la liste des formations à la chargée de formation (`SUPER_ADMIN`).
+Le système SHALL réserver la page `/formations/importer` et le lien « Importer un fichier Excel » de la page de création de formation à la chargée de formation (`SUPER_ADMIN`).
 
-#### Scenario: Lien sur la liste
-- **WHEN** la chargée de formation ouvre la liste des formations
+#### Scenario: Lien dans la création de formation
+- **WHEN** la chargée de formation ouvre `/formations/creer`
 - **THEN** un lien « Importer un fichier Excel » vers `/formations/importer` est affiché
+
+#### Scenario: Ni sur la liste ni en modification
+- **WHEN** la chargée de formation ouvre la liste des formations ou le formulaire de modification
+- **THEN** aucun lien d'import n'est affiché
 
 #### Scenario: Autres rôles
 - **WHEN** un formateur ou un stagiaire consulte la liste
@@ -32,9 +36,9 @@ La page SHALL présenter le format attendu : une ligne d'en-tête ignorée puis 
 - **WHEN** la page est affichée
 - **THEN** les sept colonnes sont listées avec leur format, les modalités acceptées (`VISIO`, `PRESENTIEL`, `MIXTE`) et la règle « formateur vide : la chargée de formation est assignée »
 
-#### Scenario: Retour à la liste
-- **WHEN** la chargée de formation active « Retour »
-- **THEN** elle revient à `/formations`
+#### Scenario: Retour à la création
+- **WHEN** la chargée de formation active « Retour » ou « Annuler »
+- **THEN** elle revient à `/formations/creer`
 
 ### Requirement: Modèle téléchargeable
 La page SHALL proposer le téléchargement d'un modèle `.xlsx` dont l'en-tête reprend exactement les colonnes attendues, suivi d'une ligne d'exemple.

@@ -58,3 +58,14 @@ describe('feuilles de style : focus', () => {
     expect(violations).toEqual([])
   })
 })
+
+describe('feuilles de style : logo', () => {
+  // Le logo est en position absolue et son image dépasse le dégagement sous lui (--page-top) :
+  // sans `pointer-events: none`, sa zone transparente intercepte les clics sur les boutons
+  // d'en-tête de page placés au centre (constaté sur « Créer » / « Importer » de la liste).
+  it('le logo décoratif ne capte aucun clic', () => {
+    const rules = rulesOf(stripComments(cssSheets['src/components/atoms/Logo/Logo.module.css']))
+    const logo = rules.find(({ selector }) => selector.trim() === '.logo')
+    expect(logo.body).toMatch(/pointer-events\s*:\s*none/)
+  })
+})

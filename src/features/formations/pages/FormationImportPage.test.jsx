@@ -57,10 +57,15 @@ beforeEach(() => {
 })
 
 describe('FormationImportPage — consignes et modèle', () => {
-  it('affiche le titre et le lien Retour vers la liste', async () => {
+  it('affiche le titre et le lien Retour vers la création de formation', async () => {
     renderImport()
     expect(await screen.findByRole('heading', { level: 1, name: 'Importer des formations' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /retour/i })).toHaveAttribute('href', '/formations')
+    expect(screen.getByRole('link', { name: /retour/i })).toHaveAttribute('href', '/formations/creer')
+  })
+
+  it('annule vers la création de formation', async () => {
+    renderImport()
+    expect(await screen.findByRole('link', { name: 'Annuler' })).toHaveAttribute('href', '/formations/creer')
   })
 
   it('liste les sept colonnes attendues avec leur caractère obligatoire et leur format', async () => {

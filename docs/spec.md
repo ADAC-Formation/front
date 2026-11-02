@@ -97,7 +97,7 @@ Source : TICKET-025 (front, hors import Excel reporté, F11), `tech.md` §2–4,
 Source : TICKET-025 (partie import, F11), US-005, `tech.md` §4, décisions F16–F21, D14. Colonnes provisoires (R10) : le fichier réel d'ADAC n'est pas arrivé. À valider par Manon (D49). Détail testable : `openspec/changes/formation-import/specs/formation-import/spec.md`.
 
 ### TICKET-025 — Importer des formations depuis un fichier Excel
-- [ ] Lien « Importer un fichier Excel » sur la liste et page `/formations/importer` réservés à SUPER_ADMIN (autres rôles → « Accès refusé », visiteur → `/login`).
+- [ ] Lien « Importer un fichier Excel » dans « Créer une nouvelle formation » (F22) et page `/formations/importer` réservés à SUPER_ADMIN (autres rôles → « Accès refusé », visiteur → `/login`).
 - [ ] La page présente les sept colonnes provisoires (A `intitule` … G `formateur`), leurs formats et les modalités ; « Télécharger le modèle » donne un `.xlsx` généré dans le navigateur (en-tête + une ligne d'exemple).
 - [ ] Seuls les fichiers `.xlsx` de 2 Mo au plus sont acceptés ; sinon message précis, aucun appel, bouton « Importer » inactif.
 - [ ] Envoi `POST /formations/import` (`multipart/form-data`, champ `file`), bouton désactivé pendant l'envoi.

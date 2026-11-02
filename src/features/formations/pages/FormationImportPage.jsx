@@ -136,7 +136,7 @@ const FormationImportPage = () => {
 
   return (
     <PageShell className={styles.page}>
-      <BackButton to="/formations" />
+      <BackButton to="/formations/creer" />
 
       <header className={styles.header}>
         <h1 className={styles.title}>Importer des formations</h1>
@@ -185,7 +185,7 @@ const FormationImportPage = () => {
             ))}
 
           <div className={styles.actions}>
-            <Link className={styles.cancelButton} to="/formations">
+            <Link className={styles.cancelButton} to="/formations/creer">
               Annuler
             </Link>
             <button type="submit" className={styles.submitButton} disabled={!canSubmit}>
