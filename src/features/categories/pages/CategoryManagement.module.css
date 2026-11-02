@@ -1,0 +1,323 @@
+/* Page de gestion des catégories : design de l'ancienne coque (D41), sans formulaire en ligne ni
+   interrupteur (la saisie est dans des boîtes de dialogue, l'activation dans un bouton texte). */
+
+/* Le gabarit (dégagement sous le logo, marges, largeur) vient de `PageShell`. */
+
+/* ---------- En-tête ---------- */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 2rem;
+
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  line-height: 1.15;
+  font-weight: 700;
+
+  color: var(--foreground);
+}
+
+.intro {
+  max-width: 700px;
+
+  margin: 0.75rem 0 0;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  color: var(--muted-foreground);
+}
+
+.createButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0.7rem 1rem;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--color-action);
+  color: var(--color-on-action);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.createButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ---------- Carte ---------- */
+
+.card {
+  margin-top: 2.5rem;
+
+  padding: 2rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  overflow: hidden;
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader h2 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.cardHeader p {
+  margin: 0.25rem 0 0;
+
+  font-size: 0.875rem;
+
+  color: var(--muted-foreground);
+}
+
+.empty {
+  margin: 0;
+
+  font-size: 0.9rem;
+
+  color: var(--muted-foreground);
+}
+
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+/* ---------- Liste ---------- */
+
+.list {
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.75rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.category {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+
+  gap: 1rem;
+
+  padding: 1rem 1.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background-color: var(--background);
+
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.category:hover {
+  border-color: color-mix(in srgb, var(--foreground) 25%, var(--border));
+
+  box-shadow: 0 4px 10px -5px rgba(0, 0, 0, 0.15);
+}
+
+.categoryInfo {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+  min-width: 0;
+}
+
+.categoryDot {
+  width: 14px;
+  height: 14px;
+
+  flex-shrink: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 50%;
+}
+
+.categoryInfo h3 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: var(--foreground);
+}
+
+/* L'état est écrit : la couleur ne porte jamais seule l'information. */
+.activeLabel,
+.inactiveLabel {
+  display: block;
+
+  margin-top: 0.2rem;
+
+  font-size: 0.75rem;
+
+  color: var(--muted-foreground);
+}
+
+.inactiveLabel {
+  font-weight: 600;
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+
+  gap: 1rem;
+
+  flex-shrink: 0;
+}
+
+.editButton {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  border: none;
+  padding: 0;
+
+  background: none;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  color: var(--foreground);
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition: opacity 150ms ease;
+}
+
+.editButton:hover {
+  opacity: 0.7;
+}
+
+.statusButton {
+  min-height: 36px;
+  padding: 0.4rem 0.9rem;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background-color: var(--background);
+  color: var(--foreground);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition: opacity 150ms ease;
+}
+
+.statusButton:hover {
+  opacity: 0.8;
+}
+
+.statusButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .createButton,
+  .category,
+  .editButton,
+  .statusButton {
+    transition: none;
+  }
+
+  .createButton:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+  .header {
+    flex-direction: column;
+  }
+
+  .title {
+    font-size: 1.875rem;
+  }
+
+  .createButton {
+    width: 100%;
+  }
+
+  .card {
+    padding: 1.25rem;
+
+    border-radius: 24px;
+  }
+
+  .category {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+
+    padding: 1rem;
+  }
+
+  .actions {
+    gap: 0.75rem;
+  }
+}

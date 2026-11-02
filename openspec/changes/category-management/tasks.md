@@ -29,9 +29,9 @@
 
 ## 5. Page de gestion (TDD)
 
-- [ ] 5.1 RED : `src/features/categories/pages/CategoryManagementPage.test.jsx` — liste complète (actives et désactivées) avec pastille, nom, état en texte et total ; chargement, vide, erreur avec « Réessayer » ; aucun « Supprimer » ; création (boîte, `POST`, boîte fermée, catégorie listée, « Catégorie créée » annoncé, `409` dans la boîte, annulation sans appel) ; modification (préremplie, `PUT` avec les deux champs, « Catégorie mise à jour », rien modifié → pas d'appel, `409`, `404`) ; désactivation (confirmation nommant la catégorie et expliquant l'effet, annulation et Échap sans appel, confirmation → `deactivate`, « Désactivée », « Catégorie désactivée ») ; réactivation immédiate (`activate`, « Catégorie réactivée », échec annoncé) ; focus rendu au bouton d'origine ; jest-axe page seule, boîte ouverte et erreur de champ ; confirmer RED
-- [ ] 5.2 Créer `CategoryManagementPage.jsx` et `CategoryManagement.module.css` (design de la coque sans formulaire en ligne ni interrupteur) ; GREEN
-- [ ] 5.3 Commit `feat: wire the category management page to the API`
+- [x] 5.1 RED : `src/features/categories/pages/CategoryManagementPage.test.jsx` — liste complète (actives et désactivées) avec pastille, nom, état en texte et total ; chargement, vide, erreur avec « Réessayer » ; aucun « Supprimer » ; création (boîte, `POST`, boîte fermée, catégorie listée, « Catégorie créée » annoncé, `409` dans la boîte, annulation sans appel) ; modification (préremplie, `PUT` avec les deux champs, « Catégorie mise à jour », rien modifié → pas d'appel, `409`, `404`) ; désactivation (confirmation nommant la catégorie et expliquant l'effet, annulation et Échap sans appel, confirmation → `deactivate`, « Désactivée », « Catégorie désactivée ») ; réactivation immédiate (`activate`, « Catégorie réactivée », échec annoncé) ; focus rendu au bouton d'origine ; jest-axe page seule, boîte ouverte et erreur de champ ; confirmer RED
+- [x] 5.2 Créer `CategoryManagementPage.jsx` et `CategoryManagement.module.css` (design de la coque sans formulaire en ligne ni interrupteur) ; GREEN
+- [x] 5.3 Commit `feat: wire the category management page to the API`
 
 ## 6. Route et nettoyage (TDD)
 
