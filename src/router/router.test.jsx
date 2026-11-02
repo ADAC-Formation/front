@@ -53,6 +53,7 @@ describe('pages de formations branchées sur le back', () => {
   it.each(['SUPER_ADMIN', 'ADMIN', 'STAGIAIRE'])('%s accède à la liste des formations du back', async (role) => {
     mockSession(role)
     mockFormationList()
+    mockCategories()
     renderApp('/formations')
     expect(await screen.findByRole('link', { name: /Premiers secours PSC1/ })).toBeInTheDocument()
   })
@@ -60,6 +61,7 @@ describe('pages de formations branchées sur le back', () => {
   it('/admin/formations affiche la même liste pour la chargée de formation', async () => {
     mockSession('SUPER_ADMIN')
     mockFormationList()
+    mockCategories()
     renderApp('/admin/formations')
     expect(await screen.findByRole('link', { name: /Premiers secours PSC1/ })).toBeInTheDocument()
   })

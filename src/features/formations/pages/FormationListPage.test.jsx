@@ -5,10 +5,12 @@ import { Route, Routes } from 'react-router'
 import FormationListPage from './FormationListPage'
 import { renderWithProviders } from '../../../test/render'
 import { mockSession } from '../../../test/session'
+import { mockCategories } from '../../../test/categories'
 import { mockFormationList, mockFormationListError } from '../../../test/formations'
 
 function renderList(role, { route = '/formations' } = {}) {
   mockSession(role)
+  mockCategories()
   return renderWithProviders(
     <Routes>
       <Route path="/formations" element={<FormationListPage />} />
@@ -84,6 +86,50 @@ describe('FormationListPage', () => {
     await screen.findByRole('link', { name: /Premiers secours PSC1/ })
     await userEvent.type(screen.getByRole('searchbox', { name: 'Rechercher une formation' }), 'zzz')
     expect(await screen.findByText('Aucune formation trouvée')).toBeInTheDocument()
+  })
+
+  describe('filtre par catégorie', () => {
+    it.each(['SUPER_ADMIN', 'ADMIN'])('est proposé au rôle %s, avec toutes les catégories', async (role) => {
+      mockFormationList()
+      renderList(role)
+      const select = await screen.findByLabelText('Catégorie')
+      expect(select).toHaveValue('')
+      await screen.findByRole('option', { name: 'Ancienne catégorie' })
+      expect(screen.getAllByRole('option').map((o) => o.textContent)).toEqual(
+        expect.arrayContaining(['Toutes les catégories', 'Secourisme', 'Numérique', 'Ancienne catégorie']),
+      )
+    })
+
+    it('filtre sans nouvel appel aux formations et se combine avec la recherche', async () => {
+      const calls = mockFormationList()
+      renderList('SUPER_ADMIN')
+      await screen.findByRole('link', { name: /Premiers secours PSC1/ })
+      await screen.findByRole('option', { name: 'Numérique' })
+      const before = calls.count
+      await userEvent.selectOptions(screen.getByLabelText('Catégorie'), 'Numérique')
+      expect(screen.queryByRole('link', { name: /Premiers secours PSC1/ })).not.toBeInTheDocument()
+      expect(card('Excel niveau 1')).toBeInTheDocument()
+      expect(calls.count).toBe(before)
+
+      await userEvent.type(screen.getByRole('searchbox', { name: 'Rechercher une formation' }), 'zzz')
+      expect(await screen.findByText('Aucune formation trouvée')).toBeInTheDocument()
+    })
+
+    it('revient à toutes les formations avec « Toutes les catégories »', async () => {
+      mockFormationList()
+      renderList('SUPER_ADMIN')
+      await screen.findByRole('option', { name: 'Numérique' })
+      await userEvent.selectOptions(screen.getByLabelText('Catégorie'), 'Numérique')
+      await userEvent.selectOptions(screen.getByLabelText('Catégorie'), 'Toutes les catégories')
+      expect(await screen.findByRole('link', { name: /Premiers secours PSC1/ })).toBeInTheDocument()
+    })
+
+    it("n'est pas proposé au stagiaire, qui n'appelle pas les catégories", async () => {
+      mockFormationList()
+      renderList('STAGIAIRE')
+      await screen.findByRole('link', { name: /Premiers secours PSC1/ })
+      expect(screen.queryByLabelText('Catégorie')).not.toBeInTheDocument()
+    })
   })
 
   it('trie par intitulé', async () => {

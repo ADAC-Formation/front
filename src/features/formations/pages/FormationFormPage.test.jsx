@@ -8,7 +8,7 @@ import { renderWithProviders } from '../../../test/render'
 import { server } from '../../../test/msw/server'
 import { API_URL, USERS, mockSession } from '../../../test/session'
 import { FORMATEURS, mockAccountList } from '../../../test/accounts'
-import { mockCategories } from '../../../test/categories'
+import { mockCategories, mockCategoryApi } from '../../../test/categories'
 import {
   CATEGORIES,
   FORMATIONS,
@@ -87,7 +87,102 @@ describe('FormationFormPage — création', () => {
       expect(screen.queryByLabelText(label)).not.toBeInTheDocument()
     }
     expect(screen.queryByText(/déposer vos fichiers/i)).not.toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: /créer une catégorie/i })).not.toBeInTheDocument()
+  })
+
+  describe('création de catégorie à la volée', () => {
+    const openDialog = () => userEvent.click(screen.getByRole('button', { name: 'Créer une catégorie' }))
+
+    it('crée la catégorie dans une modale, la sélectionne et garde le reste de la saisie', async () => {
+      mockAccountList('formateurs', FORMATEURS)
+      const api = mockCategoryApi()
+      renderForm('/formations/creer')
+      await userEvent.type(await screen.findByLabelText('Intitulé'), 'Excel niveau 2')
+      await screen.findByRole('option', { name: 'Numérique' })
+
+      await openDialog()
+      expect(screen.getByRole('dialog', { name: 'Créer une catégorie' })).toBeInTheDocument()
+      await userEvent.type(screen.getByLabelText('Nom'), 'Juridique')
+      await userEvent.click(screen.getByRole('button', { name: 'Créer' }))
+
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+      expect(api.calls.created).toEqual([{ nom: 'Juridique', couleur: '#12427C' }])
+      await waitFor(() => expect(screen.getByLabelText('Catégorie')).toHaveDisplayValue('Juridique'))
+      expect(screen.getByLabelText('Intitulé')).toHaveValue('Excel niveau 2')
+    })
+
+    it('envoie la formation avec la catégorie créée', async () => {
+      mockAccountList('formateurs', FORMATEURS)
+      const api = mockCategoryApi()
+      const calls = mockCreateFormation()
+      renderForm('/formations/creer')
+      await userEvent.type(await screen.findByLabelText('Intitulé'), 'Droit')
+      setDate('Du', '2026-05-04')
+      setDate('Au', '2026-05-05')
+      await userEvent.selectOptions(screen.getByLabelText('Modalité'), 'VISIO')
+      await screen.findByRole('option', { name: 'Numérique' })
+      await openDialog()
+      await userEvent.type(screen.getByLabelText('Nom'), 'Juridique')
+      await userEvent.click(screen.getByRole('button', { name: 'Créer' }))
+      await waitFor(() => expect(screen.getByLabelText('Catégorie')).toHaveDisplayValue('Juridique'))
+      await submit('Créer la formation')
+      await waitFor(() => expect(calls.count).toBe(1))
+      expect(calls.body.categoryId).toBe(api.state().at(-1).id)
+    })
+
+    it('garde la modale ouverte avec le message du back sur un nom déjà utilisé (409)', async () => {
+      mockAccountList('formateurs', FORMATEURS)
+      mockCategoryApi(undefined, { errors: { create: { status: 409, message: 'Nom déjà utilisé' } } })
+      renderForm('/formations/creer')
+      await screen.findByRole('option', { name: 'Numérique' })
+      await openDialog()
+      await userEvent.type(screen.getByLabelText('Nom'), 'Secourisme')
+      await userEvent.click(screen.getByRole('button', { name: 'Créer' }))
+      expect(await screen.findByText('Nom déjà utilisé')).toBeInTheDocument()
+      expect(screen.getByRole('dialog')).toBeInTheDocument()
+      expect(screen.getByLabelText('Nom')).toHaveValue('Secourisme')
+    })
+
+    it('Annuler ferme la modale sans changer la catégorie et rend le focus au bouton', async () => {
+      mockAccountList('formateurs', FORMATEURS)
+      mockCategoryApi()
+      renderForm('/formations/creer')
+      await screen.findByRole('option', { name: 'Numérique' })
+      await userEvent.selectOptions(screen.getByLabelText('Catégorie'), 'Numérique')
+      await openDialog()
+      await userEvent.click(screen.getByRole('button', { name: 'Annuler' }))
+      expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+      expect(screen.getByLabelText('Catégorie')).toHaveDisplayValue('Numérique')
+      expect(screen.getByRole('button', { name: 'Créer une catégorie' })).toHaveFocus()
+    })
+
+    it('ne soumet pas la formation en validant la modale', async () => {
+      mockAccountList('formateurs', FORMATEURS)
+      mockCategoryApi()
+      const calls = mockCreateFormation()
+      renderForm('/formations/creer')
+      await screen.findByRole('option', { name: 'Numérique' })
+      await openDialog()
+      await userEvent.type(screen.getByLabelText('Nom'), 'Juridique')
+      await userEvent.click(screen.getByRole('button', { name: 'Créer' }))
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+      expect(calls.count).toBe(0)
+      expect(screen.queryByText("L'intitulé est obligatoire.")).not.toBeInTheDocument()
+    })
+
+    it('affiche une pastille de la couleur de la catégorie choisie', async () => {
+      mockLists()
+      renderForm('/formations/creer')
+      await screen.findByRole('option', { name: 'Numérique' })
+      await userEvent.selectOptions(screen.getByLabelText('Catégorie'), 'Numérique')
+      expect(screen.getByTestId('category-swatch')).toHaveStyle({ backgroundColor: CATEGORIES.numerique.couleur })
+    })
+
+    it('est aussi proposée à la modification', async () => {
+      mockLists()
+      mockFormationDetail(secours)
+      renderForm('/formations/101/modifier')
+      expect(await screen.findByRole('button', { name: 'Créer une catégorie' })).toBeInTheDocument()
+    })
   })
 
   it('refuse un formulaire vide sans appel et signale chaque champ obligatoire', async () => {

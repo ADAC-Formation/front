@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { createCategory, listCategories, setCategoryActive, updateCategory } from './api'
 
-export function useCategories({ active = false } = {}) {
+export function useCategories({ active = false, enabled = true } = {}) {
   return useQuery({
     queryKey: ['categories', 'list', active ? 'active' : 'all'],
     queryFn: () => listCategories({ active }),
+    enabled,
   })
 }
 

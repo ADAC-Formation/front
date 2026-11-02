@@ -31,6 +31,16 @@ describe('filterFormations', () => {
     expect(filterFormations(FORMATIONS, { formateurId: 12 })).toEqual([excel])
   })
 
+  it('ne garde que les formations de la catégorie demandée', () => {
+    expect(filterFormations(FORMATIONS, { categoryId: secours.category.id })).toEqual([secours])
+    expect(filterFormations(FORMATIONS, { categoryId: 999 })).toEqual([])
+  })
+
+  it('combine catégorie et recherche', () => {
+    expect(filterFormations(FORMATIONS, { categoryId: excel.category.id, search: 'secours' })).toEqual([])
+    expect(filterFormations(FORMATIONS, { categoryId: excel.category.id, search: 'excel' })).toEqual([excel])
+  })
+
   it('combine recherche et formateur', () => {
     expect(filterFormations(FORMATIONS, { search: 'gestes', formateurId: 2 })).toEqual([postures])
   })

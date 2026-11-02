@@ -1,6 +1,6 @@
 import { formateurName } from './formationLabels'
 
-// Recherche, filtre « Mes formations » et tri de la liste, côté client (F2, F5) : le back ne
+// Recherche, filtres « Mes formations » et catégorie (C7) et tri de la liste, côté client (F2, F5) : le back ne
 // renvoie que la liste de son périmètre, sans paramètre de recherche.
 
 const normalize = (text) =>
@@ -13,11 +13,12 @@ const normalize = (text) =>
 const searchableText = (formation) =>
   normalize([formation.intitule, formateurName(formation.formateur), formation.category.nom].join(' '))
 
-export function filterFormations(formations, { search = '', formateurId = null } = {}) {
+export function filterFormations(formations, { search = '', formateurId = null, categoryId = null } = {}) {
   const term = normalize(search)
   return formations.filter(
     (formation) =>
       (formateurId === null || formation.formateur.id === formateurId) &&
+      (categoryId === null || formation.category.id === categoryId) &&
       (term === '' || searchableText(formation).includes(term)),
   )
 }

@@ -5,6 +5,7 @@ import { Route, Routes } from 'react-router'
 import FormationDetailPage from './FormationDetailPage'
 import FormationListPage from './FormationListPage'
 import { renderWithProviders } from '../../../test/render'
+import { mockCategories } from '../../../test/categories'
 import { mockSession } from '../../../test/session'
 import {
   FORMATIONS,
@@ -18,6 +19,7 @@ const [secours, excel, postures] = FORMATIONS
 
 function renderDetail(role, formation, { notice } = {}) {
   mockSession(role)
+  mockCategories() // la liste des formations, où l'on revient, charge les catégories du filtre
   const route = notice
     ? { pathname: `/formations/${formation.id}`, state: { notice } }
     : `/formations/${formation.id}`

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useEffect, useRef, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
@@ -9,7 +9,8 @@ import { ROLES } from '../../../utils/roles'
 import { validateRequired } from '../../../utils/validation'
 import { useAccounts } from '../../accounts/hooks'
 import { useCurrentUser } from '../../auth/hooks'
-import { useCategories } from '../../categories/hooks'
+import CategoryFormDialog from '../../categories/components/CategoryFormDialog'
+import { useCategories, useCreateCategory } from '../../categories/hooks'
 import { EMPTY_VALUES, changedFields, nextEndDate, toRequest, validateDateRange, valuesFromFormation } from '../formationForm'
 import { modaliteLabel } from '../formationLabels'
 import { useCreateFormation, useFormation, useUpdateFormation } from '../hooks'
@@ -22,12 +23,26 @@ const AUTO_FORMATEUR_LABEL = 'Assigné à la chargée de formation'
 // plus dans la liste des actifs (catégorie désactivée, formateur suspendu) : on ne les perd pas
 // à la modification, mais on ne les propose pas pour une autre formation.
 function categoryOptions(categories, formation) {
-  const options = categories.map((category) => ({ value: String(category.id), label: category.nom }))
+  const options = categories.map((category) => ({ value: String(category.id), label: category.nom, couleur: category.couleur }))
   const current = formation?.category
   if (current && !categories.some((category) => category.id === current.id)) {
-    options.push({ value: String(current.id), label: `${current.nom} (désactivée)` })
+    options.push({ value: String(current.id), label: `${current.nom} (désactivée)`, couleur: current.couleur })
   }
   return options
+}
+
+// Création d'une catégorie sans quitter le formulaire (C6) : la boîte est hors du `<form>` pour que
+// sa validation ne soumette pas la formation. La catégorie créée est ensuite sélectionnée.
+const CreateCategoryDialog = ({ onCreated, onCancel }) => {
+  const create = useCreateCategory()
+  return (
+    <CategoryFormDialog
+      error={create.error?.message}
+      isPending={create.isPending}
+      onCancel={onCancel}
+      onSubmit={(request) => create.mutate(request, { onSuccess: onCreated })}
+    />
+  )
 }
 
 function formateurOptions(formateurs, formation) {
@@ -70,7 +85,20 @@ const FormationForm = ({ formation, onReload }) => {
   const defaultValues = formation ? valuesFromFormation(formation) : EMPTY_VALUES
   const [previousStart, setPreviousStart] = useState(defaultValues.dateDebut)
 
-  const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ defaultValues })
+  const { register, handleSubmit, setValue, getValues, control, formState: { errors } } = useForm({ defaultValues })
+  const chosenCategoryId = useWatch({ control, name: 'categoryId' })
+
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false)
+  const [createdCategory, setCreatedCategory] = useState(null)
+  const createCategoryButton = useRef(null)
+  // Une fois la catégorie créée et la liste rechargée, elle devient le choix du formulaire.
+  useEffect(() => {
+    if (createdCategory) setValue('categoryId', String(createdCategory.id), { shouldValidate: true })
+  }, [createdCategory, setValue])
+  const closeCategoryDialog = () => {
+    setIsCreatingCategory(false)
+    createCategoryButton.current?.focus()
+  }
 
   const goTo = (id, notice) => navigate(`/formations/${id}`, notice ? { state: { notice } } : undefined)
 
@@ -103,9 +131,14 @@ const FormationForm = ({ formation, onReload }) => {
   const hasConflict = mutation.error?.status === 409
   const cancelPath = formation ? `/formations/${formation.id}` : '/formations'
   const categorySelectOptions = categoryOptions(categories.data ?? [], formation)
+  if (createdCategory && !categorySelectOptions.some(({ value }) => value === String(createdCategory.id))) {
+    categorySelectOptions.push({ value: String(createdCategory.id), label: createdCategory.nom, couleur: createdCategory.couleur })
+  }
+  const selectedCategory = categorySelectOptions.find(({ value }) => value === String(chosenCategoryId))
   const formateurSelectOptions = formateurOptions(formateurs.data ?? [], formation)
 
   return (
+    <>
     <form className={styles.card} onSubmit={handleSubmit(submit)} noValidate>
       <div className={styles.notices}>
         {mutation.error &&
@@ -144,20 +177,40 @@ const FormationForm = ({ formation, onReload }) => {
 
           <div className={styles.fullWidth}>
             {categoriesReady ? (
-              <FormField
-                as="select"
-                label="Catégorie"
-                required
-                error={errors.categoryId?.message}
-                {...register('categoryId', { validate: (value) => validateRequired(value, 'La catégorie') ?? true })}
-              >
-                <option value="">Sélectionner une catégorie</option>
-                {categorySelectOptions.map(({ value, label }) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </FormField>
+              <div className={styles.categoryRow}>
+                <div className={styles.categorySelect}>
+                  <FormField
+                    as="select"
+                    label="Catégorie"
+                    required
+                    error={errors.categoryId?.message}
+                    {...register('categoryId', { validate: (value) => validateRequired(value, 'La catégorie') ?? true })}
+                  >
+                    <option value="">Sélectionner une catégorie</option>
+                    {categorySelectOptions.map(({ value, label }) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </FormField>
+                </div>
+                {selectedCategory && (
+                  <span
+                    className={styles.categorySwatch}
+                    data-testid="category-swatch"
+                    style={{ backgroundColor: selectedCategory.couleur }}
+                    aria-hidden="true"
+                  />
+                )}
+                <button
+                  type="button"
+                  ref={createCategoryButton}
+                  className={styles.secondaryButton}
+                  onClick={() => setIsCreatingCategory(true)}
+                >
+                  Créer une catégorie
+                </button>
+              </div>
             ) : (
               <ChoiceNotice query={categories} loadingLabel="Chargement des catégories…" />
             )}
@@ -233,6 +286,16 @@ const FormationForm = ({ formation, onReload }) => {
         </button>
       </div>
     </form>
+    {isCreatingCategory && (
+      <CreateCategoryDialog
+        onCreated={(category) => {
+          setCreatedCategory(category)
+          closeCategoryDialog()
+        }}
+        onCancel={closeCategoryDialog}
+      />
+    )}
+    </>
   )
 }
 

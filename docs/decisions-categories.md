@@ -33,3 +33,15 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète `decisions-forma
 - **Décision** : (1) la page `/formations/categories` reste réservée à la chargée de formation (`SUPER_ADMIN`, garde existante) ; le formateur et le stagiaire reçoivent « Accès refusé » ; (2) la liste affiche toutes les catégories (actives et désactivées) dans l'ordre du back, avec pastille, nom et état « Active » / « Désactivée » en texte ; aucune action de suppression (`tech.md` §3, US-017 AC-05) ; (3) création, modification, activation et désactivation confirment par un message annoncé (`role="status"`) sur la page, sans navigation ; (4) `409` (nom déjà utilisé) s'affiche dans la modale, qui reste ouverte avec la saisie ; (5) `utils/categories.js` (mock) est supprimé avec le rebranchement de `CategoryManagement` (D11) ; (6) la liste des catégories du sélecteur de formation (`['categories','list','active']`) est invalidée après toute écriture.
 - **Pourquoi** : suit `tech.md` §3, US-017 et les patrons des comptes et des formations ; ce sont des choix sans enjeu de périmètre.
 - **Alternatives écartées** : tri alphabétique côté client (l'ordre du back suffit pour l'instant) ; message de confirmation par navigation (la page ne change pas).
+
+## C6 — Sélecteur de formation : `<select>` natif conservé, création à la volée à côté
+- Date : 2026-11-02
+- **Décision** : le choix de catégorie du formulaire de formation reste un `<select>` natif (nom seul dans les options). Un bouton « Créer une catégorie » à côté ouvre `CategoryFormDialog` sans quitter le formulaire ; à la création, la nouvelle catégorie est sélectionnée. Une pastille d'aperçu (couleur) accompagne la catégorie choisie.
+- **Pourquoi** : accessibilité et simplicité (C3 : la couleur ne porte jamais seule l'information) ; une liste ARIA personnalisée coûterait cher pour un gain visuel.
+- **Alternatives écartées** : liste déroulante personnalisée avec pastille dans chaque option (ticket 048).
+
+## C7 — Filtre par catégorie : `<select>` côté client, toutes les catégories
+- Date : 2026-11-02
+- **Décision** : sur la liste des formations, un `<select>` « Catégorie » (défaut « Toutes les catégories »), listant toutes les catégories de `GET /categories` (actives et désactivées), filtre côté client comme la recherche (F5). Visible pour la chargée de formation et le formateur, pas pour le stagiaire (ticket 048, US-004 AC-07).
+- **Pourquoi** : une formation peut porter une catégorie désactivée ; la filtrer doit rester possible.
+- **Alternatives écartées** : catégories actives seulement ; pastilles radio (déborde si les catégories se multiplient) ; paramètre `?categoryId` du back (le reste du filtrage est client).

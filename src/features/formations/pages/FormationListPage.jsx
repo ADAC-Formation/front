@@ -7,6 +7,7 @@ import ListItem from '../../../components/molecules/ListItem/ListItem'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 import { MANAGEMENT_ROLES, ROLES } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
+import { useCategories } from '../../categories/hooks'
 import FormationNotice from '../components/FormationNotice'
 import { formatDateRange, formateurName, modaliteLabel } from '../formationLabels'
 import { useFormations } from '../hooks'
@@ -57,13 +58,19 @@ const FormationListPage = () => {
   const [scope, setScope] = useState('mine')
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('date')
+  const [categoryId, setCategoryId] = useState('')
 
   const { data, isLoading, isError, error, refetch } = useFormations({ status })
+  // Filtre par catégorie (C7) : chargée de formation et formateur ; toutes les catégories, car une
+  // formation peut porter une catégorie désactivée.
+  const canFilterByCategory = isManager
+  const categories = useCategories({ enabled: canFilterByCategory })
 
   const formations = useMemo(() => {
     const formateurId = isFormateur && scope === 'mine' ? user.id : null
-    return sortFormations(filterFormations(data ?? [], { search, formateurId }), sortBy)
-  }, [data, search, sortBy, scope, isFormateur, user])
+    const category = categoryId === '' ? null : Number(categoryId)
+    return sortFormations(filterFormations(data ?? [], { search, formateurId, categoryId: category }), sortBy)
+  }, [data, search, sortBy, scope, categoryId, isFormateur, user])
 
   const count = formations.length
   const isEmptyList = !isLoading && !isError && (data ?? []).length === 0
@@ -103,6 +110,20 @@ const FormationListPage = () => {
             onChange={(event) => setSearch(event.target.value)}
           />
         </div>
+
+        {canFilterByCategory && (
+          <div className={styles.sortContainer}>
+            <label htmlFor="categorie-formations">Catégorie</label>
+            <select id="categorie-formations" value={categoryId} onChange={(event) => setCategoryId(event.target.value)}>
+              <option value="">Toutes les catégories</option>
+              {(categories.data ?? []).map(({ id, nom }) => (
+                <option key={id} value={String(id)}>
+                  {nom}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className={styles.sortContainer}>
           <label htmlFor="tri-formations">Organiser par :</label>
