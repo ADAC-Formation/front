@@ -39,7 +39,7 @@ Branche `feature/notifications` (worktree `..\front-notifications`, depuis `dev`
 - [ ] 5.2 Passage clavier et lecteur d'écran (Tab, Entrée, Échap, annonces) et rendu avec « Grand texte », contraste élevé, mode sombre et largeur mobile
 - [x] 5.3 Mettre à jour `CLAUDE.md` (bullet « Notifications branchées » : routes, clés de requête, `mockNotificationApi()`, route `messages/:userId` provisoire) et `docs/decisions-notifications.md` (écarts éventuels relevés en 5.1) ; vérifier que les liens et noms cités existent
 - [x] 5.4 Relecture du diff (`/code-review`) puis `npm run check` vert ; corriger les points bloquants
-- [ ] 5.5 Commit `docs: record the notifications bell and history decisions`
+- [x] 5.5 Commit `docs: record the notifications bell and history decisions`
 
 ## Workflow follow-up
 
