@@ -44,7 +44,7 @@
 
 ## 8. Documentation et vérification
 
-- [ ] 8.1 Passage manuel sur le vrai back local (`docs/dev/README.md`) : déposer plusieurs fichiers (glisser-déposer et bouton), refus d'un `.exe` et d'un fichier de plus de 10 Mo, télécharger, supprimer, chaque rôle (chargée de formation, formateur de la formation et d'une autre, stagiaire inscrit), formation archivée ; consigner les écarts éventuels dans `docs/points-pour-charlotte.md`
+- [x] 8.1 Passage manuel sur le vrai back local (`docs/dev/README.md`) : déposer plusieurs fichiers (glisser-déposer et bouton), refus d'un `.exe` et d'un fichier de plus de 10 Mo, télécharger, supprimer, chaque rôle (chargée de formation, formateur de la formation et d'une autre, stagiaire inscrit), formation archivée ; consigner les écarts éventuels dans `docs/points-pour-charlotte.md`
 - [x] 8.2 Mettre à jour `CLAUDE.md` (« État actuel » : documents de formation branchés, `features/documents/`, tout test qui rend le détail déclare `mockDocumentApi()`), `docs/decisions-documents.md` (constats d'implémentation) et cocher les tâches de documentation
 - [x] 8.3 `npm run check` vert (lint + tests + build + budget du bundle) ; `git -C ../../back-readonly status` propre ; relecture (`/code-review`) et correction des remarques bloquantes
 - [x] 8.4 Commit `docs: record the formation documents`
