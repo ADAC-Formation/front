@@ -41,7 +41,7 @@
 - [x] 7.1 Mettre à jour `CLAUDE.md` (« État actuel » : formations liste et détail branchés, `simFormations.jsx` supprimé, `categories.js` restant), `docs/decisions-formations.md` si une décision a évolué, et `docs/points-pour-charlotte.md` (comportement observé du formateur, Q3 et Q9 toujours ouvertes)
 - [x] 7.2 Commit `docs: record formations list and detail`
 - [x] 7.3 Passage manuel contre le vrai back local (comptes de `docs/dev/seed-local-admin.sql`, formations créées par SQL ou Swagger) : liste et détail pour les trois rôles, filtre actives / archivées, recherche, archivage avec confirmation, `404` formateur sur une formation d'un autre, `403` stagiaire non inscrit, lecture au clavier et zoom 200 % — ne pas cocher sans l'avoir fait (Docker requis)
-- [ ] 7.4 Relecture de Manon ; la PR unique vers `dev` ne se fait qu'au dernier ticket de `feature/formations` (025) et à sa demande, aucun push avant
+- [x] 7.4 Relecture de Manon ; la PR unique vers `dev` ne se fait qu'au dernier ticket de `feature/formations` (025) et à sa demande, aucun push avant
 
 ## Workflow follow-up
 
