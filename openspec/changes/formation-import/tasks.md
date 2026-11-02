@@ -19,9 +19,9 @@
 
 ## 4. Appel d'import (TDD)
 
-- [ ] 4.1 Ajouter `mockImportFormations` à `src/test/formations.js` (201 avec N formations, 400 avec message, 403, réseau, capture du `FormData`) ; RED : complément de `hooks.test.jsx` — `useImportFormations` envoie le fichier dans le champ `file` en `multipart/form-data`, invalide `['formations']` au succès, `400` remonte en `ApiError` avec le message du back ; confirmer RED
-- [ ] 4.2 Ajouter `importFormations` à `api.js` (`FormData`, `Content-Type: undefined`) et `useImportFormations` à `hooks.js` ; GREEN
-- [ ] 4.3 Commit `feat: add the formation import request`
+- [x] 4.1 Ajouter `mockImportFormations` à `src/test/formations.js` (201 avec N formations, 400 avec message, 403, réseau, capture du `FormData`) ; RED : complément de `hooks.test.jsx` — `useImportFormations` envoie le fichier dans le champ `file` en `multipart/form-data`, invalide `['formations']` au succès, `400` remonte en `ApiError` avec le message du back ; confirmer RED
+- [x] 4.2 Ajouter `importFormations` à `api.js` (`FormData`, `Content-Type: undefined`) et `useImportFormations` à `hooks.js` ; GREEN
+- [x] 4.3 Commit `feat: add the formation import request`
 
 ## 5. Page d'import (TDD)
 

@@ -8,6 +8,7 @@ import {
   mockCreateFormation,
   mockFormationDetail,
   mockFormationList,
+  mockImportFormations,
   mockInscriptions,
   mockUpdateFormation,
 } from '../../test/formations'
@@ -16,6 +17,7 @@ import {
   useCreateFormation,
   useFormation,
   useFormations,
+  useImportFormations,
   useInscriptions,
   useUpdateFormation,
 } from './hooks'
@@ -202,5 +204,54 @@ describe('useUpdateFormation', () => {
     renderWithProviders(<UpdateProbe />)
     await userEvent.click(screen.getByRole('button', { name: 'modifier' }))
     expect(await screen.findByText('erreur 409')).toBeInTheDocument()
+  })
+})
+
+const XLSX_FILE = new File(['contenu'], 'formations.xlsx', {
+  type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+})
+
+function ImportProbe() {
+  const importFormations = useImportFormations()
+  const list = useFormations({ status: 'ACTIVE' })
+  return (
+    <div>
+      <button onClick={() => importFormations.mutate(XLSX_FILE)}>importer</button>
+      {importFormations.data && <p>importées {importFormations.data.length}</p>}
+      {importFormations.isError && <p>erreur {importFormations.error.status} {importFormations.error.message}</p>}
+      <p>{list.data ? `${list.data.length} actives` : 'chargement'}</p>
+    </div>
+  )
+}
+
+describe('useImportFormations', () => {
+  it('envoie le fichier dans le champ file en multipart, renvoie les formations et recharge les listes', async () => {
+    const listCalls = mockFormationList()
+    const importCalls = mockImportFormations({ count: 3 })
+    renderWithProviders(<ImportProbe />)
+    await screen.findByText('2 actives')
+    await userEvent.click(screen.getByRole('button', { name: 'importer' }))
+    expect(await screen.findByText('importées 3')).toBeInTheDocument()
+    expect(importCalls.contentType).toMatch(/^multipart\/form-data; boundary=/)
+    expect(importCalls.body).toContain('name="file"; filename="formations.xlsx"')
+    expect(listCalls.count).toBeGreaterThanOrEqual(2)
+  })
+
+  it('remonte le 400 en ApiError avec le message du back', async () => {
+    mockFormationList()
+    mockImportFormations({ errorStatus: 400, errorMessage: 'ligne 3, colonne categorie : "X" introuvable' })
+    renderWithProviders(<ImportProbe />)
+    await userEvent.click(screen.getByRole('button', { name: 'importer' }))
+    expect(await screen.findByText('erreur 400 ligne 3, colonne categorie : "X" introuvable')).toBeInTheDocument()
+  })
+
+  it('ne recharge pas les listes quand l’import échoue', async () => {
+    const listCalls = mockFormationList()
+    mockImportFormations({ errorStatus: 400 })
+    renderWithProviders(<ImportProbe />)
+    await screen.findByText('2 actives')
+    await userEvent.click(screen.getByRole('button', { name: 'importer' }))
+    await screen.findByText(/erreur 400/)
+    expect(listCalls.count).toBe(1)
   })
 })

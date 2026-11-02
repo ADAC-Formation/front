@@ -148,3 +148,21 @@ export function mockUpdateFormation(formation, { errorStatus, errorMessage = 'Mo
   )
   return calls
 }
+
+// POST /formations/import : 201 avec `count` formations créées, ou l'erreur demandée (400, 403...),
+// ou une coupure réseau. `calls.body` garde le multipart brut (jsdom et undici n'ont pas la même classe `File` : `request.formData()` échoue en test), `calls.contentType` l'en-tête reçu.
+export function mockImportFormations({ count = 2, errorStatus, errorMessage = 'Fichier invalide', networkError = false } = {}) {
+  const calls = { count: 0, body: '', contentType: null }
+  server.use(
+    http.post(`${API_URL}/formations/import`, async ({ request }) => {
+      calls.count += 1
+      calls.contentType = request.headers.get('content-type')
+      calls.body = await request.text()
+      if (networkError) return HttpResponse.error()
+      if (errorStatus) return apiError(errorStatus, errorMessage)
+      const created = Array.from({ length: count }, (_, index) => ({ ...FORMATIONS[0], id: 200 + index }))
+      return HttpResponse.json(created, { status: 201 })
+    }),
+  )
+  return calls
+}

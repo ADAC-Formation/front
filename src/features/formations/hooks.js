@@ -3,6 +3,7 @@ import {
   archiveFormation,
   createFormation,
   fetchFormation,
+  importFormations,
   listFormations,
   listInscriptions,
   updateFormation,
@@ -55,6 +56,14 @@ export function useUpdateFormation(id) {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (changes) => updateFormation(id, changes),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: FORMATIONS_KEY }),
+  })
+}
+
+export function useImportFormations() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: importFormations,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: FORMATIONS_KEY }),
   })
 }

@@ -36,3 +36,15 @@ export async function updateFormation(id, changes) {
   const { data } = await apiClient.put(`/formations/${id}`, changes)
   return data
 }
+
+// SUPER_ADMIN seulement. Envoie le fichier .xlsx en multipart (champ `file`). On retire l'en-tête
+// JSON par défaut du client pour que le navigateur écrive lui-même le multipart et sa limite.
+// Tout ou rien : `201` → FormationResponse[] ; `400` → `message` listant les lignes en erreur (F20).
+export async function importFormations(file) {
+  const body = new FormData()
+  body.append('file', file)
+  const { data } = await apiClient.post('/formations/import', body, {
+    headers: { 'Content-Type': undefined },
+  })
+  return data
+}
