@@ -25,9 +25,9 @@
 
 ## 5. Page d'import (TDD)
 
-- [ ] 5.1 RED : `FormationImportPage.test.jsx` — consignes et sept colonnes affichées, bouton « Télécharger le modèle » (appelle la génération), bouton « Importer » inactif sans fichier, fichier autre que `.xlsx` et fichier de plus de 2 Mo refusés sans appel, envoi avec le champ `file` et bouton désactivé pendant l'envoi, `201` → redirection vers `/formations` avec le bandeau (« 3 formations importées », « 1 formation importée »), `400` → tableau Ligne / Colonne / Problème et liste des entrées non reconnues, nouveau fichier efface les erreurs, serveur injoignable et `403` en bandeau annoncé avec fichier conservé, « Retour » vers la liste ; complément de `FormationNotice` pour le nombre ; un check jest-axe sans erreurs et un avec tableau d'erreurs ; confirmer RED
-- [ ] 5.2 Créer `FormationImportPage.jsx` et sa feuille de style (CSS Modules, jetons, `rem`, aucun `outline` supprimé : `css-hygiene` et `focus-ring` restent verts) ; étendre `FormationNotice` (`formations-imported`, `count`) ; GREEN
-- [ ] 5.3 Commit `feat: add the formation import page`
+- [x] 5.1 RED : `FormationImportPage.test.jsx` — consignes et sept colonnes affichées, bouton « Télécharger le modèle » (appelle la génération), bouton « Importer » inactif sans fichier, fichier autre que `.xlsx` et fichier de plus de 2 Mo refusés sans appel, envoi avec le champ `file` et bouton désactivé pendant l'envoi, `201` → redirection vers `/formations` avec le bandeau (« 3 formations importées », « 1 formation importée »), `400` → tableau Ligne / Colonne / Problème et liste des entrées non reconnues, nouveau fichier efface les erreurs, serveur injoignable et `403` en bandeau annoncé avec fichier conservé, « Retour » vers la liste ; complément de `FormationNotice` pour le nombre ; un check jest-axe sans erreurs et un avec tableau d'erreurs ; confirmer RED
+- [x] 5.2 Créer `FormationImportPage.jsx` et sa feuille de style (CSS Modules, jetons, `rem`, aucun `outline` supprimé : `css-hygiene` et `focus-ring` restent verts) ; étendre `FormationNotice` (`formations-imported`, `count`) ; GREEN
+- [x] 5.3 Commit `feat: add the formation import page`
 
 ## 6. Lien, route et intégration (TDD)
 

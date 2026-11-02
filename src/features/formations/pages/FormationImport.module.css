@@ -1,0 +1,245 @@
+/* Page d'import Excel des formations : même design que le formulaire (D41), tableaux ajoutés. */
+
+/* Le gabarit (dégagement sous le logo, marges, largeur) vient de `PageShell`. */
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- En-tête ---------- */
+
+.header {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.15;
+  font-weight: 700;
+
+  color: var(--foreground);
+}
+
+.intro {
+  max-width: 700px;
+
+  margin: 0.75rem 0 0;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  color: var(--muted-foreground);
+}
+
+/* ---------- Carte et sections ---------- */
+
+.card {
+  padding: 3rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1rem;
+
+  margin: 0 0 2.5rem;
+  padding: 0;
+}
+
+.section:last-child {
+  margin-bottom: 0;
+}
+
+.sectionTitle {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+
+  color: var(--foreground);
+}
+
+.sectionDescription {
+  max-width: 700px;
+
+  margin: 0;
+
+  font-size: 0.9rem;
+  line-height: 1.6;
+
+  color: var(--muted-foreground);
+}
+
+.fileName {
+  margin: 0;
+
+  font-size: 0.9rem;
+
+  color: var(--foreground);
+}
+
+/* ---------- Tableaux ---------- */
+
+.tableWrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  font-size: 0.875rem;
+  text-align: left;
+}
+
+.caption {
+  padding-bottom: 0.5rem;
+
+  font-weight: 600;
+  text-align: left;
+
+  color: var(--foreground);
+}
+
+.table th,
+.table td {
+  padding: 0.6rem 0.75rem;
+
+  border-bottom: 1px solid var(--border);
+
+  vertical-align: top;
+}
+
+.table th {
+  font-weight: 600;
+
+  color: var(--foreground);
+}
+
+.table td {
+  color: var(--muted-foreground);
+}
+
+/* ---------- Erreurs ---------- */
+
+.errors {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+
+  width: 100%;
+}
+
+.otherErrors {
+  margin: 0;
+  padding-left: 1.25rem;
+
+  font-size: 0.875rem;
+  line-height: 1.6;
+
+  color: var(--foreground);
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+
+  gap: 0.75rem;
+
+  width: 100%;
+  margin-top: 1rem;
+  padding-top: 2rem;
+
+  border-top: 1px solid var(--border);
+}
+
+.cancelButton,
+.submitButton,
+.secondaryButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+  padding: 0.7rem 1.25rem;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.cancelButton,
+.secondaryButton {
+  border: 1px solid var(--border);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.submitButton {
+  border: 1px solid var(--foreground);
+
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.cancelButton:hover,
+.submitButton:hover,
+.secondaryButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+  .card {
+    padding: 2rem 1.5rem;
+
+    border-radius: 24px;
+  }
+
+  .actions {
+    flex-direction: column-reverse;
+  }
+
+  .cancelButton,
+  .submitButton {
+    width: 100%;
+  }
+}
