@@ -19,11 +19,11 @@ Branche `feature/notifications` (worktree `..\front-notifications`, depuis `dev`
 
 ## 3. Cloche et panneau (TDD)
 
-- [ ] 3.1 RED : tests de `NotificationBell` — absente sans session et sans appel réseau ; badge 3, masqué à 0, « 99+ » à 120 ; nom accessible « Notifications, 3 non lues » ; ouverture (`aria-expanded`), panneau vide « Aucune nouvelle notification » ; clic sur une notification (PATCH, retrait, badge −1, navigation) ; échec (retour de l'élément, erreur annoncée) ; « ✕ » (DELETE) ; « Tout marquer comme lu » ; lien « Voir toutes les notifications » ; Échap / clic extérieur / navigation ferment et rendent le focus ; `content` HTML rendu en texte ; annonce `role="status"` seulement quand le compteur augmente ; jest-axe panneau ouvert ; confirmer RED
-- [ ] 3.2 Écrire `NotificationItem`, `NotificationPanel`, `NotificationBell` et leurs feuilles CSS Modules (jetons, `rem`, anneau de focus conservé, largeur `min(22rem, 100vw − 2rem)`, défilement interne) ; GREEN ; `css-hygiene`, `focus-ring`, `display-preferences` verts
-- [ ] 3.3 Intégrer `NotificationBell` dans `SiteHeader` (rendu seulement si `useCurrentUser().user`) ; test du header : connecté → cloche présente ; `/login` visiteur → absente et aucun appel `/notifications` ; les tests du header, de `Layout` et de `LoginButton` restent verts
-- [ ] 3.4 Ajouter à `src/test/mobile-layout.test.js` un garde-fou : le panneau n'impose pas de largeur fixe en `px` supérieure à l'écran ; vérifier le rendu avec « Grand texte » à la main (étape 5.3)
-- [ ] 3.5 Commit `feat(notifications): add notification bell with unread panel`
+- [x] 3.1 RED : tests de `NotificationBell` — absente sans session et sans appel réseau ; badge 3, masqué à 0, « 99+ » à 120 ; nom accessible « Notifications, 3 non lues » ; ouverture (`aria-expanded`), panneau vide « Aucune nouvelle notification » ; clic sur une notification (PATCH, retrait, badge −1, navigation) ; échec (retour de l'élément, erreur annoncée) ; « ✕ » (DELETE) ; « Tout marquer comme lu » ; lien « Voir toutes les notifications » ; Échap / clic extérieur / navigation ferment et rendent le focus ; `content` HTML rendu en texte ; annonce `role="status"` seulement quand le compteur augmente ; jest-axe panneau ouvert ; confirmer RED
+- [x] 3.2 Écrire `NotificationItem`, `NotificationPanel`, `NotificationBell` et leurs feuilles CSS Modules (jetons, `rem`, anneau de focus conservé, largeur `min(22rem, 100vw − 2rem)`, défilement interne) ; GREEN ; `css-hygiene`, `focus-ring`, `display-preferences` verts
+- [x] 3.3 Intégrer `NotificationBell` dans `SiteHeader` (rendu seulement si `useCurrentUser().user`) ; test du header : connecté → cloche présente ; `/login` visiteur → absente et aucun appel `/notifications` ; les tests du header, de `Layout` et de `LoginButton` restent verts
+- [x] 3.4 Ajouter à `src/test/mobile-layout.test.js` un garde-fou : le panneau n'impose pas de largeur fixe en `px` supérieure à l'écran ; vérifier le rendu avec « Grand texte » à la main (étape 5.3)
+- [x] 3.5 Commit `feat(notifications): add notification bell with unread panel`
 
 ## 4. Page d'historique et routes (TDD)
 

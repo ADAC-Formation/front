@@ -130,3 +130,19 @@ describe('grands écrans : l’espace est mieux occupé (D62)', () => {
     expect(page.body).toMatch(/justify-content:\s*flex-start/)
   })
 })
+
+describe('panneau de notifications (cloche)', () => {
+  const file = 'src/features/notifications/components/NotificationPanel.module.css'
+
+  it('ne dépasse jamais la fenêtre : largeur plafonnée par 100vw, taille en rem', () => {
+    const panel = rulesIn(file).find(({ selector }) => selector.trim() === '.panel')
+    expect(panel.body).toMatch(/width:\s*min\(\s*[\d.]+rem,\s*calc\(100vw\s*-\s*2rem\)\s*\)/)
+    expect(sheet(file)).not.toMatch(/(?<![-\w])width:\s*\d+px/)
+  })
+
+  it('se cale sur la fenêtre (position fixe, marges égales) sous 640 px', () => {
+    expect(sheet(file)).toMatch(
+      /@media\s*\(max-width:\s*639px\)\s*\{[^@]*\.panel[^{]*\{[^}]*position:\s*fixed[^}]*left:\s*1rem[^}]*right:\s*1rem|@media\s*\(max-width:\s*639px\)\s*\{[^@]*\.panel[^{]*\{[^}]*position:\s*fixed[^}]*right:\s*1rem[^}]*left:\s*1rem/,
+    )
+  })
+})

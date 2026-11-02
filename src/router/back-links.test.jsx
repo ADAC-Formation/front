@@ -5,6 +5,12 @@ import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockSession } from '../test/session'
 import { cssSheets, rulesOf, stripComments } from '../test/css-sheets'
+import { mockNotificationApi } from '../test/notifications'
+
+// La cloche de l'en-tête interroge /notifications dès qu'une session existe.
+beforeEach(() => {
+  mockNotificationApi()
+})
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
