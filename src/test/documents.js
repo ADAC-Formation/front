@@ -30,11 +30,11 @@ export const DOCUMENTS = [
   },
 ]
 
-// API des documents avec état en mémoire : GET (`?formationId=`), POST multipart, téléchargement
+// API des documents avec état en mémoire : GET (`?formationId=` ou `?inscriptionId=`), POST multipart, téléchargement
 // binaire, DELETE, comme le back. Chaque écriture change la liste renvoyée ensuite. `errors[opération]`
 // (`list`, `upload`, `download`, `delete`) vaut `{ status, message }`, ou `'network'` ; pour `upload`,
 // une fonction `(fileName) => erreur | null` permet de refuser certains fichiers seulement.
-// `calls` garde les listes (`list`, `listUrls`), les envois reçus (`uploaded` : nom, formationId),
+// `calls` garde les listes (`list`, `listUrls`), les envois reçus (`uploaded` : nom, formationId, inscriptionId ; `null` si absent),
 // les identifiants téléchargés (`downloaded`) et supprimés (`deleted`) ; `state()` renvoie les documents.
 export function mockDocumentApi(initial = DOCUMENTS, { errors = {}, uploader = USERS.SUPER_ADMIN } = {}) {
   let documents = initial.map((document) => ({ ...document }))
@@ -54,15 +54,25 @@ export function mockDocumentApi(initial = DOCUMENTS, { errors = {}, uploader = U
       calls.listUrls.push(request.url)
       const error = failure('list')
       if (error) return error
-      const formationId = Number(new URL(request.url).searchParams.get('formationId'))
+      const params = new URL(request.url).searchParams
+      if (params.has('inscriptionId')) {
+        const inscriptionId = Number(params.get('inscriptionId'))
+        return HttpResponse.json(documents.filter((document) => document.inscriptionId === inscriptionId))
+      }
+      const formationId = Number(params.get('formationId'))
       return HttpResponse.json(documents.filter((document) => document.formationId === formationId))
     }),
     http.post(`${API_URL}/documents`, async ({ request }) => {
       // jsdom et undici n'ont pas la même classe `File` : `request.formData()` échoue en test, on lit le multipart brut.
       const raw = await request.text()
       const fileName = /filename="([^"]*)"/.exec(raw)?.[1]
-      const formationId = Number(/name="formationId"\r\n\r\n(\d+)/.exec(raw)?.[1])
-      calls.uploaded.push({ fileName, formationId })
+      const idOf = (field) => {
+        const value = new RegExp(`name="${field}"\\r\\n\\r\\n(\\d+)`).exec(raw)?.[1]
+        return value === undefined ? null : Number(value)
+      }
+      const formationId = idOf('formationId')
+      const inscriptionId = idOf('inscriptionId')
+      calls.uploaded.push({ fileName, formationId, inscriptionId })
       const file = { name: fileName, size: raw.length, type: '' }
       const error = failure('upload', file.name)
       if (error) return error
@@ -74,7 +84,7 @@ export function mockDocumentApi(initial = DOCUMENTS, { errors = {}, uploader = U
         mimeType: file.type || 'application/octet-stream',
         uploadedBy: uploader,
         formationId,
-        inscriptionId: null,
+        inscriptionId,
         createdAt: '2026-11-02T09:00:00',
       }
       documents = [...documents, document]

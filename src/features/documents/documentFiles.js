@@ -57,3 +57,11 @@ export function canDeleteDocument(user, formation, document) {
   if (user.role === ROLES.SUPER_ADMIN) return true
   return user.role === ROLES.ADMIN && document.uploadedBy?.id === user.id
 }
+
+// Identifiant d'inscription du stagiaire sur la formation, ou `null` : seul point du front qui le lit
+// (G8, G11). Le back ne l'envoie pas encore (demande Q13) ; si le contrat change, seule cette fonction
+// et la source des formations changent.
+export function inscriptionIdOf(formation) {
+  const id = formation?.inscriptionId
+  return typeof id === 'number' && Number.isFinite(id) ? id : null
+}

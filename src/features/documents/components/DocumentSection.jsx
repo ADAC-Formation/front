@@ -16,8 +16,8 @@ const sentLabel = (count) => `${count} document${count > 1 ? 's' : ''} envoyé${
 // de section fourni par la page.
 const DocumentSection = ({ formation, className }) => {
   const { user } = useCurrentUser()
-  const documents = useDocuments(formation.id)
-  const { upload, isPending: isUploading, result, reset: resetUpload } = useUploadDocuments(formation.id)
+  const documents = useDocuments({ formationId: formation.id })
+  const { upload, isPending: isUploading, result, reset: resetUpload } = useUploadDocuments({ formationId: formation.id })
   const download = useDownloadDocument()
   const remove = useDeleteDocument()
   const [deleting, setDeleting] = useState(null)

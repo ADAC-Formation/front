@@ -4,17 +4,31 @@ import { ApiError } from '../../api/ApiError'
 // Appels vers /documents (contrat : back-readonly/docs/tech.md § 6). Les erreurs arrivent déjà
 // normalisées en ApiError (intercepteur du client).
 
-export async function listDocuments(formationId) {
-  const { data } = await apiClient.get('/documents', { params: { formationId } })
+// Cible d'un document : `{ formationId }` (supports d'une formation) ou `{ inscriptionId }` (documents
+// du stagiaire, 028), jamais les deux : le back exige exactement un des deux (tech.md § 6).
+function assertTarget({ formationId, inscriptionId }) {
+  if ((formationId == null) === (inscriptionId == null)) {
+    throw new TypeError('Cible de document invalide : fournir formationId ou inscriptionId, pas les deux')
+  }
+}
+
+const targetParams = ({ formationId, inscriptionId }) =>
+  formationId != null ? { formationId } : { inscriptionId }
+
+export async function listDocuments(target) {
+  assertTarget(target)
+  const { data } = await apiClient.get('/documents', { params: targetParams(target) })
   return data
 }
 
-// Un fichier par requête, multipart (champs `file` et `formationId`). On retire l'en-tête JSON par
-// défaut du client pour que le navigateur écrive lui-même le multipart et sa limite.
-export async function uploadDocument(file, formationId) {
+// Un fichier par requête, multipart (champs `file` et `formationId` ou `inscriptionId`). On retire
+// l'en-tête JSON par défaut du client pour que le navigateur écrive lui-même le multipart et sa limite.
+export async function uploadDocument(file, target) {
+  assertTarget(target)
   const body = new FormData()
   body.append('file', file)
-  body.append('formationId', String(formationId))
+  const [field, value] = Object.entries(targetParams(target))[0]
+  body.append(field, String(value))
   const { data } = await apiClient.post('/documents', body, { headers: { 'Content-Type': undefined } })
   return data
 }

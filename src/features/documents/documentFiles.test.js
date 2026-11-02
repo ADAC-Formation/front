@@ -8,6 +8,7 @@ import {
   documentKind,
   formatDocumentDate,
   formatFileSize,
+  inscriptionIdOf,
   validateDocumentFile,
 } from './documentFiles'
 
@@ -126,5 +127,20 @@ describe('canDeleteDocument', () => {
   it('personne ne supprime sur une formation archivée', () => {
     expect(canDeleteDocument(USERS.SUPER_ADMIN, archived, byMe)).toBe(false)
     expect(canDeleteDocument(USERS.ADMIN, archived, byMe)).toBe(false)
+  })
+})
+
+// 028 (G8, G11, Q13) : seul point qui lit l'identifiant d'inscription du stagiaire sur la formation.
+describe('inscriptionIdOf', () => {
+  it("renvoie l'identifiant quand la formation le porte", () => {
+    expect(inscriptionIdOf({ id: 101, inscriptionId: 7 })).toBe(7)
+  })
+
+  it.each([
+    ['absent', { id: 101 }],
+    ['null', { id: 101, inscriptionId: null }],
+    ['non numérique', { id: 101, inscriptionId: 'abc' }],
+  ])('renvoie null quand le champ est %s', (_label, formation) => {
+    expect(inscriptionIdOf(formation)).toBeNull()
   })
 })
