@@ -11,6 +11,14 @@ const dateFormat = new Intl.DateTimeFormat('fr-FR', {
   minute: '2-digit',
 })
 
+// `createdAt` est toujours renseigné d'après le contrat, mais une date absente ou illisible ne doit
+// pas faire échouer l'affichage (`format` lève une RangeError sur une date invalide) : pas de date.
+function formatDate(createdAt) {
+  if (!createdAt) return null
+  const date = new Date(createdAt)
+  return Number.isNaN(date.getTime()) ? null : dateFormat.format(date)
+}
+
 // Une notification. Le type est porté par une icône ET par un libellé lu par les lecteurs d'écran
 // (jamais par la couleur seule). `content` est du texte : React l'échappe, jamais de HTML (XSS).
 // `onRemove` : bouton « ✕ » de la cloche (retire de la cloche, pas de l'historique).
@@ -18,7 +26,7 @@ const dateFormat = new Intl.DateTimeFormat('fr-FR', {
 export function NotificationItem({ notification, onOpen, onRemove, showStatus = false }) {
   const { kind, label } = describeNotification(notification)
   const Icon = ICONS[kind]
-  const date = new Date(notification.createdAt)
+  const date = formatDate(notification.createdAt)
 
   return (
     <li className={styles.item} data-unread={!notification.isRead} data-notification-id={notification.id}>
@@ -27,9 +35,11 @@ export function NotificationItem({ notification, onOpen, onRemove, showStatus = 
         <span className={styles.text}>
           <span className={styles.srOnly}>{label} : </span>
           <span className={styles.content}>{notification.content}</span>
-          <time className={styles.date} dateTime={notification.createdAt}>
-            {dateFormat.format(date)}
-          </time>
+          {date ? (
+            <time className={styles.date} dateTime={notification.createdAt}>
+              {date}
+            </time>
+          ) : null}
           {showStatus ? (
             <span className={styles.status}>
               {notification.isRead ? <span className={styles.srOnly}> (lue)</span> : <span> · Non lue</span>}

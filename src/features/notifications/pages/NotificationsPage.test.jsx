@@ -179,3 +179,24 @@ describe('NotificationsPage — états', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('NotificationsPage — données incomplètes', () => {
+  it('trie et affiche une liste où createdAt manque, sans planter', async () => {
+    mockNotificationApi({
+      notifications: [
+        { id: 1, type: 'NEW_MESSAGE', content: 'Sans date', entityType: 'MESSAGE', entityId: 7, isRead: false, createdAt: null },
+        { id: 2, type: 'NEW_MESSAGE', content: 'Avec date', entityType: 'MESSAGE', entityId: 8, isRead: false, createdAt: '2026-11-02T10:00:00' },
+      ],
+    })
+    const user = userEvent.setup()
+    renderPage()
+    expect(await screen.findByText('Avec date')).toBeInTheDocument()
+    expect(screen.getByText('Sans date')).toBeInTheDocument()
+    // Les notifications sans date passent après les datées, dans les deux sens de tri.
+    expect(itemTexts()[0]).toContain('Avec date')
+    await user.selectOptions(screen.getByLabelText('Organiser par :'), 'Plus anciennes d’abord')
+    await waitFor(() => expect(screen.getByLabelText('Organiser par :')).toHaveValue('oldest'))
+    expect(itemTexts()[0]).toContain('Avec date')
+    expect(itemTexts()[1]).toContain('Sans date')
+  })
+})

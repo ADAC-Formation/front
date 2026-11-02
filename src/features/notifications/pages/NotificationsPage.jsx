@@ -13,9 +13,15 @@ const STATUSES = [
 ]
 
 // Le back ne trie pas selon `sort` : le tri par date se fait ici, sur les 200 notifications reçues.
+// Une notification sans date (contrat violé) passe après les autres, quel que soit le sens.
+const byDate = (direction) => (a, b) => {
+  if (!a.createdAt || !b.createdAt) return Number(!a.createdAt) - Number(!b.createdAt)
+  return direction * a.createdAt.localeCompare(b.createdAt)
+}
+
 const SORTS = {
-  newest: { label: 'Plus récentes d’abord', compare: (a, b) => b.createdAt.localeCompare(a.createdAt) },
-  oldest: { label: 'Plus anciennes d’abord', compare: (a, b) => a.createdAt.localeCompare(b.createdAt) },
+  newest: { label: 'Plus récentes d’abord', compare: byDate(-1) },
+  oldest: { label: 'Plus anciennes d’abord', compare: byDate(1) },
 }
 
 // Historique complet (N6) : lues et non lues, jamais de suppression (le back conserve tout).

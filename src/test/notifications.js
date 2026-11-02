@@ -39,7 +39,7 @@ export function mockNotificationApi({
     delete visible.deletedFromBell
     return visible
   }
-  const byNewest = (a, b) => b.createdAt.localeCompare(a.createdAt)
+  const byNewest = (a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? '')
 
   server.use(
     http.get(`${API_URL}/notifications/unread`, () => {

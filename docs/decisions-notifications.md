@@ -82,7 +82,7 @@ Branche `feature/notifications` (créée depuis `dev`). Contrat : `tech.md` §8 
 - **Compteur optimiste** : il ne baisse que si la notification est dans la cloche, ou si `count` dépasse la liste (plus de 50 non lues). Le back (`countByRecipientAndIsReadFalseAndDeletedFromBellFalse`) ne compte pas une non lue déjà retirée de la cloche.
 - **Piège TanStack Query** : la promesse renvoyée par `onSettled` est attendue avant que la mutation passe en succès / échec. `invalidateQueries` n'est donc plus renvoyée, sinon l'état d'échec (et son annonce) arrivait après la fin de la relecture ; c'est aussi ce qui masquait un retour arrière manquant dans les premiers tests.
 - **Tests** : les tests de retour arrière regardent la cloche pendant que la relecture est encore en cours ; ils échouent si on retire le retour arrière (3 tests) ou le drapeau `optimistic` (4 tests), et un test échoue si `onSettled` renvoie à nouveau la relecture.
-- **Non traité** : une `createdAt` nulle ferait échouer l'affichage de la date ; le contrat dit qu'elle ne l'est jamais.
+- **Garde sur `createdAt`** : le contrat dit qu'elle n'est jamais nulle, mais `Intl.DateTimeFormat.format` lève une `RangeError` sur une date invalide, ce qui aurait fait échouer toute la cloche. Une date absente ou illisible n'affiche plus de date (pas de `<time>`), et l'historique place ces notifications après les autres dans les deux sens de tri.
 
 ## Constats sur le back (lecture de `back-readonly`, 2026-11-02)
 
