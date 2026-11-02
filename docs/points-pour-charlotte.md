@@ -138,3 +138,7 @@ La CI du front (`.github/workflows/ci.yml`) exécute désormais `npm run check` 
 - **Libellé du bouton de connexion** : US-001 AC-01 dit « Commencer la session » ; la coque du front dit « SE CONNECTER » et a été conservée (D11).
 - **« Identifiant » vs e-mail** : le plan parlait d'un « identifiant donné par ADAC » ; `tech.md` n'accepte que l'e-mail à la connexion (D40).
 - **Développement local** : le `docker-compose.yml` du back est orienté production (profil `prod`, aucun port publié, image front absente). Le front le complète par une surcharge versionnée dans `docs/dev/` (D53), sans rien modifier dans le repo `back`. Un court paragraphe « développer le front contre le back en local » dans ta documentation éviterait ce détour — à ta convenance.
+
+## Documents (ticket 027) — à confirmer avec Charlotte
+- Le ticket 027 parle d'« URL signée », `tech.md` §6 d'un proxy binaire (`GET /documents/{id}/download`) : le front suit `tech.md` (G1 de `decisions-documents.md`).
+- Le front rend les documents d'une formation **archivée** en lecture seule (G3) ; le back n'interdit pas le dépôt ni la suppression sur une formation archivée. Souhaitez-vous le refuser côté back (`409` / `403`) ?
