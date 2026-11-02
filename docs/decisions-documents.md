@@ -44,3 +44,38 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète F3 et F13 de `de
 - **Suppression** : un `404` recharge aussi la liste (le document n'existe plus) ; un `403` n'y touche pas.
 - **Contrat vérifié sur le back local** (compte `chargee.dev@adac.test`, vrai bucket Supabase) : `GET /documents?formationId=` `200` ; dépôt multipart d'un PDF `201` (`DocumentResponse` conforme à `tech.md`) ; liste mise à jour ; téléchargement `200` en `application/pdf`, contenu identique octet pour octet ; `DELETE` `204`, puis `404` « Document introuvable » au second appel et au téléchargement ; un `.exe` refusé en `400` « Format non autorisé » (message affiché tel quel pour le fichier concerné). Piège d'environnement : `SUPABASE_URL` doit être l'URL du projet seule (`https://<projet>.supabase.co`), sans `/rest/v1/` (le back répond `502` « Service de stockage indisponible » sinon, `PGRST125`) ; un `/` final est toléré (le `fileUrl` contient alors `//`).
 - **Tests** : `request.formData()` échoue en test (classes `File` de jsdom et d'undici différentes) ; `src/test/documents.js` lit le multipart brut.
+
+# Ticket 028 — documents du stagiaire (profil)
+
+Suite du thème : mêmes composants et règles de fichier que 027 (G4), dépôt ciblé par inscription (`inscriptionId`).
+
+## G8 — Le stagiaire ne peut pas connaître son `inscriptionId` : demande à Charlotte, front construit sur la proposition
+- Date : 2026-11-02
+- **Constat (lu dans `tech.md` et dans le code du back, lecture seule)** : `POST /documents` et `GET /documents?inscriptionId=` exigent l'id d'inscription. Or `GET /formations/{id}/inscriptions` répond `403` à un stagiaire (pas d'e-mail des co-inscrits), `FormationResponse` n'a aucun champ d'inscription, et `DocumentResponse.inscriptionId` n'apparaît qu'une fois un document déposé. Le contrat actuel ne permet donc pas au stagiaire de déposer le premier document.
+- **Décision** : demander à Charlotte un changement minimal (Q13 de `points-pour-charlotte.md`) : ajouter `inscriptionId` à `FormationResponse` quand l'appelant est le stagiaire inscrit (ou un `GET /inscriptions/me`). Le front est écrit et testé (MSW) sur cette proposition ; le passage manuel sur le vrai back attend sa réponse. `tech.md` n'est pas modifié (lecture seule) ; le champ est isolé dans un seul point du code pour s'adapter à la réponse.
+- **Pourquoi** : aucun contournement côté front sans fuite de données ou devinette d'id ; attendre bloquerait un ticket d'une heure alors que le reste (composants, règles de fichier, droits) est connu.
+- **Alternatives écartées** : suspendre 028 jusqu'à la réponse ; déduire l'id par un moyen détourné.
+
+## G9 — Page `/profile` minimale : titre + « Mes documents » (stagiaire)
+- Date : 2026-11-02
+- **Décision** : 028 remplace le bouchon `ProfilePage.jsx` (route existante `/profile`, liée depuis la tuile du tableau de bord ; écrite « `/profil` » par erreur dans la première version de cette décision) par une page enveloppée dans `templates/PageShell` : titre « Mon profil » et, pour le seul stagiaire, la section « Mes documents ». ADMIN et SUPER_ADMIN ne voient que le titre pour l'instant (aucune section vide ni promesse). Le ticket 044 (informations, mot de passe, bascule e-mail) ajoutera ses sections autour, sans toucher à celle-ci. Code dans `features/documents/` (`StagiaireDocSection`) ; la page est importée avec `lazyPage` (D59).
+- **Pourquoi** : livre 028 de bout en bout sans anticiper 044, bloqué par l'absence d'endpoint de mot de passe.
+- **Alternatives écartées** : ajouter « Mes informations » en lecture seule (hors périmètre) ; composant sans page ni route (non utilisable).
+
+## G10 — Une sous-section par formation inscrite ; archivées en lecture seule
+- Date : 2026-11-02
+- **Décision** : « Mes documents » liste les formations de `GET /formations` (périmètre du stagiaire : ses inscriptions), les actives d'abord, puis les archivées. Chaque sous-section (titre = intitulé de la formation) a sa liste de documents (`GET /documents?inscriptionId=`, clé `['documents', 'inscription', inscriptionId]`) et, si la formation est active, sa zone de dépôt. Une formation archivée reste visible en lecture seule : liste et téléchargement, pas de zone de dépôt (même règle d'interface que G3, à confirmer avec Charlotte avec le point déjà noté).
+- **Pourquoi** : cohérence avec G3 ; le stagiaire garde accès à ce qu'il a déposé.
+- **Alternatives écartées** : masquer les formations archivées ; les traiter comme les actives.
+
+## G11 — Sans `inscriptionId` : avis « Dépôt indisponible », aucun appel
+- Date : 2026-11-02
+- **Décision** : si la formation reçue n'a pas de `inscriptionId` (back pas encore adapté, Q13), la sous-section affiche « Dépôt indisponible pour le moment » : ni liste, ni zone de dépôt, aucun appel `/documents`. Le champ est lu en un seul point du code (`inscriptionIdOf(formation)`) ; dès que le back l'envoie, la section s'active seule. Cas testé avec MSW (formation sans le champ).
+- **Pourquoi** : pas d'erreur évitable (G2) ; pas de fonctionnalité qui disparaît sans signe.
+- **Alternatives écartées** : masquer toute la section ; laisser l'envoi échouer.
+
+## G12 — Hypothèses retenues pour le change `stagiaire-documents` (à corriger si besoin)
+- Date : 2026-11-02
+- **Décision** : (1) réutilisation de `DocumentDropzone` et `DocumentList` de 027 et des règles de `documentFiles.js` (pdf / jpg / jpeg / png / docx, 10 Mo, un `POST` par fichier, refus listés par fichier, G4) ; la cible du dépôt devient `{formationId}` ou `{inscriptionId}` (exactement un des deux) ; (2) le stagiaire ne peut pas supprimer (`403` du back, `tech.md` §6) : pas de bouton « Supprimer », conforme à G2 ; (3) téléchargement par blob comme G1 ; (4) la colonne « expéditeur » est omise (ce sont ses propres envois) ; (5) message de succès annoncé (`role="status"`) après un dépôt réussi, document ajouté à la liste rechargée (`['documents']`) ; (6) liste vide : « Aucun document déposé pour cette formation » ; (7) section visible uniquement pour `STAGIAIRE` (`RequireAuth` + test du rôle) ; (8) un check jest-axe sur `/profil` ; les tests qui rendent la page déclarent `mockDocumentApi()` et la liste des formations ; (9) la visibilité de ces documents par la chargée de formation (US-010) reste hors périmètre (Q6).
+- **Pourquoi** : suit le ticket 028, G1–G7 et le contrat `tech.md` §6 ; choix sans enjeu de périmètre.
+- **Alternatives écartées** : suppression par le stagiaire (impossible côté back) ; colonne expéditeur.

@@ -14,3 +14,10 @@ Contrat vérifié sur le back local (dépôt, liste, téléchargement, suppressi
 - **`fileUrl`** : c'est l'adresse brute du stockage (bucket privé, inutilisable par un navigateur). Elle fuit le nom du bucket et le chemin ; la retirer de `DocumentResponse` serait plus propre si rien ne l'utilise.
 - **Double barre dans `fileUrl`** : si `SUPABASE_URL` se termine par `/`, l'adresse contient `//storage/...`. Une normalisation dans `SupabaseConfig` (retirer la barre finale) évite le piège.
 - **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée ou pointant sur `/rest/v1/` donne `502 « Service de stockage indisponible »` ; la vraie cause (`PGRST125`, hôte inconnu…) n'est que dans les logs. À mentionner dans ta documentation de développement local : `SUPABASE_URL` = URL du projet seule (`https://<projet>.supabase.co`), clé `service_role`, bucket privé `adac-documents`.
+
+## Documents du stagiaire (ticket 028) — ajouté le 2026-11-02
+
+- **Q13** — Le stagiaire ne peut pas connaître son `inscriptionId`
+`POST /documents` et `GET /documents?inscriptionId=` (stagiaire : « ses inscriptions ») exigent l'id de l'inscription. Mais `GET /formations/{id}/inscriptions` répond `403` à un stagiaire, `FormationResponse` n'a pas de champ d'inscription et `DocumentResponse.inscriptionId` n'existe qu'une fois un document déposé : un stagiaire ne peut donc pas déposer son premier document.
+
+Proposition minimale : ajouter `inscriptionId` à `FormationResponse` **seulement pour le stagiaire inscrit** (aucune fuite d'e-mail), ou un `GET /api/inscriptions/me` (liste de ses inscriptions avec leur formation). Le front est écrit sur cette proposition en attendant ta réponse. Constat lié : `DELETE /documents/{id}` répond `403` à un stagiaire (`tech.md` §6), il ne pourra donc pas retirer un fichier déposé par erreur ; le front n'affiche pas « Supprimer » pour lui.
