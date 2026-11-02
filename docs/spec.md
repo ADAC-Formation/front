@@ -105,3 +105,18 @@ Source : TICKET-025 (partie import, F11), US-005, `tech.md` §4, décisions F16�
 - [ ] `400` → tableau Ligne / Colonne / Problème tiré du `message` du back (F20), entrées non reconnues affichées telles quelles ; rien n'est créé ; autre fichier = nouvel essai.
 - [ ] Autres erreurs (`403`, réseau, `5xx`) en bandeau annoncé, fichier conservé ; jest-axe sans violation avec et sans erreurs.
 - Reporté : colonnes définitives (R10), aperçu du fichier, comptage des lignes côté navigateur.
+
+## Critères d'acceptation de la gestion des catégories (change `category-management`)
+
+Source : TICKET-049 (front), US-017, `tech.md` §3, décisions C1–C5 (`decisions-categories.md`). À valider par Manon (D49). Détail testable : `openspec/changes/category-management/specs/category-management/spec.md`.
+
+### TICKET-049 — Gérer les catégories de formation
+- [ ] `/formations/categories` réservée à SUPER_ADMIN (autres rôles → « Accès refusé », visiteur → `/login`).
+- [ ] Liste de toutes les catégories (actives et désactivées) dans l'ordre du back : pastille de couleur, nom, état « Active » / « Désactivée » en texte, total annoncé ; états chargement, vide, erreur avec « Réessayer » ; aucune action « Supprimer ».
+- [ ] « Créer une catégorie » et « Modifier » ouvrent une boîte de dialogue (nom + couleur) ; `POST /categories` et `PUT /categories/{id}` (nom et couleur toujours envoyés) ; rien de modifié → aucun appel.
+- [ ] Nom obligatoire (255 au plus) ; couleur `#RRGGBB` par sélecteur et champ hexadécimal synchronisés ; erreurs liées aux champs, aucun appel si invalide.
+- [ ] `409` (nom déjà utilisé) et autres erreurs affichés dans la boîte, qui reste ouverte avec la saisie.
+- [ ] « Désactiver » : confirmation expliquant l'effet puis `PATCH …/deactivate` ; « Réactiver » immédiat (`PATCH …/activate`) ; message de succès annoncé après chaque action.
+- [ ] Après chaque écriture : listes des catégories, choix de catégorie du formulaire de formation et formations rechargés (renommer / recolorer change l'affichage des formations).
+- [ ] Boîtes accessibles : focus piégé (champs compris), Échap, retour du focus ; jest-axe sans violation.
+- Reporté : création à la volée dans le formulaire de formation et filtre par catégorie (change `category-picker`, 048).
