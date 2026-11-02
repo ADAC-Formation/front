@@ -11,11 +11,11 @@ Branche `feature/notifications` (worktree `..\front-notifications`, depuis `dev`
 
 ## 2. Couche données (TDD)
 
-- [ ] 2.1 RED : `features/notifications/hooks.test.jsx` — `unread` interrogé toutes les 45 s avec horloge simulée, aucune requête quand `user` est nul, rafraîchi au focus ; marquer comme lue retire l'élément et décrémente `count` avant la réponse ; restauration et message en cas d'échec ; `read-all` vide ; `DELETE` retire de la cloche sans toucher l'historique ; filtre de statut → `?read=false|true` ; confirmer RED
-- [ ] 2.2 Écrire `features/notifications/api.js` et `hooks.js` (clés `['notifications','unread']` / `['notifications','all',statut]`, optimisme D-N3, invalidation D-N2) ; GREEN ; vérifier que `endSession` vide ces clés (test : après déconnexion le cache ne contient plus de notifications)
-- [ ] 2.3 Écrire `notificationTargets.js` (cible par `entityType`, présentation neutre par défaut) avec son test unitaire (`MESSAGE` → `/messages/7`, `FORMATION` → `/formations/12`, inconnu → pas de navigation) ; GREEN
-- [ ] 2.4 Écrire `useOpenNotification()` (D-N6) avec test : marque comme lue puis navigue ; pas de `PATCH` si déjà lue ; type inconnu = marquée sans navigation ; GREEN
-- [ ] 2.5 Commit `feat(notifications): add notification queries, mutations and navigation targets`
+- [x] 2.1 RED : `features/notifications/hooks.test.jsx` — `unread` interrogé toutes les 45 s avec horloge simulée, aucune requête quand `user` est nul, rafraîchi au focus ; marquer comme lue retire l'élément et décrémente `count` avant la réponse ; restauration et message en cas d'échec ; `read-all` vide ; `DELETE` retire de la cloche sans toucher l'historique ; filtre de statut → `?read=false|true` ; confirmer RED
+- [x] 2.2 Écrire `features/notifications/api.js` et `hooks.js` (clés `['notifications','unread']` / `['notifications','all',statut]`, optimisme D-N3, invalidation D-N2) ; GREEN ; vérifier que `endSession` vide ces clés (test : après déconnexion le cache ne contient plus de notifications)
+- [x] 2.3 Écrire `notificationTargets.js` (cible par `entityType`, présentation neutre par défaut) avec son test unitaire (`MESSAGE` → `/messages/7`, `FORMATION` → `/formations/12`, inconnu → pas de navigation) ; GREEN
+- [x] 2.4 Écrire `useOpenNotification()` (D-N6) avec test : marque comme lue puis navigue ; pas de `PATCH` si déjà lue ; type inconnu = marquée sans navigation ; GREEN
+- [x] 2.5 Commit `feat(notifications): add notification queries, mutations and navigation targets`
 
 ## 3. Cloche et panneau (TDD)
 
