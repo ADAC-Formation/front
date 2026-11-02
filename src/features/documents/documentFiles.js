@@ -1,0 +1,51 @@
+import { ROLES } from '../../utils/roles'
+
+// Règles des documents de formation (G2–G4), sans rendu : types et taille acceptés (le back
+// revérifie, signature comprise), libellés, et droits de dépôt et de suppression (tech.md § 6).
+
+export const MAX_FILE_SIZE = 10 * 1024 * 1024
+export const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png', 'docx']
+export const ACCEPT_ATTRIBUTE = ALLOWED_EXTENSIONS.map((extension) => `.${extension}`).join(',')
+
+const KINDS = { pdf: 'PDF', jpg: 'Image', jpeg: 'Image', png: 'Image', docx: 'Word' }
+
+function extensionOf(fileName) {
+  const dot = fileName.lastIndexOf('.')
+  return dot === -1 ? '' : fileName.slice(dot + 1).toLowerCase()
+}
+
+// Renvoie le message du refus, ou `null` si le fichier peut être envoyé.
+export function validateDocumentFile(file) {
+  if (!ALLOWED_EXTENSIONS.includes(extensionOf(file.name))) {
+    return 'Format non autorisé (PDF, JPG, PNG ou DOCX).'
+  }
+  if (file.size === 0) return 'Le fichier est vide.'
+  if (file.size > MAX_FILE_SIZE) return 'Fichier trop volumineux (10 Mo au maximum).'
+  return null
+}
+
+const decimal = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 })
+
+export function formatFileSize(bytes) {
+  if (bytes < 1024) return `${bytes} o`
+  if (bytes < 1024 * 1024) return `${Math.round(bytes / 1024)} Ko`
+  return `${decimal.format(bytes / (1024 * 1024))} Mo`
+}
+
+export const documentKind = (fileName) => KINDS[extensionOf(fileName)] ?? 'Fichier'
+
+const isActive = (formation) => formation.status !== 'ARCHIVED'
+
+// Chargée de formation : toute formation active. Formateur : la sienne seulement. Jamais le stagiaire.
+export function canUploadDocument(user, formation) {
+  if (!user || !isActive(formation)) return false
+  if (user.role === ROLES.SUPER_ADMIN) return true
+  return user.role === ROLES.ADMIN && formation.formateur?.id === user.id
+}
+
+// Chargée de formation : tout. Formateur : ses propres envois, quelle que soit la formation. Jamais le stagiaire.
+export function canDeleteDocument(user, formation, document) {
+  if (!user || !isActive(formation)) return false
+  if (user.role === ROLES.SUPER_ADMIN) return true
+  return user.role === ROLES.ADMIN && document.uploadedBy?.id === user.id
+}
