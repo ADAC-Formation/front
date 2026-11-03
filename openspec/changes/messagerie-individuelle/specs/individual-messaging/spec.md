@@ -133,3 +133,18 @@ Le système SHALL réserver `/messages` et `/messages/:userId` aux utilisateurs 
 #### Scenario: Accessibilité
 - **WHEN** la liste et le fil sont rendus
 - **THEN** jest-axe ne relève aucune violation
+
+### Requirement: Gabarit commun aux pages
+Le système SHALL présenter la page Messages comme les pages de comptes et de formations : un bouton « Retour » vers le tableau de bord en haut, le titre à gauche et l'action « Nouvelle conversation » en haut à droite, des filtres « Toutes » et « Non lues » sous le titre, et la liste des conversations dans une carte arrondie avec son en-tête et le nombre de conversations. Le filtre « Non lues » SHALL ne garder que les conversations ayant des messages non lus.
+
+#### Scenario: Bouton de retour
+- **WHEN** l'utilisateur ouvre `/messages`
+- **THEN** un lien « Retour » mène à `/`
+
+#### Scenario: Action en haut à droite
+- **WHEN** l'utilisateur clique « Nouvelle conversation » dans l'en-tête
+- **THEN** le panneau des destinataires s'ouvre, et se ferme avec « Fermer » ou en choisissant un destinataire
+
+#### Scenario: Filtre des non lues
+- **WHEN** l'utilisateur choisit « Non lues »
+- **THEN** seules les conversations avec des messages non lus sont listées, ou « Aucune conversation non lue » s'il n'y en a pas

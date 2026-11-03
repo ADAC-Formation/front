@@ -6,9 +6,39 @@ import { displayName, formatMessageDate } from '../messageLabels'
 import { unreadLabel } from '../unread'
 import styles from './ConversationList.module.css'
 
+function ConversationRow({ conversation, isActive, currentUserId }) {
+  const { conversationId, participant, lastMessage, unreadCount } = conversation
+  const isUnread = unreadCount > 0
+
+  return (
+    <li className={styles.item} data-unread={isUnread ? 'true' : undefined}>
+      <Link
+        to={`/messages/${conversationId}`}
+        className={styles.link}
+        aria-current={isActive ? 'page' : undefined}
+      >
+        <span className={styles.header}>
+          <span className={styles.name}>{displayName(participant)}</span>
+          <span className={styles.date}>{formatMessageDate(lastMessage.createdAt)}</span>
+        </span>
+        <span className={styles.preview}>
+          {lastMessage.sender.id === currentUserId && <span className={styles.you}>Vous : </span>}
+          {lastMessage.content}
+        </span>
+        {isUnread && (
+          <span className={styles.unreadBadge}>
+            <span aria-hidden="true" className={styles.dot} />
+            <span className={styles.unreadText}>{unreadLabel(unreadCount)}</span>
+          </span>
+        )}
+      </Link>
+    </li>
+  )
+}
+
 // Liste des conversations (plus récente d'abord, ordre du back). Le contenu est rendu en texte.
-// `activeUserId` : conversation ouverte ; `emptyAction` : action proposée quand la liste est vide.
-const ConversationList = ({ activeUserId, emptyAction }) => {
+// `activeUserId` : conversation ouverte ; `filter` : « all » (défaut) ou « unread » (côté client).
+const ConversationList = ({ activeUserId, filter = 'all' }) => {
   const { user } = useCurrentUser()
   const { data: conversations, isLoading, isError, refetch } = useConversations()
 
@@ -26,45 +56,30 @@ const ConversationList = ({ activeUserId, emptyAction }) => {
   }
 
   if (conversations.length === 0) {
-    return (
-      <div className={styles.feedback}>
-        <p className={styles.empty}>Aucune conversation pour le moment</p>
-        {emptyAction}
-      </div>
-    )
+    return <p className={styles.empty}>Aucune conversation pour le moment</p>
   }
 
+  const shown =
+    filter === 'unread' ? conversations.filter((conversation) => conversation.unreadCount > 0) : conversations
+  if (shown.length === 0) return <p className={styles.empty}>Aucune conversation non lue</p>
+
   return (
-    <ul className={styles.list}>
-      {conversations.map(({ conversationId, participant, lastMessage, unreadCount }) => {
-        const isActive = String(conversationId) === String(activeUserId)
-        const isUnread = unreadCount > 0
-        return (
-          <li key={conversationId} className={styles.item} data-unread={isUnread ? 'true' : undefined}>
-            <Link
-              to={`/messages/${conversationId}`}
-              className={styles.link}
-              aria-current={isActive ? 'page' : undefined}
-            >
-              <span className={styles.header}>
-                <span className={styles.name}>{displayName(participant)}</span>
-                <span className={styles.date}>{formatMessageDate(lastMessage.createdAt)}</span>
-              </span>
-              <span className={styles.preview}>
-                {lastMessage.sender.id === user?.id && <span className={styles.you}>Vous : </span>}
-                {lastMessage.content}
-              </span>
-              {isUnread && (
-                <span className={styles.unreadBadge}>
-                  <span aria-hidden="true" className={styles.dot} />
-                  <span className={styles.unreadText}>{unreadLabel(unreadCount)}</span>
-                </span>
-              )}
-            </Link>
-          </li>
-        )
-      })}
-    </ul>
+    <>
+      <div className={styles.cardHeader}>
+        <h2>Conversations</h2>
+        <p>{`${shown.length} conversation${shown.length !== 1 ? 's' : ''}`}</p>
+      </div>
+      <ul className={styles.list}>
+        {shown.map((conversation) => (
+          <ConversationRow
+            key={conversation.conversationId}
+            conversation={conversation}
+            isActive={String(conversation.conversationId) === String(activeUserId)}
+            currentUserId={user?.id}
+          />
+        ))}
+      </ul>
+    </>
   )
 }
 

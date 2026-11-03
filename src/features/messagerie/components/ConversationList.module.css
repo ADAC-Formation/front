@@ -1,3 +1,22 @@
+.cardHeader {
+  margin-bottom: 1rem;
+}
+
+.cardHeader h2 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.cardHeader p {
+  margin: 0.25rem 0 0;
+
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
 .list {
   display: flex;
   flex-direction: column;

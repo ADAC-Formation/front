@@ -157,3 +157,20 @@ describe('messagerie : deux volets (H6)', () => {
     expect(css.slice(css.indexOf('@container'))).toMatch(/\.backSlot\s*\{[^}]*display:\s*none/)
   })
 })
+
+describe('pastille « non lus » de la tuile Messages', () => {
+  const badge = () =>
+    rulesOf(stripComments(cssSheets['src/components/atoms/Tile/Tile.module.css'])).find(({ selector }) =>
+      /\.badge\b/.test(selector),
+    ).body
+
+  it('n\'utilise pas la police de titre (chiffres peu lisibles) mais la police de texte', () => {
+    expect(badge()).toMatch(/font-family:\s*var\(--font-sans\)/)
+    expect(badge()).not.toMatch(/--font-display/)
+  })
+
+  it('aligne les chiffres (tabulaires) et reste lisible en gras', () => {
+    expect(badge()).toMatch(/font-variant-numeric:\s*tabular-nums/)
+    expect(badge()).toMatch(/font-weight:\s*(700|800)/)
+  })
+})

@@ -148,8 +148,11 @@
   background-color: var(--color-white);
   color: var(--color-on-yellow);
 
+  /* Police de texte (la police de titre a des chiffres peu lisibles à cette taille) ; suit « Police lisible ». */
+  font-family: var(--font-sans);
   font-size: 0.875rem;
-  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
   line-height: 1.4;
   text-align: center;
 }

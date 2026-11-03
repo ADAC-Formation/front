@@ -76,11 +76,32 @@ describe('ConversationList', () => {
     expect(container.querySelector('img')).toBeNull()
   })
 
-  it('affiche un état vide avec l\'action fournie', async () => {
+  it('affiche un état vide', async () => {
     mockConversations([])
-    render({ emptyAction: <button type="button">Nouvelle conversation</button> })
+    render()
     expect(await screen.findByText('Aucune conversation pour le moment')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Nouvelle conversation' })).toBeInTheDocument()
+  })
+
+  it('titre la carte « Conversations » avec le nombre de conversations', async () => {
+    mockConversations()
+    render()
+    expect(await screen.findByRole('heading', { level: 2, name: 'Conversations' })).toBeInTheDocument()
+    expect(screen.getByText('2 conversations')).toBeInTheDocument()
+  })
+
+  it('le filtre « unread » ne garde que les conversations avec des non lus', async () => {
+    mockConversations()
+    render({ filter: 'unread' })
+    const items = await screen.findAllByRole('listitem')
+    expect(items).toHaveLength(1)
+    expect(within(items[0]).getByText('Anne Martin')).toBeInTheDocument()
+    expect(screen.getByText('1 conversation')).toBeInTheDocument()
+  })
+
+  it('le filtre « unread » sans aucun non lu affiche un message dédié', async () => {
+    mockConversations([{ ...CONVERSATIONS[0], unreadCount: 0 }])
+    render({ filter: 'unread' })
+    expect(await screen.findByText('Aucune conversation non lue')).toBeInTheDocument()
   })
 
   it('affiche une erreur annoncée avec « Réessayer » qui relance la requête', async () => {

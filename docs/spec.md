@@ -149,4 +149,5 @@ Source : TICKET-031 (front), US-013, `tech.md` §7, décisions H1–H9 (`decisio
 - [ ] « Envoyer un message » sur le détail d'un formateur et d'un stagiaire, seulement si l'on peut leur écrire (US-013 AC-05).
 - [ ] Fil d'une personne hors droit : lecture seule avec avis, ou « Conversation introuvable » + « Retour » (H8).
 - [ ] Accessibilité : clavier, annonces d'état ; jest-axe sans violation (liste et fil).
+- [ ] Gabarit des autres pages (H11) : « Retour » vers le tableau de bord, bouton « Nouvelle conversation » en haut à droite, pastilles « Toutes » / « Non lues » sous le titre, liste des conversations dans une carte arrondie ; pastille « non lus » de la tuile en police de texte.
 - Reporté : envoi groupé (TICKET-032), pagination des fils.

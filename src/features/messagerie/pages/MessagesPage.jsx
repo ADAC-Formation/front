@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
@@ -42,7 +43,7 @@ const ThreadPane = ({ userId }) => {
     return (
       <div className={styles.notFound}>
         <div className={styles.backSlot}>
-          <BackButton to="/messages" />
+          <BackButton to="/messages">Retour aux conversations</BackButton>
         </div>
         <p role="status">Conversation introuvable</p>
       </div>
@@ -70,7 +71,7 @@ const ThreadPane = ({ userId }) => {
   return (
     <div className={styles.thread}>
       <div className={styles.backSlot}>
-        <BackButton to="/messages" />
+        <BackButton to="/messages">Retour aux conversations</BackButton>
       </div>
       <h2 className={styles.threadTitle}>
         {participantName(userId, { conversations, messages, recipients, me: user })}
@@ -81,18 +82,56 @@ const ThreadPane = ({ userId }) => {
   )
 }
 
+// Filtres de la liste, présentés comme les pastilles des autres pages.
+const FILTERS = [
+  { value: 'all', label: 'Toutes', color: 'var(--color-blue)' },
+  { value: 'unread', label: 'Non lues', color: 'var(--color-red)' },
+]
+
 const MessagesPage = () => {
   const { userId } = useParams()
+  const [filter, setFilter] = useState('all')
+  const [creating, setCreating] = useState(false)
 
   return (
     <PageShell className={styles.page}>
-      <h1 className={styles.title}>Messages</h1>
+      <BackButton to="/" />
+
+      <div className={styles.header}>
+        <h1 className={styles.title}>Messages</h1>
+        <button
+          type="button"
+          className={styles.createButton}
+          aria-expanded={creating}
+          onClick={() => setCreating((current) => !current)}
+        >
+          Nouvelle conversation
+        </button>
+      </div>
+
+      <fieldset className={styles.filters}>
+        <legend className={styles.srOnly}>Conversations affichées</legend>
+        {FILTERS.map(({ value, label, color }) => (
+          <label key={value} className={styles.pill} style={{ '--pill-color': color }}>
+            <input
+              type="radio"
+              name="conversations-filter"
+              value={value}
+              checked={filter === value}
+              onChange={() => setFilter(value)}
+            />
+            <span className={styles.pillDot} aria-hidden="true" />
+            {label}
+          </label>
+        ))}
+      </fieldset>
+
+      {creating && <NewConversation onClose={() => setCreating(false)} />}
 
       <div className={styles.host}>
         <div className={styles.layout} data-view={userId ? 'thread' : 'list'}>
           <section className={styles.listPane} aria-label="Conversations">
-            <NewConversation />
-            <ConversationList activeUserId={userId} />
+            <ConversationList activeUserId={userId} filter={filter} />
           </section>
 
           <section className={styles.threadPane} aria-label="Fil de discussion">

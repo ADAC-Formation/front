@@ -4,8 +4,18 @@
   flex-direction: column;
 }
 
+/* En-tête : titre à gauche, action à droite (comme les pages de comptes et de formations). */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  margin-top: 1.5rem;
+}
+
 .title {
-  margin: 1.5rem 0 0;
+  margin: 0;
 
   font-family: var(--font-display);
   font-size: 2.25rem;
@@ -15,12 +25,124 @@
   color: var(--foreground);
 }
 
+.createButton {
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0.7rem 1rem;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--color-action);
+  color: var(--color-on-action);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.createButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ---------- Filtres sous le titre (pastilles) ---------- */
+
+.filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+
+  margin: 1.25rem 0 0;
+  padding: 0;
+
+  border: none;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  padding: 0.5rem 0.8rem;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  background-color: var(--card);
+  color: var(--muted-foreground);
+
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 500;
+
+  cursor: pointer;
+
+  transition:
+    transform 150ms ease,
+    border-color 150ms ease,
+    background-color 150ms ease;
+}
+
+.pill input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--pill-color);
+  color: var(--foreground);
+}
+
+.pill:has(input:focus-visible) {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.pillDot {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background-color: var(--pill-color);
+}
+
+.pill:has(input:checked) {
+  border-color: var(--pill-color);
+  background-color: color-mix(in srgb, var(--pill-color) 12%, var(--card));
+  color: var(--foreground);
+}
+
 /* Les deux volets suivent la largeur du conteneur, en rem : ils réagissent aussi à « Grand texte »
    (D61), pas seulement à la fenêtre. Étroit : un seul volet à la fois, selon l'adresse. */
 .host {
   container-type: inline-size;
 
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .layout {
@@ -53,6 +175,19 @@
 .listPane,
 .threadPane {
   min-width: 0;
+}
+
+/* La liste est dans une carte arrondie, comme les listes des autres pages. */
+.listPane {
+  padding: 1.5rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+  color: var(--card-foreground);
+
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
 .thread,

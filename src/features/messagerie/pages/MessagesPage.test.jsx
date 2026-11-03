@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
 import { Route, Routes } from 'react-router'
 import { axe } from 'jest-axe'
+import { cssSheets, stripComments } from '../../../test/css-sheets'
 import { renderWithProviders } from '../../../test/render'
 import { server } from '../../../test/msw/server'
 import { API_URL, mockSession } from '../../../test/session'
@@ -67,6 +68,70 @@ describe('MessagesPage — liste', () => {
   })
 })
 
+describe('MessagesPage — gabarit des autres pages', () => {
+  beforeEach(() => {
+    mockSession('STAGIAIRE')
+    mockConversations()
+    withAnneAsFormateur()
+  })
+
+  it('propose « Retour » vers le tableau de bord, comme les autres pages', async () => {
+    renderPage('/messages')
+    expect(screen.getByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/')
+    await screen.findByText('Anne Martin')
+  })
+
+  it('place « Nouvelle conversation » dans l\'en-tête, à côté du titre', async () => {
+    renderPage('/messages')
+    const header = screen.getByRole('heading', { level: 1, name: 'Messages' }).parentElement
+    expect(within(header).getByRole('button', { name: 'Nouvelle conversation' })).toBeInTheDocument()
+    await screen.findByText('Anne Martin')
+  })
+
+  it('le bouton ouvre puis ferme le panneau des destinataires', async () => {
+    renderPage('/messages')
+    const toggle = screen.getByRole('button', { name: 'Nouvelle conversation' })
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await userEvent.click(toggle)
+    expect(toggle).toHaveAttribute('aria-expanded', 'true')
+    const panel = await screen.findByRole('region', { name: 'Nouvelle conversation' })
+    await userEvent.click(within(panel).getByRole('button', { name: 'Fermer' }))
+    expect(screen.queryByRole('region', { name: 'Nouvelle conversation' })).not.toBeInTheDocument()
+    expect(toggle).toHaveAttribute('aria-expanded', 'false')
+    await screen.findByText('Anne Martin')
+  })
+
+  it('propose les filtres « Toutes » et « Non lues » sous le titre', async () => {
+    renderPage('/messages')
+    const filters = screen.getByRole('group', { name: 'Conversations affichées' })
+    expect(within(filters).getByRole('radio', { name: 'Toutes' })).toBeChecked()
+    expect(within(filters).getByRole('radio', { name: 'Non lues' })).not.toBeChecked()
+    await screen.findByText('Anne Martin')
+  })
+
+  it('« Non lues » ne garde que les conversations avec des messages non lus', async () => {
+    renderPage('/messages')
+    await screen.findByText('Chargée Dev')
+    await userEvent.click(screen.getByRole('radio', { name: 'Non lues' }))
+    expect(screen.queryByText('Chargée Dev')).not.toBeInTheDocument()
+    expect(screen.getByText('Anne Martin')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('radio', { name: 'Toutes' }))
+    expect(await screen.findByText('Chargée Dev')).toBeInTheDocument()
+  })
+
+  it('la liste des conversations est dans une carte arrondie (comme les autres pages)', () => {
+    const css = stripComments(cssSheets['src/features/messagerie/pages/MessagesPage.module.css'])
+    expect(css).toMatch(/\.listPane[^{]*\{[^}]*border:\s*1px solid var\(--border\)/)
+    expect(css).toMatch(/\.listPane[^{]*\{[^}]*border-radius:\s*30px/)
+  })
+
+  it('le bouton d\'action reprend le style des pages de comptes (--color-action, en haut à droite)', () => {
+    const css = stripComments(cssSheets['src/features/messagerie/pages/MessagesPage.module.css'])
+    expect(css).toMatch(/\.createButton\s*\{[^}]*background-color:\s*var\(--color-action\)/)
+    expect(css).toMatch(/\.header\s*\{[^}]*justify-content:\s*space-between/)
+  })
+})
+
 describe('MessagesPage — fil', () => {
   beforeEach(() => {
     mockSession('STAGIAIRE')
@@ -108,7 +173,7 @@ describe('MessagesPage — fil', () => {
     mockThread(999, [])
     renderPage('/messages/999')
     expect(await screen.findByText('Conversation introuvable')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/messages')
+    expect(screen.getByRole('link', { name: 'Retour aux conversations' })).toHaveAttribute('href', '/messages')
     expect(screen.queryByLabelText('Message')).not.toBeInTheDocument()
   })
 
@@ -134,11 +199,11 @@ describe('MessagesPage — fil', () => {
     expect(await screen.findByText('Vérification des droits d\'écriture…')).toBeInTheDocument()
   })
 
-  it('propose « Retour » vers la liste', async () => {
+  it('propose « Retour aux conversations » vers la liste', async () => {
     withAnneAsFormateur()
     mockThread(10)
     renderPage('/messages/10')
-    expect(await screen.findByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/messages')
+    expect(await screen.findByRole('link', { name: 'Retour aux conversations' })).toHaveAttribute('href', '/messages')
   })
 
   it('n\'a aucune violation d\'accessibilité', async () => {
