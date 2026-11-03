@@ -1,0 +1,92 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  max-height: 60vh;
+  margin: 0;
+  padding: 0.25rem;
+  overflow-y: auto;
+
+  list-style: none;
+}
+
+.message {
+  align-self: flex-start;
+
+  max-width: min(100%, 36rem);
+  padding: 0.65rem 0.9rem;
+
+  border: 1px solid var(--border);
+  border-radius: 16px;
+
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+
+/* Mes messages : alignés à droite et signalés par « Vous » (le texte porte le sens, pas la place). */
+.mine {
+  align-self: flex-end;
+
+  background-color: var(--muted);
+}
+
+.meta {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+
+  margin: 0 0 0.25rem;
+}
+
+.author {
+  font-family: var(--font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.date {
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+/* Sauts de ligne conservés ; texte seul, jamais interprété comme du HTML. */
+.content {
+  margin: 0;
+
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.empty {
+  margin: 0;
+
+  color: var(--muted-foreground);
+}
+
+.feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.retry {
+  padding: 0.6rem 1rem;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--color-action);
+  color: var(--color-on-action);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+}

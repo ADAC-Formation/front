@@ -25,9 +25,9 @@
 
 ## 5. Fil et saisie (TDD)
 
-- [ ] 5.1 RED : `Thread.test.jsx` (ordre ancien → récent, auteur, date, contenu en texte avec `<script>` littéral, sauts de ligne, erreur avec « Réessayer », lecture automatique des non lus une seule fois par fil) et `MessageComposer.test.jsx` (libellé visible, vide / espaces / 5001 refusés sans appel, Entrée = saut de ligne, envoi réussi → champ vidé + succès annoncé, 403 / 404 → erreur et texte conservé, bouton désactivé pendant l'envoi)
-- [ ] 5.2 Créer `Thread` et `MessageComposer` ; GREEN
-- [ ] 5.3 Commit `feat: add the message thread and composer`
+- [x] 5.1 RED : `Thread.test.jsx` (ordre ancien → récent, auteur, date, contenu en texte avec `<script>` littéral, sauts de ligne, erreur avec « Réessayer », lecture automatique des non lus une seule fois par fil) et `MessageComposer.test.jsx` (libellé visible, vide / espaces / 5001 refusés sans appel, Entrée = saut de ligne, envoi réussi → champ vidé + succès annoncé, 403 / 404 → erreur et texte conservé, bouton désactivé pendant l'envoi)
+- [x] 5.2 Créer `Thread` et `MessageComposer` ; GREEN
+- [x] 5.3 Commit `feat: add the message thread and composer`
 
 ## 6. Page, routes et nouvelle conversation (TDD)
 
