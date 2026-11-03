@@ -106,6 +106,16 @@ Lu dans `ExcelImportUtil` (branche `dev`, lecture seule) : un fichier invalide r
 
 Le front découpe ce texte pour afficher un tableau Ligne / Colonne / Problème (F20) et affiche telle quelle toute entrée non reconnue. C'est fragile : si le format du message change, le tableau se réduit à une liste de texte. Demande : remplir `details[]` avec une entrée par erreur (idéalement `{ligne, colonne, message}`). Les colonnes restent le placeholder de `tech.md` tant que le fichier réel d'ADAC n'est pas arrivé (R10).
 
+### Q14 — Messagerie : l'interface ne peut pas trouver la chargée de formation (ticket 031)
+Règle du front : la chargée de formation écrit à tout le monde ; le formateur écrit à la chargée de formation et aux stagiaires de ses formations ; le stagiaire à la chargée de formation et aux formateurs de ses formations (`decisions-messagerie.md` H1). Aucun endpoint n'expose l'`id` d'un `SUPER_ADMIN` à un formateur ou à un stagiaire (`GET /users/{id}` est interdit pour un tiers, `GET /users/formateurs` ne renvoie pas les `SUPER_ADMIN`) : ils ne pourraient donc jamais lui écrire en premier.
+
+Proposition : `GET /api/messages/recipients` → `UserResponse[]` des destinataires autorisés pour l'appelant (chargée de formation incluse, comptes actifs seulement). Le back reste maître des règles (403/404 de `POST /messages/send`). En attendant, le front dérive formateurs et stagiaires des endpoints existants et n'offre la chargée de formation que si elle est déjà connue (formateur d'une formation, conversation existante).
+
+### Q15 — Messagerie : marquer tout un fil comme lu en un appel (ticket 031)
+`PATCH /messages/{id}/read` ne marque qu'un message. Ouvrir un fil de N messages non lus coûte N appels. Proposition : `PATCH /api/messages/{conversationId}/read` (marque tous les messages entrants non lus de ce fil, `200` sinon rien à faire). Le front fonctionne déjà avec un appel par message (`decisions-messagerie.md` H5) et passera à l'appel unique dès qu'il existe.
+
+### Limite du message** : le code du back impose `content` non vide et 5000 caractères au plus (`SendMessageRequest`), mais `tech.md` §7 ne le dit pas. Peux-tu l'ajouter au contrat ?
+
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
 Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.
