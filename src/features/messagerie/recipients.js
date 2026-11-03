@@ -49,3 +49,11 @@ export function canWriteTo(recipients, userId) {
   if (!Number.isInteger(id)) return false
   return recipients.some((recipient) => recipient.id === id)
 }
+
+// Bouton « Envoyer un message » du détail d'un compte. La chargée de formation écrit à tout compte
+// actif sans rien charger ; le formateur dépend de sa liste de destinataires (`recipients`).
+export function canWriteToAccount(user, account, recipients) {
+  if (!user || !account || account.id === user.id) return false
+  if (user.role === ROLES.SUPER_ADMIN) return isActive(account)
+  return canWriteTo(recipients, account.id)
+}

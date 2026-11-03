@@ -1,9 +1,12 @@
 import { axe } from 'jest-axe'
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import HomePage from './HomePage'
 import { renderWithProviders } from '../../../test/render'
+import { CONVERSATIONS, mockConversations } from '../../../test/messages'
 
 describe('HomePage', () => {
+  beforeEach(() => mockConversations([]))
+
   it('affiche la tuile « Formations » pour un stagiaire', () => {
     renderWithProviders(<HomePage role="STAGIAIRE" />)
     expect(screen.getByText('Formations')).toBeInTheDocument()
@@ -24,5 +27,44 @@ describe('HomePage', () => {
   it("n'a aucune violation d'accessibilité (jest-axe)", async () => {
     const { container } = renderWithProviders(<HomePage role="STAGIAIRE" />)
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  describe('pastille « non lus » de la tuile Messages', () => {
+    it('affiche le total des non lus et le dit dans le nom accessible', async () => {
+      mockConversations([
+        { ...CONVERSATIONS[0], unreadCount: 2 },
+        { ...CONVERSATIONS[1], unreadCount: 1 },
+      ])
+      renderWithProviders(<HomePage role="STAGIAIRE" />)
+      const tile = await screen.findByRole('link', { name: 'Messages, 3 messages non lus' })
+      expect(tile).toHaveTextContent('3')
+    })
+
+    it('met « message » au singulier pour un seul non lu', async () => {
+      mockConversations([{ ...CONVERSATIONS[0], unreadCount: 1 }])
+      renderWithProviders(<HomePage role="ADMIN" />)
+      expect(await screen.findByRole('link', { name: 'Messages, 1 message non lu' })).toBeInTheDocument()
+    })
+
+    it("n'affiche aucune pastille quand il n'y a rien de non lu", async () => {
+      const calls = mockConversations([{ ...CONVERSATIONS[0], unreadCount: 0 }])
+      renderWithProviders(<HomePage role="STAGIAIRE" />)
+      await waitFor(() => expect(calls.count).toBe(1))
+      expect(screen.getByRole('link', { name: 'Messages' })).toBeInTheDocument()
+    })
+
+    it("n'affiche aucune pastille quand la requête échoue", async () => {
+      const calls = mockConversations([], { errorStatus: 500 })
+      renderWithProviders(<HomePage role="STAGIAIRE" />)
+      await waitFor(() => expect(calls.count).toBe(1))
+      expect(screen.getByRole('link', { name: 'Messages' })).toBeInTheDocument()
+    })
+
+    it("n'a aucune violation d'accessibilité avec une pastille", async () => {
+      mockConversations([{ ...CONVERSATIONS[0], unreadCount: 2 }])
+      const { container } = renderWithProviders(<HomePage role="STAGIAIRE" />)
+      await screen.findByRole('link', { name: 'Messages, 2 messages non lus' })
+      expect(await axe(container)).toHaveNoViolations()
+    })
   })
 })

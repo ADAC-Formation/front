@@ -1,6 +1,6 @@
 import { USERS } from '../../test/session'
 import { FORMATEURS, STAGIAIRES } from '../../test/accounts'
-import { allowedRecipients, canWriteTo } from './recipients'
+import { allowedRecipients, canWriteTo, canWriteToAccount } from './recipients'
 
 const [anne, paul] = FORMATEURS // paul est suspendu
 const [lea, omar] = STAGIAIRES // omar est désactivé
@@ -131,5 +131,31 @@ describe('canWriteTo', () => {
   it('refuse un id invalide', () => {
     expect(canWriteTo(recipients, 'abc')).toBe(false)
     expect(canWriteTo(recipients, undefined)).toBe(false)
+  })
+})
+
+describe('canWriteToAccount (bouton « Envoyer un message » d\'un détail de compte)', () => {
+  it('la chargée de formation peut écrire à tout compte actif', () => {
+    expect(canWriteToAccount(chargee, anne, [])).toBe(true)
+    expect(canWriteToAccount(chargee, lea, [])).toBe(true)
+  })
+
+  it('la chargée de formation ne peut pas écrire à un compte suspendu ni à elle-même', () => {
+    expect(canWriteToAccount(chargee, paul, [])).toBe(false)
+    expect(canWriteToAccount(chargee, chargee, [])).toBe(false)
+  })
+
+  it('le formateur peut écrire à un stagiaire de ses formations (liste de destinataires)', () => {
+    expect(canWriteToAccount(USERS.ADMIN, lea, [lea])).toBe(true)
+  })
+
+  it('le formateur ne peut pas écrire à un stagiaire hors de ses formations ni à un autre formateur', () => {
+    expect(canWriteToAccount(USERS.ADMIN, lea, [])).toBe(false)
+    expect(canWriteToAccount(USERS.ADMIN, anne, [lea])).toBe(false)
+  })
+
+  it('refuse sans utilisateur ou sans compte', () => {
+    expect(canWriteToAccount(null, lea, [lea])).toBe(false)
+    expect(canWriteToAccount(chargee, null, [])).toBe(false)
   })
 })

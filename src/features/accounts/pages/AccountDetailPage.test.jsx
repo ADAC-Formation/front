@@ -6,10 +6,16 @@ import { Route, Routes } from 'react-router'
 import AccountDetailPage from './AccountDetailPage'
 import { renderWithProviders } from '../../../test/render'
 import { mockSession } from '../../../test/session'
-import { FORMATEURS, STAGIAIRES, apiError, mockRequest } from '../../../test/accounts'
+import { FORMATEURS, STAGIAIRES, apiError, mockAccountList, mockRequest } from '../../../test/accounts'
+import { mockConversations } from '../../../test/messages'
 
-function renderDetail(kind, id, role, { state } = {}) {
+// Le formateur lit ses stagiaires pour savoir s'il peut leur écrire (bouton « Envoyer un message »).
+function renderDetail(kind, id, role, { state, scopedStagiaires = STAGIAIRES } = {}) {
   mockSession(role)
+  if (role === 'ADMIN') {
+    mockConversations([])
+    mockAccountList('stagiaires', scopedStagiaires)
+  }
   return renderWithProviders(
     <Routes>
       <Route path={`/admin/${kind}/:id`} element={<AccountDetailPage kind={kind} />} />
@@ -124,5 +130,51 @@ describe('AccountDetailPage', () => {
     const { container } = renderDetail('formateurs', 10, 'SUPER_ADMIN')
     await screen.findByRole('heading', { level: 1 })
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  describe('« Envoyer un message »', () => {
+    const messageLink = () => screen.queryByRole('link', { name: 'Envoyer un message' })
+    const settle = () => new Promise((resolve) => setTimeout(resolve, 80))
+
+    it('mène à la conversation avec un formateur actif (chargée de formation)', async () => {
+      mockAccount(FORMATEURS[0])
+      renderDetail('formateurs', 10, 'SUPER_ADMIN')
+      expect(await screen.findByRole('link', { name: 'Envoyer un message' })).toHaveAttribute('href', '/messages/10')
+    })
+
+    it('mène à la conversation avec un stagiaire actif (chargée de formation)', async () => {
+      mockAccount(STAGIAIRES[0])
+      renderDetail('stagiaires', 20, 'SUPER_ADMIN')
+      expect(await screen.findByRole('link', { name: 'Envoyer un message' })).toHaveAttribute('href', '/messages/20')
+    })
+
+    it("n'est pas proposé pour un compte suspendu", async () => {
+      mockAccount(STAGIAIRES[1])
+      renderDetail('stagiaires', 21, 'SUPER_ADMIN')
+      await screen.findByRole('heading', { level: 1, name: 'Omar Benali' })
+      expect(messageLink()).not.toBeInTheDocument()
+    })
+
+    it('le formateur peut écrire à un stagiaire de ses formations', async () => {
+      mockAccount(STAGIAIRES[0])
+      renderDetail('stagiaires', 20, 'ADMIN')
+      expect(await screen.findByRole('link', { name: 'Envoyer un message' })).toHaveAttribute('href', '/messages/20')
+    })
+
+    it('le formateur ne le voit pas pour un stagiaire hors de ses formations', async () => {
+      mockAccount(STAGIAIRES[0])
+      renderDetail('stagiaires', 20, 'ADMIN', { scopedStagiaires: [] })
+      await screen.findByRole('heading', { level: 1, name: 'Léa Petit' })
+      await settle()
+      expect(messageLink()).not.toBeInTheDocument()
+    })
+
+    it("le formateur ne le voit pas sur la fiche d'un autre formateur", async () => {
+      mockAccount(FORMATEURS[0])
+      renderDetail('formateurs', 10, 'ADMIN')
+      await screen.findByRole('heading', { level: 1, name: 'Anne Martin' })
+      await settle()
+      expect(messageLink()).not.toBeInTheDocument()
+    })
   })
 })

@@ -1,8 +1,12 @@
 import Tile from '../../atoms/Tile/Tile'
 import { MessageSquare, Bell, User} from "lucide-react";
+import { useUnreadCount } from "../../../features/messagerie/hooks";
+import { unreadLabel } from "../../../features/messagerie/unread";
 import style from "./TileGroup.module.css"
 
 const TileGroup = ({label, icon, largeTilePath}) => {
+  const unread = useUnreadCount()
+
   return (
     <div className={style.host}>
     <div className={style.group}>
@@ -24,6 +28,8 @@ const TileGroup = ({label, icon, largeTilePath}) => {
         color="var(--color-pink)"
         icon={<MessageSquare />}
         label="Messages"
+        badge={unread}
+        badgeLabel={unreadLabel(unread)}
         />
 
         <Tile

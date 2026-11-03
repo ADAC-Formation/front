@@ -38,9 +38,9 @@
 
 ## 7. Pastille et bouton sur les comptes (TDD)
 
-- [ ] 7.1 RED : tuile « Messages » — pastille avec total, libellé accessible « 3 messages non lus », rien à zéro ou en erreur ; `AccountDetailPage.test.jsx` — « Envoyer un message » vers `/messages/:id` seulement si autorisé (chargée de formation partout, formateur seulement ses stagiaires, pas de bouton pour un formateur vu par un autre formateur) ; mettre à jour tous les tests qui rendent la tuile avec `mockConversations()`
-- [ ] 7.2 Ajouter la pastille à la tuile (`TileGroup` / tableau de bord) via `useUnreadCount`, et le bouton à `AccountDetailPage` ; GREEN
-- [ ] 7.3 Commit `feat: add the unread badge and the send message button`
+- [x] 7.1 RED : tuile « Messages » — pastille avec total, libellé accessible « 3 messages non lus », rien à zéro ou en erreur ; `AccountDetailPage.test.jsx` — « Envoyer un message » vers `/messages/:id` seulement si autorisé (chargée de formation partout, formateur seulement ses stagiaires, pas de bouton pour un formateur vu par un autre formateur) ; mettre à jour tous les tests qui rendent la tuile avec `mockConversations()`
+- [x] 7.2 Ajouter la pastille à la tuile (`TileGroup` / tableau de bord) via `useUnreadCount`, et le bouton à `AccountDetailPage` ; GREEN
+- [x] 7.3 Commit `feat: add the unread badge and the send message button`
 
 ## 8. Documentation et vérification
 

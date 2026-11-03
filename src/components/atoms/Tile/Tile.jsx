@@ -10,9 +10,17 @@ const Tile = ({
   label,
   labelVariant = "default",
   onClick,
+  badge = 0,
+  badgeLabel,
 }) => {
   return (
-    <Link to={to} className={`${styles.tile} ${styles[size]}`} style={{ "--tile-color": color }} onClick={onClick}>
+    <Link
+      to={to}
+      className={`${styles.tile} ${styles[size]}`}
+      style={{ "--tile-color": color }}
+      onClick={onClick}
+      aria-label={badge > 0 ? `${label}, ${badgeLabel}` : undefined}
+    >
       <div className={styles.icon}>
         {icon}
       </div>
@@ -20,6 +28,13 @@ const Tile = ({
       <TileLabel variant={labelVariant}>
         {label}
       </TileLabel>
+
+      {/* Pastille : le nom accessible de la tuile porte déjà le total (aria-label). */}
+      {badge > 0 && (
+        <span className={styles.badge} aria-hidden="true">
+          {badge}
+        </span>
+      )}
     </Link>
   );
 };
