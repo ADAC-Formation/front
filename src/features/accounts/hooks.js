@@ -10,10 +10,11 @@ import {
 const accountDetailKey = (id) => ['accounts', 'detail', String(id)]
 const accountListsKey = (kind) => ['accounts', kind, 'list']
 
-export function useAccounts(kind, { active = false } = {}) {
+export function useAccounts(kind, { active = false, enabled = true } = {}) {
   return useQuery({
     queryKey: [...accountListsKey(kind), active ? 'active' : 'all'],
     queryFn: () => listAccounts(kind, { active }),
+    enabled,
   })
 }
 

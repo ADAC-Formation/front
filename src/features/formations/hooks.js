@@ -13,10 +13,11 @@ import {
 const FORMATIONS_KEY = ['formations']
 const formationDetailKey = (id) => [...FORMATIONS_KEY, 'detail', String(id)]
 
-export function useFormations({ status } = {}) {
+export function useFormations({ status, enabled = true } = {}) {
   return useQuery({
     queryKey: [...FORMATIONS_KEY, 'list', status ?? 'all'],
     queryFn: () => listFormations({ status }),
+    enabled,
   })
 }
 

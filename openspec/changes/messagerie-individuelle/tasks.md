@@ -13,9 +13,9 @@
 
 ## 3. Appels et hooks (TDD)
 
-- [ ] 3.1 Ajouter `src/test/messages.js` (`mockConversations`, `mockThread`, `mockSendMessage` avec capture du corps, `mockMarkRead`, `mockRecipients`) ; RED : `hooks.test.jsx` — `useConversations` (ordre reçu, sondage 45 s en pause onglet masqué), `useThread`, `useSendMessage` (corps `{ recipientIds: [id], content }`, invalidation de `['messages']`, 403 / 404 / réseau en `ApiError`, double clic = un seul appel), `markThreadRead` (un `PATCH` par message entrant non lu, aucun si tout est lu ou envoyé par soi, un échec n'empêche pas les autres), `useRecipients` par rôle (aucun appel tant que non demandé)
-- [ ] 3.2 Créer `api.js`, `hooks.js` et `useRecipients.js` ; GREEN
-- [ ] 3.3 Commit `feat: add the messaging requests`
+- [x] 3.1 Ajouter `src/test/messages.js` (`mockConversations`, `mockThread`, `mockSendMessage` avec capture du corps, `mockMarkRead`, `mockRecipients`) ; RED : `hooks.test.jsx` — `useConversations` (ordre reçu, sondage 45 s en pause onglet masqué), `useThread`, `useSendMessage` (corps `{ recipientIds: [id], content }`, invalidation de `['messages']`, 403 / 404 / réseau en `ApiError`, double clic = un seul appel), `markThreadRead` (un `PATCH` par message entrant non lu, aucun si tout est lu ou envoyé par soi, un échec n'empêche pas les autres), `useRecipients` par rôle (aucun appel tant que non demandé)
+- [x] 3.2 Créer `api.js`, `hooks.js` et `useRecipients.js` ; GREEN
+- [x] 3.3 Commit `feat: add the messaging requests`
 
 ## 4. Liste des conversations (TDD)
 
