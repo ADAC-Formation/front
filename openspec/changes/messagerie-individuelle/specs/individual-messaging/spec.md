@@ -135,7 +135,7 @@ Le système SHALL réserver `/messages` et `/messages/:userId` aux utilisateurs 
 - **THEN** jest-axe ne relève aucune violation
 
 ### Requirement: Gabarit commun aux pages
-Le système SHALL présenter la page Messages comme les pages de comptes et de formations : un bouton « Retour » vers le tableau de bord en haut, le titre à gauche et l'action « Nouvelle conversation » en haut à droite, des filtres « Toutes » et « Non lues » sous le titre, et la liste des conversations dans une carte arrondie avec son en-tête et le nombre de conversations. Le filtre « Non lues » SHALL ne garder que les conversations ayant des messages non lus.
+Le système SHALL présenter la page Messages comme les pages de comptes et de formations : un bouton « Retour » vers le tableau de bord en haut, le titre à gauche et l'action « Nouvelle conversation » en haut à droite, une recherche par nom, un menu « Rôle » et des filtres « Toutes » et « Non lues » sous le titre, et la liste des conversations dans une carte arrondie avec son en-tête et le nombre de conversations. Le filtre « Non lues » SHALL ne garder que les conversations ayant des messages non lus.
 
 #### Scenario: Bouton de retour
 - **WHEN** l'utilisateur ouvre `/messages`
@@ -148,3 +148,15 @@ Le système SHALL présenter la page Messages comme les pages de comptes et de f
 #### Scenario: Filtre des non lues
 - **WHEN** l'utilisateur choisit « Non lues »
 - **THEN** seules les conversations avec des messages non lus sont listées, ou « Aucune conversation non lue » s'il n'y en a pas
+
+#### Scenario: Recherche par nom
+- **WHEN** l'utilisateur saisit « lea » dans « Rechercher une personne »
+- **THEN** seules les conversations dont l'interlocuteur s'appelle Léa (sans tenir compte de la casse ni des accents) sont listées
+
+#### Scenario: Filtre par rôle
+- **WHEN** l'utilisateur choisit « Stagiaire » dans le menu « Rôle »
+- **THEN** seules les conversations avec des stagiaires sont listées
+
+#### Scenario: Filtres combinés
+- **WHEN** une recherche, un rôle et « Non lues » sont choisis ensemble
+- **THEN** une conversation n'est listée que si elle satisfait les trois, sinon « Aucune conversation trouvée. Essayez un autre terme ou un autre filtre. »

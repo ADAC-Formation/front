@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { Search } from 'lucide-react'
 import { useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
+import { ROLES, roleLabels } from '../../../utils/roles'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 import { useCurrentUser } from '../../auth/hooks'
 import ConversationList from '../components/ConversationList'
@@ -88,9 +90,13 @@ const FILTERS = [
   { value: 'unread', label: 'Non lues', color: 'var(--color-red)' },
 ]
 
+const ROLE_OPTIONS = [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.STAGIAIRE]
+
 const MessagesPage = () => {
   const { userId } = useParams()
   const [filter, setFilter] = useState('all')
+  const [role, setRole] = useState('all')
+  const [search, setSearch] = useState('')
   const [creating, setCreating] = useState(false)
 
   return (
@@ -108,6 +114,31 @@ const MessagesPage = () => {
           Nouvelle conversation
         </button>
       </div>
+
+      <section className={styles.toolbar}>
+        <div className={styles.searchContainer}>
+          <Search size={18} aria-hidden="true" />
+          <input
+            type="search"
+            aria-label="Rechercher une personne"
+            placeholder="Rechercher une personne…"
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+          />
+        </div>
+
+        <div className={styles.sortContainer}>
+          <label htmlFor="conversations-role">Rôle :</label>
+          <select id="conversations-role" value={role} onChange={(event) => setRole(event.target.value)}>
+            <option value="all">Tous les rôles</option>
+            {ROLE_OPTIONS.map((value) => (
+              <option key={value} value={value}>
+                {roleLabels[value]}
+              </option>
+            ))}
+          </select>
+        </div>
+      </section>
 
       <fieldset className={styles.filters}>
         <legend className={styles.srOnly}>Conversations affichées</legend>
@@ -131,7 +162,7 @@ const MessagesPage = () => {
       <div className={styles.host}>
         <div className={styles.layout} data-view={userId ? 'thread' : 'list'}>
           <section className={styles.listPane} aria-label="Conversations">
-            <ConversationList activeUserId={userId} filter={filter} />
+            <ConversationList activeUserId={userId} filters={{ status: filter, role, search }} />
           </section>
 
           <section className={styles.threadPane} aria-label="Fil de discussion">

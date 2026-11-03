@@ -91,16 +91,39 @@ describe('ConversationList', () => {
 
   it('le filtre « unread » ne garde que les conversations avec des non lus', async () => {
     mockConversations()
-    render({ filter: 'unread' })
+    render({ filters: { status: 'unread' } })
     const items = await screen.findAllByRole('listitem')
     expect(items).toHaveLength(1)
     expect(within(items[0]).getByText('Anne Martin')).toBeInTheDocument()
     expect(screen.getByText('1 conversation')).toBeInTheDocument()
   })
 
+  it('filtre par rôle et par nom, et dit quand rien ne correspond', async () => {
+    mockConversations()
+    render({ filters: { role: 'SUPER_ADMIN' } })
+    const items = await screen.findAllByRole('listitem')
+    expect(items).toHaveLength(1)
+    expect(within(items[0]).getByText('Chargée Dev')).toBeInTheDocument()
+  })
+
+  it('la recherche ne garde que les noms qui correspondent', async () => {
+    mockConversations()
+    render({ filters: { search: 'anne' } })
+    const items = await screen.findAllByRole('listitem')
+    expect(items).toHaveLength(1)
+    expect(within(items[0]).getByText('Anne Martin')).toBeInTheDocument()
+  })
+
+  it('invite à changer de terme ou de filtre quand aucune conversation ne correspond', async () => {
+    mockConversations()
+    render({ filters: { search: 'zzz' } })
+    expect(await screen.findByText(/Aucune conversation trouvée/)).toBeInTheDocument()
+    expect(screen.getByRole('status')).toHaveTextContent('autre terme')
+  })
+
   it('le filtre « unread » sans aucun non lu affiche un message dédié', async () => {
     mockConversations([{ ...CONVERSATIONS[0], unreadCount: 0 }])
-    render({ filter: 'unread' })
+    render({ filters: { status: 'unread' } })
     expect(await screen.findByText('Aucune conversation non lue')).toBeInTheDocument()
   })
 

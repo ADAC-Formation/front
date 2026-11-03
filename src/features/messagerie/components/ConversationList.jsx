@@ -2,6 +2,7 @@ import { Link } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import { useCurrentUser } from '../../auth/hooks'
 import { useConversations } from '../hooks'
+import { filterConversations, hasActiveFilters } from '../conversationFilters'
 import { displayName, formatMessageDate } from '../messageLabels'
 import { unreadLabel } from '../unread'
 import styles from './ConversationList.module.css'
@@ -37,8 +38,8 @@ function ConversationRow({ conversation, isActive, currentUserId }) {
 }
 
 // Liste des conversations (plus récente d'abord, ordre du back). Le contenu est rendu en texte.
-// `activeUserId` : conversation ouverte ; `filter` : « all » (défaut) ou « unread » (côté client).
-const ConversationList = ({ activeUserId, filter = 'all' }) => {
+// `activeUserId` : conversation ouverte ; `filters` : { status, role, search } (voir conversationFilters.js).
+const ConversationList = ({ activeUserId, filters = {} }) => {
   const { user } = useCurrentUser()
   const { data: conversations, isLoading, isError, refetch } = useConversations()
 
@@ -59,9 +60,17 @@ const ConversationList = ({ activeUserId, filter = 'all' }) => {
     return <p className={styles.empty}>Aucune conversation pour le moment</p>
   }
 
-  const shown =
-    filter === 'unread' ? conversations.filter((conversation) => conversation.unreadCount > 0) : conversations
-  if (shown.length === 0) return <p className={styles.empty}>Aucune conversation non lue</p>
+  const shown = filterConversations(conversations, filters)
+  if (shown.length === 0) {
+    const onlyUnread = filters.status === 'unread' && !hasActiveFilters({ ...filters, status: 'all' })
+    return onlyUnread ? (
+      <p className={styles.empty}>Aucune conversation non lue</p>
+    ) : (
+      <p role="status" className={styles.empty}>
+        Aucune conversation trouvée. Essayez un autre terme ou un autre filtre.
+      </p>
+    )
+  }
 
   return (
     <>

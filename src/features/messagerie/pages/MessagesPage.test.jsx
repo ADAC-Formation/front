@@ -119,6 +119,51 @@ describe('MessagesPage — gabarit des autres pages', () => {
     expect(await screen.findByText('Chargée Dev')).toBeInTheDocument()
   })
 
+  it('propose une recherche par nom et un filtre par rôle, comme les pages de comptes', async () => {
+    renderPage('/messages')
+    expect(screen.getByRole('searchbox', { name: 'Rechercher une personne' })).toBeInTheDocument()
+    const role = screen.getByRole('combobox', { name: /^Rôle/ })
+    expect(within(role).getAllByRole('option').map((o) => o.textContent)).toEqual([
+      'Tous les rôles',
+      'Chargée de formation',
+      'Formateur',
+      'Stagiaire',
+    ])
+    await screen.findByText('Anne Martin')
+  })
+
+  it('la recherche filtre la liste au fil de la saisie', async () => {
+    renderPage('/messages')
+    await screen.findByText('Chargée Dev')
+    await userEvent.type(screen.getByRole('searchbox', { name: 'Rechercher une personne' }), 'anne')
+    expect(screen.queryByText('Chargée Dev')).not.toBeInTheDocument()
+    expect(screen.getByText('Anne Martin')).toBeInTheDocument()
+    expect(screen.getByText('1 conversation')).toBeInTheDocument()
+  })
+
+  it('le filtre par rôle ne garde que ce rôle', async () => {
+    renderPage('/messages')
+    await screen.findByText('Chargée Dev')
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: /^Rôle/ }), 'ADMIN')
+    expect(screen.queryByText('Chargée Dev')).not.toBeInTheDocument()
+    expect(screen.getByText('Anne Martin')).toBeInTheDocument()
+  })
+
+  it('combine recherche, rôle et « Non lues »', async () => {
+    renderPage('/messages')
+    await screen.findByText('Chargée Dev')
+    await userEvent.click(screen.getByRole('radio', { name: 'Non lues' }))
+    await userEvent.selectOptions(screen.getByRole('combobox', { name: /^Rôle/ }), 'SUPER_ADMIN')
+    expect(await screen.findByText(/Aucune conversation non lue|Aucune conversation trouvée/)).toBeInTheDocument()
+    expect(screen.queryByText('Anne Martin')).not.toBeInTheDocument()
+  })
+
+  it('n\'a aucune violation d\'accessibilité avec la barre d\'outils', async () => {
+    const { container } = renderPage('/messages')
+    await screen.findByText('Anne Martin')
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
   it('la liste des conversations est dans une carte arrondie (comme les autres pages)', () => {
     const css = stripComments(cssSheets['src/features/messagerie/pages/MessagesPage.module.css'])
     expect(css).toMatch(/\.listPane[^{]*\{[^}]*border:\s*1px solid var\(--border\)/)
