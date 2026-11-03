@@ -31,10 +31,10 @@
 
 ## 6. Page, routes et nouvelle conversation (TDD)
 
-- [ ] 6.1 RED : `MessagesPage.test.jsx` — `/messages` (liste, état vide avec « Nouvelle conversation »), `/messages/:userId` (fil), fil d'un interlocuteur hors destinataires (lecture seule avec avis) et fil absent hors droit (« Conversation introuvable » + `BackButton` vers `/messages`), `NewConversation` (destinataires par rôle, choix → navigation vers `/messages/:id`), check jest-axe (liste et fil), redirection vers la connexion sans session
-- [ ] 6.2 Créer `pages/MessagesPage.jsx` (`PageShell`, deux volets / deux écrans par requêtes de conteneur en `rem`, D61), `NewConversation`, brancher `messages` et `messages/:userId` dans `router/router.jsx` avec `lazyPage`, supprimer `components/Pages/Stagiaire/Messages/` ; GREEN ; `npm run check` (budget du bundle : la page reste hors de l'entrée)
-- [ ] 6.3 Mettre à jour `src/test/mobile-layout.test.js` (garde-fous de la page) et `SiteMapPage` si le lien « Messages » change
-- [ ] 6.4 Commit `feat: add the messaging page`
+- [x] 6.1 RED : `MessagesPage.test.jsx` — `/messages` (liste, état vide avec « Nouvelle conversation »), `/messages/:userId` (fil), fil d'un interlocuteur hors destinataires (lecture seule avec avis) et fil absent hors droit (« Conversation introuvable » + `BackButton` vers `/messages`), `NewConversation` (destinataires par rôle, choix → navigation vers `/messages/:id`), check jest-axe (liste et fil), redirection vers la connexion sans session
+- [x] 6.2 Créer `pages/MessagesPage.jsx` (`PageShell`, deux volets / deux écrans par requêtes de conteneur en `rem`, D61), `NewConversation`, brancher `messages` et `messages/:userId` dans `router/router.jsx` avec `lazyPage`, supprimer `components/Pages/Stagiaire/Messages/` ; GREEN ; `npm run check` (budget du bundle : la page reste hors de l'entrée)
+- [x] 6.3 Mettre à jour `src/test/mobile-layout.test.js` (garde-fous de la page) et `SiteMapPage` si le lien « Messages » change
+- [x] 6.4 Commit `feat: add the messaging page`
 
 ## 7. Pastille et bouton sur les comptes (TDD)
 

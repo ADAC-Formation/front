@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import Alert from '../../../components/atoms/Alert/Alert'
 import FormButton from '../../../components/atoms/FormButton/FormButton'
 import FormField from '../../../components/molecules/FormField/FormField'
@@ -17,12 +17,12 @@ function sendErrorMessage(error) {
 // Saisie d'un message à `recipientId`. Entrée insère un saut de ligne ; seul « Envoyer » envoie.
 // Le texte est conservé quand l'envoi échoue.
 const MessageComposer = ({ recipientId }) => {
-  const { register, handleSubmit, reset, watch, formState } = useForm({ defaultValues: { content: '' } })
+  const { register, handleSubmit, reset, control, formState } = useForm({ defaultValues: { content: '' } })
   const { mutate, isPending } = useSendMessage()
   const [sendError, setSendError] = useState(null)
   const [sent, setSent] = useState(false)
 
-  const remaining = remainingCharacters(watch('content'))
+  const remaining = remainingCharacters(useWatch({ control, name: 'content' }) ?? '')
 
   const onSubmit = ({ content }) => {
     setSendError(null)

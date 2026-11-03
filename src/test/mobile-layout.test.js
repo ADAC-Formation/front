@@ -130,3 +130,30 @@ describe('grands écrans : l’espace est mieux occupé (D62)', () => {
     expect(page.body).toMatch(/justify-content:\s*flex-start/)
   })
 })
+
+describe('messagerie : deux volets (H6)', () => {
+  const page = 'src/features/messagerie/pages/MessagesPage.module.css'
+
+  it('les deux volets n’existent que dans une requête @container en rem (ils suivent « Grand texte »)', () => {
+    const css = sheet(page)
+    expect(css).toMatch(/container-type:\s*inline-size/)
+    expect(css).toMatch(/@container\s*\(min-width:\s*[\d.]+rem\)/)
+    expect(css).not.toMatch(/@media\s*\(\s*(min|max)-width/)
+    const base = css.slice(0, css.indexOf('@container'))
+    expect(base).not.toMatch(/grid-template-columns:\s*minmax\(16rem/)
+  })
+
+  it('étroit : un seul volet à la fois, selon l’adresse', () => {
+    const css = sheet(page)
+    const base = css.slice(0, css.indexOf('@container'))
+    expect(base).toMatch(/data-view='list'\]\s*\.threadPane/)
+    expect(base).toMatch(/data-view='thread'\]\s*\.listPane/)
+  })
+
+  it('le bouton « Retour » n’est masqué que lorsque les deux volets sont visibles', () => {
+    const css = sheet(page)
+    const base = css.slice(0, css.indexOf('@container'))
+    expect(base).not.toMatch(/\.backSlot\s*\{[^}]*display:\s*none/)
+    expect(css.slice(css.indexOf('@container'))).toMatch(/\.backSlot\s*\{[^}]*display:\s*none/)
+  })
+})
