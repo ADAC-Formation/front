@@ -9,7 +9,7 @@
 
 - [x] 2.1 RED : `recipients.test.js` (chargée de formation → tout le monde actif ; formateur → stagiaires + chargée connue ; stagiaire → formateurs distincts + chargée connue ; sans soi-même, sans compte inactif, sans doublon ; `canWriteTo`), `messageForm.test.js` (vide, espaces, 5000 accepté, 5001 refusé, texte conservé tel quel), `unread.test.js` (somme des `unreadCount`, liste vide, valeurs absentes)
 - [x] 2.2 Créer `recipients.js`, `messageForm.js` et `unread.js` ; GREEN
-- [ ] 2.3 Commit `feat: add the messaging rules`
+- [x] 2.3 Commit `feat: add the messaging rules`
 
 ## 3. Appels et hooks (TDD)
 
