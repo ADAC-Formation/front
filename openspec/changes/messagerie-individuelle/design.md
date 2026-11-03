@@ -38,7 +38,7 @@
 
 9. **Bouton sur les comptes** : `AccountDetailPage` affiche « Envoyer un message » (lien vers `/messages/:id`) quand `canWriteTo` l'autorise ; il s'appuie sur `useRecipients` (donc sur les mêmes règles H1).
 
-10. **Tests** : `src/test/messages.js` (`mockConversations`, `mockThread`, `mockSendMessage`, `mockMarkRead`, `mockRecipients` déclarant les routes MSW) ; tout test qui rend la tuile « Messages » doit déclarer `mockConversations()` (comme `mockCategories()` pour la liste de formations). Un check jest-axe par page.
+10. **Tests** : `src/test/messages.js` (`mockConversations`, `mockThread`, `mockSendMessage`, `mockMarkRead`, `mockRecipients` déclarant les routes MSW) ; `GET /api/messages` répond `[]` par défaut dans le serveur MSW de test (la pastille de la tuile l'appelle en arrière-plan à chaque rendu de l'accueil ; une requête tardive faisait échouer le test suivant sous charge) ; un test qui vérifie la liste ou la pastille déclare `mockConversations()`. Un check jest-axe par page.
 
 ## Risks / Trade-offs
 

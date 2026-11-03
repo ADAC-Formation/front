@@ -116,6 +116,10 @@ Proposition : `GET /api/messages/recipients` → `UserResponse[]` des destinatai
 
 ### Limite du message** : le code du back impose `content` non vide et 5000 caractères au plus (`SendMessageRequest`), mais `tech.md` §7 ne le dit pas. Peux-tu l'ajouter au contrat ?
 
+### Messagerie : deux écarts avec `tech.md` relevés sur le back local (2026-11-03)
+- Un destinataire **inconnu** à `POST /messages/send` répond `403` « Vous ne pouvez pas écrire à ce destinataire », alors que `tech.md` §7 annonce `404`. Le front traite les deux de la même façon ; peux-tu aligner le contrat ou le code ?
+- `createdAt` / `readAt` des messages sont renvoyés en UTC avec `Z` et microsecondes (`2026-11-03T09:45:10.02948Z`), alors que `tech.md` les décrit comme `LocalDateTime`. Sans conséquence pour le front (il convertit à l'heure locale) ; à confirmer que c'est voulu.
+
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
 Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.
