@@ -19,9 +19,9 @@
 
 ## 4. Liste des conversations (TDD)
 
-- [ ] 4.1 RED : `ConversationList.test.jsx` — ordre, extrait, date, non lus en évidence avec texte accessible (« 2 messages non lus »), état vide, chargement annoncé, erreur avec « Réessayer », lien de chaque ligne vers `/messages/:id`
-- [ ] 4.2 Créer `ConversationList` (CSS Module, jetons, rem, anneau de focus global) ; GREEN
-- [ ] 4.3 Commit `feat: add the conversation list`
+- [x] 4.1 RED : `ConversationList.test.jsx` — ordre, extrait, date, non lus en évidence avec texte accessible (« 2 messages non lus »), état vide, chargement annoncé, erreur avec « Réessayer », lien de chaque ligne vers `/messages/:id`
+- [x] 4.2 Créer `ConversationList` (CSS Module, jetons, rem, anneau de focus global) ; GREEN
+- [x] 4.3 Commit `feat: add the conversation list`
 
 ## 5. Fil et saisie (TDD)
 
