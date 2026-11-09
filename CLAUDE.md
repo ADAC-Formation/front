@@ -55,6 +55,7 @@ Clone local du back : `../../back-readonly` (branche `dev`).
 | `../../back-readonly/docs/INFRASTRUCTURE.md` | Infra / déploiement (info seulement)                                     |
 | `../../back-readonly/docs/STACK.md`          | Stack de test prévue (Vitest + Testing Library + MSW)                    |
 | `docs/decisions-front-foundations.md`        | Décisions en vigueur D1–D33 du front                                     |
+| `docs/design-site.md`                        | Design alternatif aux couleurs et polices du site de l'ADAC (`?design=site`), pour la réunion avec l'ADAC |
 | `docs/design-front.md`                       | Design du front (structure de `DESIGN.md`) — référence visuelle, D41     |
 | `docs/en-cours.md`                           | **Reprendre ici** : travail en cours, en attente de Charlotte ou de l'ADAC |
 | `docs/points-pour-charlotte.md`              | Décisions, impacts sur le back, questions et conflits `tech.md`          |

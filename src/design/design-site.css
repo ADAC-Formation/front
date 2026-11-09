@@ -1,0 +1,68 @@
+/*
+ * Design alternatif « couleurs et polices du site de l'ADAC » (docs/design-site.md).
+ * Activé par ?design=site (src/design/designVariant.js) : la classe `design-site` sur <html> redéfinit
+ * des jetons, rien d'autre. Valeurs relevées sur https://www.adac.asso.fr/ le 2026-11-09 (thème BeTheme) :
+ * titres Lato fins, texte Manrope, rouge #cc3d34, texte #656b6f, fond blanc, liens rouges puis orange.
+ * Les options d'accessibilité gardent la priorité : `:not(.high-contrast)` et `:not(.readable-font)`.
+ */
+
+/* Polices auto-hébergées (D31) : importées avec ce fichier, donc téléchargées seulement avec ce design. */
+@import "@fontsource/lato/300.css";
+@import "@fontsource/lato/400.css";
+@import "@fontsource/lato/700.css";
+@import "@fontsource-variable/manrope/index.css";
+
+html.design-site:not(.readable-font) {
+  --font-display: "Lato", -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-sans: "Manrope Variable", -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+html.design-site:not(.high-contrast) {
+  /* Charte du site */
+  --color-red: #cc3d34;
+  --color-pink: #f35e6c;
+  --color-orange: #d9812c;
+
+  /* Le site n'a pas de jaune : le rôle « accent » (bouton principal, survol, sélection) passe au rouge. */
+  --color-yellow: #cc3d34;
+  --color-on-yellow: #ffffff;
+  --color-action: #cc3d34;
+  --color-on-action: #ffffff;
+  --accent: #cc3d34;
+  --accent-foreground: #ffffff;
+  --jaune: #12427c; /* tuile « Profil » : bleu de la charte du portail, le jaune n'existe pas sur le site */
+
+  /* Fond blanc, texte gris du site */
+  --background: #ffffff;
+  --foreground: #656b6f;
+  --card: #ffffff;
+  --card-foreground: #656b6f;
+  --muted: #f5f5f5;
+  --muted-foreground: #626262;
+  --border: #ebebeb;
+  --ring: #161922;
+}
+
+/* Mode sombre : bleu nuit du site (#161922). */
+html.design-site.dark:not(.high-contrast):not(.light-background) {
+  --background: #161922;
+  --foreground: #ebebeb;
+  --card: #20242f;
+  --card-foreground: #ebebeb;
+  --muted: #20242f;
+  --muted-foreground: #bbbbbb;
+  --border: #3a3f4d;
+  --ring: #f35e6c;
+  --color-yellow: #f35e6c;
+  --color-on-yellow: #161922;
+  --color-action: #f35e6c;
+  --color-on-action: #161922;
+  --accent: #f35e6c;
+  --accent-foreground: #161922;
+}
+
+/* Titres de page : fins et rouges comme sur le site. */
+html.design-site:not(.high-contrast) h1 {
+  color: var(--color-red);
+  font-weight: 300;
+}

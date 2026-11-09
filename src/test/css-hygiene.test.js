@@ -31,7 +31,8 @@ describe('feuilles de style : couleurs', () => {
   it('aucune couleur hexadécimale en dur hors index.css (utiliser un jeton)', () => {
     const violations = []
     for (const [file, raw] of Object.entries(cssSheets)) {
-      if (file === GLOBAL_SHEET) continue
+      // index.css et design-site.css (design alternatif) définissent les jetons : les hex y sont leur raison d'être.
+      if (file === GLOBAL_SHEET || file === 'src/design/design-site.css') continue
       for (const [, hex] of stripComments(raw).matchAll(/(#[0-9a-fA-F]{3,8})\b/g)) {
         violations.push(`${file} : couleur ${hex} écrite en dur`)
       }
