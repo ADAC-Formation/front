@@ -1,3 +1,4 @@
+import { useSyncExternalStore } from 'react'
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
@@ -138,13 +139,19 @@ function FormationsScreen() {
   )
 }
 
+// La sonde suit le cache (et non une lecture unique au rendu) : une réponse tardive ou un retrait
+// du cache juste après la navigation ne doivent pas figer un état périmé.
 function LoggedOutScreen() {
   const queryClient = useQueryClient()
   const { user } = useCurrentUser()
+  const hasCachedFormations = useSyncExternalStore(
+    (notify) => queryClient.getQueryCache().subscribe(notify),
+    () => Boolean(queryClient.getQueryData(['formations'])),
+  )
   return (
     <>
       <p>{user ? user.role : 'visiteur'}</p>
-      <p>{queryClient.getQueryData(['formations']) ? 'cache plein' : 'cache vide'}</p>
+      <p>{hasCachedFormations ? 'cache plein' : 'cache vide'}</p>
     </>
   )
 }
@@ -170,16 +177,26 @@ describe('useLogout', () => {
     ],
   ])('vide la session et redirige vers /login quand le back répond %s', async (_label, respond) => {
     mockSession('STAGIAIRE')
+    // Comme le vrai back : une fois la déconnexion demandée, le cookie est parti et les données répondent 401.
+    // Sinon une relecture tardive de la page qui se démonte remplirait de nouveau le cache.
+    let loggedOut = false
     server.use(
-      http.get(`${API_URL}/formations`, () => HttpResponse.json([{ id: 1 }])),
-      http.post(`${API_URL}/auth/logout`, respond),
+      http.get(`${API_URL}/formations`, () =>
+        loggedOut
+          ? HttpResponse.json({ status: 401, message: 'Non authentifié', details: [] }, { status: 401 })
+          : HttpResponse.json([{ id: 1 }]),
+      ),
+      http.post(`${API_URL}/auth/logout`, (info) => {
+        loggedOut = true
+        return respond(info)
+      }),
     )
     renderWithProviders(<LogoutApp />, { route: '/formations', withSession: true })
     expect(await screen.findByText('formations affichées')).toBeInTheDocument()
     await userEvent.click(screen.getByText('quitter'))
     await waitFor(() => expect(screen.getByTestId('path')).toHaveTextContent('/login'))
-    expect(screen.getByText('visiteur')).toBeInTheDocument()
-    expect(screen.getByText('cache vide')).toBeInTheDocument()
+    expect(await screen.findByText('visiteur')).toBeInTheDocument()
+    expect(await screen.findByText('cache vide')).toBeInTheDocument()
   })
 })
 

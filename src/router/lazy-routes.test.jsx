@@ -6,6 +6,7 @@ import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, mockAccountList } from '../test/accounts'
+import { mockCategories } from '../test/categories'
 import { mockFormationList } from '../test/formations'
 
 function renderApp(path) {
@@ -44,6 +45,7 @@ describe('routes chargées à la demande', () => {
   it('/formations affiche la page des formations', async () => {
     mockSession('SUPER_ADMIN')
     mockFormationList()
+    mockCategories() // le filtre « Catégorie » de la liste
     renderApp('/formations')
     expect(await screen.findByRole('heading', { level: 1, name: 'Formations' })).toBeInTheDocument()
   })
