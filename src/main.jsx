@@ -6,6 +6,7 @@ import { router } from "./router/router"
 import { ThemeProvider } from './context/ThemeProvider'
 import { createQueryClient } from './api/queryClient'
 import { prefetchSession } from './features/auth/hooks'
+import './fonts.css'
 import './index.css'
 import { applyDesignVariant } from './design/designVariant'
 

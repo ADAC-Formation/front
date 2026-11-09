@@ -60,8 +60,8 @@ select {
 
 
   /* Typography */
-  --font-display: "Syne", sans-serif;
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-display: "Syne Variable", "Syne", sans-serif;
+  --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
 
   /* Layout */
   --logo-space: 220px;
