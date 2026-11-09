@@ -56,6 +56,7 @@ Clone local du back : `../../back-readonly` (branche `dev`).
 | `../../back-readonly/docs/STACK.md`          | Stack de test prévue (Vitest + Testing Library + MSW)                    |
 | `docs/decisions-front-foundations.md`        | Décisions en vigueur D1–D33 du front                                     |
 | `docs/design-front.md`                       | Design du front (structure de `DESIGN.md`) — référence visuelle, D41     |
+| `docs/en-cours.md`                           | **Reprendre ici** : travail en cours, en attente de Charlotte ou de l'ADAC |
 | `docs/points-pour-charlotte.md`              | Décisions, impacts sur le back, questions et conflits `tech.md`          |
 | `docs/questions-pour-adac.md`                | Questions pour l'ADAC (documents obligatoires, champs d'une formation) — pas pour Charlotte |
 | `docs/spec.md`, `docs/plan-de-proyecto.md`   | Spec et plan du front                                                    |

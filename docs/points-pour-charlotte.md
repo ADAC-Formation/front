@@ -22,7 +22,7 @@
 | Q11a `PUT` | `formateurId` absent ou `null` = inchangé ; à la création `null` = chargée connectée ; le contournement du front est correct | Commentaire mis à jour |
 | Q11b `PATCH /formateur` | 500 à corriger (404/405) | — |
 | Q12 import | `details[]` `{ligne, colonne, message}` d'accord sur le principe ; attend le vrai fichier de l'ADAC (§E) | En attente |
-| Q13 | Mergé (PR #13) | Fait côté front ; reste le test manuel sur le vrai back |
+| Q13 | Mergé (PR #13) | Fait côté front ; test manuel sur le vrai back validé le 2026-11-09 |
 | Q14 `GET /messages/recipients` | Proposé ; **Manon : OK** | `useRecipients` appelle l'endpoint après merge |
 | Q15 | `PATCH /api/messages/conversations/{conversationId}/read` ; **Manon : OK pour ce chemin** | `markThreadRead` en un appel après merge |
 | Limite du message | 1–5000 caractères, ajoutée à `tech.md` §7 | Déjà appliquée |
