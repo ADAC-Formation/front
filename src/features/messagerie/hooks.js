@@ -47,13 +47,14 @@ export function useSendMessage() {
   })
 }
 
-// `mutate({ messages, currentUserId })`. La liste est rechargée seulement si des messages ont été marqués.
+// `mutate({ messages, currentUserId })` ; renvoie les ids effectivement marqués. La liste est rechargée
+// seulement si des messages ont été marqués.
 export function useMarkThreadRead() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ messages, currentUserId }) => markThreadRead(messages, currentUserId),
-    onSuccess: (markedCount) => {
-      if (markedCount > 0) queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY })
+    onSuccess: (markedIds) => {
+      if (markedIds.length > 0) queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY })
     },
   })
 }

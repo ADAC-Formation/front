@@ -23,7 +23,7 @@ function ConversationRow({ conversation, isActive, currentUserId }) {
           <span className={styles.date}>{formatMessageDate(lastMessage.createdAt)}</span>
         </span>
         <span className={styles.preview}>
-          {lastMessage.sender.id === currentUserId && <span className={styles.you}>Vous : </span>}
+          {lastMessage.sender?.id === currentUserId && <span className={styles.you}>Vous : </span>}
           {lastMessage.content}
         </span>
         {isUnread && (

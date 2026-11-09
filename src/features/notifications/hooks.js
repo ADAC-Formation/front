@@ -35,9 +35,10 @@ export function useNotifications(status = 'all') {
 
 // Mise à jour optimiste de la cloche (N4) : on applique `update` au cache `unread` tout de suite,
 // on restaure l'instantané si le back échoue, puis on recharge tout ce qui concerne les notifications.
-function useOptimisticBellMutation(mutationFn, update) {
+function useOptimisticBellMutation(mutationFn, update, mutationKey) {
   const queryClient = useQueryClient()
   return useMutation({
+    mutationKey,
     mutationFn,
     onMutate: async (variable) => {
       await queryClient.cancelQueries({ queryKey: UNREAD_KEY })
@@ -74,8 +75,11 @@ function withoutNotification(unread, id) {
   }
 }
 
+// Clé commune : la cloche (toujours montée) annonce l'échec d'un marquage lancé de n'importe où.
+export const MARK_AS_READ_KEY = [...NOTIFICATIONS_KEY, 'mark-as-read']
+
 export function useMarkAsRead() {
-  return useOptimisticBellMutation(markNotificationAsRead, withoutNotification)
+  return useOptimisticBellMutation(markNotificationAsRead, withoutNotification, MARK_AS_READ_KEY)
 }
 
 export function useRemoveFromBell() {

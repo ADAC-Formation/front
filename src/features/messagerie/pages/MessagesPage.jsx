@@ -22,7 +22,7 @@ function participantName(userId, { conversations, messages, recipients, me }) {
   const fromConversation = conversations?.find((c) => c.conversationId === id)?.participant
   const fromMessages = messages
     ?.flatMap((message) => [message.sender, ...message.recipients])
-    .find((person) => person.id === id && person.id !== me?.id)
+    .find((person) => person?.id === id && person.id !== me?.id)
   const person = fromConversation ?? fromMessages ?? recipients.find((r) => r.id === id)
   return person ? displayName(person) : 'Conversation'
 }

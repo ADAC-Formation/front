@@ -49,3 +49,10 @@ describe('unreadIncomingIds', () => {
     expect(unreadIncomingIds(messages, undefined)).toEqual([])
   })
 })
+
+describe('unreadIncomingIds — expéditeur inconnu', () => {
+  it('ignore un message sans expéditeur au lieu de planter', () => {
+    const messages = [{ id: 1, sender: null, readAt: null }, { id: 2, sender: { id: 9 }, readAt: null }]
+    expect(unreadIncomingIds(messages, 3)).toEqual([1, 2])
+  })
+})

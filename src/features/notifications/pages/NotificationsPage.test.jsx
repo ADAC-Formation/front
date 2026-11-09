@@ -4,6 +4,8 @@ import { axe } from 'jest-axe'
 import { useLocation } from 'react-router'
 import { renderWithProviders } from '../../../test/render'
 import { mockNotificationApi } from '../../../test/notifications'
+import { mockSession } from '../../../test/session'
+import { NotificationBell } from '../components/NotificationBell'
 import NotificationsPage from './NotificationsPage'
 
 function LocationProbe() {
@@ -198,5 +200,37 @@ describe('NotificationsPage — données incomplètes', () => {
     await waitFor(() => expect(screen.getByLabelText('Organiser par :')).toHaveValue('oldest'))
     expect(itemTexts()[0]).toContain('Avec date')
     expect(itemTexts()[1]).toContain('Sans date')
+  })
+})
+
+describe('NotificationsPage — dates et échec de marquage', () => {
+  it('trie par instant réel, quels que soient les décalages horaires et les fractions de seconde', async () => {
+    const at = (id, createdAt) => ({ id, type: 'NEW_MESSAGE', content: `N${id}`, entityType: null, entityId: null, isRead: true, createdAt })
+    mockNotificationApi({
+      notifications: [
+        at(1, '2026-11-02T10:30:00+01:00'), // 09:30 UTC
+        at(2, '2026-11-02T10:00:00Z'),
+        at(3, '2026-11-02T10:10:00Z'),
+        at(4, '2026-11-02T10:00:00.5Z'),
+      ],
+    })
+    renderPage()
+    await screen.findByText('N1')
+    expect(itemTexts().map((text) => text.match(/N\d/)[0])).toEqual(['N3', 'N4', 'N2', 'N1'])
+  })
+
+  it('annonce, par la cloche, l’échec du marquage lancé depuis l’historique', async () => {
+    mockSession('STAGIAIRE')
+    mockNotificationApi({ failWrites: true })
+    const user = userEvent.setup()
+    renderWithProviders(
+      <>
+        <NotificationBell />
+        <NotificationsPage />
+      </>,
+      { withSession: true },
+    )
+    await user.click(await screen.findByRole('button', { name: /^Message.*Nouveau message de Marie/ }))
+    expect(await screen.findByText("La notification n'a pas pu être mise à jour. Réessayez.")).toBeInTheDocument()
   })
 })

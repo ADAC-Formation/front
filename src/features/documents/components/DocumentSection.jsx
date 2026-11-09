@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Alert from '../../../components/atoms/Alert/Alert'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { useCurrentUser } from '../../auth/hooks'
+import { ROLES } from '../../../utils/roles'
 import { canDeleteDocument, canUploadDocument } from '../documentFiles'
 import { useDeleteDocument, useDocuments, useDownloadDocument, useUploadDocuments } from '../hooks'
 import DocumentDropzone from './DocumentDropzone'
@@ -88,7 +89,7 @@ const DocumentSection = ({ formation, className }) => {
       {documents.data?.length > 0 && (
         <DocumentList
           documents={documents.data}
-          canDelete={(document) => canDeleteDocument(user, formation, document)}
+          canDelete={(document) => user?.role !== ROLES.STAGIAIRE && canDeleteDocument(user, formation, document)}
           onDownload={handleDownload}
           onDelete={askDelete}
           downloadingId={downloadingId}

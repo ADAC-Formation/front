@@ -82,6 +82,24 @@ describe('Thread', () => {
     expect(calls.count).toBe(0)
   })
 
+  it('réessaie au rechargement suivant un marquage qui avait échoué', async () => {
+    mockThread(10)
+    const calls = mockMarkRead({ failIds: [2, 3], failOnce: true })
+    render()
+    await screen.findAllByRole('listitem')
+    await waitFor(() => expect(calls.ids.length).toBe(2))
+    window.dispatchEvent(new Event('visibilitychange'))
+    await waitFor(() => expect(calls.ids.length).toBe(4))
+    expect([...calls.ids].sort()).toEqual([2, 2, 3, 3])
+  })
+
+  it('affiche un message dont l’expéditeur est inconnu, sans planter', async () => {
+    mockThread(10, [makeMessage({ id: 8, sender: null, recipients: [USERS.STAGIAIRE], content: 'Ancien message', readAt: '2026-11-02T10:00:00' })])
+    render()
+    expect(await screen.findByText('Ancien message')).toBeInTheDocument()
+    expect(screen.getByText('Expéditeur inconnu')).toBeInTheDocument()
+  })
+
   it('affiche le fil même quand le marquage échoue', async () => {
     mockThread(10)
     mockMarkRead({ failIds: [2, 3] })
