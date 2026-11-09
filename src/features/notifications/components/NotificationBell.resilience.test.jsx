@@ -183,4 +183,28 @@ describe('annonces : erreurs et nouvelles notifications', () => {
     expect(screen.getByRole('status')).not.toHaveTextContent(/nouvelle/)
     expect(screen.getByTestId('path')).toHaveTextContent('/messages/7')
   })
+  it('annonce une nouvelle notification arrivée en même temps qu’une lecture, même si le total ne monte pas', async () => {
+    const calls = mockNotificationApi()
+    const user = userEvent.setup()
+    renderBell()
+    await user.click(await bellButton())
+    await screen.findByText('Nouveau message de Marie')
+    calls.state.push(NEW) // arrive côté back avant que la cloche ne relise : 3 non lues − 1 lue + 1 nouvelle = 3
+    await user.click(openButton('Nouveau message de Marie'))
+
+    await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('1 nouvelle notification'))
+  })
+
+  it('annonce de nouveau un échec identique au précédent (le message est remplacé, donc relu)', async () => {
+    mockNotificationApi({ failWrites: true })
+    const user = userEvent.setup()
+    renderBell()
+    await user.click(await bellButton())
+    await user.click(await screen.findByRole('button', { name: 'Tout marquer comme lu' }))
+    const first = await within(screen.getByRole('status')).findByText(ERROR_TEXT)
+
+    await user.click(await screen.findByRole('button', { name: 'Tout marquer comme lu' }))
+
+    await waitFor(() => expect(within(screen.getByRole('status')).getByText(ERROR_TEXT)).not.toBe(first))
+  })
 })
