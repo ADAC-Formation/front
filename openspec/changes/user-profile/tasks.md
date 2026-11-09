@@ -23,4 +23,4 @@ Branche `feature/profile` (depuis `dev`). TDD : tests rouges avant le code.
 ## 4. Clôture
 
 - [x] 4.1 `npm run check` vert ; mettre à jour `CLAUDE.md`, `docs/spec.md` et `docs/points-pour-charlotte.md` (Q1 : route toujours absente du back `dev`)
-- [ ] 4.2 Passage manuel sur le vrai back local (informations, interrupteur ; le mot de passe attend la route du back), puis `/code-review` et archivage
+- [x] 4.2 Passage manuel sur le vrai back local (informations, interrupteur ; le mot de passe attend la route du back), puis `/code-review` et archivage
