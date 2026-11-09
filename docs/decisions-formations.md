@@ -151,3 +151,9 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Pourquoi** : demande de Manon au passage manuel (accents et petits détails rejetés par le back).
 - **Alternatives écartées** : listes en ligne dans la validation (limitées à 255 caractères au total, refusent virgules et guillemets : une catégorie « Difficultés budgétaires, surendettement » existe) ; listes chargées à l'ouverture de la page (deux appels inutiles si on ne télécharge pas) ; modèle statique sans listes.
 - **Limite connue** : une catégorie ou un formateur créé après le téléchargement n'est pas dans la liste ; télécharger de nouveau le modèle.
+
+## F25 — Modalité « VISIO » affichée « Distanciel » (HU-S03)
+- Date : 2026-11-09
+- **Décision** : le site de l'ADAC parle de « présentiel / distanciel » et de formations « à distance », jamais de « visio ». `modaliteLabel('VISIO')` renvoie donc « Distanciel » (liste, détail, formulaire, import : un seul point, `formationLabels.js`). La valeur envoyée au back reste `VISIO`.
+- **Pourquoi** : reprendre le vocabulaire de l'ADAC (`adac-site-reference.md` §2).
+- **Alternatives écartées** : « À distance » (le site l'emploie pour les lieux, « distanciel » pour la modalité) ; garder « Visio » (jargon technique).

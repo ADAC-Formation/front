@@ -1,0 +1,36 @@
+.user {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: min(16rem, 60vw);
+  padding: 0.125rem 0.75rem;
+  border-radius: 0.5rem;
+  color: var(--foreground);
+  text-decoration: none;
+  line-height: 1.25;
+  text-align: right;
+}
+
+.name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.role {
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.user:hover .name {
+  text-decoration: underline;
+}
+
+.user:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}

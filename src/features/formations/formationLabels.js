@@ -1,7 +1,7 @@
 // Libellés et formats partagés par la liste et le détail des formations.
 
 const MODALITE_LABELS = {
-  VISIO: 'Visio',
+  VISIO: 'Distanciel',
   PRESENTIEL: 'Présentiel',
   MIXTE: 'Mixte',
 }
