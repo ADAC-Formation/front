@@ -48,7 +48,3 @@ Contrat vérifié sur le back local (dépôt, liste, téléchargement, suppressi
 - **`fileUrl`** : c'est l'adresse brute du stockage (bucket privé, inutilisable par un navigateur). Elle fuit le nom du bucket et le chemin ; la retirer de `DocumentResponse` serait plus propre si rien ne l'utilise.
 - **Double barre dans `fileUrl`** : si `SUPABASE_URL` se termine par `/`, l'adresse contient `//storage/...`. Retirer la barre finale dans `SupabaseConfig` évite le piège.
 - **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée ou pointant sur `/rest/v1/` donne `502 « Service de stockage indisponible »` ; la vraie cause (`PGRST125`, hôte inconnu…) n'est que dans les logs. À mentionner dans ta documentation de développement local : `SUPABASE_URL` = URL du projet seule (`https://<projet>.supabase.co`), clé `service_role`, bucket privé `adac-documents`.
-
-## 6. Nouveau : mentions légales (HU-S02, 2026-11-09)
-
-Pour information : le portail a maintenant une page publique `/mentions-legales`. Elle a besoin de l'**hébergeur** du portail (nom et adresse), que seule toi connais : peux-tu le donner à Manon ? Le reste (SIRET, déclaration d'activité, durée de conservation) est demandé à l'ADAC. Côté back, peux-tu aussi confirmer ce qui est conservé et pendant combien de temps (comptes, documents, messages) pour que le texte de confidentialité soit exact ?
