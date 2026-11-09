@@ -10,6 +10,12 @@ import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } 
 import { mockDocumentApi } from '../test/documents'
 import { mockConversations } from '../test/messages'
 import { mockCategories } from '../test/categories'
+import { mockNotificationApi } from '../test/notifications'
+
+// La cloche de l'en-tête interroge /notifications dès qu'une session existe.
+beforeEach(() => {
+  mockNotificationApi()
+})
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -48,6 +54,7 @@ const PROTECTED_ROUTES = [
   '/formations/101',
   '/profile',
   '/formations/categories',
+  '/notifications',
   '/formations/creer',
   '/admin/formateurs',
   '/admin/formateurs/10',

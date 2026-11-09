@@ -1,0 +1,78 @@
+.panel {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(32rem, 75vh);
+  overflow-y: auto;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background-color: var(--card);
+  color: var(--card-foreground);
+  padding: 0.75rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+  z-index: 60;
+}
+
+/* Sur écran étroit, la cloche n'est pas au bord droit : le panneau se cale sur la fenêtre. */
+@media (max-width: 639px) {
+  .panel {
+    position: fixed;
+    top: var(--header-row);
+    right: 1rem;
+    left: 1rem;
+    width: auto;
+  }
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0;
+  padding: 0;
+}
+
+.empty {
+  margin: 0;
+  padding: 1rem 0.5rem;
+  font-size: 0.875rem;
+  text-align: center;
+  color: var(--muted-foreground);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.action {
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  padding: 0.5rem 0.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--card-foreground);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.action:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.errorBox {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.5rem;
+}

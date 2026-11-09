@@ -8,6 +8,12 @@ import RouteError from './RouteError'
 import { reloadPage } from './reloadPage'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockSession } from '../test/session'
+import { mockNotificationApi } from '../test/notifications'
+
+// La cloche de l'en-tête interroge /notifications dès qu'une session existe.
+beforeEach(() => {
+  mockNotificationApi()
+})
 
 vi.mock('./reloadPage', () => ({ reloadPage: vi.fn() }))
 

@@ -20,7 +20,6 @@ const EXEMPT = [
 // Dette connue : pages qui n'ont pas encore de « Retour ». À vider, jamais à allonger.
 const KNOWN_GAPS = [
   'components/Pages/SiteMapPage/SiteMapPage',
-  'components/Pages/Stagiaire/NotifPage/NotifPage',
 ]
 
 const pagesOfRouter = [...routerSource.matchAll(/import\("\.\.\/([^"]+)"\)/g)].map((match) => match[1])

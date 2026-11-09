@@ -3,6 +3,7 @@ import { expect, beforeAll, afterEach, afterAll } from 'vitest'
 import { cleanup, configure } from '@testing-library/react'
 import { toHaveNoViolations } from 'jest-axe'
 import { server } from './msw/server'
+import { acknowledgeUnhandledRequests, unhandledRequests } from './unhandled'
 
 expect.extend(toHaveNoViolations)
 
@@ -14,7 +15,6 @@ configure({ asyncUtilTimeout: 4000 })
 // avalée par la page, et la requête (ou sa réponse) peut tomber pendant le test suivant, qui échoue alors
 // au hasard (session expirée, page introuvable…). On note donc chaque requête non déclarée et on fait
 // échouer le test qui l'a lancée.
-const unhandledRequests = []
 beforeAll(() => {
   server.listen({ onUnhandledRequest: 'error' })
   server.events.on('request:unhandled', ({ request }) => unhandledRequests.push(`${request.method} ${request.url}`))
@@ -22,7 +22,7 @@ beforeAll(() => {
 afterEach(() => {
   cleanup()
   server.resetHandlers()
-  const found = unhandledRequests.splice(0)
+  const found = acknowledgeUnhandledRequests()
   if (found.length > 0) {
     throw new Error(['Requêtes réseau non déclarées par ce test (ajouter les mocks MSW) :', ...found].join('\n'))
   }

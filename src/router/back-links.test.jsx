@@ -9,6 +9,12 @@ import { FORMATEURS, mockAccountList } from '../test/accounts'
 import { mockCategories } from '../test/categories'
 import { mockDocumentApi } from '../test/documents'
 import { cssSheets, rulesOf, stripComments } from '../test/css-sheets'
+import { mockNotificationApi } from '../test/notifications'
+
+// La cloche de l'en-tête interroge /notifications dès qu'une session existe.
+beforeEach(() => {
+  mockNotificationApi()
+})
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
