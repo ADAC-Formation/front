@@ -6,6 +6,7 @@ import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList, mockRequest } from '../test/accounts'
+import { mockFormationList } from '../test/formations'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -51,6 +52,7 @@ describe('routes des comptes', () => {
       mockSession('ADMIN')
       mockAccountList('stagiaires', STAGIAIRES)
       mockRequest('get', '/users/20', () => HttpResponse.json(STAGIAIRES[0]))
+      mockFormationList([]) // la section « Documents » du détail d'un stagiaire (G17)
       const router = renderApp('/admin/stagiaires')
       expect(await screen.findByRole('heading', { level: 1, name: 'Stagiaires' })).toBeInTheDocument()
       await router.navigate('/admin/stagiaires/20')

@@ -5,6 +5,7 @@ import BackButton from '../../../components/molecules/BackButton/BackButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { roleLabels } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
+import StagiaireDocumentsSection from '../../documents/components/StagiaireDocumentsSection'
 import { ACCOUNT_KINDS, canManageAccounts, fullName } from '../accountKinds'
 import AccountNotFound from '../components/AccountNotFound'
 import AccountNotice from '../components/AccountNotice'
@@ -97,6 +98,8 @@ const AccountDetailPage = ({ kind }) => {
           </div>
         )}
       </section>
+
+      {kind === 'stagiaires' && <StagiaireDocumentsSection stagiaireId={account.id} className={styles.card} />}
 
       {confirming && (
         <ConfirmDialog

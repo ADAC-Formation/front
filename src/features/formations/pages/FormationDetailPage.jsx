@@ -8,6 +8,8 @@ import { MANAGEMENT_ROLES, ROLES } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
 import AccessDeniedPage from '../../auth/pages/AccessDeniedPage'
 import DocumentSection from '../../documents/components/DocumentSection'
+import MyDocumentsSection from '../../documents/components/MyDocumentsSection'
+import SentDocuments from '../../documents/components/SentDocuments'
 import FormationNotice from '../components/FormationNotice'
 import { formatDateRange, formateurName, modaliteLabel } from '../formationLabels'
 import { useArchiveFormation, useFormation, useInscriptions } from '../hooks'
@@ -18,6 +20,8 @@ const inscritsLabel = (count) => `${count} inscrit${count > 1 ? 's' : ''}`
 const BACK_TO_LIST = '/formations'
 const BACK_LABEL = 'Retour aux formations'
 
+// Stagiaires inscrits, vus par la chargée de formation et le formateur de la formation : pour chacun, une
+// coche verte s'il a envoyé un document, et le lien de ses fichiers (G17).
 const InscritsSection = ({ formationId }) => {
   const { data, isLoading, isError, error, refetch } = useInscriptions(formationId)
 
@@ -42,8 +46,11 @@ const InscritsSection = ({ formationId }) => {
         <ul className={styles.inscrits}>
           {data.map(({ id, stagiaire }) => (
             <li key={id}>
-              <span>{`${stagiaire.prenom} ${stagiaire.nom}`}</span>
-              <span>{stagiaire.email}</span>
+              <div className={styles.inscritIdentity}>
+                <span>{`${stagiaire.prenom} ${stagiaire.nom}`}</span>
+                <span>{stagiaire.email}</span>
+              </div>
+              <SentDocuments inscriptionId={id} stagiaireId={stagiaire.id} />
             </li>
           ))}
         </ul>
@@ -144,6 +151,10 @@ const FormationDetailPage = () => {
         {isManager && <InscritsSection formationId={formationId} />}
 
         <DocumentSection key={formation.id} formation={formation} className={styles.section} />
+
+        {user?.role === ROLES.STAGIAIRE && (
+          <MyDocumentsSection key={formation.id} formation={formation} className={styles.section} />
+        )}
 
         {archive.error && (
           <div className={styles.notices}>

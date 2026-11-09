@@ -5,11 +5,14 @@ import { axe } from 'jest-axe'
 import { Route, Routes } from 'react-router'
 import AccountDetailPage from './AccountDetailPage'
 import { renderWithProviders } from '../../../test/render'
+import { mockDocumentApi } from '../../../test/documents'
+import { FORMATIONS, INSCRITS, mockFormationList, mockInscriptions } from '../../../test/formations'
 import { mockSession } from '../../../test/session'
 import { FORMATEURS, STAGIAIRES, apiError, mockRequest } from '../../../test/accounts'
 
-function renderDetail(kind, id, role, { state } = {}) {
+function renderDetail(kind, id, role, { state, formations = [] } = {}) {
   mockSession(role)
+  if (kind === 'stagiaires') mockFormationList(formations) // la section « Documents » du stagiaire
   return renderWithProviders(
     <Routes>
       <Route path={`/admin/${kind}/:id`} element={<AccountDetailPage kind={kind} />} />
@@ -116,6 +119,51 @@ describe('AccountDetailPage', () => {
       await screen.findByRole('heading', { level: 1, name: 'Anne Martin' })
       expect(screen.queryByRole('link', { name: 'Modifier' })).not.toBeInTheDocument()
       expect(screen.queryByRole('button', { name: /Suspendre|Réactiver/ })).not.toBeInTheDocument()
+    })
+  })
+
+  describe('documents du stagiaire (G17)', () => {
+    const lea = INSCRITS[0].stagiaire // id 20
+    const sent = {
+      id: 701,
+      fileName: 'Carte-identite.pdf',
+      fileUrl: 'https://supabase.test/storage/701',
+      fileSize: 2048,
+      mimeType: 'application/pdf',
+      uploadedBy: lea,
+      formationId: null,
+      inscriptionId: 1,
+      createdAt: '2026-03-01T10:00:00',
+    }
+    const stagiaire = STAGIAIRES[0]
+
+    it.each(['SUPER_ADMIN', 'ADMIN'])('%s voit ce que le stagiaire a envoyé, par formation', async (role) => {
+      mockAccount(stagiaire)
+      mockInscriptions(101)
+      mockDocumentApi([sent])
+      renderDetail('stagiaires', 20, role, { formations: [FORMATIONS[0]] })
+      const section = (await screen.findByRole('heading', { level: 2, name: 'Documents' })).closest('section')
+      expect(await within(section).findByRole('link', { name: 'Premiers secours PSC1' })).toHaveAttribute(
+        'href',
+        '/formations/101',
+      )
+      expect(await within(section).findByRole('button', { name: 'Télécharger Carte-identite.pdf' })).toBeInTheDocument()
+    })
+
+    it('n’affiche pas la section pour un formateur', async () => {
+      mockAccount(FORMATEURS[0])
+      renderDetail('formateurs', 10, 'SUPER_ADMIN')
+      await screen.findByRole('heading', { level: 1, name: 'Anne Martin' })
+      expect(screen.queryByRole('heading', { level: 2, name: 'Documents' })).not.toBeInTheDocument()
+    })
+
+    it('n’a aucune violation d’accessibilité (jest-axe)', async () => {
+      mockAccount(stagiaire)
+      mockInscriptions(101)
+      mockDocumentApi([sent])
+      const { container } = renderDetail('stagiaires', 20, 'SUPER_ADMIN', { formations: [FORMATIONS[0]] })
+      await screen.findByRole('button', { name: 'Télécharger Carte-identite.pdf' })
+      expect(await axe(container)).toHaveNoViolations()
     })
   })
 

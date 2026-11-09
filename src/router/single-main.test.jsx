@@ -45,6 +45,7 @@ const PROTECTED_ROUTES = [
   '/formations',
   '/admin/formations',
   '/formations/101',
+  '/profile',
   '/formations/categories',
   '/formations/creer',
   '/admin/formateurs',

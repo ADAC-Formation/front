@@ -44,16 +44,33 @@ export const documentKind = (fileName) => KINDS[extensionOf(fileName)] ?? 'Fichi
 
 const isActive = (formation) => formation.status !== 'ARCHIVED'
 
-// Chargée de formation : toute formation active. Formateur : la sienne seulement. Jamais le stagiaire.
+// Stagiaire (028) : dépôt sur sa propre inscription, tant que la formation est active et que son
+// identifiant d'inscription est connu (G10, G11).
+export const canUploadOwnDocument = (formation) => isActive(formation) && inscriptionIdOf(formation) !== null
+
+// Chargée de formation : toute formation active. Formateur : la sienne seulement. Le stagiaire dépose
+// sur sa propre inscription (`canUploadOwnDocument`).
 export function canUploadDocument(user, formation) {
   if (!user || !isActive(formation)) return false
   if (user.role === ROLES.SUPER_ADMIN) return true
   return user.role === ROLES.ADMIN && formation.formateur?.id === user.id
 }
 
-// Chargée de formation : tout. Formateur : ses propres envois, quelle que soit la formation. Jamais le stagiaire.
+// Chargée de formation : tout. Formateur et stagiaire : leurs propres envois seulement (le back refuse
+// le reste en 403), quelle que soit la formation pour le formateur.
 export function canDeleteDocument(user, formation, document) {
   if (!user || !isActive(formation)) return false
   if (user.role === ROLES.SUPER_ADMIN) return true
-  return user.role === ROLES.ADMIN && document.uploadedBy?.id === user.id
+  const ownsDocument = document.uploadedBy?.id === user.id
+  return (user.role === ROLES.ADMIN || user.role === ROLES.STAGIAIRE) && ownsDocument
+}
+
+const isId = (value) => typeof value === 'number' && Number.isFinite(value)
+
+// Identifiant d'inscription du stagiaire sur la formation, ou `null` (stagiaire non inscrit, autre rôle) :
+// seul point du front qui le lit (G8, G11). Le back l'envoie dans `FormationResponse` pour le stagiaire
+// inscrit seulement. Si le contrat change, seule cette fonction et la source des formations changent.
+export function inscriptionIdOf(formation) {
+  const id = formation?.inscriptionId
+  return isId(id) ? id : null
 }

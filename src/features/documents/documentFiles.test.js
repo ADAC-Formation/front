@@ -4,10 +4,12 @@ import { USERS } from '../../test/session'
 import {
   MAX_FILE_SIZE,
   canDeleteDocument,
+  canUploadOwnDocument,
   canUploadDocument,
   documentKind,
   formatDocumentDate,
   formatFileSize,
+  inscriptionIdOf,
   validateDocumentFile,
 } from './documentFiles'
 
@@ -119,12 +121,46 @@ describe('canDeleteDocument', () => {
     expect(canDeleteDocument(USERS.ADMIN, otherTrainersActive, byMe)).toBe(true)
   })
 
-  it('le stagiaire ne supprime jamais', () => {
+  it('le stagiaire supprime ses propres envois seulement', () => {
+    const mine = { id: 3, uploadedBy: USERS.STAGIAIRE }
+    expect(canDeleteDocument(USERS.STAGIAIRE, active, mine)).toBe(true)
     expect(canDeleteDocument(USERS.STAGIAIRE, active, byMe)).toBe(false)
+    expect(canDeleteDocument(USERS.STAGIAIRE, active, byOther)).toBe(false)
+    expect(canDeleteDocument(USERS.STAGIAIRE, active, { id: 4 })).toBe(false)
   })
 
   it('personne ne supprime sur une formation archivée', () => {
     expect(canDeleteDocument(USERS.SUPER_ADMIN, archived, byMe)).toBe(false)
     expect(canDeleteDocument(USERS.ADMIN, archived, byMe)).toBe(false)
+    expect(canDeleteDocument(USERS.STAGIAIRE, archived, { id: 3, uploadedBy: USERS.STAGIAIRE })).toBe(false)
+  })
+})
+
+// 028 (G8, G11) : seul point qui lit l'identifiant d'inscription du stagiaire sur la formation.
+describe('inscriptionIdOf', () => {
+  it("renvoie l'identifiant quand la formation le porte", () => {
+    expect(inscriptionIdOf({ id: 101, inscriptionId: 7 })).toBe(7)
+  })
+
+  it.each([
+    ['absent', { id: 101 }],
+    ['null', { id: 101, inscriptionId: null }],
+    ['non numérique', { id: 101, inscriptionId: 'abc' }],
+  ])('renvoie null quand le champ est %s', (_label, formation) => {
+    expect(inscriptionIdOf(formation)).toBeNull()
+  })
+})
+
+describe('canUploadOwnDocument', () => {
+  it('autorise le dépôt sur une formation active dont l’inscription est connue', () => {
+    expect(canUploadOwnDocument({ status: 'ACTIVE', inscriptionId: 7 })).toBe(true)
+  })
+
+  it('refuse sur une formation archivée', () => {
+    expect(canUploadOwnDocument({ status: 'ARCHIVED', inscriptionId: 7 })).toBe(false)
+  })
+
+  it('refuse sans inscriptionId', () => {
+    expect(canUploadOwnDocument({ status: 'ACTIVE' })).toBe(false)
   })
 })

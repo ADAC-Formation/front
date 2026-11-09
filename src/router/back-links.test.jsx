@@ -29,6 +29,7 @@ describe.each([
   ['/formations/categories', 'Retour', '/formations'],
   ['/formations/creer', 'Retour', '/formations'],
   ['/formations/101', 'Retour aux formations', '/formations'],
+  ['/profile', 'Retour', '/'],
 ])('lien « Retour » sur %s', (path, label, destination) => {
   it(`est un lien « ${label} » vers ${destination}`, async () => {
     mockSession('SUPER_ADMIN')

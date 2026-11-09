@@ -6,22 +6,23 @@ import FormationDetailPage from './FormationDetailPage'
 import FormationListPage from './FormationListPage'
 import { renderWithProviders } from '../../../test/render'
 import { mockCategories } from '../../../test/categories'
-import { mockDocumentApi } from '../../../test/documents'
-import { mockSession } from '../../../test/session'
+import { DOCUMENTS, mockDocumentApi } from '../../../test/documents'
+import { USERS, mockSession } from '../../../test/session'
 import {
   FORMATIONS,
   mockArchive,
   mockFormationDetail,
   mockFormationList,
+  INSCRITS,
   mockInscriptions,
 } from '../../../test/formations'
 
 const [secours, excel, postures] = FORMATIONS
 
-function renderDetail(role, formation, { notice } = {}) {
+function renderDetail(role, formation, { notice, documents } = {}) {
   mockSession(role)
   mockCategories() // la liste des formations, où l'on revient, charge les catégories du filtre
-  mockDocumentApi() // la section « Documents » du détail
+  mockDocumentApi(documents, { uploader: USERS.STAGIAIRE }) // la section « Documents » du détail
   const route = notice
     ? { pathname: `/formations/${formation.id}`, state: { notice } }
     : `/formations/${formation.id}`
@@ -127,6 +128,60 @@ describe('FormationDetailPage', () => {
       expect(await screen.findByRole('group', { name: 'Zone de dépôt de documents' })).toBeInTheDocument()
     })
 
+    describe('« Mes documents » du stagiaire (G16)', () => {
+      const mineOnPage = { ...secours, inscriptionId: 7 }
+      const myDocument = {
+        id: 601,
+        fileName: 'Justificatif.pdf',
+        fileUrl: 'https://supabase.test/storage/601',
+        fileSize: 2048,
+        mimeType: 'application/pdf',
+        uploadedBy: USERS.STAGIAIRE,
+        formationId: null,
+        inscriptionId: 7,
+        createdAt: '2026-03-01T10:00:00',
+      }
+
+      it('affiche, sous les documents de la formation, la zone de dépôt et ses propres dépôts', async () => {
+        mockFormationDetail(mineOnPage)
+        renderDetail('STAGIAIRE', mineOnPage, { documents: [...DOCUMENTS, myDocument] })
+        const mine = await screen.findByRole('region', { name: 'Mes documents' })
+        expect(await within(mine).findByText('Justificatif.pdf')).toBeInTheDocument()
+        expect(within(mine).getByRole('group', { name: 'Zone de dépôt de documents' })).toBeInTheDocument()
+        expect(within(mine).getByRole('button', { name: 'Supprimer Justificatif.pdf' })).toBeInTheDocument()
+        expect(within(mine).queryByText('Support de cours.pdf')).not.toBeInTheDocument()
+        expect(await screen.findByText('Support de cours.pdf')).toBeInTheDocument()
+      })
+
+      it('garde les documents de la formation en lecture seule pour le stagiaire', async () => {
+        mockFormationDetail(mineOnPage)
+        renderDetail('STAGIAIRE', mineOnPage, { documents: [...DOCUMENTS, myDocument] })
+        await screen.findByText('Support de cours.pdf')
+        expect(screen.queryByRole('button', { name: 'Supprimer Support de cours.pdf' })).not.toBeInTheDocument()
+        expect(screen.getAllByRole('group', { name: 'Zone de dépôt de documents' })).toHaveLength(1)
+      })
+
+      it('sur une formation archivée : ses dépôts sans zone de dépôt ni suppression', async () => {
+        const archivedMine = { ...postures, inscriptionId: 9 }
+        mockFormationDetail(archivedMine)
+        renderDetail('STAGIAIRE', archivedMine, {
+          documents: [{ ...myDocument, id: 602, fileName: 'Ancien.pdf', inscriptionId: 9 }],
+        })
+        const mine = await screen.findByRole('region', { name: 'Mes documents' })
+        expect(await within(mine).findByText('Ancien.pdf')).toBeInTheDocument()
+        expect(within(mine).queryByRole('group', { name: 'Zone de dépôt de documents' })).not.toBeInTheDocument()
+        expect(within(mine).queryByRole('button', { name: /Supprimer/ })).not.toBeInTheDocument()
+      })
+
+      it.each(['SUPER_ADMIN', 'ADMIN'])('%s ne voit pas « Mes documents »', async (role) => {
+        mockFormationDetail(secours)
+        mockInscriptions(101)
+        renderDetail(role, secours)
+        await screen.findByRole('heading', { level: 2, name: 'Documents' })
+        expect(screen.queryByRole('region', { name: 'Mes documents' })).not.toBeInTheDocument()
+      })
+    })
+
     it('n’a aucune violation d’accessibilité avec les documents (jest-axe)', async () => {
       mockFormationDetail(secours)
       mockInscriptions(101)
@@ -166,6 +221,44 @@ describe('FormationDetailPage', () => {
       expect(calls.count).toBe(0)
       expect(screen.queryByText('lea@adac.test')).not.toBeInTheDocument()
       expect(screen.queryByRole('heading', { name: 'Stagiaires inscrits' })).not.toBeInTheDocument()
+    })
+
+    describe('documents envoyés par les stagiaires (G17)', () => {
+      const lea = INSCRITS[0].stagiaire
+      const sentByLea = {
+        id: 701,
+        fileName: 'Carte-identite.pdf',
+        fileUrl: 'https://supabase.test/storage/701',
+        fileSize: 2048,
+        mimeType: 'application/pdf',
+        uploadedBy: lea,
+        formationId: null,
+        inscriptionId: 1,
+        createdAt: '2026-03-01T10:00:00',
+      }
+
+      it.each(['SUPER_ADMIN', 'ADMIN'])(
+        '%s voit, pour chaque inscrit, une coche s’il a envoyé un document, avec le lien du fichier',
+        async (role) => {
+          mockFormationDetail(secours)
+          mockInscriptions(101)
+          renderDetail(role, secours, { documents: [...DOCUMENTS, sentByLea] })
+          const section = (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
+          const leaRow = (await within(section).findByText('Léa Petit')).closest('li')
+          expect(await within(leaRow).findByText('Documents envoyés')).toBeInTheDocument()
+          expect(within(leaRow).getByRole('button', { name: 'Télécharger Carte-identite.pdf' })).toBeInTheDocument()
+          const omarRow = within(section).getByText('Omar Benali').closest('li')
+          expect(await within(omarRow).findByText('Aucun document envoyé')).toBeInTheDocument()
+        },
+      )
+
+      it('n’a aucune violation d’accessibilité (jest-axe)', async () => {
+        mockFormationDetail(secours)
+        mockInscriptions(101)
+        const { container } = renderDetail('SUPER_ADMIN', secours, { documents: [...DOCUMENTS, sentByLea] })
+        await screen.findByText('Documents envoyés')
+        expect(await axe(container)).toHaveNoViolations()
+      })
     })
 
     it('isole une erreur de la liste des inscrits', async () => {

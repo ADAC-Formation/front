@@ -14,3 +14,10 @@ Contrat vérifié sur le back local (dépôt, liste, téléchargement, suppressi
 - **`fileUrl`** : c'est l'adresse brute du stockage (bucket privé, inutilisable par un navigateur). Elle fuit le nom du bucket et le chemin ; la retirer de `DocumentResponse` serait plus propre si rien ne l'utilise.
 - **Double barre dans `fileUrl`** : si `SUPABASE_URL` se termine par `/`, l'adresse contient `//storage/...`. Une normalisation dans `SupabaseConfig` (retirer la barre finale) évite le piège.
 - **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée ou pointant sur `/rest/v1/` donne `502 « Service de stockage indisponible »` ; la vraie cause (`PGRST125`, hôte inconnu…) n'est que dans les logs. À mentionner dans ta documentation de développement local : `SUPABASE_URL` = URL du projet seule (`https://<projet>.supabase.co`), clé `service_role`, bucket privé `adac-documents`.
+
+## Documents envoyés par les stagiaires, vus par la chargée de formation et le formateur — ajouté le 2026-11-09
+
+### Q16 — Inscriptions d'un stagiaire (profil vu par la chargée de formation / le formateur)
+Pour afficher, sur le profil d'un stagiaire, ce qu'il a envoyé dans chacune de ses formations, le front doit connaître ses inscriptions. Aucun endpoint ne les donne (`GET /users/{id}` ne les contient pas) : le front lit la liste d'inscrits de chaque formation que l'appelant peut consulter et retient celles du stagiaire (une requête par formation, `404` ignoré pour le formateur hors de ses formations).
+
+Proposition : `GET /api/users/{id}/inscriptions` → `{ id, formation }[]` (SUPER_ADMIN : toutes ; ADMIN : celles de ses formations ; la même règle que `GET /api/documents?inscriptionId=`). Le front passera à cet appel unique dès qu'il existe.

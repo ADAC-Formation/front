@@ -34,7 +34,7 @@ export const routes = [
           { path: "formations", ...lazyPage(() => import("../features/formations/pages/FormationListPage")) },
           { path: "formations/:formationId", ...lazyPage(() => import("../features/formations/pages/FormationDetailPage")) },
           { path: "plan-du-site", ...lazyPage(() => import("../components/Pages/SiteMapPage/SiteMapPage")) },
-          { path: "profile", ...lazyPage(() => import("../components/Pages/Stagiaire/ProfilePage/ProfilePage")) },
+          { path: "profile", ...lazyPage(() => import("../features/profile/pages/ProfilePage")) },
           { path: "notifications", ...lazyPage(() => import("../components/Pages/Stagiaire/NotifPage/NotifPage")) },
           { path: "messages", ...lazyPage(() => import("../components/Pages/Stagiaire/Messages/MessagesPage")) },
 

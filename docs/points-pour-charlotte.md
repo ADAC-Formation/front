@@ -106,6 +106,18 @@ Lu dans `ExcelImportUtil` (branche `dev`, lecture seule) : un fichier invalide r
 
 Le front découpe ce texte pour afficher un tableau Ligne / Colonne / Problème (F20) et affiche telle quelle toute entrée non reconnue. C'est fragile : si le format du message change, le tableau se réduit à une liste de texte. Demande : remplir `details[]` avec une entrée par erreur (idéalement `{ligne, colonne, message}`). Les colonnes restent le placeholder de `tech.md` tant que le fichier réel d'ADAC n'est pas arrivé (R10).
 
+### Q13 — Le stagiaire ne peut pas connaître son `inscriptionId` (ticket 028, documents du stagiaire) — ✅ résolu le 2026-11-09
+Traité par le back (`dev`, commit `e1f7c35`) : `inscriptionId` dans `FormationResponse` pour le stagiaire inscrit (`null` sinon) et suppression de ses propres dépôts autorisée au stagiaire. Le texte d'origine est gardé ci-dessous pour mémoire.
+
+`POST /documents` et `GET /documents?inscriptionId=` (stagiaire : « ses inscriptions ») exigent l'id de l'inscription. Mais `GET /formations/{id}/inscriptions` répond `403` à un stagiaire, `FormationResponse` n'a pas de champ d'inscription et `DocumentResponse.inscriptionId` n'existe qu'une fois un document déposé : un stagiaire ne peut donc pas déposer son premier document.
+
+Proposition minimale : ajouter `inscriptionId` à `FormationResponse` **seulement pour le stagiaire inscrit** (aucune fuite d'e-mail), ou un `GET /api/inscriptions/me` (liste de ses inscriptions avec leur formation). Le front est écrit sur cette proposition en attendant ta réponse. Constat lié : `DELETE /documents/{id}` répond `403` à un stagiaire (`tech.md` §6), il ne pourra donc pas retirer un fichier déposé par erreur ; le front n'affiche pas « Supprimer » pour lui.
+
+### Q16 — Inscriptions d'un stagiaire (profil vu par la chargée de formation / le formateur)
+Pour afficher, sur le profil d'un stagiaire, ce qu'il a envoyé dans chacune de ses formations, le front doit connaître ses inscriptions. Aucun endpoint ne les donne (`GET /users/{id}` ne les contient pas) : le front lit la liste d'inscrits de chaque formation que l'appelant peut consulter et retient celles du stagiaire (une requête par formation, `404` ignoré pour le formateur hors de ses formations).
+
+Proposition : `GET /api/users/{id}/inscriptions` → `{ id, formation }[]` (SUPER_ADMIN : toutes ; ADMIN : celles de ses formations ; la même règle que `GET /api/documents?inscriptionId=`). Le front passera à cet appel unique dès qu'il existe.
+
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
 Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.

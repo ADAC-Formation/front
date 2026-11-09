@@ -42,6 +42,7 @@ function renderWith(children, path) {
 
 describe('chargement annoncé', () => {
   it('premier affichage : « Chargement… » (status) jusqu’à l’arrivée de la page', async () => {
+    mockSession('STAGIAIRE') // la coque (en-tête) lit la session
     const gate = deferred()
     renderWith([{ path: 'lente', lazy: () => gate.promise }], '/lente')
 

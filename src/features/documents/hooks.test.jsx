@@ -2,9 +2,10 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { ApiError } from '../../api/ApiError'
-import { mockDocumentApi } from '../../test/documents'
+import { DOCUMENTS, mockDocumentApi } from '../../test/documents'
+import { USERS } from '../../test/session'
 import { renderWithProviders } from '../../test/render'
-import { downloadDocument } from './api'
+import { downloadDocument, uploadDocument } from './api'
 import { useDeleteDocument, useDocuments, useDownloadDocument, useUploadDocuments } from './hooks'
 import { saveBlob } from './saveBlob'
 
@@ -13,7 +14,7 @@ vi.mock('./saveBlob', () => ({ saveBlob: vi.fn() }))
 const pdf = (name, size = 1000) => new File([new Uint8Array(size)], name, { type: 'application/pdf' })
 
 function ListProbe({ formationId = 101 }) {
-  const { data, isLoading, isError, error } = useDocuments(formationId)
+  const { data, isLoading, isError, error } = useDocuments({ formationId })
   if (isLoading) return <p>chargement</p>
   if (isError) return <p>erreur {error.status}</p>
   return (
@@ -41,8 +42,8 @@ describe('useDocuments', () => {
 })
 
 function UploadProbe({ files }) {
-  const { upload, isPending, result } = useUploadDocuments(101)
-  const list = useDocuments(101)
+  const { upload, isPending, result } = useUploadDocuments({ formationId: 101 })
+  const list = useDocuments({ formationId: 101 })
   return (
     <>
       <button onClick={() => upload(files)}>envoyer</button>
@@ -117,7 +118,7 @@ describe('useUploadDocuments', () => {
 
 function DeleteProbe() {
   const remove = useDeleteDocument()
-  const list = useDocuments(101)
+  const list = useDocuments({ formationId: 101 })
   return (
     <>
       <button onClick={() => remove.mutate(501)}>supprimer</button>
@@ -204,5 +205,73 @@ describe('téléchargement', () => {
     await userEvent.click(screen.getByText('télécharger'))
     expect(await screen.findByText(/pas accès/i)).toBeInTheDocument()
     expect(saveBlob).not.toHaveBeenCalled()
+  })
+})
+
+// Cible par inscription (028, G8) : le stagiaire dépose sur son `inscriptionId`, jamais sur une formation.
+const MY_DOCUMENT = {
+  id: 601,
+  fileName: 'Justificatif.pdf',
+  fileUrl: 'https://supabase.test/storage/601',
+  fileSize: 1000,
+  mimeType: 'application/pdf',
+  uploadedBy: USERS.STAGIAIRE,
+  formationId: null,
+  inscriptionId: 7,
+  createdAt: '2026-03-01T10:00:00',
+}
+
+function InscriptionProbe({ files = [], enabled = true }) {
+  const target = { inscriptionId: 7 }
+  const list = useDocuments(target, { enabled })
+  const { upload, result } = useUploadDocuments(target)
+  return (
+    <>
+      <button onClick={() => upload(files)}>envoyer</button>
+      {result && <p>{`envoyés ${result.uploaded}`}</p>}
+      <ul>{list.data?.map((document) => <li key={document.id}>{`liste ${document.fileName}`}</li>)}</ul>
+    </>
+  )
+}
+
+describe('documents ciblés par inscription', () => {
+  it("liste avec le paramètre inscriptionId, sans formationId", async () => {
+    const api = mockDocumentApi([...DOCUMENTS, MY_DOCUMENT])
+    renderWithProviders(<InscriptionProbe />)
+    expect(await screen.findByText('liste Justificatif.pdf')).toBeInTheDocument()
+    expect(screen.queryByText('liste Support de cours.pdf')).not.toBeInTheDocument()
+    expect(api.calls.listUrls[0]).toContain('inscriptionId=7')
+    expect(api.calls.listUrls[0]).not.toContain('formationId')
+  })
+
+  it("n'émet aucun appel quand la liste est désactivée", async () => {
+    const api = mockDocumentApi([MY_DOCUMENT])
+    renderWithProviders(<InscriptionProbe enabled={false} />)
+    await userEvent.click(screen.getByText('envoyer'))
+    expect(api.calls.list).toBe(0)
+  })
+
+  it("envoie chaque fichier avec l'inscriptionId (jamais le formationId) puis recharge la liste", async () => {
+    const api = mockDocumentApi([MY_DOCUMENT])
+    renderWithProviders(<InscriptionProbe files={[pdf('a.pdf'), pdf('b.pdf')]} />)
+    await screen.findByText('liste Justificatif.pdf')
+    await userEvent.click(screen.getByText('envoyer'))
+    expect(await screen.findByText('envoyés 2')).toBeInTheDocument()
+    expect(api.calls.uploaded.map(({ fileName, formationId, inscriptionId }) => [fileName, formationId, inscriptionId])).toEqual([
+      ['a.pdf', null, 7],
+      ['b.pdf', null, 7],
+    ])
+    expect(await screen.findByText('liste b.pdf')).toBeInTheDocument()
+  })
+})
+
+describe('uploadDocument : cible', () => {
+  it.each([
+    ['les deux', { formationId: 101, inscriptionId: 7 }],
+    ['aucun', {}],
+  ])('refuse une cible avec %s identifiant, sans appel', async (_label, target) => {
+    const api = mockDocumentApi()
+    await expect(uploadDocument(pdf('a.pdf'), target)).rejects.toThrow()
+    expect(api.calls.uploaded).toEqual([])
   })
 })

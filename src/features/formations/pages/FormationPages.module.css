@@ -593,8 +593,7 @@
 .inscrits li {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 0.25rem 1rem;
+  gap: 0.5rem 1rem;
 
   padding: 0.6rem 0.9rem;
 
@@ -604,6 +603,14 @@
   overflow-wrap: anywhere;
 }
 
-.inscrits span:last-child {
+.inscritIdentity {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.inscritIdentity span:last-child {
   color: var(--muted-foreground);
 }
