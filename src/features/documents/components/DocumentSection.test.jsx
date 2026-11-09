@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DOCUMENTS, mockDocumentApi } from '../../../test/documents'
 import { AUTRE_FORMATEUR, FORMATIONS } from '../../../test/formations'
 import { renderWithProviders } from '../../../test/render'
-import { mockSession } from '../../../test/session'
+import { USERS, mockSession } from '../../../test/session'
 import { saveBlob } from '../saveBlob'
 import DocumentSection from './DocumentSection'
 
@@ -88,6 +88,13 @@ describe('DocumentSection — droits affichés', () => {
     await screen.findByText('Support de cours.pdf')
     expect(zone()).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Télécharger Programme.docx' })).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Supprimer/ })).not.toBeInTheDocument()
+  })
+
+  it('le stagiaire ne voit pas « Supprimer » ici, même sur un document qu’il a déposé (section en lecture seule)', async () => {
+    mockDocumentApi([{ ...DOCUMENTS[0], id: 509, fileName: 'Mon dépôt.pdf', uploadedBy: USERS.STAGIAIRE }])
+    renderSection('STAGIAIRE')
+    await screen.findByText('Mon dépôt.pdf')
     expect(screen.queryByRole('button', { name: /^Supprimer/ })).not.toBeInTheDocument()
   })
 

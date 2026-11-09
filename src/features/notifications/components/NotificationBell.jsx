@@ -1,9 +1,10 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { useLocation } from 'react-router'
+import { useMutationState } from '@tanstack/react-query'
 import { Bell } from 'lucide-react'
 import { IconButton } from '../../../components/atoms/IconButton/IconButton'
 import { useCurrentUser } from '../../auth/hooks'
-import { useMarkAllAsRead, useRemoveFromBell, useUnreadNotifications } from '../hooks'
+import { MARK_AS_READ_KEY, useMarkAllAsRead, useRemoveFromBell, useUnreadNotifications } from '../hooks'
 import { useOpenNotification } from '../useOpenNotification'
 import { NotificationPanel } from './NotificationPanel'
 import styles from './NotificationBell.module.css'
@@ -23,7 +24,19 @@ export function NotificationBell() {
   // Une seule région d'annonce : le dernier message l'emporte (nouvelle notification ou échec).
   const [announcement, setAnnouncement] = useState('')
   const announceFailure = () => setAnnouncement(ACTION_ERROR)
-  const { open: openNotification } = useOpenNotification({ onError: announceFailure })
+  const { open: openNotification } = useOpenNotification()
+  // Un marquage « lu » refusé est annoncé ici, qu'il vienne de la cloche ou de l'historique (la page a pu
+  // être quittée entre-temps) ; chaque nouvel échec est annoncé une fois.
+  const failedReads = useMutationState({
+    filters: { mutationKey: MARK_AS_READ_KEY, status: 'error' },
+    select: (mutation) => mutation.state.submittedAt,
+  })
+  const lastReadFailure = Math.max(0, ...failedReads)
+  const [announcedFailure, setAnnouncedFailure] = useState(lastReadFailure)
+  if (lastReadFailure > announcedFailure) {
+    setAnnouncedFailure(lastReadFailure)
+    setAnnouncement(ACTION_ERROR)
+  }
   const markAll = useMarkAllAsRead()
   const remove = useRemoveFromBell()
   const { pathname } = useLocation()

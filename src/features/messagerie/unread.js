@@ -13,6 +13,6 @@ export function unreadLabel(count) {
 export function unreadIncomingIds(messages = [], currentUserId) {
   if (currentUserId == null) return []
   return messages
-    .filter((message) => message.sender.id !== currentUserId && message.readAt == null)
+    .filter((message) => message.sender?.id !== currentUserId && message.readAt == null)
     .map((message) => message.id)
 }

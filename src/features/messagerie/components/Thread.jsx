@@ -11,8 +11,8 @@ import styles from './Thread.module.css'
 // `key={userId}` : changer de fil recrée le composant et repart d'une mémoire de lecture vide.
 const Thread = ({ userId }) => {
   const { user } = useCurrentUser()
-  const { data: messages, isLoading, isError, refetch } = useThread(userId)
-  const { mutate: markRead } = useMarkThreadRead()
+  const { data: messages, dataUpdatedAt, isLoading, isError, refetch } = useThread(userId)
+  const { mutateAsync: markRead } = useMarkThreadRead()
   const listRef = useRef(null)
   const alreadyMarked = useRef(new Set())
 
@@ -23,8 +23,12 @@ const Thread = ({ userId }) => {
     const ids = unreadIncomingIds(pending, user.id)
     if (ids.length === 0) return
     ids.forEach((id) => alreadyMarked.current.add(id))
+    // Un marquage refusé est oublié : le rechargement suivant (`dataUpdatedAt` change même si les messages
+    // sont identiques) le retente, au plus une fois par rechargement.
     markRead({ messages: pending, currentUserId: user.id })
-  }, [messages, user, markRead])
+      .then((markedIds) => ids.forEach((id) => markedIds.includes(id) || alreadyMarked.current.delete(id)))
+      .catch(() => ids.forEach((id) => alreadyMarked.current.delete(id)))
+  }, [messages, dataUpdatedAt, user, markRead])
 
   // Le plus récent reste visible : seulement quand le nombre de messages change.
   const messageCount = messages?.length ?? 0
@@ -53,7 +57,7 @@ const Thread = ({ userId }) => {
   return (
     <ol ref={listRef} className={styles.list} aria-label="Messages">
       {messages.map((message) => {
-        const isMine = message.sender.id === user?.id
+        const isMine = message.sender?.id === user?.id
         return (
           <li key={message.id} className={`${styles.message} ${isMine ? styles.mine : ''}`}>
             <p className={styles.meta}>

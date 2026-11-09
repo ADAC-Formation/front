@@ -89,15 +89,19 @@ export function mockSendMessage({ errorStatus, errorMessage = 'Refusé', delayMs
   return calls
 }
 
-// PATCH /messages/{id}/read : 200 ; les ids dans `failIds` répondent 500. `calls.ids` garde l'ordre d'arrivée.
-export function mockMarkRead({ failIds = [] } = {}) {
+// PATCH /messages/{id}/read : 200 ; les ids dans `failIds` répondent 500 (`failOnce: true` : au premier essai
+// seulement). `calls.ids` garde l'ordre d'arrivée.
+export function mockMarkRead({ failIds = [], failOnce = false } = {}) {
   const calls = { count: 0, ids: [] }
+  const failed = new Set()
   server.use(
     http.patch(`${API_URL}/messages/:id/read`, ({ params }) => {
       const id = Number(params.id)
       calls.count += 1
       calls.ids.push(id)
-      return failIds.includes(id) ? apiError(500, 'Erreur serveur') : new HttpResponse(null, { status: 200 })
+      const shouldFail = failIds.includes(id) && !(failOnce && failed.has(id))
+      failed.add(id)
+      return shouldFail ? apiError(500, 'Erreur serveur') : new HttpResponse(null, { status: 200 })
     }),
   )
   return calls

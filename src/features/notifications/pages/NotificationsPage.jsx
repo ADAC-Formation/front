@@ -17,7 +17,7 @@ const STATUSES = [
 // Une notification sans date (contrat violé) passe après les autres, quel que soit le sens.
 const byDate = (direction) => (a, b) => {
   if (!a.createdAt || !b.createdAt) return Number(!a.createdAt) - Number(!b.createdAt)
-  return direction * a.createdAt.localeCompare(b.createdAt)
+  return direction * (Date.parse(a.createdAt) - Date.parse(b.createdAt))
 }
 
 const SORTS = {

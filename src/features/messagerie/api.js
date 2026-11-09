@@ -28,5 +28,5 @@ export async function sendMessage({ recipientId, content }) {
 export async function markThreadRead(messages, currentUserId) {
   const ids = unreadIncomingIds(messages, currentUserId)
   const results = await Promise.allSettled(ids.map((id) => apiClient.patch(`/messages/${id}/read`)))
-  return results.filter((result) => result.status === 'fulfilled').length
+  return ids.filter((_id, index) => results[index].status === 'fulfilled')
 }
