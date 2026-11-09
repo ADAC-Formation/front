@@ -125,3 +125,19 @@ Merci de répondre dans ce document (ou par courriel) ; nous reportons ensuite c
 | F1 | Le site parle de « formatrices » au féminin. Dans le portail, le rôle doit-il s'appeler **« Formateur »**, **« Formateur·rice »** ou **« Formatrice »** ? | |
 | F2 | Qui est la **« chargée de formation »** à l'ADAC (le site ne la nomme pas) ? C'est la personne qui crée les formations et gère les comptes dans le portail : quel est son intitulé de poste réel ? | |
 | F3 | La modalité « à distance » s'appelle-t-elle chez vous **« distanciel »**, « visio » ou « webinaire » ? Le portail affiche « Présentiel / Distanciel / Mixte ». | |
+
+---
+
+## G. Mentions légales et confidentialité (HU-S02)
+
+La page `/mentions-legales` du portail est en ligne. Ces informations n'étant pas sur votre site, elle affiche « À renseigner par l'ADAC » à leur place : nous ne pouvons pas les deviner. Adresse, e-mail et téléphone sont repris de votre site : merci de confirmer qu'ils sont aussi ceux à afficher.
+
+| # | Demande | Réponse de l'ADAC |
+|---|---|---|
+| G1 | Quel est le **numéro SIRET** de l'ADAC ? | |
+| G2 | Quel est le **numéro de déclaration d'activité** (organisme de formation) ? | |
+| G3 | Qui est le **directeur ou la directrice de la publication** du portail (nom et fonction) ? | |
+| G4 | Pendant combien de temps conservez-vous les données des stagiaires (compte, inscriptions, documents, messages) **après la fin d'une formation** ? Le 1 an envisagé est-il confirmé ? (voir aussi `meeting-points-back.md` #11) | |
+| G5 | Quelle adresse de contact faut-il donner pour **exercer ses droits** sur ses données (accès, rectification, effacement) : adac@adac.asso.fr ou une autre ? Y a-t-il un référent pour les données personnelles ? | |
+| G6 | **Qui héberge le portail** (nom et adresse de l'hébergeur) ? Si vous ne le savez pas, Charlotte, qui gère le déploiement, pourra le dire : dites-nous seulement que c'est à elle de le fournir. | |
+| G7 | Souhaitez-vous **relire ou remplacer le texte de la section « Confidentialité »** par celui de votre association (s'il existe déjà) ? | |
