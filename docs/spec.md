@@ -147,7 +147,7 @@ Source : TICKET-028 (front), US-012, `tech.md` §3 et §6, décisions G8–G12 e
 - [ ] Sans `inscriptionId` sur la formation (stagiaire non inscrit) : « Dépôt indisponible pour le moment », aucun appel `/documents`.
 - [ ] Page `/profile` : titre « Mon profil » pour tous ; « Mes documents » pour le seul stagiaire, en résumé en lecture seule : tous ses dépôts (le plus récent d'abord), chacun avec « Déposé dans <formation> » en lien vers `/formations/:id` ; sans formation : « Vous n'êtes inscrit à aucune formation pour le moment » ; sans document : « Aucun document déposé pour le moment » et l'indication de déposer depuis la page de chaque formation ; erreur avec « Réessayer » (une liste en échec n'efface pas les autres) ; ni dépôt, ni téléchargement, ni suppression ; absent (et aucun appel `/documents`) pour le formateur et la chargée de formation.
 - [ ] Accessibilité : clavier, annonces d'état, boutons nommés avec le fichier ; jest-axe sans violation sur la page de la formation et sur le profil.
-- Reporté : voir ces documents côté chargée de formation (US-010, Q6), reste du profil (TICKET-044).
+- Reporté : voir ces documents côté chargée de formation (US-010, Q6), reste du profil (TICKET-044, fait par le change `user-profile`).
 
 ## Critères d'acceptation : documents envoyés par les stagiaires, vus par le formateur et la chargée de formation (G17)
 
@@ -182,3 +182,11 @@ Source : TICKET-031 (front), US-013, `tech.md` §7, décisions H1–H9 (`decisio
 - [ ] Accessibilité : clavier, annonces d'état ; jest-axe sans violation (liste et fil).
 - [ ] Gabarit des autres pages (H11) : « Retour » vers le tableau de bord, bouton « Nouvelle conversation » en haut à droite, recherche par nom et menu « Rôle » puis pastilles « Toutes » / « Non lues » sous le titre (filtres combinés, côté navigateur), liste des conversations dans une carte arrondie ; pastille « non lus » de la tuile en police de texte.
 - Reporté : envoi groupé (TICKET-032), pagination des fils.
+
+### TICKETS 036 et 044 — Page profil
+- [ ] `/profile` (tous les rôles) : « Mes informations » en lecture seule (prénom, nom, e-mail, rôle libellé), rendues en texte.
+- [ ] « Notifications par e-mail » : interrupteur « Recevoir les notifications par e-mail » à l'état de `emailNotificationsEnabled` ; un changement envoie tout de suite `PATCH /users/me`, annonce « Préférences enregistrées » ; en cas d'échec il revient à l'état précédent et l'erreur est annoncée. Note : les e-mails de sécurité sont toujours envoyés.
+- [ ] « Mot de passe » : ancien, nouveau, confirmation validés avant tout appel (8–72 caractères, une majuscule, un chiffre) puis `PATCH /users/me/password` (route annoncée, absente du back `dev` au 2026-11-09, Q1) ; succès annoncé et champs vidés ; message du back affiché en cas d'échec, sans déconnexion sur un `401` ; lien « Mot de passe actuel oublié ? ».
+- [ ] « Mes documents » : stagiaire seulement (inchangé).
+- [ ] Accessibilité : jest-axe sans violation.
+

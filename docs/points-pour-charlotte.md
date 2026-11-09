@@ -79,6 +79,8 @@ TICKET-044 demande `changePassword(oldPassword, newPassword)` et « Ancien mot d
 
 Faut-il ajouter un endpoint (par ex. `PATCH /api/users/me/password` avec `{oldPassword, newPassword}`) ? Sinon la page Profil ne pourra pas proposer ce formulaire (le flux « mot de passe oublié » reste disponible).
 
+**Mise à jour 2026-11-09** : le front a construit le formulaire (page profil, change `user-profile`) sur `PATCH /api/users/me/password` `{ oldPassword, newPassword }`, la route que tu avais annoncée. Elle n'est pas encore dans le back `dev` : peux-tu confirmer son arrivée et ses erreurs (`400` règle du mot de passe, `401` ou `403` quand l'ancien est faux) ? Le front affiche le `message` du back tel quel et ne déconnecte pas sur un `401` de cette route.
+
 ### Q2 — Activation et réinitialisation : d'où vient l'e-mail ?
 `POST /auth/activate` et `/auth/reset-password` exigent `{email, code, newPassword}`, mais TICKET-017/018 ne prévoient que `activate(code, password)`. Le lien reçu par e-mail (`/activation`, `/reinitialisation`) contient-il l'adresse en paramètre (par ex. `?email=…`) ? Je n'ai pas trouvé le gabarit de l'e-mail dans le code. À défaut, le front demandera à l'utilisateur de saisir son adresse.
 

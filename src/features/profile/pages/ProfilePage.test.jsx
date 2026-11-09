@@ -49,6 +49,18 @@ describe('ProfilePage', () => {
     },
   )
 
+  it.each(['STAGIAIRE', 'ADMIN', 'SUPER_ADMIN'])('%s : informations, notifications par e-mail et mot de passe', async (role) => {
+    if (role === 'STAGIAIRE') {
+      mockFormationList([])
+      mockDocumentApi([], { uploader: USERS.STAGIAIRE })
+    }
+    renderProfile(role)
+    expect(await screen.findByRole('heading', { level: 2, name: 'Mes informations' })).toBeInTheDocument()
+    expect(screen.getByText(USERS[role].email)).toBeInTheDocument()
+    expect(await screen.findByRole('switch', { name: 'Recevoir les notifications par e-mail' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Mot de passe' })).toBeInTheDocument()
+  })
+
   it('n’a aucun <main> (celui du Layout est le seul) et aucune violation jest-axe', async () => {
     mockFormationList(mine)
     mockDocumentApi([myDocument], { uploader: USERS.STAGIAIRE })
