@@ -33,3 +33,26 @@ describe('SiteHeader — cloche de notifications', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('SiteHeader — nom de l’utilisateur', () => {
+  it.each([
+    ['SUPER_ADMIN', 'Chargée Dev', 'Chargée de formation'],
+    ['ADMIN', 'Formateur Dev', 'Formateur'],
+    ['STAGIAIRE', 'Stagiaire Dev', 'Stagiaire'],
+  ])('affiche le nom et le rôle de %s sous le bandeau, avec un lien vers le profil', async (role, name, label) => {
+    mockSession(role)
+    mockNotificationApi()
+    renderWithProviders(<SiteHeader />, { withSession: true })
+    const link = await screen.findByRole('link', { name: new RegExp(`${name}`) })
+    expect(link).toHaveAttribute('href', '/profile')
+    expect(link).toHaveTextContent(label)
+  })
+
+  it('n’affiche aucun nom pour un visiteur', async () => {
+    mockNoSession()
+    mockNotificationApi()
+    renderWithProviders(<SiteHeader />, { withSession: true, route: '/login' })
+    await settle()
+    expect(screen.queryByRole('link', { name: /Dev/ })).not.toBeInTheDocument()
+  })
+})

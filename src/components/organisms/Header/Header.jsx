@@ -1,6 +1,7 @@
 import { LoginButton } from "../../atoms/LoginButton/LoginButton";
 import { ThemeToggle } from "../../molecules/DarkMode/DarkMode";
 import { AccessibilityMenu } from "../../molecules/Accessibility/Accessibility";
+import { CurrentUser } from "../../molecules/CurrentUser/CurrentUser";
 import { NotificationBell } from "../../../features/notifications/components/NotificationBell";
 import styles from "./Header.module.css";
 
@@ -13,6 +14,7 @@ export function SiteHeader() {
         <ThemeToggle />
         <AccessibilityMenu />
       </div>
+      <CurrentUser />
     </header>
   );
 }

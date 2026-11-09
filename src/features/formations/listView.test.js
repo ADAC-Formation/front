@@ -68,7 +68,7 @@ describe('sortFormations', () => {
 
 describe('modaliteLabel', () => {
   it('traduit les trois modalités', () => {
-    expect(modaliteLabel('VISIO')).toBe('Visio')
+    expect(modaliteLabel('VISIO')).toBe('Distanciel')
     expect(modaliteLabel('PRESENTIEL')).toBe('Présentiel')
     expect(modaliteLabel('MIXTE')).toBe('Mixte')
   })

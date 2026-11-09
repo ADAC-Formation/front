@@ -35,7 +35,7 @@ Modèle de tableau pour répondre à A1 (une ligne par document ; copier-coller 
 
 ## B. Informations d'une formation, en plus des champs actuels
 
-Champs déjà présents dans le portail : **intitulé**, **description** (texte libre), **date de début**, **date de fin**, **modalité** (visio, présentiel, mixte), **catégorie**, **formateur** (un seul), **statut** (active ou archivée). Le portail ne gère pas encore le **code de référence** du site (ES01, MI02, DB04, PCB1…).
+Champs déjà présents dans le portail : **intitulé**, **description** (texte libre), **date de début**, **date de fin**, **modalité** (distanciel, présentiel, mixte), **catégorie**, **formateur** (un seul), **statut** (active ou archivée). Le portail ne gère pas encore le **code de référence** du site (ES01, MI02, DB04, PCB1…).
 
 Pour chaque information ci-dessous, merci d'indiquer : **indispensable**, **souhaitable** ou **inutile**, et, si elle existe déjà ailleurs (fiche PDF, site, tableur), de nous en envoyer un exemple. Les références « ind. » renvoient aux indicateurs Qualiopi (`qualiopi-criteres.md`).
 
@@ -115,3 +115,13 @@ Le portail permet à la chargée de formation d'importer des formations depuis u
 ---
 
 Merci de répondre dans ce document (ou par courriel) ; nous reportons ensuite chaque réponse dans les décisions du projet.
+
+---
+
+## F. Vocabulaire du portail (HU-S03)
+
+| # | Question | Réponse de l'ADAC |
+|---|---|---|
+| F1 | Le site parle de « formatrices » au féminin. Dans le portail, le rôle doit-il s'appeler **« Formateur »**, **« Formateur·rice »** ou **« Formatrice »** ? | |
+| F2 | Qui est la **« chargée de formation »** à l'ADAC (le site ne la nomme pas) ? C'est la personne qui crée les formations et gère les comptes dans le portail : quel est son intitulé de poste réel ? | |
+| F3 | La modalité « à distance » s'appelle-t-elle chez vous **« distanciel »**, « visio » ou « webinaire » ? Le portail affiche « Présentiel / Distanciel / Mixte ». | |
