@@ -37,6 +37,19 @@
 - [x] 6.3 `npm run check` vert (lint + tests + build + budget du bundle) ; `git -C ../../back-readonly status` propre ; relecture (`/code-review`) et correction des remarques bloquantes
 - [x] 6.4 Commit `docs: record the stagiaire documents`
 
+## 7. Dépôt sur la page de la formation, résumé sur le profil (G16, 2026-11-09)
+
+- [x] 7.1 RED puis GREEN : `DocumentList` (`locationOf`, `onDownload` facultatif), `MyDocumentsSection` (ex-`StagiaireDocSection`, une seule formation), `DocumentsSummary` + `useMyDocuments`, détail de formation (section pour le stagiaire seulement), profil (résumé)
+- [x] 7.2 Docs : `decisions-documents.md` (G16), `spec.md`, `CLAUDE.md`, ce change
+- [ ] 7.3 Le passage manuel (6.1) se fait sur cette version : déposer et supprimer depuis `/formations/:id`, retrouver le document avec son lien depuis `/profile`
+
+## 8. Documents envoyés vus par les managers (G17, 2026-11-09)
+
+- [x] 8.1 RED puis GREEN : `SentDocuments`, `StagiaireDocumentsSection`, `useStagiaireInscriptions`, « Stagiaires inscrits » du détail de formation, `AccountDetailPage` (stagiaires)
+- [x] 8.2 Docs : `decisions-documents.md` (G17), `spec.md`, `CLAUDE.md`, `points-pour-charlotte*.md` (Q16), `questions-pour-adac.md`
+- [ ] 8.3 Passage manuel : en chargée de formation puis en formateur, vérifier la coche, le lien de téléchargement, le profil d'un stagiaire (formation hors périmètre du formateur ignorée)
+- [ ] 8.4 Checklist nommée par document requis : bloquée sur les réponses de l'ADAC (`docs/questions-pour-adac.md` §A)
+
 ## Workflow follow-up
 
 - Archiver le change (`/opsx:archive`) et synchroniser les specs : `stagiaire-documents` ajoutée.

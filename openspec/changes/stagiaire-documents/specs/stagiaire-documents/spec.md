@@ -87,3 +87,18 @@ Le système SHALL lire l'identifiant d'inscription du stagiaire sur la formation
 #### Scenario: Back adapté
 - **WHEN** la formation porte un `inscriptionId`
 - **THEN** la sous-section affiche la liste et, si la formation est active, la zone de dépôt
+
+### Requirement: Dépôt sur la page de la formation, résumé sur le profil (G16)
+Le système SHALL afficher, sur le détail d'une formation, la section « Mes documents » du stagiaire (liste, téléchargement, zone de dépôt si la formation est active, suppression de ses propres dépôts), et sur le profil un résumé en lecture seule de tous ses dépôts avec, pour chacun, la formation où il a été déposé sous forme de lien. Les exigences ci-dessus qui décrivent des sous-sections par formation sur le profil s'appliquent à la section « Mes documents » de chaque formation.
+
+#### Scenario: Déposer depuis la formation
+- **WHEN** le stagiaire ouvre une formation active à laquelle il est inscrit
+- **THEN** la section « Mes documents » propose la zone de dépôt et ses dépôts sur cette formation
+
+#### Scenario: Retrouver où un document a été déposé
+- **WHEN** le stagiaire ouvre son profil
+- **THEN** chaque document affiche « Déposé dans <formation> » avec un lien vers `/formations/:id`, sans zone de dépôt ni action
+
+#### Scenario: Aucun document
+- **WHEN** le stagiaire n'a déposé aucun document
+- **THEN** le profil affiche « Aucun document déposé pour le moment » et l'indication de déposer depuis la page de chaque formation

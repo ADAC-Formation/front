@@ -1,5 +1,7 @@
 # Proposal
 
+> **Mise à jour du 2026-11-09 (G16)** : le dépôt, la liste détaillée, le téléchargement et la suppression des documents du stagiaire sont dans la section « Mes documents » du détail de chaque formation (`MyDocumentsSection`) ; le profil n'en garde qu'un résumé en lecture seule (`DocumentsSummary`) avec, pour chaque document, la formation où il a été déposé (lien). Les passages ci-dessous qui parlent de « sous-sections par formation sur le profil » sont remplacés par G16.
+
 ## Why
 
 Le stagiaire ne peut pas remettre ses propres pièces (justificatifs, documents personnels) à la chargée de formation : il passe encore par e-mail, ce que le portail doit remplacer (Qualiopi). Le back sait recevoir un document rattaché à une inscription (`POST /documents` avec `inscriptionId`, TICKET-026 « Done ») ; TICKET-028 (US-012) demande la partie front : une section « Mes documents » sur la page de profil du stagiaire. Décisions de cadrage : `docs/decisions-documents.md` G8–G12.

@@ -139,12 +139,29 @@ Source : TICKET-027 (front), US-009, US-011, `tech.md` §6, décisions G1–G6 (
 
 Source : TICKET-028 (front), US-012, `tech.md` §3 et §6, décisions G8–G12 et G15 (`decisions-documents.md`), Q13 résolue par le back le 2026-11-09 (G15). À valider par Manon (D49). Détail testable : `openspec/changes/stagiaire-documents/specs/stagiaire-documents/spec.md`.
 
-### TICKET-028 — « Mes documents » sur le profil
-- [ ] Page `/profile` : titre « Mon profil » pour tous ; section « Mes documents » pour le seul stagiaire, absente (et aucun appel `/documents`) pour le formateur et la chargée de formation.
-- [ ] Une sous-section par formation de `GET /formations` (actives d'abord, puis archivées) ; sans formation : « Vous n'êtes inscrit à aucune formation pour le moment ».
-- [ ] Liste des documents de l'inscription (`GET /documents?inscriptionId=`) : type, nom (en texte), taille, date, sans expéditeur ; vide : « Aucun document déposé pour cette formation » ; erreur avec « Réessayer » limitée à la formation ; « Télécharger » comme en 027.
-- [ ] Zone de dépôt sur chaque formation active (mêmes règles de fichier que 027) : un `POST /documents` par fichier avec `inscriptionId` (jamais `formationId`) ; succès annoncé et document ajouté à la liste ; refus listés par fichier sans bloquer les autres ; pas de zone de dépôt sur une formation archivée.
+### TICKET-028 — « Mes documents » : dépôt sur la formation, résumé sur le profil (G16)
+- [ ] Détail d'une formation (`/formations/:id`), stagiaire seulement : section « Mes documents » sous « Documents », absente pour le formateur et la chargée de formation ; « Documents » reste en lecture seule pour le stagiaire.
+- [ ] Liste des documents de l'inscription (`GET /documents?inscriptionId=`) : type, nom (en texte), taille, date, sans expéditeur ; vide : « Aucun document déposé pour cette formation » ; erreur avec « Réessayer » ; « Télécharger » comme en 027.
+- [ ] Zone de dépôt sur une formation active (mêmes règles de fichier que 027) : un `POST /documents` par fichier avec `inscriptionId` (jamais `formationId`) ; succès annoncé et document ajouté à la liste ; refus listés par fichier sans bloquer les autres ; pas de zone de dépôt sur une formation archivée.
 - [ ] « Supprimer » seulement sur les documents que le stagiaire a lui-même déposés (`uploadedBy` = lui) et sur une formation active : confirmation, `DELETE /documents/{id}`, « Document supprimé » annoncé, liste rechargée ; `403` / `404` affichés.
 - [ ] Sans `inscriptionId` sur la formation (stagiaire non inscrit) : « Dépôt indisponible pour le moment », aucun appel `/documents`.
-- [ ] Accessibilité : clavier, annonces d'état, boutons nommés avec le fichier ; jest-axe sans violation sur la page.
+- [ ] Page `/profile` : titre « Mon profil » pour tous ; « Mes documents » pour le seul stagiaire, en résumé en lecture seule : tous ses dépôts (le plus récent d'abord), chacun avec « Déposé dans <formation> » en lien vers `/formations/:id` ; sans formation : « Vous n'êtes inscrit à aucune formation pour le moment » ; sans document : « Aucun document déposé pour le moment » et l'indication de déposer depuis la page de chaque formation ; erreur avec « Réessayer » (une liste en échec n'efface pas les autres) ; ni dépôt, ni téléchargement, ni suppression ; absent (et aucun appel `/documents`) pour le formateur et la chargée de formation.
+- [ ] Accessibilité : clavier, annonces d'état, boutons nommés avec le fichier ; jest-axe sans violation sur la page de la formation et sur le profil.
 - Reporté : voir ces documents côté chargée de formation (US-010, Q6), reste du profil (TICKET-044).
+
+## Critères d'acceptation : documents envoyés par les stagiaires, vus par le formateur et la chargée de formation (G17)
+
+Source : demande de Manon du 2026-11-09, `tech.md` §6 (lecture des documents d'une inscription) et §7, décision G17 (`decisions-documents.md`). À valider par Manon (D49). La checklist nommée (un document requis par colonne) attend les réponses de l'ADAC (`questions-pour-adac.md` §A).
+
+### Page d'une formation (chargée de formation, formateur de la formation)
+- [ ] Dans « Stagiaires inscrits », chaque inscrit affiche : coche verte et « Documents envoyés » s'il a déposé au moins un document, sinon « Aucun document envoyé » ; l'état est en texte, pas seulement en couleur.
+- [ ] Un lien par fichier envoyé (nommé « Télécharger <fichier> ») télécharge le document sous son nom d'origine ; erreur de téléchargement affichée ; nom rendu en texte.
+- [ ] Seuls les documents déposés par le stagiaire lui-même comptent ; erreur d'une liste avec « Réessayer », limitée à la ligne du stagiaire.
+- [ ] Absent pour le stagiaire (qui ne voit pas la liste des inscrits).
+
+### Profil d'un stagiaire (`/admin/stagiaires/:id`, chargée de formation et formateur)
+- [ ] Section « Documents » : une sous-section par formation où le stagiaire est inscrit parmi celles que l'appelant peut consulter, avec un lien vers la formation, la même ligne d'état et les mêmes liens de fichiers.
+- [ ] Formation hors périmètre du formateur (`403` / `404` sur ses inscrits) : ignorée sans erreur ; autre erreur : message et « Réessayer » sans masquer les autres formations.
+- [ ] Sans formation consultable : « Ce stagiaire n'est inscrit à aucune formation que vous pouvez consulter ». Absente sur le profil d'un formateur.
+- [ ] Accessibilité : clavier, annonces d'état, jest-axe sans violation.
+- Reporté : checklist nommée par document requis (questions pour l'ADAC §A), documents que la chargée de formation dépose pour un stagiaire (US-010, Q6).
