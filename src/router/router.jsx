@@ -26,6 +26,9 @@ export const routes = [
       { path: "mot-de-passe-oublie", ...lazyPage(() => import("../features/auth/pages/ForgotPasswordPage")) },
       { path: "reinitialisation", ...lazyPage(() => import("../features/auth/pages/ResetPasswordPage")) },
 
+      // Mentions légales et confidentialité : lisibles sans session (HU-S02).
+      { path: "mentions-legales", ...lazyPage(() => import("../features/legal/pages/LegalPage")) },
+
       // Tout le reste exige une session (D9).
       {
         element: <RequireAuth />,

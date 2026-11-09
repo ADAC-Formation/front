@@ -1,5 +1,6 @@
 import { Outlet, useNavigation } from "react-router";
 import { SiteHeader } from '../components/organisms/Header/Header';
+import { SiteFooter } from '../components/organisms/Footer/Footer';
 import Logo from '../components/atoms/Logo/Logo';
 import styles from "./Layout.module.css"
 
@@ -24,6 +25,7 @@ const Layout = () => {
         <main>
             <Outlet />
         </main>
+        <SiteFooter />
     </div>
   )
 }

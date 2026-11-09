@@ -448,3 +448,10 @@
 - **Décision** : Manon est seule sur le repo front. Plus de PR : une branche courte (ou `dev` directement) est fusionnée en avance rapide dans `dev`, puis `dev` est poussé, après `npm run check` vert. Une seule session Claude à la fois sur le dossier. Remplace la partie « une seule PR vers `dev` » de D27 et D43 ; Conventional Commits et une branche par thème restent.
 - **Pourquoi** : une PR n'a pas de relecteur ; deux sessions sur le même dossier se sont mélangé des fichiers non terminés.
 - **Alternatives écartées** : garder les PR sans relecteur ; un worktree par session (inutile avec une seule session).
+
+## D65 — Mentions légales et confidentialité : page publique, pied de page sur toutes les pages (HU-S02, précise D31)
+- Date : 2026-11-09
+- **Décision** : une page `/mentions-legales` (`features/legal/`), **publique** (hors `RequireAuth`, lisible avant la connexion), qui réunit « Mentions légales » et « Confidentialité ». Un pied de page `SiteFooter` dans `Layout` (donc aussi sur la page de connexion) y mène. Le texte de la confidentialité reprend ce que fait réellement le front (D31) : cookie de session HttpOnly, préférences d'affichage sans donnée personnelle, aucun outil d'analyse, polices hébergées.
+- **Informations de l'ADAC** : adresse, e-mail et téléphone viennent du site de l'ADAC. SIRET, numéro de déclaration d'activité, directeur de la publication, hébergeur et durée de conservation **ne sont nulles part** : ils sont `null` dans `features/legal/legalInfo.js` et la page affiche « À renseigner par l'ADAC » à leur place. Les renseigner dans ce seul fichier suffit. Rien n'est inventé.
+- **Pourquoi** : une page qui affiche de fausses informations légales est pire qu'une page qui dit ce qui manque. La page n'a pas de « Retour » vers l'historique mais vers `/` (qui renvoie un visiteur vers la connexion).
+- **Reste à faire** : l'ADAC fournit les cinq valeurs ci-dessus (carte HU-S02, tâche [ADAC]) ; vérifier avec Charlotte l'hébergeur et ce qui est conservé côté back.
