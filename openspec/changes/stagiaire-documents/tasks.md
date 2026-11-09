@@ -32,7 +32,7 @@
 
 ## 6. Documentation et vérification
 
-- [ ] 6.1 Passage manuel sur le vrai back local (**débloqué le 2026-11-09 : le back `dev` envoie `inscriptionId`, G15 ; reconstruire l'image depuis `dev`**) : lire `inscriptionId`, déposer plusieurs fichiers, refus d'un `.exe` et de plus de 10 Mo, télécharger, formation archivée, vérifier que le document est visible côté chargée de formation (`GET /documents?inscriptionId=`), supprimer un de ses dépôts, vérifier le `403` sur le dépôt d'un autre par appel direct
+- [x] 6.1 Passage manuel sur le vrai back local (fait par Manon le 2026-11-09, OK) (**débloqué le 2026-11-09 : le back `dev` envoie `inscriptionId`, G15 ; reconstruire l'image depuis `dev`**) : lire `inscriptionId`, déposer plusieurs fichiers, refus d'un `.exe` et de plus de 10 Mo, télécharger, formation archivée, vérifier que le document est visible côté chargée de formation (`GET /documents?inscriptionId=`), supprimer un de ses dépôts, vérifier le `403` sur le dépôt d'un autre par appel direct
 - [x] 6.2 Mettre à jour `CLAUDE.md` (« État actuel » : documents du stagiaire branchés, hypothèse `inscriptionId` isolée dans `inscriptionIdOf`, page de profil dans `features/profile/`, tout test qui rend la page de profil déclare `mockDocumentApi()` et les formations), `docs/decisions-documents.md` (constats d'implémentation) et `docs/points-pour-charlotte*.md` si le passage manuel révèle des écarts
 - [x] 6.3 `npm run check` vert (lint + tests + build + budget du bundle) ; `git -C ../../back-readonly status` propre ; relecture (`/code-review`) et correction des remarques bloquantes
 - [x] 6.4 Commit `docs: record the stagiaire documents`
@@ -41,7 +41,7 @@
 
 - [x] 7.1 RED puis GREEN : `DocumentList` (`locationOf`, `onDownload` facultatif), `MyDocumentsSection` (ex-`StagiaireDocSection`, une seule formation), `DocumentsSummary` + `useMyDocuments`, détail de formation (section pour le stagiaire seulement), profil (résumé)
 - [x] 7.2 Docs : `decisions-documents.md` (G16), `spec.md`, `CLAUDE.md`, ce change
-- [ ] 7.3 Le passage manuel (6.1) se fait sur cette version : déposer et supprimer depuis `/formations/:id`, retrouver le document avec son lien depuis `/profile`
+- [x] 7.3 Le passage manuel (6.1) se fait sur cette version : déposer et supprimer depuis `/formations/:id`, retrouver le document avec son lien depuis `/profile`
 
 ## 8. Documents envoyés vus par les managers (G17, 2026-11-09)
 

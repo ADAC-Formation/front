@@ -181,6 +181,8 @@ Route (react-router 8, createBrowserRouter — src/router/router.jsx)
 npm run test -- NomTest       # un test spécifique
 ```
 
+**Requêtes non déclarées** : `src/test/setup.js` fait échouer le test qui lance une requête sans mock MSW (la page avale l'erreur, et la réponse tombait dans le test suivant, qui échouait au hasard). Une page qui appelle `/formations`, `/categories`, `/auth/me`… doit avoir ses mocks dans chaque test qui la rend. Un mock qui répond après une déconnexion doit répondre 401, comme le vrai back.
+
 ## État actuel / pièges (travail en cours)
 
 - Auth branchée (change `auth-real-backend`, D52) : la session est la requête `['auth','me']` (`features/auth/hooks.js`, `useCurrentUser`) ; `features/auth/UserProvider.jsx` branche le 401 de `Axiosclient.js` (`setUnauthorizedHandler`, `ApiError` D12) ; gardes `RequireAuth` / `RequireRole` / `PublicOnly` ; pages connexion, activation, mot de passe oublié, réinitialisation. Les hooks TanStack Query des autres ressources ne sont pas encore écrits (sauf les comptes, ci-dessous).
