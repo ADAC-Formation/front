@@ -5,14 +5,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockDocumentApi } from '../../../test/documents'
 import { FORMATIONS, mockFormationList, mockFormationListError } from '../../../test/formations'
 import { renderWithProviders } from '../../../test/render'
-import { USERS } from '../../../test/session'
+import { USERS, mockSession } from '../../../test/session'
 import { saveBlob } from '../saveBlob'
 import StagiaireDocSection from './StagiaireDocSection'
 
 vi.mock('../saveBlob', () => ({ saveBlob: vi.fn() }))
 
 // Le stagiaire est inscrit à trois formations : 101 et 102 actives, 103 archivée (renvoyée en premier
-// par le back pour vérifier le tri). `inscriptionId` : hypothèse Q13 (champ de la formation du stagiaire).
+// par le back pour vérifier le tri). `inscriptionId` : champ de la formation du stagiaire (back, Q13 réglée).
 const [psc1, excel, gestes] = FORMATIONS
 const mine = [
   { ...gestes, inscriptionId: 9 },
@@ -41,6 +41,7 @@ const zoneIn = (region) => within(region).queryByRole('group', { name: 'Zone de 
 const drop = (region, files) => fireEvent.drop(zoneIn(region), { dataTransfer: { files } })
 
 function renderSection(formations = mine) {
+  mockSession('STAGIAIRE')
   mockFormationList(formations)
   return renderWithProviders(<StagiaireDocSection />)
 }
@@ -129,12 +130,62 @@ describe('StagiaireDocSection — liste et téléchargement', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent("Vous n'avez pas accès à ce document.")
     expect(saveBlob).not.toHaveBeenCalled()
   })
+})
 
-  it('ne propose jamais « Supprimer »', async () => {
+describe('StagiaireDocSection — suppression', () => {
+  const OTHERS = { ...USERS.ADMIN, id: 2 }
+  const withOthers = [...MY_DOCUMENTS, { ...document(603, 'Programme.pdf', 7), uploadedBy: OTHERS }]
+  const askDelete = async (name) => {
+    await userEvent.click(await screen.findByRole('button', { name: `Supprimer ${name}` }))
+    return screen.getByRole('dialog')
+  }
+
+  it('propose « Supprimer » sur ses propres dépôts, pas sur ceux des autres', async () => {
+    api(withOthers)
+    renderSection()
+    const region = await regionOf('Premiers secours PSC1')
+    expect(await within(region).findByRole('button', { name: 'Supprimer Justificatif.pdf' })).toBeInTheDocument()
+    expect(within(region).getByRole('button', { name: 'Télécharger Programme.pdf' })).toBeInTheDocument()
+    expect(within(region).queryByRole('button', { name: 'Supprimer Programme.pdf' })).not.toBeInTheDocument()
+  })
+
+  it('ne propose pas « Supprimer » sur une formation archivée', async () => {
     api()
     renderSection()
-    await screen.findByRole('button', { name: 'Télécharger Justificatif.pdf' })
-    expect(screen.queryByRole('button', { name: /Supprimer/ })).not.toBeInTheDocument()
+    const region = await regionOf('Gestes et postures')
+    await within(region).findByRole('button', { name: 'Télécharger Ancien.pdf' })
+    expect(within(region).queryByRole('button', { name: /Supprimer/ })).not.toBeInTheDocument()
+  })
+
+  it('demande confirmation, supprime, annonce le succès et retire le document de la liste', async () => {
+    const { calls } = api()
+    renderSection()
+    const dialog = await askDelete('Justificatif.pdf')
+    expect(dialog).toHaveTextContent('Justificatif.pdf')
+    expect(dialog).toHaveTextContent(/définitive/i)
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Supprimer' }))
+    expect(await screen.findByText('Document supprimé')).toBeInTheDocument()
+    expect(calls.deleted).toEqual([601])
+    await waitFor(() => expect(screen.queryByText('Justificatif.pdf')).not.toBeInTheDocument())
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
+
+  it('n’appelle rien quand on annule', async () => {
+    const { calls } = api()
+    renderSection()
+    const dialog = await askDelete('Justificatif.pdf')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Annuler' }))
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(calls.deleted).toEqual([])
+  })
+
+  it('annonce le refus du back (403) et garde le document', async () => {
+    api(MY_DOCUMENTS, { errors: { delete: { status: 403, message: 'Vous ne pouvez supprimer que vos propres documents' } } })
+    renderSection()
+    const dialog = await askDelete('Justificatif.pdf')
+    await userEvent.click(within(dialog).getByRole('button', { name: 'Supprimer' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Vous ne pouvez supprimer que vos propres documents')
+    expect(screen.getByText('Justificatif.pdf')).toBeInTheDocument()
   })
 })
 
@@ -196,7 +247,7 @@ describe('StagiaireDocSection — dépôt', () => {
   })
 })
 
-describe('StagiaireDocSection — sans inscriptionId (Q13)', () => {
+describe('StagiaireDocSection — sans inscriptionId (stagiaire non inscrit)', () => {
   it('affiche « Dépôt indisponible pour le moment » sans aucun appel à /documents', async () => {
     const { calls } = api()
     renderSection([{ ...psc1 }])

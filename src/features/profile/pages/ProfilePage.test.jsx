@@ -7,7 +7,7 @@ import { renderWithProviders } from '../../../test/render'
 import { USERS, mockSession } from '../../../test/session'
 import ProfilePage from './ProfilePage'
 
-// Formation du stagiaire avec son inscriptionId (hypothèse Q13) et un document déposé.
+// Formation du stagiaire avec son inscriptionId (champ du back) et un document déposé.
 const mine = [{ ...FORMATIONS[0], inscriptionId: 7 }]
 const myDocument = {
   id: 601,

@@ -60,15 +60,6 @@ docker compose -p adac-dev --env-file ../../dev-compose/.env \
   -f ../../back-readonly/docker-compose.yml -f docs/dev/docker-compose.dev.yml down -v
 ```
 
-## Essayer « Mes documents » du stagiaire avant la réponse à Q13
-
-Le back n'envoie pas encore `inscriptionId` au stagiaire (Q13 de `docs/points-pour-charlotte.md`). En développement seulement, un raccourci le complète :
-
-1. Avec un stagiaire inscrit à une formation (compte de dev, inscription faite par la chargée de formation), lire l'id d'inscription en tant que chargée de formation : `GET /api/formations/{id}/inscriptions` (Swagger, onglet « Authorize » avec le cookie `jwt`) ; le champ `id` de la ligne du stagiaire est son `inscriptionId`.
-2. Dans `.env` (git-ignoré) : `VITE_DEV_INSCRIPTION_IDS={"<idFormation>":<idInscription>}` (plusieurs formations : `{"101":7,"102":9}`), puis redémarrer `npm run dev`.
-3. Connecté en stagiaire, `/profile` affiche la zone de dépôt de cette formation. Le champ du back, quand il existera, l'emporte sur le raccourci ; le build de production ne le lit jamais.
-4. Ce raccourci est temporaire : le retirer (`devInscriptionId` dans `src/features/documents/documentFiles.js`, cette section, `.env.example`) quand Charlotte aura répondu.
-
 ## Notes
 
 - Après un `git -C ../../back-readonly pull`, relancer l'étape 2 (le `--build` reconstruit l'image).

@@ -1,15 +1,18 @@
-import { useId, useMemo } from 'react'
+import { useId, useMemo, useState } from 'react'
 import Alert from '../../../components/atoms/Alert/Alert'
+import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
+import { useCurrentUser } from '../../auth/hooks'
 import { useFormations } from '../../formations/hooks'
-import { canUploadOwnDocument, inscriptionIdOf } from '../documentFiles'
-import { useDocuments, useDownloadDocument, useUploadDocuments } from '../hooks'
+import { canDeleteDocument, canUploadOwnDocument, inscriptionIdOf } from '../documentFiles'
+import { useDeleteDocument, useDocuments, useDownloadDocument, useUploadDocuments } from '../hooks'
 import DocumentDropzone from './DocumentDropzone'
 import DocumentList from './DocumentList'
 import styles from './Documents.module.css'
 import UploadNotices from './UploadNotices'
 
 // Une formation du stagiaire : ses documents (liste, téléchargement) et, si elle est active, la zone de
-// dépôt (G10). Sans `inscriptionId` (back pas encore adapté, Q13), un simple avis et aucun appel (G11).
+// dépôt (G10) ; il peut supprimer ses propres dépôts, avec confirmation. Sans `inscriptionId` (non inscrit),
+// un simple avis et aucun appel (G11).
 // Chaque sous-section garde ses propres états : une erreur ou un dépôt ne touche pas les autres.
 const InscriptionDocuments = ({ formation }) => {
   const titleId = useId()
@@ -18,15 +21,38 @@ const InscriptionDocuments = ({ formation }) => {
   const documents = useDocuments(target, { enabled: inscriptionId !== null })
   const { upload, isPending: isUploading, result, reset: resetUpload } = useUploadDocuments(target)
   const download = useDownloadDocument()
+  const { user } = useCurrentUser()
+  const remove = useDeleteDocument()
+  const [deleting, setDeleting] = useState(null)
+  const [deleted, setDeleted] = useState(false)
+
+  const clearMessages = () => {
+    resetUpload()
+    download.reset()
+    remove.reset()
+    setDeleted(false)
+  }
 
   const handleFiles = (files) => {
-    download.reset()
+    clearMessages()
     upload(files)
   }
 
   const handleDownload = (document) => {
-    resetUpload()
+    clearMessages()
     download.mutate(document)
+  }
+
+  const askDelete = (document) => {
+    clearMessages()
+    setDeleting(document)
+  }
+
+  const confirmDelete = () => {
+    remove.mutate(deleting.id, {
+      onSuccess: () => setDeleted(true),
+      onSettled: () => setDeleting(null),
+    })
   }
 
   const downloadingId = download.isPending ? download.variables.id : null
@@ -50,6 +76,8 @@ const InscriptionDocuments = ({ formation }) => {
           <div className={styles.notices}>
             <UploadNotices result={result} />
             {download.isError && <Alert variant="error">{download.error.message}</Alert>}
+            {remove.isError && <Alert variant="error">{remove.error.message}</Alert>}
+            {deleted && <Alert variant="success">Document supprimé</Alert>}
           </div>
 
           {documents.isLoading && <p role="status">Chargement…</p>}
@@ -70,10 +98,24 @@ const InscriptionDocuments = ({ formation }) => {
           {documents.data?.length > 0 && (
             <DocumentList
               documents={documents.data}
+              canDelete={(document) => canDeleteDocument(user, formation, document)}
               onDownload={handleDownload}
+              onDelete={askDelete}
               downloadingId={downloadingId}
               showSender={false}
             />
+          )}
+
+          {deleting && (
+            <ConfirmDialog
+              title="Supprimer ce document ?"
+              confirmLabel="Supprimer"
+              onConfirm={confirmDelete}
+              onCancel={() => setDeleting(null)}
+              disabled={remove.isPending}
+            >
+              {`« ${deleting.fileName} » sera supprimé définitivement. Cette action est irréversible.`}
+            </ConfirmDialog>
           )}
         </>
       )}

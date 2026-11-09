@@ -8,8 +8,8 @@ import { saveBlob } from './saveBlob'
 const documentsKey = ({ formationId, inscriptionId }) =>
   formationId != null ? ['documents', formationId] : ['documents', 'inscription', inscriptionId]
 
-// `target` : `{ formationId }` ou `{ inscriptionId }`. `enabled: false` : aucun appel (ex. stagiaire sans
-// `inscriptionId`, G11).
+// `target` : `{ formationId }` ou `{ inscriptionId }`. `enabled: false` : aucun appel (ex. stagiaire non
+// inscrit, sans `inscriptionId`, G11).
 export function useDocuments(target, { enabled = true } = {}) {
   return useQuery({
     queryKey: documentsKey(target),

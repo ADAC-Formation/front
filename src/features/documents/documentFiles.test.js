@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { AUTRE_FORMATEUR, FORMATIONS } from '../../test/formations'
 import { USERS } from '../../test/session'
 import {
@@ -121,17 +121,22 @@ describe('canDeleteDocument', () => {
     expect(canDeleteDocument(USERS.ADMIN, otherTrainersActive, byMe)).toBe(true)
   })
 
-  it('le stagiaire ne supprime jamais', () => {
+  it('le stagiaire supprime ses propres envois seulement', () => {
+    const mine = { id: 3, uploadedBy: USERS.STAGIAIRE }
+    expect(canDeleteDocument(USERS.STAGIAIRE, active, mine)).toBe(true)
     expect(canDeleteDocument(USERS.STAGIAIRE, active, byMe)).toBe(false)
+    expect(canDeleteDocument(USERS.STAGIAIRE, active, byOther)).toBe(false)
+    expect(canDeleteDocument(USERS.STAGIAIRE, active, { id: 4 })).toBe(false)
   })
 
   it('personne ne supprime sur une formation archivée', () => {
     expect(canDeleteDocument(USERS.SUPER_ADMIN, archived, byMe)).toBe(false)
     expect(canDeleteDocument(USERS.ADMIN, archived, byMe)).toBe(false)
+    expect(canDeleteDocument(USERS.STAGIAIRE, archived, { id: 3, uploadedBy: USERS.STAGIAIRE })).toBe(false)
   })
 })
 
-// 028 (G8, G11, Q13) : seul point qui lit l'identifiant d'inscription du stagiaire sur la formation.
+// 028 (G8, G11) : seul point qui lit l'identifiant d'inscription du stagiaire sur la formation.
 describe('inscriptionIdOf', () => {
   it("renvoie l'identifiant quand la formation le porte", () => {
     expect(inscriptionIdOf({ id: 101, inscriptionId: 7 })).toBe(7)
@@ -155,38 +160,7 @@ describe('canUploadOwnDocument', () => {
     expect(canUploadOwnDocument({ status: 'ARCHIVED', inscriptionId: 7 })).toBe(false)
   })
 
-  it('refuse sans inscriptionId (Q13)', () => {
+  it('refuse sans inscriptionId', () => {
     expect(canUploadOwnDocument({ status: 'ACTIVE' })).toBe(false)
-  })
-})
-
-// Raccourci de développement (en attendant Q13) : `VITE_DEV_INSCRIPTION_IDS='{"101":7}'` donne
-// l'inscriptionId d'une formation quand le back ne l'envoie pas ; jamais en production.
-describe('inscriptionIdOf : raccourci de développement', () => {
-  afterEach(() => vi.unstubAllEnvs())
-
-  it("complète une formation sans inscriptionId d'après VITE_DEV_INSCRIPTION_IDS", () => {
-    vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', '{"101":7}')
-    expect(inscriptionIdOf({ id: 101 })).toBe(7)
-    expect(inscriptionIdOf({ id: 102 })).toBeNull()
-  })
-
-  it("laisse le champ du back l'emporter sur le raccourci", () => {
-    vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', '{"101":7}')
-    expect(inscriptionIdOf({ id: 101, inscriptionId: 55 })).toBe(55)
-  })
-
-  it.each([['du JSON invalide', 'pas du json'], ['un tableau', '[1,2]'], ['une valeur non numérique', '{"101":"x"}']])(
-    'ignore %s',
-    (_label, value) => {
-      vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', value)
-      expect(inscriptionIdOf({ id: 101 })).toBeNull()
-    },
-  )
-
-  it('est ignoré hors développement (build de production)', () => {
-    vi.stubEnv('DEV', false)
-    vi.stubEnv('VITE_DEV_INSCRIPTION_IDS', '{"101":7}')
-    expect(inscriptionIdOf({ id: 101 })).toBeNull()
   })
 })
