@@ -8,7 +8,7 @@ const dateTimeFormat = new Intl.DateTimeFormat('fr-FR', {
   minute: '2-digit',
 })
 
-// « 2026-11-02T10:05:00 » (LocalDateTime du back, sans fuseau) → « 2 nov. 2026, 10:05 ».
+// « 2026-11-03T09:45:10.02948Z » (OffsetDateTime du back, UTC avec décalage) → heure locale : « 3 nov. 2026, 10:45 ».
 export const formatMessageDate = (isoDateTime) => dateTimeFormat.format(new Date(isoDateTime))
 
 export const displayName = (user) => `${user.prenom} ${user.nom}`

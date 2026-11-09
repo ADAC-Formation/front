@@ -17,7 +17,7 @@ function extensionOf(fileName) {
 // Renvoie le message du refus, ou `null` si le fichier peut être envoyé.
 export function validateDocumentFile(file) {
   if (!ALLOWED_EXTENSIONS.includes(extensionOf(file.name))) {
-    return 'Format non autorisé (PDF, JPG, PNG ou DOCX).'
+    return 'Format non autorisé (PDF, JPG, JPEG, PNG ou DOCX).'
   }
   if (file.size === 0) return 'Le fichier est vide.'
   if (file.size > MAX_FILE_SIZE) return 'Fichier trop volumineux (10 Mo au maximum).'
@@ -34,7 +34,7 @@ export function formatFileSize(bytes) {
 
 const longDate = new Intl.DateTimeFormat('fr-FR', { dateStyle: 'long' })
 
-// `createdAt` : LocalDateTime ISO 8601 du back.
+// `createdAt` : OffsetDateTime ISO 8601 du back (avec décalage, par exemple `…Z`).
 export function formatDocumentDate(createdAt) {
   const date = new Date(createdAt ?? NaN)
   return Number.isNaN(date.getTime()) ? '' : longDate.format(date)

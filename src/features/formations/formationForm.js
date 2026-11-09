@@ -43,8 +43,8 @@ export function toRequest(values) {
 }
 
 // Le back traite un champ absent comme « inchangé » : on n'envoie que ce qui a changé.
-// `PUT` ignore aussi `formateurId: null` (constaté sur le vrai back, `points-pour-charlotte.md`) :
-// pour repasser une formation à la chargée de formation, on envoie son identifiant.
+// Contrat confirmé par le back (Q11) : à la modification, `formateurId` absent ou `null` = formateur inchangé
+// (seule la création traite `null` comme « chargée de formation »). Pour repasser une formation à la chargée de formation, on envoie son identifiant.
 export function changedFields(formation, values, { trainingOfficerId = null } = {}) {
   const original = toRequest(valuesFromFormation(formation))
   const edited = toRequest(values)

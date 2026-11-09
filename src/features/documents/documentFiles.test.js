@@ -25,6 +25,10 @@ describe('validateDocumentFile', () => {
     expect(validateDocumentFile(file('Photo.JpG'))).toBeNull()
   })
 
+  it('cite JPEG dans le message de refus', () => {
+    expect(validateDocumentFile(file('virus.exe'))).toBe('Format non autorisé (PDF, JPG, JPEG, PNG ou DOCX).')
+  })
+
   it.each(['virus.exe', 'ancien.doc', 'tableau.xlsx', 'sans-extension', 'archive.pdf.zip'])('refuse %s', (name) => {
     expect(validateDocumentFile(file(name))).toMatch(/Format non autorisé/)
   })

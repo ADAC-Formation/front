@@ -6,8 +6,8 @@ import { useActivate, useResendActivation } from '../hooks'
 import styles from '../components/AuthForm.module.css'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 
-// L'adresse peut être fournie par le lien reçu par e-mail (?email=…, question Q2 ouverte
-// avec Charlotte) ; le champ reste toujours visible et modifiable.
+// L'adresse peut être fournie par le lien reçu par e-mail (?email=…, confirmé par le back, Q2 :
+// le lien ne contient jamais le code) ; le champ reste toujours visible et modifiable.
 const ActivationPage = () => {
   const [params] = useSearchParams()
   const activation = useActivate()
