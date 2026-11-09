@@ -82,6 +82,67 @@
   cursor: not-allowed;
 }
 
+/* ---------- Documents envoyés par un stagiaire (vue formateur / chargée de formation, G17) ---------- */
+
+.sent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  flex-basis: 100%;
+}
+
+.sentStatus {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  margin: 0;
+
+  font-weight: 600;
+}
+
+/* La coche est verte, mais le texte « Documents envoyés » porte l'information : la couleur seule ne suffit pas. */
+.tick {
+  flex: none;
+  color: var(--color-green);
+}
+
+.noTick {
+  flex: none;
+  color: var(--muted-foreground);
+}
+
+.sentList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  margin: 0;
+  padding: 0 0 0 1.6rem;
+
+  list-style: none;
+}
+
+.linkButton {
+  padding: 0;
+
+  border: 0;
+  background: none;
+  color: inherit;
+
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.linkButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ---------- Zone de dépôt ---------- */
 
 .dropzone {

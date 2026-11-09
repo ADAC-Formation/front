@@ -1,6 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
 import { deleteDocument, downloadDocument, listDocuments, uploadDocument } from './api'
-import { validateDocumentFile } from './documentFiles'
+import { inscriptionIdOf, validateDocumentFile } from './documentFiles'
 import { saveBlob } from './saveBlob'
 
 // Clé de la liste : formation `['documents', formationId]` (027), inscription
@@ -16,6 +16,29 @@ export function useDocuments(target, { enabled = true } = {}) {
     queryFn: () => listDocuments(target),
     enabled,
   })
+}
+
+// Tous les dépôts du stagiaire, une liste par formation où il est inscrit (`inscriptionId` connu), partageant
+// la clé de `useDocuments` : un dépôt ou une suppression sur la page d'une formation met le résumé à jour.
+// `documents` : le plus récent d'abord ; `formationByInscriptionId` : où chaque document a été déposé ;
+// `errors` : une erreur par liste en échec (les autres listes restent affichées) ; `refetch` ne relance que celles-ci.
+export function useMyDocuments(formations) {
+  const enrolled = formations.filter((formation) => inscriptionIdOf(formation) !== null)
+  const queries = useQueries({
+    queries: enrolled.map((formation) => {
+      const target = { inscriptionId: inscriptionIdOf(formation) }
+      return { queryKey: documentsKey(target), queryFn: () => listDocuments(target) }
+    }),
+  })
+  const byDate = (a, b) => new Date(b.createdAt ?? 0) - new Date(a.createdAt ?? 0)
+  return {
+    documents: queries.flatMap((query) => query.data ?? []).sort(byDate),
+    formationByInscriptionId: new Map(enrolled.map((formation) => [inscriptionIdOf(formation), formation])),
+    isLoading: queries.some((query) => query.isLoading),
+    isSettled: queries.every((query) => !query.isLoading),
+    errors: queries.filter((query) => query.isError).map((query) => query.error),
+    refetch: () => queries.filter((query) => query.isError).forEach((query) => query.refetch()),
+  }
 }
 
 // Envoie les fichiers l'un après l'autre (G4) : un refus (contrôle du front ou erreur du back) est

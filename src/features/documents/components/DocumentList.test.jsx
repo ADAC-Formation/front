@@ -1,6 +1,7 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
+import { MemoryRouter } from 'react-router'
 import { describe, expect, it, vi } from 'vitest'
 import { DOCUMENTS } from '../../../test/documents'
 import DocumentList from './DocumentList'
@@ -108,3 +109,35 @@ describe('DocumentList du stagiaire', () => {
   })
 })
 
+
+// Résumé du profil (G16) : sans actions, avec l'endroit où chaque document a été déposé.
+describe('DocumentList en résumé', () => {
+  const renderSummary = (props = {}) =>
+    render(
+      <MemoryRouter>
+        <DocumentList
+          documents={DOCUMENTS}
+          showSender={false}
+          locationOf={(document) => ({ to: `/formations/${document.formationId}`, label: 'Premiers secours PSC1' })}
+          {...props}
+        />
+      </MemoryRouter>,
+    )
+
+  it('écrit « Déposé dans » avec un lien vers la formation', () => {
+    renderSummary()
+    const line = screen.getAllByRole('listitem')[0]
+    expect(line).toHaveTextContent('Déposé dans Premiers secours PSC1')
+    expect(within(line).getByRole('link', { name: 'Premiers secours PSC1' })).toHaveAttribute('href', '/formations/101')
+  })
+
+  it('sans onDownload ni canDelete, aucun bouton', () => {
+    renderSummary()
+    expect(screen.queryByRole('button')).not.toBeInTheDocument()
+  })
+
+  it('sans locationOf, aucune ligne « Déposé dans » (027 inchangé)', () => {
+    renderList()
+    expect(screen.queryByText(/Déposé dans/)).not.toBeInTheDocument()
+  })
+})

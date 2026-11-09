@@ -309,7 +309,7 @@ describe('page de profil', () => {
     renderApp('/profile')
     expect(await screen.findByRole('heading', { level: 1, name: 'Mon profil' })).toBeInTheDocument()
     expect(await screen.findByRole('heading', { level: 2, name: 'Mes documents' })).toBeInTheDocument()
-    expect(await screen.findByText('Aucun document déposé pour cette formation')).toBeInTheDocument()
+    expect(await screen.findByText('Aucun document déposé pour le moment')).toBeInTheDocument()
   })
 
   it('la chargée de formation voit « Mon profil » sans « Mes documents »', async () => {

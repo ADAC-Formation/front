@@ -1,8 +1,7 @@
-import { useId, useMemo, useState } from 'react'
+import { useId, useState } from 'react'
 import Alert from '../../../components/atoms/Alert/Alert'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { useCurrentUser } from '../../auth/hooks'
-import { useFormations } from '../../formations/hooks'
 import { canDeleteDocument, canUploadOwnDocument, inscriptionIdOf } from '../documentFiles'
 import { useDeleteDocument, useDocuments, useDownloadDocument, useUploadDocuments } from '../hooks'
 import DocumentDropzone from './DocumentDropzone'
@@ -10,18 +9,19 @@ import DocumentList from './DocumentList'
 import styles from './Documents.module.css'
 import UploadNotices from './UploadNotices'
 
-// Une formation du stagiaire : ses documents (liste, téléchargement) et, si elle est active, la zone de
-// dépôt (G10) ; il peut supprimer ses propres dépôts, avec confirmation. Sans `inscriptionId` (non inscrit),
-// un simple avis et aucun appel (G11).
-// Chaque sous-section garde ses propres états : une erreur ou un dépôt ne touche pas les autres.
-const InscriptionDocuments = ({ formation }) => {
+// Section « Mes documents » du détail d'une formation, pour le stagiaire inscrit (TICKET-028, G16) : ses
+// dépôts sur cette formation (liste, téléchargement), la zone de dépôt si la formation est active (G10) et
+// la suppression de ses propres dépôts, avec confirmation (G15). Sans `inscriptionId` (stagiaire non
+// inscrit), un simple avis et aucun appel (G11). Le nom des fichiers et les messages du back sont rendus
+// en texte. `className` : habillage de section fourni par la page.
+const MyDocumentsSection = ({ formation, className }) => {
   const titleId = useId()
+  const { user } = useCurrentUser()
   const inscriptionId = inscriptionIdOf(formation)
   const target = { inscriptionId }
   const documents = useDocuments(target, { enabled: inscriptionId !== null })
   const { upload, isPending: isUploading, result, reset: resetUpload } = useUploadDocuments(target)
   const download = useDownloadDocument()
-  const { user } = useCurrentUser()
   const remove = useDeleteDocument()
   const [deleting, setDeleting] = useState(null)
   const [deleted, setDeleted] = useState(false)
@@ -58,10 +58,8 @@ const InscriptionDocuments = ({ formation }) => {
   const downloadingId = download.isPending ? download.variables.id : null
 
   return (
-    <section aria-labelledby={titleId} className={styles.subsection}>
-      <h3 id={titleId} className={styles.subsectionTitle}>
-        {formation.intitule}
-      </h3>
+    <section aria-labelledby={titleId} className={className}>
+      <h2 id={titleId}>Mes documents</h2>
 
       {inscriptionId === null && <p className={styles.empty}>Dépôt indisponible pour le moment</p>}
 
@@ -123,42 +121,4 @@ const InscriptionDocuments = ({ formation }) => {
   )
 }
 
-// Actives d'abord, puis archivées ; l'ordre du back est gardé à l'intérieur de chaque groupe.
-const activeFirst = (formations) => [
-  ...formations.filter((formation) => formation.status !== 'ARCHIVED'),
-  ...formations.filter((formation) => formation.status === 'ARCHIVED'),
-]
-
-// Section « Mes documents » du profil du stagiaire (TICKET-028, G8–G12) : une sous-section par formation
-// de `GET /formations` (son périmètre). Le nom des fichiers et les messages du back sont rendus en texte.
-const StagiaireDocSection = ({ className }) => {
-  const formations = useFormations()
-  const ordered = useMemo(() => activeFirst(formations.data ?? []), [formations.data])
-
-  return (
-    <section className={className}>
-      <h2>Mes documents</h2>
-
-      {formations.isLoading && <p role="status">Chargement…</p>}
-
-      {formations.isError && (
-        <div className={styles.errorBox}>
-          <Alert variant="error">{formations.error.message}</Alert>
-          <button type="button" className={styles.actionButton} onClick={() => formations.refetch()}>
-            Réessayer
-          </button>
-        </div>
-      )}
-
-      {formations.data?.length === 0 && (
-        <p className={styles.empty}>Vous n&apos;êtes inscrit à aucune formation pour le moment</p>
-      )}
-
-      {ordered.map((formation) => (
-        <InscriptionDocuments key={formation.id} formation={formation} />
-      ))}
-    </section>
-  )
-}
-
-export default StagiaireDocSection
+export default MyDocumentsSection

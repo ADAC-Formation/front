@@ -27,14 +27,16 @@ function renderProfile(role) {
 }
 
 describe('ProfilePage', () => {
-  it('stagiaire : titre « Mon profil » et section « Mes documents » avec ses documents', async () => {
+  it('stagiaire : titre « Mon profil » et résumé « Mes documents » avec le lien vers la formation', async () => {
     mockFormationList(mine)
     mockDocumentApi([myDocument], { uploader: USERS.STAGIAIRE })
     renderProfile('STAGIAIRE')
     expect(await screen.findByRole('heading', { level: 1, name: 'Mon profil' })).toBeInTheDocument()
     expect(await screen.findByRole('heading', { level: 2, name: 'Mes documents' })).toBeInTheDocument()
-    const region = await screen.findByRole('region', { name: 'Premiers secours PSC1' })
-    expect(await within(region).findByText('Justificatif.pdf')).toBeInTheDocument()
+    const item = (await screen.findByText('Justificatif.pdf')).closest('li')
+    expect(item).toHaveTextContent('Déposé dans Premiers secours PSC1')
+    expect(within(item).getByRole('link', { name: 'Premiers secours PSC1' })).toHaveAttribute('href', '/formations/101')
+    expect(screen.queryByRole('group', { name: 'Zone de dépôt de documents' })).not.toBeInTheDocument()
   })
 
   it.each(['ADMIN', 'SUPER_ADMIN'])(
