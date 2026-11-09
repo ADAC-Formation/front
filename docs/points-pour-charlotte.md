@@ -106,7 +106,9 @@ Lu dans `ExcelImportUtil` (branche `dev`, lecture seule) : un fichier invalide r
 
 Le front découpe ce texte pour afficher un tableau Ligne / Colonne / Problème (F20) et affiche telle quelle toute entrée non reconnue. C'est fragile : si le format du message change, le tableau se réduit à une liste de texte. Demande : remplir `details[]` avec une entrée par erreur (idéalement `{ligne, colonne, message}`). Les colonnes restent le placeholder de `tech.md` tant que le fichier réel d'ADAC n'est pas arrivé (R10).
 
-### Q13 — Le stagiaire ne peut pas connaître son `inscriptionId` (ticket 028, documents du stagiaire)
+### Q13 — Le stagiaire ne peut pas connaître son `inscriptionId` (ticket 028, documents du stagiaire) — ✅ résolu le 2026-11-09
+Traité par le back (`dev`, commit `e1f7c35`) : `inscriptionId` dans `FormationResponse` pour le stagiaire inscrit (`null` sinon) et suppression de ses propres dépôts autorisée au stagiaire. Le texte d'origine est gardé ci-dessous pour mémoire.
+
 `POST /documents` et `GET /documents?inscriptionId=` (stagiaire : « ses inscriptions ») exigent l'id de l'inscription. Mais `GET /formations/{id}/inscriptions` répond `403` à un stagiaire, `FormationResponse` n'a pas de champ d'inscription et `DocumentResponse.inscriptionId` n'existe qu'une fois un document déposé : un stagiaire ne peut donc pas déposer son premier document.
 
 Proposition minimale : ajouter `inscriptionId` à `FormationResponse` **seulement pour le stagiaire inscrit** (aucune fuite d'e-mail), ou un `GET /api/inscriptions/me` (liste de ses inscriptions avec leur formation). Le front est écrit sur cette proposition en attendant ta réponse. Constat lié : `DELETE /documents/{id}` répond `403` à un stagiaire (`tech.md` §6), il ne pourra donc pas retirer un fichier déposé par erreur ; le front n'affiche pas « Supprimer » pour lui.

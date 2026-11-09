@@ -2,8 +2,8 @@
 
 ## Context
 
-- Contrat (`tech.md` §3 et §6, TICKET-026) : `GET /formations` (stagiaire : uniquement ses formations) ; `GET /documents?inscriptionId=` (stagiaire : sa propre inscription) → `DocumentResponse[]` ; `POST /documents` multipart (`file` + exactement un de `formationId` / `inscriptionId` ; stagiaire : `inscriptionId` de sa propre inscription, sinon `403`) ; `GET /documents/{id}/download` ; `DELETE` interdit au stagiaire (`403`).
-- **Manque du contrat (G8, Q13)** : aucun appel ne donne son `inscriptionId` au stagiaire (`GET /formations/{id}/inscriptions` → `403`, pas de champ dans `FormationResponse`). Le front suppose `formation.inscriptionId` (présent pour le seul stagiaire inscrit) en attendant la réponse de Charlotte ; `tech.md` n'est pas modifié (lecture seule).
+- Contrat (`tech.md` §3 et §6, TICKET-026) : `GET /formations` (stagiaire : uniquement ses formations) ; `GET /documents?inscriptionId=` (stagiaire : sa propre inscription) → `DocumentResponse[]` ; `POST /documents` multipart (`file` + exactement un de `formationId` / `inscriptionId` ; stagiaire : `inscriptionId` de sa propre inscription, sinon `403`) ; `GET /documents/{id}/download` ; `DELETE` autorisé au stagiaire sur ses propres dépôts seulement (`403` sinon, G15).
+- **Contrat (G8, G15)** : `FormationResponse.inscriptionId` est renseigné par le back pour le seul stagiaire inscrit (Q13 traitée le 2026-11-09).
 - État actuel : `features/documents/` (change `formation-documents`) fournit `api.js` (`uploadDocument(file, formationId)`), `hooks.js` (`useDocuments`, `useUploadDocuments`, `useDeleteDocument`, `useDownloadDocument`), `documentFiles.js` (règles pures), `DocumentDropzone` (« réutilisable par 028 »), `DocumentList` (affiche l'expéditeur, `canDelete` par document) et `DocumentSection` (formation). La page de profil est un bouchon `<div>ProfilePage</div>` dans `components/Pages/Stagiaire/ProfilePage/`, routé sur **`/profile`** (tuile du tableau de bord, plan du site) ; les décisions écrivaient « `/profil` » par erreur : la route existante est conservée.
 - Voir `proposal.md` et `docs/decisions-documents.md` (G8–G12).
 
@@ -12,7 +12,7 @@
 **Goals:**
 - Réutiliser telles quelles la zone de dépôt, la liste, le téléchargement et les règles de fichier de 027 ; aucun doublon de logique.
 - Un seul point du code lit `inscriptionId` : changer de contrat (champ sur la formation, ou `GET /inscriptions/me`) ne touche qu'un fichier.
-- Aucun appel ni bouton menant à une erreur évitable (pas de dépôt sans `inscriptionId`, pas de « Supprimer »).
+- Aucun appel ni bouton menant à une erreur évitable (pas de dépôt sans `inscriptionId`, « Supprimer » seulement sur ses propres dépôts).
 
 **Non-Goals:**
 - Voir ces documents côté chargée de formation (US-010), reste du profil (044), suppression par le stagiaire, toute modification du back ou de `tech.md`.
@@ -27,7 +27,7 @@
 Fonction pure, seul point qui lit `formation.inscriptionId` (`null` si absent ou non numérique). Test unitaire avec et sans le champ. Quand la réponse de Charlotte arrivera (autre champ, ou `GET /inscriptions/me`), seuls cette fonction et la source des formations changent.
 
 ### 3. `DocumentList` : expéditeur et suppression facultatifs
-Nouvelle propriété `showSender` (vrai par défaut : 027 inchangé) ; `canDelete` absent ou `() => false` retire « Supprimer ». Le stagiaire passe `showSender={false}` et aucun `canDelete`. Les formations, qui n'ont pas besoin de nom d'expéditeur côté stagiaire (ce sont ses envois), n'affichent ni prénom ni nom.
+Nouvelle propriété `showSender` (vrai par défaut : 027 inchangé) ; `canDelete` absent ou `() => false` retire « Supprimer ». Le stagiaire passe `showSender={false}` et un `canDelete` limité à ses propres dépôts (G15). Les formations, qui n'ont pas besoin de nom d'expéditeur côté stagiaire (ce sont ses envois), n'affichent ni prénom ni nom.
 
 ### 4. `StagiaireDocSection` et sa sous-section par formation
 `features/documents/components/StagiaireDocSection.jsx` : `useFormations()` (clé `['formations','list','all']`, déjà utilisée par la liste), tri stable actives puis archivées, une `<section>` titrée `<h3>` par formation sous un `<h2>` « Mes documents ». États : chargement annoncé, erreur avec « Réessayer », aucune formation. Le composant interne `InscriptionDocuments` (formation) :
@@ -44,7 +44,7 @@ Chaque sous-section a ses propres états (une erreur de liste ne masque pas les 
 
 ## Risks / Trade-offs
 
-- **Contrat supposé** : si Charlotte choisit `GET /inscriptions/me` ou un autre nom de champ, le point 2 et la source des formations changent (≈ 1 h) ; tant que rien n'est confirmé, le passage manuel sur le vrai back est impossible et la section affiche « Dépôt indisponible » en local. Atténué par l'isolation en un fichier et la note Q13. Le « Done » du ticket (passage manuel, D30) reste donc **ouvert** jusqu'à sa réponse.
+- **Passage manuel** : le contrat est confirmé par le back (G15) ; le « Done » du ticket (D30) reste **ouvert** jusqu'au passage manuel sur le back reconstruit depuis `dev`.
 - **Formation archivée** : règle d'interface seulement (G3/G10), le back accepte encore le dépôt.
-- **Pas de suppression** : un dépôt erroné ne peut pas être retiré par le stagiaire ; signalé à Charlotte (Q13) et à la chargée de formation par le canal habituel.
+- **Suppression** : le stagiaire retire ses propres dépôts ; le contrôle « seulement les siens, formation active » est une règle d'interface, le back ne vérifie que l'auteur.
 - **Liste des formations** : `GET /formations` sans pagination (hors périmètre V1) ; une sous-section par formation lance une requête de documents par formation, acceptable pour quelques inscriptions par stagiaire.

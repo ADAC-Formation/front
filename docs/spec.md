@@ -128,23 +128,23 @@ Source : TICKET-027 (front), US-009, US-011, `tech.md` §6, décisions G1–G6 (
 ### TICKET-027 — Documents d'une formation
 - [ ] Le détail de chaque formation a une section « Documents » (`GET /documents?formationId=`) : type en texte, nom (rendu en texte), taille, date, expéditeur sans e-mail ; états chargement, erreur avec « Réessayer », vide « Aucun document disponible pour le moment ».
 - [ ] « Télécharger » : `GET /documents/{id}/download` par le client axios, fichier enregistré sous son nom d'origine ; `403` / `404` affichés ; jamais `fileUrl`.
-- [ ] Zone de dépôt : chargée de formation sur toute formation active ; formateur sur ses formations actives ; jamais le stagiaire ni sur une formation archivée.
+- [ ] Zone de dépôt : chargée de formation sur toute formation active ; formateur sur ses formations actives ; jamais sur une formation archivée (le stagiaire dépose sur sa propre inscription, TICKET-028).
 - [ ] Dépôt par glisser-déposer et « Choisir des fichiers » (clavier), plusieurs fichiers : contrôle pdf / jpg / jpeg / png / docx et 10 Mo avant envoi, un `POST /documents` par fichier, l'un après l'autre ; refus (client ou back) listés par fichier et annoncés sans bloquer les autres ; liste rechargée à la fin.
-- [ ] « Supprimer » : chargée de formation sur tous les documents d'une formation active, formateur sur ses propres envois seulement, jamais le stagiaire ; confirmation puis `DELETE /documents/{id}`, liste rechargée, « Document supprimé » annoncé ; `404` / `403` affichés.
+- [ ] « Supprimer » : chargée de formation sur tous les documents d'une formation active, formateur et stagiaire sur leurs propres envois seulement ; confirmation puis `DELETE /documents/{id}`, liste rechargée, « Document supprimé » annoncé ; `404` / `403` affichés.
 - [ ] Formation archivée : documents listés et téléchargeables, ni dépôt ni suppression (règle d'interface, à confirmer avec Charlotte).
 - [ ] Accessibilité : clavier, annonces d'état, boutons nommés avec le fichier ; jest-axe sans violation.
 - Reporté : documents ciblés par stagiaire et dépôt par le stagiaire (TICKET-028, change `stagiaire-documents`).
 
 ## Critères d'acceptation des documents du stagiaire (change `stagiaire-documents`)
 
-Source : TICKET-028 (front), US-012, `tech.md` §3 et §6, décisions G8–G12 (`decisions-documents.md`), demande Q13 (`points-pour-charlotte.md`). À valider par Manon (D49). Détail testable : `openspec/changes/stagiaire-documents/specs/stagiaire-documents/spec.md`.
+Source : TICKET-028 (front), US-012, `tech.md` §3 et §6, décisions G8–G12 et G15 (`decisions-documents.md`), Q13 résolue par le back le 2026-11-09 (G15). À valider par Manon (D49). Détail testable : `openspec/changes/stagiaire-documents/specs/stagiaire-documents/spec.md`.
 
 ### TICKET-028 — « Mes documents » sur le profil
 - [ ] Page `/profile` : titre « Mon profil » pour tous ; section « Mes documents » pour le seul stagiaire, absente (et aucun appel `/documents`) pour le formateur et la chargée de formation.
 - [ ] Une sous-section par formation de `GET /formations` (actives d'abord, puis archivées) ; sans formation : « Vous n'êtes inscrit à aucune formation pour le moment ».
 - [ ] Liste des documents de l'inscription (`GET /documents?inscriptionId=`) : type, nom (en texte), taille, date, sans expéditeur ; vide : « Aucun document déposé pour cette formation » ; erreur avec « Réessayer » limitée à la formation ; « Télécharger » comme en 027.
 - [ ] Zone de dépôt sur chaque formation active (mêmes règles de fichier que 027) : un `POST /documents` par fichier avec `inscriptionId` (jamais `formationId`) ; succès annoncé et document ajouté à la liste ; refus listés par fichier sans bloquer les autres ; pas de zone de dépôt sur une formation archivée.
-- [ ] Aucun « Supprimer » pour le stagiaire (le back répond `403`).
-- [ ] Sans `inscriptionId` sur la formation (Q13 pas encore traitée) : « Dépôt indisponible pour le moment », aucun appel `/documents`.
+- [ ] « Supprimer » seulement sur les documents que le stagiaire a lui-même déposés (`uploadedBy` = lui) et sur une formation active : confirmation, `DELETE /documents/{id}`, « Document supprimé » annoncé, liste rechargée ; `403` / `404` affichés.
+- [ ] Sans `inscriptionId` sur la formation (stagiaire non inscrit) : « Dépôt indisponible pour le moment », aucun appel `/documents`.
 - [ ] Accessibilité : clavier, annonces d'état, boutons nommés avec le fichier ; jest-axe sans violation sur la page.
 - Reporté : voir ces documents côté chargée de formation (US-010, Q6), reste du profil (TICKET-044).

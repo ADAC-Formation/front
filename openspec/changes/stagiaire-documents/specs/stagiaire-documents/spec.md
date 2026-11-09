@@ -62,17 +62,25 @@ Le système SHALL proposer, pour chaque formation active, la zone de dépôt (gl
 - **WHEN** la formation est archivée
 - **THEN** sa sous-section montre la liste et le téléchargement, sans zone de dépôt
 
-### Requirement: Pas de suppression par le stagiaire
-Le système SHALL ne proposer aucun bouton « Supprimer » au stagiaire, le back refusant la suppression (`403`, `tech.md` §6).
+### Requirement: Suppression de ses propres dépôts
+Le système SHALL proposer « Supprimer » au stagiaire uniquement sur les documents dont `uploadedBy` est lui et dont la formation n'est pas archivée ; la suppression demande une confirmation, appelle `DELETE /documents/{id}`, annonce « Document supprimé » et recharge la liste (le back répond `403` pour le dépôt d'un autre).
 
-#### Scenario: Document déposé
-- **WHEN** le stagiaire consulte un document qu'il a déposé
+#### Scenario: Document déposé par le stagiaire
+- **WHEN** le stagiaire consulte un document qu'il a déposé sur une formation active
+- **THEN** « Télécharger » et « Supprimer » sont proposés
+
+#### Scenario: Document d'un autre ou formation archivée
+- **WHEN** le document a été déposé par quelqu'un d'autre, ou la formation est archivée
 - **THEN** seul « Télécharger » est proposé
 
-### Requirement: Identifiant d'inscription indisponible
-Le système SHALL lire l'identifiant d'inscription du stagiaire sur la formation (`inscriptionId`, hypothèse Q13) en un seul point du code. Quand une formation n'en a pas, sa sous-section SHALL afficher « Dépôt indisponible pour le moment » sans liste, sans zone de dépôt et sans appel à `/documents`.
+#### Scenario: Refus du back
+- **WHEN** le back refuse la suppression
+- **THEN** son message est affiché et le document reste dans la liste
 
-#### Scenario: Back pas encore adapté
+### Requirement: Identifiant d'inscription indisponible
+Le système SHALL lire l'identifiant d'inscription du stagiaire sur la formation (`inscriptionId`) en un seul point du code. Quand une formation n'en a pas, sa sous-section SHALL afficher « Dépôt indisponible pour le moment » sans liste, sans zone de dépôt et sans appel à `/documents`.
+
+#### Scenario: Stagiaire non inscrit
 - **WHEN** une formation reçue n'a pas de `inscriptionId`
 - **THEN** « Dépôt indisponible pour le moment » est affiché pour cette formation et aucun appel à `/documents` n'est émis
 

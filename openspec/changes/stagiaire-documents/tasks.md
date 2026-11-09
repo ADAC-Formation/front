@@ -32,7 +32,7 @@
 
 ## 6. Documentation et vérification
 
-- [ ] 6.1 Passage manuel sur le vrai back local : possible seulement si Charlotte a ajouté `inscriptionId` (Q13). Sinon, le consigner comme **bloqué** dans `docs/decisions-documents.md` (la sous-section affiche « Dépôt indisponible pour le moment » ; vérifier ce comportement sur le back actuel) et laisser la tâche ouverte ; si le champ existe, déposer plusieurs fichiers, refus d'un `.exe` et de plus de 10 Mo, télécharger, formation archivée, vérifier que le document est visible côté chargée de formation (`GET /documents?inscriptionId=`)
+- [ ] 6.1 Passage manuel sur le vrai back local (**débloqué le 2026-11-09 : le back `dev` envoie `inscriptionId`, G15 ; reconstruire l'image depuis `dev`**) : lire `inscriptionId`, déposer plusieurs fichiers, refus d'un `.exe` et de plus de 10 Mo, télécharger, formation archivée, vérifier que le document est visible côté chargée de formation (`GET /documents?inscriptionId=`), supprimer un de ses dépôts, vérifier le `403` sur le dépôt d'un autre par appel direct
 - [x] 6.2 Mettre à jour `CLAUDE.md` (« État actuel » : documents du stagiaire branchés, hypothèse `inscriptionId` isolée dans `inscriptionIdOf`, page de profil dans `features/profile/`, tout test qui rend la page de profil déclare `mockDocumentApi()` et les formations), `docs/decisions-documents.md` (constats d'implémentation) et `docs/points-pour-charlotte*.md` si le passage manuel révèle des écarts
 - [x] 6.3 `npm run check` vert (lint + tests + build + budget du bundle) ; `git -C ../../back-readonly status` propre ; relecture (`/code-review`) et correction des remarques bloquantes
 - [x] 6.4 Commit `docs: record the stagiaire documents`
@@ -40,4 +40,4 @@
 ## Workflow follow-up
 
 - Archiver le change (`/opsx:archive`) et synchroniser les specs : `stagiaire-documents` ajoutée.
-- 028 est le dernier ticket de `feature/documents` : la PR vers `dev` s'ouvre sur demande explicite de Manon (D3, D43), de préférence après la réponse de Charlotte à Q13 pour que le passage manuel soit fait.
+- 028 est le dernier ticket de `feature/documents` : la PR vers `dev` s'ouvre sur demande explicite de Manon (D3, D43), de préférence après le passage manuel (6.1, Q13 traitée par le back).

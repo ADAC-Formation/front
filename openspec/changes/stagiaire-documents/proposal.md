@@ -9,11 +9,11 @@ Le stagiaire ne peut pas remettre ses propres pièces (justificatifs, documents 
 - Page de profil (`/profile`, aujourd'hui un bouchon vide) : titre « Mon profil » dans `PageShell` et, pour le seul stagiaire, la section « Mes documents » (G9). ADMIN et SUPER_ADMIN ne voient que le titre ; le reste du profil est TICKET-044.
 - « Mes documents » : une sous-section par formation de `GET /formations` (périmètre du stagiaire), actives d'abord puis archivées. Chaque sous-section liste les documents de l'inscription (`GET /documents?inscriptionId=`) avec téléchargement, et offre la zone de dépôt de 027 (glisser-déposer plusieurs fichiers ou « Choisir des fichiers ») quand la formation est active (G10).
 - Mêmes règles de fichier que 027 (pdf, jpg / jpeg, png, docx ; 10 Mo ; un `POST /documents` multipart par fichier avec `inscriptionId` à la place de `formationId` ; refus listés par fichier ; succès annoncé ; liste rechargée), via les composants et fonctions existants (G12).
-- Le stagiaire n'a pas de bouton « Supprimer » : le back répond `403` (`tech.md` §6).
-- **Hypothèse de contrat (G8, G11)** : le stagiaire ne peut pas connaître son `inscriptionId` aujourd'hui (`GET /formations/{id}/inscriptions` lui est interdit, `FormationResponse` n'a pas ce champ). Le front lit `formation.inscriptionId` en un seul point (`inscriptionIdOf`) ; tant que le back ne l'envoie pas, la sous-section affiche « Dépôt indisponible pour le moment », sans aucun appel `/documents`.
+- Le stagiaire peut supprimer ses propres dépôts (bouton « Supprimer » avec confirmation, formation active) ; le back répond `403` pour ceux d'un autre (mis à jour le 2026-11-09, G15).
+- **Contrat (G8, G11, G15)** : le back envoie `inscriptionId` dans `FormationResponse` pour le stagiaire inscrit (Q13 traitée le 2026-11-09). Le front le lit en un seul point (`inscriptionIdOf`) ; pour un stagiaire sans inscription, la sous-section affiche « Dépôt indisponible pour le moment », sans aucun appel `/documents`.
 - Généralisation de `uploadDocument` / `useUploadDocuments` / `useDocuments` de `features/documents/` : la cible est `{ formationId }` ou `{ inscriptionId }` (exactement un des deux) ; le comportement de 027 ne change pas.
 
-Côté back : **demande de changement** Q13 (`docs/points-pour-charlotte.md`) : `inscriptionId` dans `FormationResponse` pour le stagiaire inscrit, ou `GET /inscriptions/me`. Sans elle, le passage manuel sur le vrai back reste impossible. Constat lié : le stagiaire ne peut pas supprimer un fichier déposé par erreur (`403`).
+Côté back : la demande Q13 (`inscriptionId` dans `FormationResponse`, suppression de ses dépôts par le stagiaire) est traitée (back `dev`, commit `e1f7c35`).
 
 Hors périmètre : voir ces documents côté chargée de formation (US-010, Q6), reste du profil (TICKET-044 : informations, mot de passe, bascule e-mail), suppression par le stagiaire, inscrire / désinscrire.
 
