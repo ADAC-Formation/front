@@ -90,6 +90,7 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Pourquoi** : constaté au passage manuel.
 
 ## F15 — Modification : « Assigné à la chargée de formation » envoie l'identifiant de la chargée
+- **Confirmé par Charlotte le 2026-11-09 (Q11)** : en modification, `formateurId` absent ou `null` = formateur inchangé ; le contournement est le bon comportement, à garder. `PATCH /formations/{id}/formateur` n'existe pas (le `500` sera corrigé en `404`/`405`).
 - Date : 2026-11-01
 - **Décision** : constaté sur le vrai back local, `PUT /formations/{id}` ignore `formateurId: null` (réponse `200`, aucun changement) et `PATCH /formations/{id}/formateur` répond `500`. En modification, l'option « Assigné à la chargée de formation » envoie donc l'identifiant de l'utilisatrice connectée ; à la création, `formateurId: null` reste correct (le back auto-assigne). Demande consignée : `points-pour-charlotte.md` Q11.
 - **Pourquoi** : sans cela, repasser une formation à la chargée de formation semblerait réussir sans rien changer.

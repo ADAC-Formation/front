@@ -4,7 +4,7 @@ Document à remettre à l'ADAC (la chargée de formation) pour cadrer ce que le 
 
 Créé le 2026-11-09. Chaque réponse est à noter dans la colonne ou sous la question, puis reportée dans `docs/decisions-*.md` par Manon.
 
-Autres questions déjà prêtes pour l'ADAC, ailleurs : `qualiopi-criteres.md` §6 (preuves demandées à l'audit, certification, sous-traitance, registre officiel, référents) et `adac-site-reference.md` §9 (sens de « PCB », équivalences de rôles, libellés).
+Autres questions déjà prêtes pour l'ADAC, ailleurs : `qualiopi-criteres.md` §6 (preuves demandées à l'audit, certification, sous-traitance, registre officiel, référents) et `adac-site-reference.md` §9 (équivalences de rôles, libellés).
 
 ---
 
@@ -72,9 +72,45 @@ Pour chaque information ci-dessous, merci d'indiquer : **indispensable**, **souh
 |---|---|
 | B4. Une formation du catalogue est-elle **organisée plusieurs fois** dans l'année (plusieurs sessions avec leurs propres dates, lieux, stagiaires) ? Si oui, faut-il distinguer la **formation** (la fiche du catalogue) de la **session** (une date précise) ? | |
 | B5. Quels **types d'actions** faut-il distinguer : catalogue, sur mesure, intra (pour un employeur) ? Pour le sur mesure ou l'intra, faut-il retenir le **client** ou l'**organisme** demandeur ? | |
-| B6. Le **fichier Excel** des formations (import) : peut-on nous envoyer un exemple réel ? Ses colonnes, aujourd'hui provisoires, doivent reprendre les informations de B1. | |
+| B6. Le **fichier Excel** des formations (import) : voir la section E. Ses colonnes doivent reprendre les informations de B1. | |
 | B7. Quelles informations doivent être **visibles par le stagiaire**, et lesquelles seulement par la chargée de formation et le formateur ? | |
 | B8. Y a-t-il des **documents attachés à la formation** (programme PDF, fiche formation, support de cours) à publier dès sa création ? | |
+
+---
+
+## C. Ce que voit le formateur (ex-Q3 et Q8.2 pour Charlotte)
+
+Contexte : aujourd'hui le back limite le formateur à **ses propres formations** (et aux stagiaires de ces formations). Le front voudrait lui montrer **toutes les formations en lecture seule**, avec « Mes formations » par défaut. Charlotte attend votre avis avant de toucher au back.
+
+| # | Question | Réponse de l'ADAC |
+|---|---|---|
+| C1 | Un formateur doit-il pouvoir **voir les formations des autres formateurs** (titre, dates, modalité) ? Pourquoi (coordination, remplacement, culture commune) ? | |
+| C2 | Si oui, que doit-il voir sur une formation qui n'est **pas la sienne** : seulement la fiche, ou aussi la **liste des inscrits** et les **documents** ? | |
+| C3 | Le formateur doit-il voir **tous les stagiaires actifs** de l'ADAC, ou seulement ceux de ses formations ? | |
+| C4 | Un formateur peut-il écrire à un stagiaire qui n'est pas dans l'une de ses formations ? | |
+
+---
+
+## D. Code de référence des formations et série « PCB » (ex-Q9 et Q10 pour Charlotte)
+
+| # | Question | Réponse de l'ADAC |
+|---|---|---|
+| D1 | Les codes du site (**ES01, MI02, DB04, PCB1, IN03**…) sont-ils **utilisés au quotidien** par la chargée de formation (devis, conventions, planning, tableur) ? D'où viennent-ils et que signifient leurs lettres et leurs chiffres ? | |
+| D2 | Faut-il les **afficher et les saisir** dans le portail (champ facultatif « Référence ») ? Doivent-ils être **uniques** ? | |
+| D3 | **« PCB » = Point Conseil Budget** (confirmé). Les « intervenants PCB » sont donc les professionnels des Points Conseil Budget : est-ce exact ? | |
+| D4 | La série « Spécial PCB » (PCB1 à PCB3) correspond-elle à un **public cible**, à une **catégorie** de formations ou à un **type d'intervenant** ? Le portail doit-il la gérer à part (filtre, champ), ou le titre et la catégorie suffisent-ils ? | |
+
+---
+
+## E. Fichier Excel des formations (import)
+
+Le portail permet à la chargée de formation d'importer des formations depuis un fichier Excel. Ses colonnes sont **provisoires** tant que nous n'avons pas votre fichier réel.
+
+| # | Demande | Réponse de l'ADAC |
+|---|---|---|
+| E1 | **Pouvez-vous nous envoyer le fichier Excel (.xlsx) que vous utilisez pour vos formations**, même incomplet ou avec des données fictives ? Les en-têtes de colonnes et deux ou trois lignes d'exemple suffisent. | |
+| E2 | Ce fichier a-t-il **une ligne par formation** ou par session ? Y a-t-il plusieurs feuilles ? | |
+| E3 | Quelles colonnes sont **toujours remplies**, lesquelles sont facultatives ? Quel format pour les dates, les durées et les tarifs ? | |
 
 ---
 

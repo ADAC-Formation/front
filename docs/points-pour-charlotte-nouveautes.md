@@ -4,6 +4,8 @@ Extrait de `points-pour-charlotte.md` : uniquement les entrées ajoutées **depu
 
 Dernier envoi : 2026-11-02 (matin).
 
+À joindre : le §0 de `points-pour-charlotte.md` (accord de Manon sur Q8.3, Q14, Q15 ; Q3, Q8.2, Q9 en attente de l'avis de l'ADAC ; PCB = Point Conseil Budget), et la relance de Q16, restée sans réponse.
+
 ## Documents d'une formation (ticket 027) — ajouté le 2026-11-02, après l'envoi du matin
 
 Contrat vérifié sur le back local (dépôt, liste, téléchargement, suppression, avec un vrai bucket Supabase) : tout fonctionne comme dans `tech.md` §6. Points à confirmer ou à améliorer :

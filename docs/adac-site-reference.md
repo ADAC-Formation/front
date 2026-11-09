@@ -18,7 +18,7 @@ Source : https://www.adac.asso.fr/ (pages consultées le 2026-11-01 : accueil, F
 - Fiche (de formation), Réf. (code de la formation)
 - Présentiel / distanciel, webinaire
 - Catalogue / sur mesure / intra (réservé à l'organisation cliente) / format court / formation-action
-- Public : salariés, travailleurs sociaux, intervenants sociaux, intervenants PCB (sigle **non défini** sur le site)
+- Public : salariés, travailleurs sociaux, intervenants sociaux, intervenants PCB (PCB = **Point Conseil Budget**, précisé par Manon le 2026-11-09 ; non défini sur le site)
 - Termes métier : pouvoir d'agir, savoirs expérientiels, accompagnement budgétaire, co-diagnostic, pratique réflexive, écoute active
 
 ## 3. Catalogue de formations (thèmes et références)
@@ -74,7 +74,7 @@ Titres : voir la page https://www.adac.asso.fr/formations-2-2/.
 
 ## 9. Questions ouvertes
 
-1. Que signifie « PCB » ? (à demander à Charlotte / l'ADAC)
+1. ~~Que signifie « PCB » ?~~ Réponse (2026-11-09) : **Point Conseil Budget**. Reste à demander : « Spécial PCB » (PCB1 à PCB3) est-il un public cible, une catégorie ou un type d'intervenant dans le portail ?
 2. Équivalence « chargée de formation » ↔ `SUPER_ADMIN` : qui, côté ADAC ?
 3. Libellé du rôle formateur : inclusif ou non ?
 4. Charte graphique réelle du site (couleurs, polices, logo) à comparer avec `design-front.md` : extraction à faire avec un navigateur.

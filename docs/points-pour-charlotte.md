@@ -4,6 +4,31 @@
 > Principe : le front s'aligne sur le back (D1), sauf le design, qui est une décision du front (D41).
 > Quand `docs/tech.md` entre en conflit avec un autre document du back, **`tech.md` l'emporte** (D40).
 
+## 0. Réponses de Charlotte (reçues le 2026-11-09, `reponses-pour-manon.md`)
+
+> Règle confirmée : `docs/tech.md` fait foi, Charlotte le met à jour quand elle change le contrat.
+
+| Question | Réponse | Suite côté front |
+|---|---|---|
+| Q1 mot de passe | `PATCH /api/users/me/password` `{ oldPassword, newPassword }` dans la V1 ; détail des erreurs à venir | Formulaire du profil (ticket 044) quand c'est mergé |
+| Q2 e-mails | Lien `/activation?email=…` et `/reinitialisation?email=…` (jamais le code) | Rien à changer (déjà géré et testé) |
+| Q3, Q8.2 formateur | À décider ensemble ; **ne pas développer avant** ; Manon demande l'avis de l'ADAC (`questions-pour-adac.md` §C) | Bloqué |
+| Q4, Q6, Q8.1 | Décisions du front / rien à faire côté back | — |
+| Q5 fichiers | pdf, jpg, jpeg, png, docx, 10 Mo | Message de refus cite JPEG (fait) |
+| Q7 dates | `OffsetDateTime` partout (`…Z`) ; `tech.md` est faux et sera corrigé | Commentaires corrigés (fait) |
+| Q8.3 `activated` | Champ booléen ajouté à `UserResponse` ; **Manon : OK** | « Jamais activé » / « Suspendu » + renvoi du code, après merge |
+| Q9 `reference` | Champ optionnel si l'ADAC s'en sert ; Manon demande à l'ADAC (§D) | En attente |
+| Q10 PCB | **Point Conseil Budget** (réponse de Manon, 2026-11-09) ; reste à savoir si « Spécial PCB » est un public, une catégorie ou un type d'intervenant (§D) | — |
+| Q11a `PUT` | `formateurId` absent ou `null` = inchangé ; à la création `null` = chargée connectée ; le contournement du front est correct | Commentaire mis à jour |
+| Q11b `PATCH /formateur` | 500 à corriger (404/405) | — |
+| Q12 import | `details[]` `{ligne, colonne, message}` d'accord sur le principe ; attend le vrai fichier de l'ADAC (§E) | En attente |
+| Q13 | Mergé (PR #13) | Fait côté front ; reste le test manuel sur le vrai back |
+| Q14 `GET /messages/recipients` | Proposé ; **Manon : OK** | `useRecipients` appelle l'endpoint après merge |
+| Q15 | `PATCH /api/messages/conversations/{conversationId}/read` ; **Manon : OK pour ce chemin** | `markThreadRead` en un appel après merge |
+| Limite du message | 1–5000 caractères, ajoutée à `tech.md` §7 | Déjà appliquée |
+| Destinataire inconnu | `403` dans les deux cas (pas de `404`, pour ne pas révéler quels comptes existent) ; `tech.md` corrigé | Rien à changer |
+| Q16 | **Pas de réponse** | À relancer avec les points du §7 |
+
 ## 1. Décisions prises côté front (pour information)
 
 | # | Décision | Détail |
@@ -90,7 +115,7 @@ Le contrat existe (inscrire / désinscrire, document ciblé par stagiaire), mais
 ### Q9 — Code de référence des formations (issu du site de l'ADAC)
 Le catalogue du site officiel numérote chaque formation par un code de référence (ES01, MI02, DB04, PCB1, IN03…, voir `adac-site-reference.md`). `tech.md` ne prévoit aucun champ de ce type dans le DTO formation. Faut-il ajouter un champ optionnel (par ex. `reference`) ? Sinon le front n'affiche que le titre.
 
-### Q10 — Sens de « PCB »
+### Q10 — Sens de « PCB » — ✅ répondu par Manon le 2026-11-09 : Point Conseil Budget
 Le site de l'ADAC parle d'« intervenants PCB » et d'une série « Spécial PCB » (PCB1 à PCB3) sans jamais définir le sigle. Que signifie-t-il, et faut-il en tenir compte dans le modèle (public cible, catégorie) ?
 
 ### Q11 — Changer le formateur d'une formation : `PUT` ignore `null`, `PATCH /formateur` répond 500 (change `formation-form`)
@@ -144,16 +169,16 @@ Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » es
 | 4 | Corps d'activation / reset | `{email, code, newPassword}` | TICKET-017/018 : sans e-mail | `tech.md` (voir Q2) | ☐ |
 | 5 | Suspendre un compte | `PATCH /users/{id}/deactivate` · `/reactivate` | TICKET-021 : `PATCH /users/{id}` avec `isActive` | `tech.md` | ☐ |
 | 6 | Lister les comptes | `GET /users/formateurs` · `/stagiaires` | TICKET-021 : `getUsers(role, isActive)` | `tech.md` | ☐ |
-| 7 | Formations visibles par ADAC/ADMIN | uniquement les siennes | PRD, USERFLOW, TICKET-024 : toutes en lecture | **décidé : toutes (Q3, D46 l'emporte sur `tech.md`)** | ✅ (demande de changement) |
+| 7 | Formations visibles par ADAC/ADMIN | uniquement les siennes | PRD, USERFLOW, TICKET-024 : toutes en lecture | **à décider avec Charlotte après l'avis de l'ADAC (Q3) ; ne pas développer avant** | ☐ |
 | 8 | Télécharger un document | `GET /documents/{id}/download` (flux, cookie) | TICKET-027 : « URL signée » ; DTO expose aussi `fileUrl` | `tech.md` (blob) | ☐ |
 | 9 | Marquer lu | `PATCH /messages/{id}/read` (un message) | TICKET-031 : `markAsRead(conversationId)` | `tech.md` (un appel par message, en parallèle) | ☐ |
 | 10 | Filtre de message groupé | `MANUAL` ; `POST /messages/send` + `GET /messages/group/preview` | TICKET-032 : `FREE_SELECT`, `/messages/group` | `tech.md` | ☐ |
 | 11 | Types de notification | `type` : `NEW_MESSAGE`, `DOCUMENT_UPLOADED`… ; `entityType` : `FORMATION` \| `MESSAGE` | TICKET-035 : MESSAGE / DOCUMENT / FORMATION | `tech.md` (icône selon `type`) | ☐ |
 | 12 | Profil d'un utilisateur par un stagiaire | `GET /users/{id}` interdit au stagiaire ; pas de `GET /users/me` | USERFLOW : « Mon profil » | utiliser `GET /auth/me` | ☐ |
-| 13 | Changement de mot de passe | aucun endpoint | TICKET-044 | bloqué — voir Q1 | ☐ |
+| 13 | Changement de mot de passe | aucun endpoint | TICKET-044 | `PATCH /users/me/password` annoncé par Charlotte (Q1) | ✅ |
 | 14 | Tuiles du tableau de bord | — | DESIGN / USERFLOW (Gestion·Messages·Notifications·Profil) vs TICKET-043 (SA : Formations·Formateurs·Stagiaires·Messagerie) | **décidé : USERFLOW (Q4)** | ✅ (proposition) |
 
-_Dernière mise à jour : 2026-10-31._
+_Dernière mise à jour : 2026-11-09 (réponses de Charlotte)._
 
 ## 5. CI du front : `npm run check` (TICKET-010)
 
