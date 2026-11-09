@@ -156,6 +156,14 @@ describe('client API — session expirée (401)', () => {
     expect(unauthorized).not.toHaveBeenCalled()
   })
 
+  it('ne déclenche pas le handler sur un 401 de PATCH /users/me/password (ancien mot de passe incorrect)', async () => {
+    server.use(http.patch(`${BASE}/users/me/password`, () => HttpResponse.json({ status: 401, message: 'Ancien mot de passe incorrect' }, { status: 401 })))
+    const error = await catchError(() => apiClient.patch('/users/me/password', {}))
+    expect(error.status).toBe(401)
+    expect(error.message).toBe('Ancien mot de passe incorrect')
+    expect(unauthorized).not.toHaveBeenCalled()
+  })
+
   it('ne plante pas quand aucun handler n’est enregistré', async () => {
     setUnauthorizedHandler(null)
     server.use(http.get(`${BASE}/formations`, () => new HttpResponse(null, { status: 401 })))

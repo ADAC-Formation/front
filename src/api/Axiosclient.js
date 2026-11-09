@@ -22,7 +22,7 @@ export function setUnauthorizedHandler(handler) {
 }
 
 // Routes pour lesquelles un 401 est un résultat normal, pas une session expirée.
-const SESSION_EXEMPT_PATHS = ["/auth/login", "/auth/me"];
+const SESSION_EXEMPT_PATHS = ["/auth/login", "/auth/me", "/users/me/password"];
 
 function isSessionExempt(config) {
   const path = config?.url ?? "";

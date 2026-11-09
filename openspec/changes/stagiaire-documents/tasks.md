@@ -48,7 +48,7 @@
 - [x] 8.1 RED puis GREEN : `SentDocuments`, `StagiaireDocumentsSection`, `useStagiaireInscriptions`, « Stagiaires inscrits » du détail de formation, `AccountDetailPage` (stagiaires)
 - [x] 8.2 Docs : `decisions-documents.md` (G17), `spec.md`, `CLAUDE.md`, `points-pour-charlotte*.md` (Q16), `questions-pour-adac.md`
 - [x] 8.3 Passage manuel : en chargée de formation puis en formateur, vérifier la coche, le lien de téléchargement, le profil d'un stagiaire (formation hors périmètre du formateur ignorée)
-- [ ] 8.4 Checklist nommée par document requis : bloquée sur les réponses de l'ADAC (`docs/questions-pour-adac.md` §A)
+- [x] 8.4 Checklist nommée par document requis : bloquée sur les réponses de l'ADAC (`docs/questions-pour-adac.md` §A) — jugée faite par Manon (2026-11-09) ; on y reviendra si l'ADAC répond autrement
 
 ## Workflow follow-up
 
