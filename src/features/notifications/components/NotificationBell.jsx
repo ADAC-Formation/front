@@ -22,7 +22,9 @@ export function NotificationBell() {
   const { user } = useCurrentUser()
   const { data, isLoading, isError, error, refetch } = useUnreadNotifications({ enabled: Boolean(user) })
   // Une seule région d'annonce : le dernier message l'emporte (nouvelle notification ou échec).
-  const [announcement, setAnnouncement] = useState('')
+  // Chaque annonce a un numéro : le message est remplacé même s'il est identique au précédent, donc relu.
+  const [announcement, setAnnouncementState] = useState({ text: '', id: 0 })
+  const setAnnouncement = (text) => setAnnouncementState((previous) => ({ text, id: previous.id + 1 }))
   const announceFailure = () => setAnnouncement(ACTION_ERROR)
   const { open: openNotification } = useOpenNotification()
   // Un marquage « lu » refusé est annoncé ici, qu'il vienne de la cloche ou de l'historique (la page a pu
@@ -52,18 +54,25 @@ export function NotificationBell() {
   const count = data?.count ?? 0
   const notifications = data?.notifications ?? []
 
-  // Annonce polie quand le compteur RENVOYÉ PAR LE BACK augmente (jamais à la première charge, ni
-  // pour une écriture optimiste ou son retour arrière, ni quand il diminue). État ajusté pendant le
-  // rendu plutôt que dans un effet. Sans données (déconnexion), on oublie le compteur précédent.
-  const [lastServerCount, setLastServerCount] = useState(null)
-  const serverCount = data && !data.optimistic ? data.count : null
-  if (!data && lastServerCount !== null) {
-    setLastServerCount(null)
-  } else if (serverCount !== null && serverCount !== lastServerCount) {
-    setLastServerCount(serverCount)
-    if (lastServerCount !== null && serverCount > lastServerCount) {
-      const added = serverCount - lastServerCount
-      setAnnouncement(`${added} nouvelle${added > 1 ? 's' : ''} notification${added > 1 ? 's' : ''}, ${serverCount} non lues`)
+  // Annonce polie quand le back renvoie une notification que la cloche n'a jamais vue (jamais à la première
+  // charge, ni pour une écriture optimiste ou son retour arrière). On compare les identifiants, pas le
+  // total : lire une notification pendant qu'une autre arrive laisse le total inchangé. État ajusté pendant
+  // le rendu plutôt que dans un effet. Sans données (déconnexion), on oublie ce qui a été vu.
+  const [seenIds, setSeenIds] = useState(null)
+  const serverData = data && !data.optimistic ? data : null
+  if (!data && seenIds !== null) {
+    setSeenIds(null)
+  } else if (serverData) {
+    const ids = serverData.notifications.map((notification) => notification.id)
+    if (seenIds === null) {
+      setSeenIds(new Set(ids))
+    } else {
+      const fresh = ids.filter((id) => !seenIds.has(id))
+      if (fresh.length > 0) {
+        setSeenIds(new Set([...seenIds, ...ids]))
+        const added = fresh.length
+        setAnnouncement(`${added} nouvelle${added > 1 ? 's' : ''} notification${added > 1 ? 's' : ''}, ${serverData.count} non lues`)
+      }
     }
   }
 
@@ -111,7 +120,7 @@ export function NotificationBell() {
       </IconButton>
 
       <div role="status" className={styles.srOnly}>
-        {announcement}
+        <span key={announcement.id}>{announcement.text}</span>
       </div>
 
       {isOpen ? (
