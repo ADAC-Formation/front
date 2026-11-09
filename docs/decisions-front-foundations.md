@@ -442,3 +442,9 @@
 - **Vérifié** (Chrome piloté, vrai back, clair et sombre, 100 % et 150 %, 16 largeurs, accueil et Gestion : 128 mesures) : 0 défilement horizontal, 0 chevauchement de l'en-tête avec la partie solide du logo, 0 libellé coupé, 0 élément cliquable recouvert par l'image. La partie solide du logo reste au-dessus du début du contenu ; le halo du mode sombre le dépasse de 1 à 17 px selon la largeur (zone très faiblement opaque, sans effet sur le contenu).
 - **Alternatives écartées** : PNG 256 couleurs (22 kB, mais le halo se fige en bandes visibles) ; WebP sans perte (104 kB) ; rogner les marges transparentes (change toutes les mesures de D61) ; réduire la définition (source déjà proche de 2 × la largeur maximale affichée).
 - **Icône d'onglet** : `index.html` pointait vers `/Logo-Blanc.png`, un fichier absent de `public/` (l'icône ne s'affichait pas). Nouveau `public/favicon.png` (64 × 64) : les trois carrés colorés du logo, sans le « c » ni la signature, lisible à 32 px sur onglet clair et sombre. Les fichiers par défaut de Vite (`favicon.svg`, `icons.svg`), non utilisés, sont supprimés.
+
+## D64 — Git : travail en solo, pas de PR, push direct sur `dev`
+- Date : 2026-11-09
+- **Décision** : Manon est seule sur le repo front. Plus de PR : une branche courte (ou `dev` directement) est fusionnée en avance rapide dans `dev`, puis `dev` est poussé, après `npm run check` vert. Une seule session Claude à la fois sur le dossier. Remplace la partie « une seule PR vers `dev` » de D27 et D43 ; Conventional Commits et une branche par thème restent.
+- **Pourquoi** : une PR n'a pas de relecteur ; deux sessions sur le même dossier se sont mélangé des fichiers non terminés.
+- **Alternatives écartées** : garder les PR sans relecteur ; un worktree par session (inutile avec une seule session).

@@ -207,8 +207,8 @@ npm run test -- NomTest       # un test spécifique
 
 ## Git & process
 
-- Convention : Conventional Commits. Une branche par thème comme le back (`feature/setup`, `feature/auth`, `feature/users`, `feature/categories`, `feature/formations`, `feature/documents`, `feature/messagerie`, `feature/notifications`, `feature/dashboard`), un commit par ticket, une seule PR vers `dev` au dernier ticket de la branche (D3, D43).
-- Nouveau travail à partir de `dev` (pas de `categorie`) : une branche `feature/<thème>` créée depuis `dev` (D3). **Aucun push sans demande explicite de Manon.** `API` local == ancien `dev`. Le stash `wip-canCreate-ManagementMenu` garde un changement `canCreate` inachevé de l'ancien checkout `formation`.
+- Convention : Conventional Commits. Une branche par thème comme le back (`feature/setup`, `feature/auth`, `feature/users`, `feature/categories`, `feature/formations`, `feature/documents`, `feature/messagerie`, `feature/notifications`, `feature/dashboard`), un commit par ticket. **Depuis le 2026-11-09 (D64) : Manon travaille seule sur le repo, pas de PR : on fusionne en avance rapide dans `dev` et on pousse `dev` directement.**
+- Nouveau travail à partir de `dev` (pas de `categorie`) : une branche `feature/<thème>` créée depuis `dev` (D3). **Pousser `dev` seulement sur demande de Manon** (une demande de « commit and push » vaut accord). **Une seule session Claude à la fois sur ce dossier** (deux sessions partageant le dossier se sont déjà committé mutuellement des fichiers non terminés). `API` local == ancien `dev`. Le stash `wip-canCreate-ManagementMenu` garde un changement `canCreate` inachevé de l'ancien checkout `formation`.
 - Done = `npm run check` vert + tests avec check jest-axe par page + passage manuel sur le vrai back local + docs à jour + relecture (D30).
 - Projet annexe : pas de jalons ni de planning (D29). Board : https://github.com/orgs/ADAC-Formation/projects/1 (cartes brouillon, pas d'issues).
 
