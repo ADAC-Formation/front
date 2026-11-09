@@ -46,7 +46,7 @@ Site WordPress, thème BeTheme + Elementor, lu dans son HTML et ses feuilles de 
 
 Le basculer en défaut : déplacer les jetons de `design-site.css` dans `index.css` (`:root`) et retirer `designVariant.js`. Il faudra alors décider du logo et du jaune de la tuile « Profil ».
 
-## Constats au passage (design par défaut)
+## Constats au passage (design par défaut), corrigés le 2026-11-09
 
-- `index.html` charge encore **Syne depuis Google Fonts** (déjà noté dans `design-front.md`) et **ne charge pas Plus Jakarta Sans** (repli sur la police du système) : D2/D31 annoncent des polices auto-hébergées. À migrer.
-- `index.html` déclare `lang="en"` alors que D15 demande `lang="fr"` (WCAG 3.1.1).
+- `index.html` chargeait **Syne depuis Google Fonts** et **ne chargeait pas Plus Jakarta Sans** (repli sur la police du système) alors que D2/D31 annoncent des polices auto-hébergées. Les deux sont maintenant auto-hébergées (`src/fonts.css`) et un test interdit toute ressource tierce dans `index.html`.
+- `index.html` déclarait `lang="en"` alors que D15 demande `lang="fr"` (WCAG 3.1.1) : corrigé, avec un test.

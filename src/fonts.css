@@ -1,0 +1,4 @@
+/* Polices du portail, auto-hébergées (D2, D31) : aucune requête vers Google. Variables : une seule
+   police couvre toutes les graisses. Voir --font-display et --font-sans dans index.css. */
+@import "@fontsource-variable/syne/index.css";
+@import "@fontsource-variable/plus-jakarta-sans/index.css";

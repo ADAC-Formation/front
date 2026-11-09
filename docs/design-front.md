@@ -72,7 +72,7 @@ Teintes de tuiles en sombre : `--rouge`, `--rose`, `--orange`, `--jaune`, `--noi
 - **Titres, boutons, tuiles (`--font-display`)** : **Syne**
 - **Texte courant (`--font-sans`)** : **Plus Jakarta Sans**, repli `system-ui, sans-serif`
 - **Chargement** : polices **auto-hébergées** (D31) — pas de Google Fonts, qui transmet l'adresse IP des visiteurs à un tiers
-  (état actuel : Syne est encore chargée depuis Google dans `index.html` ; à migrer)
+  (paquets `@fontsource-variable/syne` et `@fontsource-variable/plus-jakarta-sans`, importés dans `src/fonts.css` ; migré le 2026-11-09, `index.html` ne contacte plus aucun tiers)
 
 | Niveau | Taille | Graisse | Police |
 |---|---|---|---|
