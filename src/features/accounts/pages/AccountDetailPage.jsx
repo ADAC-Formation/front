@@ -3,13 +3,15 @@ import { Link, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
-import { roleLabels } from '../../../utils/roles'
+import { ROLES, roleLabels } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
 import StagiaireDocumentsSection from '../../documents/components/StagiaireDocumentsSection'
 import { ACCOUNT_KINDS, canManageAccounts, fullName } from '../accountKinds'
 import AccountNotFound from '../components/AccountNotFound'
 import AccountNotice from '../components/AccountNotice'
 import { useAccount, useSetAccountActive } from '../hooks'
+import { canWriteToAccount } from '../../messagerie/recipients'
+import { useRecipients } from '../../messagerie/useRecipients'
 import styles from './AccountPages.module.css'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 
@@ -24,6 +26,8 @@ const AccountDetailPage = ({ kind }) => {
 
   const { data: account, isLoading, isError, error, refetch } = useAccount(id)
   const setActive = useSetAccountActive()
+  // Le formateur n'écrit qu'aux stagiaires de ses formations : sa liste de destinataires décide du bouton.
+  const { recipients } = useRecipients({ enabled: Boolean(account) && user?.role === ROLES.ADMIN })
 
   if (isLoading) {
     return (
@@ -45,6 +49,8 @@ const AccountDetailPage = ({ kind }) => {
       </PageShell>
     )
   }
+
+  const canMessage = canWriteToAccount(user, account, recipients)
 
   const changeStatus = (active) => {
     setActive.reset()
@@ -79,9 +85,14 @@ const AccountDetailPage = ({ kind }) => {
           <dd>{account.isActive ? 'Actif' : 'Inactif'}</dd>
         </dl>
 
-        {canManage && (
+        {(canManage || canMessage) && (
           <div className={styles.actions}>
-            {account.isActive ? (
+            {canMessage && (
+              <Link className={styles.secondaryButton} to={`/messages/${account.id}`}>
+                Envoyer un message
+              </Link>
+            )}
+            {canManage && (account.isActive ? (
               <button type="button" className={styles.secondaryButton} onClick={() => setConfirming(true)}>
                 Suspendre
               </button>
@@ -94,7 +105,7 @@ const AccountDetailPage = ({ kind }) => {
               >
                 Réactiver
               </button>
-            )}
+            ))}
           </div>
         )}
       </section>

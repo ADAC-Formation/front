@@ -1,0 +1,151 @@
+.cardHeader {
+  margin-bottom: 1rem;
+}
+
+.cardHeader h2 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.cardHeader p {
+  margin: 0.25rem 0 0;
+
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.item {
+  border-radius: 16px;
+}
+
+.link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  padding: 0.85rem 0.75rem;
+
+  border-radius: 16px;
+
+  color: var(--card-foreground);
+  text-decoration: none;
+
+  transition: background-color 150ms ease;
+}
+
+.link:hover,
+.link[aria-current='page'] {
+  background-color: var(--muted);
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.name {
+  overflow-wrap: anywhere;
+
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Les conversations non lues : nom en gras plus marqué, et un point en plus du texte. */
+.item[data-unread='true'] .name {
+  font-weight: 800;
+}
+
+.date {
+  flex-shrink: 0;
+
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+}
+
+.preview {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}
+
+.you {
+  font-weight: 600;
+  color: var(--card-foreground);
+}
+
+.unreadBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--card-foreground);
+}
+
+.dot {
+  width: 0.6rem;
+  height: 0.6rem;
+
+  border-radius: 50%;
+
+  background-color: var(--color-red);
+}
+
+.unreadText {
+  /* Le texte reste visible : le point ne porte pas seul le sens. */
+  line-height: 1.2;
+}
+
+.feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.empty {
+  margin: 0;
+
+  color: var(--muted-foreground);
+}
+
+.retry {
+  padding: 0.6rem 1rem;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--color-action);
+  color: var(--color-on-action);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+}

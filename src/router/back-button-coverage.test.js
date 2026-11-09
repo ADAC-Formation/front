@@ -21,7 +21,6 @@ const EXEMPT = [
 const KNOWN_GAPS = [
   'components/Pages/SiteMapPage/SiteMapPage',
   'components/Pages/Stagiaire/NotifPage/NotifPage',
-  'components/Pages/Stagiaire/Messages/MessagesPage',
 ]
 
 const pagesOfRouter = [...routerSource.matchAll(/import\("\.\.\/([^"]+)"\)/g)].map((match) => match[1])

@@ -8,6 +8,7 @@ import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList, mockRequest } from '../test/accounts'
 import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
 import { mockDocumentApi } from '../test/documents'
+import { mockConversations } from '../test/messages'
 import { mockCategories } from '../test/categories'
 
 function renderApp(path) {
@@ -62,6 +63,8 @@ const pageLoaded = (path) =>
   path === '/' ? screen.findByRole('link', { name: /gestion|formations/i }) : screen.findAllByRole('heading')
 
 describe('un seul <main> par page', () => {
+  beforeEach(() => mockConversations())
+
   it.each(PUBLIC_ROUTES)('visiteur sur %s', async (path) => {
     mockNoSession()
     renderApp(path)

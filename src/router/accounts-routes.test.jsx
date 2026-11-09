@@ -7,6 +7,7 @@ import { ThemeProvider } from '../context/ThemeProvider'
 import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList, mockRequest } from '../test/accounts'
 import { mockFormationList } from '../test/formations'
+import { mockConversations } from '../test/messages'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -50,6 +51,7 @@ describe('routes des comptes', () => {
 
     it('accède à la liste des stagiaires et au détail', async () => {
       mockSession('ADMIN')
+      mockConversations([]) // le détail lit les destinataires du formateur (bouton « Envoyer un message »)
       mockAccountList('stagiaires', STAGIAIRES)
       mockRequest('get', '/users/20', () => HttpResponse.json(STAGIAIRES[0]))
       mockFormationList([]) // la section « Documents » du détail d'un stagiaire (G17)

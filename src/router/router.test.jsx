@@ -12,6 +12,7 @@ import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } 
 import { FORMATEURS, mockAccountList } from '../test/accounts'
 import { mockCategories } from '../test/categories'
 import { mockDocumentApi } from '../test/documents'
+import { mockConversations } from '../test/messages'
 
 function renderApp(path) {
   const router = createMemoryRouter(routes, { initialEntries: [path] })
@@ -29,6 +30,8 @@ function renderApp(path) {
 const accessDenied = () => screen.findByRole('heading', { name: 'Accès refusé' })
 
 describe('routes protégées', () => {
+  beforeEach(() => mockConversations())
+
   it('un visiteur est redirigé de /formations vers la connexion', async () => {
     mockNoSession()
     const { router } = renderApp('/formations')
@@ -156,6 +159,8 @@ describe('formulaire de formation : accès par rôle', () => {
 })
 
 describe('tableau de bord', () => {
+  beforeEach(() => mockConversations())
+
   it('un stagiaire voit « Formations » et pas « Gestion »', async () => {
     mockSession('STAGIAIRE')
     renderApp('/')
@@ -200,6 +205,8 @@ describe('tableau de bord', () => {
 })
 
 describe('bouton de connexion / déconnexion de l\'en-tête', () => {
+  beforeEach(() => mockConversations())
+
   it('visiteur : « Se connecter » mène à /login', async () => {
     mockNoSession()
     const { router } = renderApp('/activation')
@@ -237,6 +244,8 @@ describe('bouton de connexion / déconnexion de l\'en-tête', () => {
 })
 
 describe('aucune donnée de session dans le navigateur', () => {
+  beforeEach(() => mockConversations())
+
   it('le thème ne stocke aucun indicateur de connexion', async () => {
     mockSession('STAGIAIRE')
     renderApp('/')

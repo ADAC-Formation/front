@@ -113,6 +113,20 @@ Traité par le back (`dev`, commit `e1f7c35`) : `inscriptionId` dans `FormationR
 
 Proposition minimale : ajouter `inscriptionId` à `FormationResponse` **seulement pour le stagiaire inscrit** (aucune fuite d'e-mail), ou un `GET /api/inscriptions/me` (liste de ses inscriptions avec leur formation). Le front est écrit sur cette proposition en attendant ta réponse. Constat lié : `DELETE /documents/{id}` répond `403` à un stagiaire (`tech.md` §6), il ne pourra donc pas retirer un fichier déposé par erreur ; le front n'affiche pas « Supprimer » pour lui.
 
+### Q14 — Messagerie : l'interface ne peut pas trouver la chargée de formation (ticket 031)
+Règle du front : la chargée de formation écrit à tout le monde ; le formateur écrit à la chargée de formation et aux stagiaires de ses formations ; le stagiaire à la chargée de formation et aux formateurs de ses formations (`decisions-messagerie.md` H1). Aucun endpoint n'expose l'`id` d'un `SUPER_ADMIN` à un formateur ou à un stagiaire (`GET /users/{id}` est interdit pour un tiers, `GET /users/formateurs` ne renvoie pas les `SUPER_ADMIN`) : ils ne pourraient donc jamais lui écrire en premier.
+
+Proposition : `GET /api/messages/recipients` → `UserResponse[]` des destinataires autorisés pour l'appelant (chargée de formation incluse, comptes actifs seulement). Le back reste maître des règles (403/404 de `POST /messages/send`). En attendant, le front dérive formateurs et stagiaires des endpoints existants et n'offre la chargée de formation que si elle est déjà connue (formateur d'une formation, conversation existante).
+
+### Q15 — Messagerie : marquer tout un fil comme lu en un appel (ticket 031)
+`PATCH /messages/{id}/read` ne marque qu'un message. Ouvrir un fil de N messages non lus coûte N appels. Proposition : `PATCH /api/messages/{conversationId}/read` (marque tous les messages entrants non lus de ce fil, `200` sinon rien à faire). Le front fonctionne déjà avec un appel par message (`decisions-messagerie.md` H5) et passera à l'appel unique dès qu'il existe.
+
+### Limite du message** : le code du back impose `content` non vide et 5000 caractères au plus (`SendMessageRequest`), mais `tech.md` §7 ne le dit pas. Peux-tu l'ajouter au contrat ?
+
+### Messagerie : deux écarts avec `tech.md` relevés sur le back local (2026-11-03)
+- Un destinataire **inconnu** à `POST /messages/send` répond `403` « Vous ne pouvez pas écrire à ce destinataire », alors que `tech.md` §7 annonce `404`. Le front traite les deux de la même façon ; peux-tu aligner le contrat ou le code ?
+- `createdAt` / `readAt` des messages sont renvoyés en UTC avec `Z` et microsecondes (`2026-11-03T09:45:10.02948Z`), alors que `tech.md` les décrit comme `LocalDateTime`. Sans conséquence pour le front (il convertit à l'heure locale) ; à confirmer que c'est voulu.
+
 ### Q16 — Inscriptions d'un stagiaire (profil vu par la chargée de formation / le formateur)
 Pour afficher, sur le profil d'un stagiaire, ce qu'il a envoyé dans chacune de ses formations, le front doit connaître ses inscriptions. Aucun endpoint ne les donne (`GET /users/{id}` ne les contient pas) : le front lit la liste d'inscrits de chaque formation que l'appelant peut consulter et retient celles du stagiaire (une requête par formation, `404` ignoré pour le formateur hors de ses formations).
 

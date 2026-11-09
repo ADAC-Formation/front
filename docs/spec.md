@@ -165,3 +165,20 @@ Source : demande de Manon du 2026-11-09, `tech.md` §6 (lecture des documents d'
 - [ ] Sans formation consultable : « Ce stagiaire n'est inscrit à aucune formation que vous pouvez consulter ». Absente sur le profil d'un formateur.
 - [ ] Accessibilité : clavier, annonces d'état, jest-axe sans violation.
 - Reporté : checklist nommée par document requis (questions pour l'ADAC §A), documents que la chargée de formation dépose pour un stagiaire (US-010, Q6).
+
+## Critères d'acceptation de la messagerie individuelle (change `messagerie-individuelle`)
+
+Source : TICKET-031 (front), US-013, `tech.md` §7, décisions H1–H9 (`decisions-messagerie.md`), D21, D22. À valider par Manon (D49). Détail testable : `openspec/changes/messagerie-individuelle/specs/individual-messaging/spec.md`.
+
+### TICKET-031 — Interface de messagerie
+- [ ] `/messages` : conversations (`GET /messages`) dans l'ordre reçu, extrait et date du dernier message, non lus en évidence avec un texte accessible (« 2 messages non lus »), état vide avec « Nouvelle conversation », chargement annoncé, erreur avec « Réessayer » ; rechargée toutes les 45 s (pause onglet masqué) et au focus.
+- [ ] `/messages/:userId` : fil (`GET /messages/{userId}`) du plus ancien au plus récent, contenu rendu en texte (jamais en HTML, sauts de ligne conservés), rechargé toutes les 45 s ; deux volets sur bureau, deux écrans sur mobile avec « Retour ».
+- [ ] Envoi `POST /messages/send` (`recipientIds` d'un seul id) : contenu vide, espaces ou plus de 5000 caractères refusé avant tout appel ; Entrée = saut de ligne ; bouton désactivé pendant l'envoi ; texte conservé sur `403` / `404`.
+- [ ] « Nouvelle conversation » : chargée de formation → tout le monde ; formateur → chargée de formation + stagiaires de ses formations ; stagiaire → chargée de formation + formateurs de ses formations (H1). La chargée de formation n'apparaît pour le formateur et le stagiaire que si elle est déjà connue (Q14).
+- [ ] Ouvrir un fil marque ses messages entrants non lus comme lus (un `PATCH /messages/{id}/read` par message, Q15) ; un échec n'empêche pas l'affichage.
+- [ ] Tuile « Messages » : pastille du total de non lus avec libellé accessible ; rien à zéro ou en erreur.
+- [ ] « Envoyer un message » sur le détail d'un formateur et d'un stagiaire, seulement si l'on peut leur écrire (US-013 AC-05).
+- [ ] Fil d'une personne hors droit : lecture seule avec avis, ou « Conversation introuvable » + « Retour » (H8).
+- [ ] Accessibilité : clavier, annonces d'état ; jest-axe sans violation (liste et fil).
+- [ ] Gabarit des autres pages (H11) : « Retour » vers le tableau de bord, bouton « Nouvelle conversation » en haut à droite, recherche par nom et menu « Rôle » puis pastilles « Toutes » / « Non lues » sous le titre (filtres combinés, côté navigateur), liste des conversations dans une carte arrondie ; pastille « non lus » de la tuile en police de texte.
+- Reporté : envoi groupé (TICKET-032), pagination des fils.
