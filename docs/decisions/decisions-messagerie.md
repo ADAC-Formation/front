@@ -19,7 +19,7 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 
 ## H3 — Ce que le back ne fournit pas : à faire côté back, le front prépare les fonctions
 - Date : 2026-11-03
-- **Décision** : toute fonctionnalité de messagerie qui manque au back est consignée comme **à faire côté back** dans `points-pour-charlotte.md` (et `points-pour-charlotte-nouveautes.md`). Le front écrit quand même les fonctions et hooks correspondants, isolés dans un seul point de code, qui ne reçoivent rien du back pour l'instant (état « indisponible » sans appel).
+- **Décision** : toute fonctionnalité de messagerie qui manque au back est consignée comme **à faire côté back** dans `points-pour-charlotte.md` (et dans sa section « À envoyer à Charlotte »). Le front écrit quand même les fonctions et hooks correspondants, isolés dans un seul point de code, qui ne reçoivent rien du back pour l'instant (état « indisponible » sans appel).
 - **Pourquoi** : même démarche que Q13 / G14 (documents du stagiaire) : avancer sans modifier `tech.md` ni le back (lecture seule).
 - **Alternatives écartées** : attendre le back avant de coder ; simuler des données dans l'application (D11).
 

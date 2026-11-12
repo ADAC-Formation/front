@@ -27,3 +27,6 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# Compte rendu de la 1re rencontre : contient des noms de personnes, jamais sur GitHub
+docs/adac/*.pdf

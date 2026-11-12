@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { cssSheets, rulesOf, stripComments } from './css-sheets'
 
-// Design alternatif « couleurs et polices du site de l'ADAC » (docs/design-site.md) : activé par
+// Design alternatif « couleurs et polices du site de l'ADAC » (docs/design/design-site.md) : activé par
 // ?design=site, il ne redéfinit que des jetons, sous `html.design-site`.
 const css = stripComments(cssSheets['src/design/design-site.css'] ?? '').replace(/@import[^;]+;/g, '')
 const rules = rulesOf(css)

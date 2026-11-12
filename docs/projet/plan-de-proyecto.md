@@ -88,7 +88,7 @@ Supprimé (D29) : projet secondaire, sans jalons ni dates fixes. Le travail suit
 
 ### 1.5 Priorisation et ligne de coupe
 
-Proposition (à valider avec `/grill-me-with-docs` ; voir `docs/decisions-*.md`) :
+Proposition (à valider avec `/grill-me-with-docs` ; voir `docs/decisions/decisions-*.md`) :
 
 | Priorité | Signification | Tickets front |
 |---|---|---|
@@ -188,7 +188,7 @@ Tout le front est porté par Manon (17 tickets, ≈ 33 h). Back/infra : Charlott
 | 018 | `forgot-password` renvoie toujours 200 avec le même message ; réinitialisation = même flux code + nouveau mot de passe |
 | 024 | Visibilité par rôle (SA : toutes ; ADMIN : toutes en lecture seule, D46 l'emporte sur `tech.md` ; STAGIAIRE : celles où il est inscrit) ; archivées en lecture seule |
 
-Critères des autres tickets : `back/docs/STORIES.md` + `docs/spec.md`, rédigés au démarrage de chaque ticket (D39).
+Critères des autres tickets : `back/docs/STORIES.md` + `docs/projet/spec.md`, rédigés au démarrage de chaque ticket (D39).
 
 ## 5. Équipe et répartition du travail
 
@@ -217,7 +217,7 @@ Cérémonies : aucune fixe (D29). Point de synchronisation Manon–Charlotte sel
 | `docs/tech.md` (API) | Charlotte | Manon | La branche `dev` du back implémente déjà tout ; en local, API via Docker/`mvn spring-boot:run`, ou MSW pour les tests |
 | Dockerfile front + image ghcr | Manon, selon la spec de Charlotte (D5 révisée) | Charlotte (compose, nginx, CD) | Dockerfile et CI dans ce repo ; à confirmer avec Charlotte (TICKET-010) |
 | Rôles (`SUPER_ADMIN`/`ADMIN`/`STAGIAIRE`) | Charlotte | Manon | Aligner `utils/roles.js` (aujourd'hui ADMIN/FORMATEUR/STAGIAIRE) |
-| Design | Manon (D41) | Charlotte (information) | `docs/design-front.md` |
+| Design | Manon (D41) | Charlotte (information) | `docs/design/design-front.md` |
 
 ### 5.3 Endpoints par module (résumé ; détail dans `tech.md`)
 
@@ -344,7 +344,7 @@ Définition adoptée (D30) :
 - [ ] Accessible (clavier, `aria-*`, mode sombre / contraste élevé) et responsive (bureau, tablette, mobile)
 
 **Documentation**
-- [ ] Décision consignée dans `docs/decisions-*.md` si nécessaire ; plan/spec à jour
+- [ ] Décision consignée dans `docs/decisions/decisions-*.md` si nécessaire ; plan/spec à jour
 
 **Processus**
 - [ ] Commit Conventional ; PR vers `dev` au dernier ticket de la branche ; CI au vert ; relecture

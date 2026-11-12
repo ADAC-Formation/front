@@ -21,7 +21,7 @@ Branche `feature/profile` (depuis `dev`). Contrat : `tech.md` §1 (`GET /auth/me
 
 - **Décision** : formulaire « Mot de passe actuel / Nouveau mot de passe / Confirmation » (règles de `validation.js`, D13) qui appelle `PATCH /users/me/password` `{ oldPassword, newPassword }`, la route annoncée par Charlotte (Q1) mais **pas encore présente dans le back `dev`** (vérifié le 2026-11-09). Succès : message et champs vidés. Erreur : message du back affiché en ligne, mots de passe vidés. Un lien « Mot de passe actuel oublié ? » mène à `/mot-de-passe-oublie`.
 - **Piège** : un `401` « ancien mot de passe incorrect » ne doit pas déconnecter l'utilisateur : `/users/me/password` est ajoutée aux routes exemptées de l'intercepteur (`SESSION_EXEMPT_PATHS`).
-- **Limite** : tant que la route n'existe pas dans le back, le formulaire ne peut être éprouvé que sur MSW (le back répondra `404` / `405`). Suivi : Q1 de `docs/points-pour-charlotte.md` (erreurs exactes à confirmer : `400` règle de mot de passe, `401` ou `403` ancien mot de passe).
+- **Limite** : tant que la route n'existe pas dans le back, le formulaire ne peut être éprouvé que sur MSW (le back répondra `404` / `405`). Suivi : Q1 de `docs/charlotte/points-pour-charlotte.md` (erreurs exactes à confirmer : `400` règle de mot de passe, `401` ou `403` ancien mot de passe).
 
 ## P5 — Libellé du rôle
 

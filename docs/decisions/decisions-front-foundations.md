@@ -272,7 +272,7 @@
 
 ## D39 — Critères d'acceptation : rédigés au démarrage de chaque ticket
 - Date : 2026-10-11
-- **Décision** : au début d'un ticket, lire l'histoire correspondante (`STORIES.md`) et `tech.md`, puis écrire ses critères (cas nominal + codes d'erreur) dans `docs/spec.md` ; Manon les valide ; les tests en découlent (D4). Les critères des 4 tickets déjà détaillés dans le plan (016, 017, 018, 024) restent tels quels.
+- **Décision** : au début d'un ticket, lire l'histoire correspondante (`STORIES.md`) et `tech.md`, puis écrire ses critères (cas nominal + codes d'erreur) dans `docs/projet/spec.md` ; Manon les valide ; les tests en découlent (D4). Les critères des 4 tickets déjà détaillés dans le plan (016, 017, 018, 024) restent tels quels.
 - **Pourquoi** : évite des critères périmés pour des tickets lointains, le back pouvant encore évoluer.
 - **Alternatives écartées** : tout rédiger maintenant ; renvoyer vers `STORIES.md` sans copie.
 
@@ -284,7 +284,7 @@
 
 ## D41 — Le design est une décision du front, documentée dans `design-front.md`
 - Date : 2026-10-31
-- **Décision** : on garde tout le design existant. `docs/design-front.md` (structure de `DESIGN.md`) décrit le design réellement implémenté et est partagé avec Charlotte. Précise D2.
+- **Décision** : on garde tout le design existant. `docs/design/design-front.md` (structure de `DESIGN.md`) décrit le design réellement implémenté et est partagé avec Charlotte. Précise D2.
 - **Pourquoi** : le front possède les décisions de design ; le document évite que `DESIGN.md` du back soit pris pour la référence.
 - **Alternatives écartées** : adopter `DESIGN.md` (Manrope, rayons 24/12/6).
 - **Conséquence** : corriger les écarts listés dans `design-front.md` (CSS de `text-large` / `high-contrast`, variable `--color-accent`, polices auto-hébergées).
@@ -344,7 +344,7 @@
 - **Décision** : (1) l'utilisateur courant est la requête TanStack Query `['auth','me']` (un 401 vaut « visiteur », pas une erreur) ; il n'y a **pas** de contexte React parallèle, `UserProvider` ne fait qu'enregistrer le handler 401 de D51 (session terminée → `/login` avec la notice « session expirée ») et doit vivre sous le routeur (`router/Root.jsx`) ; (2) à la déconnexion ou sur 401, le cache est vidé sauf la requête de session (`endSession`), pour qu'un utilisateur ne voie jamais les données du précédent ; (3) gardes `RequireAuth` / `RequireRole` / `PublicOnly` en routes de mise en page ; un rôle insuffisant affiche « Accès refusé » (pas de redirection) ; sur une erreur de `/auth/me` autre que 401 on affiche « Réessayer » plutôt que de rediriger (évite une boucle) ; (4) les bandeaux « Compte activé », « Mot de passe mis à jour » et « session expirée » passent par `location.state` : rien dans le stockage du navigateur (D31) ; (5) routes : `/admin`, `/formateur`, `/stagiaire` supprimées au profit de `/` ; `/admin/*` pour SUPER_ADMIN + ADMIN, création de formation et catégories pour SUPER_ADMIN seul (hypothèse : la liste des formations reste ouverte à tout rôle connecté, D46) ; le renommage en `/gestion/*` reste pour TICKET-043 ; (6) le champ de connexion est l'**e-mail** (`tech.md` l'emporte sur le plan qui disait « identifiant », D40) et le bouton de la coque reste « SE CONNECTER » (US-001 AC-01 dit « Commencer la session ») ; (7) `LoginPage` n'a plus de `<main>` propre (le Layout en fournit un) et un `<h1>` « Connexion » ; (8) `RoleSwitcher`, `dev-role`, le faux `isAuthenticated`/`toggleAuth`, `ProtectedRoute`, `routeManager` et l'ancien `UserProvider` sont supprimés ; `main.jsx` efface l'ancienne clé `dev-role`.
 - **Pourquoi** : une seule source de vérité pour le rôle (D1, D9, D10), aucun état d'authentification côté navigateur (D31), parcours testables avec MSW (D4).
 - **Alternatives écartées** : contexte React dupliquant la requête ; `sessionStorage` pour les bandeaux ; redirection vers `/login` sur un 403.
-- Change OpenSpec : `auth-real-backend`. Critères des tickets : `docs/spec.md`.
+- Change OpenSpec : `auth-real-backend`. Critères des tickets : `docs/projet/spec.md`.
 
 ## D53 — Surcharge de dev du back versionnée dans le front (précise D18)
 - Date : 2026-10-31
@@ -369,7 +369,7 @@
 ## D56 — Pages de comptes : même design que la page Formations
 - Date : 2026-10-31
 - **Décision** : les pages de comptes reprennent le gabarit de `FormationsPage` : contenu sous le logo (`padding-top` 180 px), lien « Retour », titre, texte d'introduction, bouton d'action orange doux, barre de recherche, « Organiser par : » (nom, prénom, e-mail), filtre de statut en pastilles colorées (restent des boutons radio accessibles), carte arrondie (30 px) contenant des lignes à barre de couleur (vert = actif, gris = inactif) ; formulaires dans une carte avec boutons « Annuler » / « Créer le compte » comme la création de formation. La recherche et le tri se font côté client sur la liste reçue.
-- **Pourquoi** : cohérence visuelle du portail (D41, `docs/design-front.md`).
+- **Pourquoi** : cohérence visuelle du portail (D41, `docs/design/design-front.md`).
 - **Alternatives écartées** : tableau seul (écart avec le reste du site) ; réutiliser `ListItem` (c'est un lien complet : impossible d'y mettre des boutons d'action valides).
 
 ## D59 — Pages chargées à la demande, avec budget de taille du fichier d'entrée

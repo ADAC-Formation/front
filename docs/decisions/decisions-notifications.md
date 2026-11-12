@@ -54,7 +54,7 @@ Branche `feature/notifications` (créée depuis `dev`). Contrat : `tech.md` §8 
 ## N8 — Bascule e-mail (ticket 036) reportée à la branche profil
 
 - **Date** : 2026-11-02
-- **Décision** : cette branche livre le ticket 035 seulement (cloche + historique). Le toggle « Notifications par e-mail » (036, `PATCH /users/me` avec `emailNotificationsEnabled`) est construit avec la page profil (044), là où US-016 AC-01 le place (« Mon profil »). Consigné dans `docs/future-implementation-ideas.md`.
+- **Décision** : cette branche livre le ticket 035 seulement (cloche + historique). Le toggle « Notifications par e-mail » (036, `PATCH /users/me` avec `emailNotificationsEnabled`) est construit avec la page profil (044), là où US-016 AC-01 le place (« Mon profil »). Consigné ici (N8) ; NOTES-04 retire finalement ce réglage pour le stagiaire.
 - **Pourquoi** : la page profil n'existe pas encore (coque vide) ; la créer ici mélangerait deux thèmes, contre la règle « une branche par thème » (D3). Le plan classe 036 et 044 en « Could ».
 - **Alternatives rejetées** : toggle sur la page d'historique (éloigne le réglage de « Mon profil ») ; démarrer la page profil dans cette branche (couple deux thèmes).
 
@@ -90,7 +90,7 @@ Branche `feature/notifications` (créée depuis `dev`). Contrat : `tech.md` §8 
 - `GET /notifications` ignore `sort` (toujours du plus récent au plus ancien, 200 max) et accepte `read` (booléen). Le tri « plus anciennes d'abord » reste donc côté client (N6).
 - `GET /notifications/unread` : 50 max, non lues et non retirées de la cloche, `count` total.
 
-## À remonter à Charlotte (à recopier dans `points-pour-charlotte.md` et `points-pour-charlotte-nouveautes.md`)
+## À remonter à Charlotte (à recopier dans `points-pour-charlotte.md`, y compris sa section « À envoyer à Charlotte »)
 
 À recopier quand cette branche sera fusionnée avec `feature/documents` (ces deux fichiers y sont en cours de modification : les éditer ici créerait un conflit).
 

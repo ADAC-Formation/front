@@ -1,6 +1,6 @@
 // Informations de la page « Mentions légales et confidentialité ». Une valeur `null` s'affiche
 // « À renseigner par l'ADAC » : ces informations ne figurent pas sur le site de l'ADAC et ne doivent
-// jamais être inventées (HU-S02, docs/adac-site-reference.md §6). Les renseigner ici suffit, la page
+// jamais être inventées (HU-S02, docs/adac/adac-site-reference.md §6). Les renseigner ici suffit, la page
 // n'a pas d'autre texte à modifier.
 export const LEGAL_INFO = {
   name: 'ADAC',

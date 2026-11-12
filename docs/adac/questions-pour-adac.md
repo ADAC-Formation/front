@@ -2,7 +2,7 @@
 
 Document à remettre à l'ADAC (la chargée de formation) pour cadrer ce que le portail doit gérer. Les réponses décident des changements à demander ensuite à Charlotte (back) et de ce que le front affiche. Aucune question ici n'est adressée à Charlotte.
 
-Créé le 2026-11-09. Chaque réponse est à noter dans la colonne ou sous la question, puis reportée dans `docs/decisions-*.md` par Manon.
+Créé le 2026-11-09. Chaque réponse est à noter dans la colonne ou sous la question, puis reportée dans `docs/decisions/decisions-*.md` par Manon.
 
 Autres questions déjà prêtes pour l'ADAC, ailleurs : `qualiopi-criteres.md` §6 (preuves demandées à l'audit, certification, sous-traitance, registre officiel, référents) et `adac-site-reference.md` §9 (équivalences de rôles, libellés).
 

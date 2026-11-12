@@ -1,5 +1,5 @@
 // Le back renvoie toutes les erreurs d'import dans un seul `message` : entrées jointes par « | »,
-// chacune de la forme « ligne N, colonne X : texte » (points-pour-charlotte.md Q12, F20).
+// chacune de la forme « ligne N, colonne X : texte » (docs/charlotte/points-pour-charlotte.md Q12, F20).
 // Tout ce qui n'a pas cette forme est gardé tel quel : le format peut changer sans casser l'écran.
 
 const SEPARATOR = '|'
