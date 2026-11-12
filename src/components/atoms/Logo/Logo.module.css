@@ -4,7 +4,7 @@
   left: 50%;
   transform: translateX(-50%);
 
-  width: clamp(220px, 66vw, 580px);
+  width: clamp(220px, 76vw, 700px);
   height: auto;
 
   /* Décoratif : son rectangle transparent dépasse sur le contenu et ne doit capter aucun clic (D63). */

@@ -48,8 +48,14 @@ describe('taille du logo', () => {
     expect(css()).toMatch(/@media\s*\(max-width:\s*767px\)\s*\{[^@]*\.logo[^{]*\{[^}]*width:\s*min\(96vw,\s*420px\)/)
   })
 
-  it('grandit avec la fenêtre sur tablette (66 vw, plafond 580 px)', () => {
-    expect(css()).toMatch(/width:\s*clamp\(220px,\s*66vw,\s*580px\)/)
+  it('grandit avec la fenêtre sur tablette et ordinateur (76 vw, plafond 700 px, NOTES-01)', () => {
+    expect(css()).toMatch(/width:\s*clamp\(220px,\s*76vw,\s*700px\)/)
+  })
+
+  it('le dégagement sous le logo suit le logo agrandi dès 768 px (partie visible ≈ 0,44 × 700 = 308 px)', () => {
+    expect(sheet('src/index.css')).toMatch(
+      /@media\s*\(min-width:\s*768px\)\s*\{\s*:root\s*\{\s*--page-top:\s*calc\(6rem\s*\+\s*240px\)/,
+    )
   })
 })
 

@@ -201,6 +201,23 @@ describe('FormationListPage', () => {
       expect(screen.getByRole('radio', { name: 'Actives' })).toBeChecked()
     })
 
+    it("ne montre pas le nombre d'inscrits (NOTES-03) : la chargée et le formateur le gardent", async () => {
+      mockFormationList()
+      renderList('STAGIAIRE')
+      await screen.findByRole('link', { name: /Premiers secours PSC1/ })
+      expect(card('Premiers secours PSC1')).not.toHaveTextContent(/inscrit/)
+      expect(screen.queryByText(/\d+ inscrits?/)).not.toBeInTheDocument()
+    })
+
+    it('ne parle plus de formations « disponibles » (NOTES-02) : ce sont ses formations', async () => {
+      mockFormationList()
+      renderList('STAGIAIRE')
+      await screen.findByRole('link', { name: /Premiers secours PSC1/ })
+      expect(screen.queryByText(/disponibles/)).not.toBeInTheDocument()
+      expect(screen.getByRole('heading', { level: 2, name: 'Mes formations' })).toBeInTheDocument()
+      expect(screen.getByText('Retrouvez vos formations et toutes les informations nécessaires.')).toBeInTheDocument()
+    })
+
     it('revient au tableau de bord', async () => {
       mockFormationList()
       renderList('STAGIAIRE')
@@ -213,6 +230,13 @@ describe('FormationListPage', () => {
     const { container } = renderList('SUPER_ADMIN')
     await screen.findByRole('link', { name: /Premiers secours PSC1/ })
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it.each(['SUPER_ADMIN', 'ADMIN'])("%s garde le nombre d'inscrits (NOTES-03)", async (role) => {
+    mockFormationList()
+    renderList(role)
+    await screen.findByRole('link', { name: /Premiers secours PSC1/ })
+    expect(card('Premiers secours PSC1')).toHaveTextContent('2 inscrits')
   })
 })
 

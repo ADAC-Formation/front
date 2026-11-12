@@ -98,6 +98,14 @@ select {
   }
 }
 
+/* Logo agrandi (NOTES-01) : dès 768 px il mesure jusqu'à 700 px, sa partie visible descend à ≈ 308 px ;
+   le dégagement passe à 6rem + 240px (≈ 336 px) pour que le contenu ne soit pas recouvert. */
+@media (min-width: 768px) {
+  :root {
+    --page-top: calc(6rem + 240px);
+  }
+}
+
 .dark {
   --background: oklch(0.2630 0.0115 225.65);
   --foreground: oklch(0.984 0.003 247.858);

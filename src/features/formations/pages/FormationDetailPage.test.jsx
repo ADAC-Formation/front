@@ -211,12 +211,13 @@ describe('FormationDetailPage', () => {
       expect(calls.count).toBe(1)
     })
 
-    it("n'appelle pas les inscriptions pour un stagiaire et n'affiche que le nombre", async () => {
+    it("n'appelle pas les inscriptions pour un stagiaire et n'affiche pas même le nombre (NOTES-03)", async () => {
       mockFormationDetail(secours)
       const calls = mockInscriptions(101)
       renderDetail('STAGIAIRE', secours)
       await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })
-      expect(await screen.findByText('2 inscrits')).toBeInTheDocument()
+      expect(screen.queryByText('2 inscrits')).not.toBeInTheDocument()
+      expect(screen.queryByText('Inscrits')).not.toBeInTheDocument()
       await new Promise((resolve) => setTimeout(resolve, 50))
       expect(calls.count).toBe(0)
       expect(screen.queryByText('lea@adac.test')).not.toBeInTheDocument()

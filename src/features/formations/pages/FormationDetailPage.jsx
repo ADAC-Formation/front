@@ -144,8 +144,12 @@ const FormationDetailPage = () => {
           <dd>{modaliteLabel(formation.modalite)}</dd>
           <dt>Formateur</dt>
           <dd>{formateurName(formation.formateur)}</dd>
-          <dt>Inscrits</dt>
-          <dd>{inscritsLabel(formation.inscriptionsCount)}</dd>
+          {isManager && (
+            <>
+              <dt>Inscrits</dt>
+              <dd>{inscritsLabel(formation.inscriptionsCount)}</dd>
+            </>
+          )}
         </dl>
 
         {isManager && <InscritsSection formationId={formationId} />}

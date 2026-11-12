@@ -53,6 +53,8 @@ const FormationListPage = () => {
   const isSuperAdmin = user?.role === ROLES.SUPER_ADMIN
   const isFormateur = user?.role === ROLES.ADMIN
   const isStagiaire = user?.role === ROLES.STAGIAIRE
+  // « disponibles » laissait croire au stagiaire qu'il pouvait s'inscrire (NOTES-02) : ce sont ses formations.
+  const activeCardTitle = isStagiaire ? 'Mes formations' : 'Formations disponibles'
 
   const [status, setStatus] = useState('ACTIVE')
   const [scope, setScope] = useState('mine')
@@ -96,7 +98,9 @@ const FormationListPage = () => {
       </div>
 
       <p className={styles.intro}>
-        Consultez les formations disponibles et retrouvez toutes les informations nécessaires.
+        {isStagiaire
+          ? 'Retrouvez vos formations et toutes les informations nécessaires.'
+          : 'Consultez les formations disponibles et retrouvez toutes les informations nécessaires.'}
       </p>
 
       <section className={styles.toolbar}>
@@ -176,7 +180,7 @@ const FormationListPage = () => {
         {count > 0 && (
           <>
             <div className={styles.cardHeader}>
-              <h2>{status === 'ARCHIVED' ? 'Formations archivées' : 'Formations disponibles'}</h2>
+              <h2>{status === 'ARCHIVED' ? 'Formations archivées' : activeCardTitle}</h2>
               <p>{`${count} formation${count > 1 ? 's' : ''}`}</p>
             </div>
 
@@ -192,7 +196,7 @@ const FormationListPage = () => {
                     { icon: CalendarDays, value: formatDateRange(formation.dateDebut, formation.dateFin) },
                     { icon: UserRound, value: formateurName(formation.formateur) },
                     { icon: MapPin, value: modaliteLabel(formation.modalite) },
-                    { icon: UsersRound, value: inscritsLabel(formation.inscriptionsCount) },
+                    ...(isManager ? [{ icon: UsersRound, value: inscritsLabel(formation.inscriptionsCount) }] : []),
                   ]}
                   to={`/formations/${formation.id}`}
                 />
