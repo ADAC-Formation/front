@@ -14,7 +14,7 @@ Un dossier par public. En cas de doute : le dev lit `projet/` et `decisions/`, C
 
 | Fichier | Contenu |
 | --- | --- |
-| `decisions-front-foundations.md` | Décisions générales D1 à D65 (socle, design, accessibilité, déploiement) |
+| `decisions-front-foundations.md` | Décisions générales D1 à D66 (socle, design, accessibilité, déploiement) |
 | `decisions-formations.md`, `decisions-documents.md`, `decisions-categories.md` | Formations (F), documents (G), catégories (C) |
 | `decisions-messagerie.md`, `decisions-notifications.md`, `decisions-profil.md` | Messagerie (H), notifications (N), profil (P) |
 
@@ -34,6 +34,7 @@ Un dossier par public. En cas de doute : le dev lit `projet/` et `decisions/`, C
 | Fichier | Contenu |
 | --- | --- |
 | `points-pour-charlotte.md` | Décisions, impacts sur le back, questions et conflits avec `tech.md`. Commence par la section « À envoyer à Charlotte » |
+| `changements-back.md` | Journal des changements que Manon fait elle-même dans le back (sur branche, D66) : quoi, pourquoi, branche et commit, impact sur le contrat. À relire avant de merger |
 | `meeting-points-back.md` | Ancienne liste de points de réunion (historique : les décisions la citent par numéro) |
 
 ## `adac/` : échanges avec l'ADAC et Qualiopi

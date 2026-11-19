@@ -63,5 +63,5 @@ docker compose -p adac-dev --env-file ../dev-compose/.env \
 ## Notes
 
 - Après un `git -C ../back-readonly pull`, relancer l'étape 2 (le `--build` reconstruit l'image).
-- `git -C ../back-readonly status` doit rester propre : la surcharge et le `.env` vivent hors de ce dépôt.
+- `git -C ../back-readonly status` ne doit montrer que les changements voulus de la branche de travail (D66) : la surcharge et le `.env` vivent hors de ce dépôt, lancer le back ne doit rien y ajouter.
 - Activation / mot de passe oublié : les e-mails arrivent dans la boîte Mailtrap (compte gratuit personnel, D19).
