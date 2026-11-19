@@ -156,6 +156,12 @@ describe('messagerie : deux volets (H6)', () => {
     expect(base).toMatch(/data-view='thread'\]\s*\.listPane/)
   })
 
+  it('l’en-tête (titre + boutons « Nouvelle conversation » et « Message groupé ») passe à la ligne sur écran étroit', () => {
+    const css = sheet(page)
+    expect(css).toMatch(/\.header\s*\{[^}]*flex-wrap:\s*wrap/)
+    expect(css).toMatch(/\.actions\s*\{[^}]*flex-wrap:\s*wrap/)
+  })
+
   it('le bouton « Retour » n’est masqué que lorsque les deux volets sont visibles', () => {
     const css = sheet(page)
     const base = css.slice(0, css.indexOf('@container'))

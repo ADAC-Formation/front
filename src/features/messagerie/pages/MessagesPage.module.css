@@ -8,10 +8,18 @@
 .header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   justify-content: space-between;
   gap: 1rem;
 
   margin-top: 1.5rem;
+}
+
+/* « Message groupé » et « Nouvelle conversation » : côte à côte, l'un sous l'autre quand la place manque. */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 .title {
@@ -37,6 +45,8 @@
 
   border: none;
   border-radius: 12px;
+
+  text-decoration: none;
 
   background-color: var(--color-action);
   color: var(--color-on-action);

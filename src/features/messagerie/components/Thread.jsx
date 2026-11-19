@@ -62,6 +62,8 @@ const Thread = ({ userId }) => {
           <li key={message.id} className={`${styles.message} ${isMine ? styles.mine : ''}`}>
             <p className={styles.meta}>
               <span className={styles.author}>{isMine ? 'Vous' : displayName(message.sender)}</span>
+              {/* La mention est un texte ; `recipients` n'est jamais lu : il porte l'e-mail de chacun (H15). */}
+              {message.isGroup && <span className={styles.groupTag}>Message groupé</span>}
               <time dateTime={message.createdAt} className={styles.date}>
                 {formatMessageDate(message.createdAt)}
               </time>

@@ -107,4 +107,40 @@ describe('Thread', () => {
     expect(await screen.findAllByRole('listitem')).toHaveLength(3)
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
+
+  describe('message groupé (H15)', () => {
+    const lea = { id: 20, email: 'lea@adac.test', prenom: 'Léa', nom: 'Petit', role: 'STAGIAIRE', isActive: true }
+    const marc = { id: 22, email: 'marc@adac.test', prenom: 'Marc', nom: 'Dubois', role: 'STAGIAIRE', isActive: true }
+    const groupMessage = makeMessage({
+      id: 50,
+      sender: FORMATEUR_ANNE,
+      recipients: [USERS.STAGIAIRE, lea, marc],
+      content: 'Rappel pour tous',
+      createdAt: '2026-11-03T08:00:00',
+      isGroup: true,
+    })
+
+    it('signale un message groupé par la mention texte « Message groupé »', async () => {
+      mockThread(10, [...THREAD, groupMessage])
+      render()
+      const items = await screen.findAllByRole('listitem')
+      expect(within(items[3]).getByText('Message groupé')).toBeInTheDocument()
+    })
+
+    it('ne met la mention que sur les messages groupés', async () => {
+      mockThread(10, [...THREAD, groupMessage])
+      render()
+      await screen.findAllByRole('listitem')
+      expect(screen.getAllByText('Message groupé')).toHaveLength(1)
+    })
+
+    it("n'affiche jamais les destinataires d'un message groupé (ni nom ni e-mail)", async () => {
+      mockThread(10, [...THREAD, groupMessage])
+      render()
+      await screen.findAllByRole('listitem')
+      expect(screen.queryByText('Léa Petit')).not.toBeInTheDocument()
+      expect(screen.queryByText('Marc Dubois')).not.toBeInTheDocument()
+      expect(screen.queryByText(/@adac\.test/)).not.toBeInTheDocument()
+    })
+  })
 })

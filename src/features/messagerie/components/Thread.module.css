@@ -51,6 +51,17 @@
   color: var(--muted-foreground);
 }
 
+.groupTag {
+  padding: 0.0625rem 0.5rem;
+
+  border: 1px solid var(--border);
+  border-radius: 999px;
+
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted-foreground);
+}
+
 /* Sauts de ligne conservés ; texte seul, jamais interprété comme du HTML. */
 .content {
   margin: 0;

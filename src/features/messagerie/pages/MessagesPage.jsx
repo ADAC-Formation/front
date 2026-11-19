@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { Search } from 'lucide-react'
-import { useParams } from 'react-router'
+import { Link, useLocation, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
-import { ROLES, roleLabels } from '../../../utils/roles'
+import { MANAGEMENT_ROLES, ROLES, roleLabels } from '../../../utils/roles'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 import { useCurrentUser } from '../../auth/hooks'
 import ConversationList from '../components/ConversationList'
@@ -92,8 +92,14 @@ const FILTERS = [
 
 const ROLE_OPTIONS = [ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.STAGIAIRE]
 
+const sentLabel = (count) => `Message envoyé à ${count} ${count === 1 ? 'destinataire' : 'destinataires'}`
+
 const MessagesPage = () => {
   const { userId } = useParams()
+  const { user } = useCurrentUser()
+  // Après un envoi groupé, la page de composition revient ici avec le nombre de destinataires (H16).
+  const groupSent = useLocation().state?.groupSent
+  const canWriteToGroups = MANAGEMENT_ROLES.includes(user?.role)
   const [filter, setFilter] = useState('all')
   const [role, setRole] = useState('all')
   const [search, setSearch] = useState('')
@@ -105,15 +111,24 @@ const MessagesPage = () => {
 
       <div className={styles.header}>
         <h1 className={styles.title}>Messages</h1>
-        <button
-          type="button"
-          className={styles.createButton}
-          aria-expanded={creating}
-          onClick={() => setCreating((current) => !current)}
-        >
-          Nouvelle conversation
-        </button>
+        <div className={styles.actions}>
+          {canWriteToGroups && (
+            <Link to="/messages/groupe" className={styles.createButton}>
+              Message groupé
+            </Link>
+          )}
+          <button
+            type="button"
+            className={styles.createButton}
+            aria-expanded={creating}
+            onClick={() => setCreating((current) => !current)}
+          >
+            Nouvelle conversation
+          </button>
+        </div>
       </div>
+
+      {groupSent !== undefined && <Alert variant="success">{sentLabel(groupSent)}</Alert>}
 
       <section className={styles.toolbar}>
         <div className={styles.searchContainer}>

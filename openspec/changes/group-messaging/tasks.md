@@ -32,10 +32,10 @@
 
 ## 6. Bouton, confirmation d'envoi et mention dans le fil (TDD)
 
-- [ ] 6.1 RED : `MessagesPage.test.jsx` — « Message groupé » visible pour chargée et formateur, absent pour le stagiaire, lien vers `/messages/groupe` ; ligne `role="status"` « Message envoyé à X destinataires » quand `location.state.groupSent` existe ; `Thread.test.jsx` — mention « Message groupé » si `isGroup`, aucun nom ni e-mail de `recipients` rendu
-- [ ] 6.2 Ajouter le bouton et la ligne d'état à `MessagesPage`, la mention à `Thread` ; GREEN
-- [ ] 6.3 Mettre à jour `src/test/mobile-layout.test.js` si la barre de boutons de `/messages` change, et `SiteMapPage` si un lien est ajouté
-- [ ] 6.4 Commit `feat: add the group message button and the thread label`
+- [x] 6.1 RED : `MessagesPage.test.jsx` — « Message groupé » visible pour chargée et formateur, absent pour le stagiaire, lien vers `/messages/groupe` ; ligne `role="status"` « Message envoyé à X destinataires » quand `location.state.groupSent` existe ; `Thread.test.jsx` — mention « Message groupé » si `isGroup`, aucun nom ni e-mail de `recipients` rendu
+- [x] 6.2 Ajouter le bouton et la ligne d'état à `MessagesPage`, la mention à `Thread` ; GREEN
+- [x] 6.3 Mettre à jour `src/test/mobile-layout.test.js` si la barre de boutons de `/messages` change, et `SiteMapPage` si un lien est ajouté — plan du site inchangé : il ne liste que les destinations de premier niveau, la page est atteinte depuis Messages
+- [x] 6.4 Commit `feat: add the group message button and the thread label`
 
 ## 7. Documentation
 

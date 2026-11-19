@@ -68,6 +68,57 @@ describe('MessagesPage — liste', () => {
   })
 })
 
+describe('MessagesPage — message groupé', () => {
+  beforeEach(() => {
+    mockConversations()
+    mockFormationList([])
+  })
+
+  it.each(['SUPER_ADMIN', 'ADMIN'])('propose « Message groupé » vers /messages/groupe au rôle %s', async (role) => {
+    mockSession(role)
+    renderPage('/messages')
+    const link = await screen.findByRole('link', { name: 'Message groupé' })
+    expect(link).toHaveAttribute('href', '/messages/groupe')
+  })
+
+  it('ne le propose pas au stagiaire', async () => {
+    mockSession('STAGIAIRE')
+    renderPage('/messages')
+    await screen.findByText('Anne Martin')
+    expect(screen.queryByRole('link', { name: 'Message groupé' })).not.toBeInTheDocument()
+  })
+
+  it('garde « Nouvelle conversation » à côté', async () => {
+    mockSession('SUPER_ADMIN')
+    renderPage('/messages')
+    expect(await screen.findByRole('link', { name: 'Message groupé' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Nouvelle conversation' })).toBeInTheDocument()
+  })
+
+  it.each([
+    [3, 'Message envoyé à 3 destinataires'],
+    [1, 'Message envoyé à 1 destinataire'],
+  ])('après un envoi à %i personne(s), annonce « %s »', async (groupSent, message) => {
+    mockSession('SUPER_ADMIN')
+    renderPage({ pathname: '/messages', state: { groupSent } })
+    expect(await screen.findByText(message)).toBeInTheDocument()
+  })
+
+  it('sans envoi récent, aucune confirmation n\'est affichée', async () => {
+    mockSession('SUPER_ADMIN')
+    renderPage('/messages')
+    await screen.findByRole('link', { name: 'Message groupé' })
+    expect(screen.queryByText(/Message envoyé à/)).not.toBeInTheDocument()
+  })
+
+  it('n\'a aucune violation d\'accessibilité avec la confirmation affichée', async () => {
+    mockSession('SUPER_ADMIN')
+    const { container } = renderPage({ pathname: '/messages', state: { groupSent: 3 } })
+    await screen.findByText('Message envoyé à 3 destinataires')
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
 describe('MessagesPage — gabarit des autres pages', () => {
   beforeEach(() => {
     mockSession('STAGIAIRE')
