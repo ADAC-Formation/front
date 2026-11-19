@@ -16,6 +16,16 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-19 — Les notifications de message n'étaient jamais enregistrées : correctif (prêt à relire)
+
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `fix/message-notifications-not-persisted`, `42dbdcb`. Non poussé.
+- **Quoi et pourquoi** : en vérifiant la messagerie groupée sur le vrai back, aucune notification `NEW_MESSAGE` n'existait en base, ni pour un message individuel ni pour un message groupé (US-013 AC-07 et US-014 AC-04 non tenus). `MessageServiceImpl.notifyAfterCommit` appelait `NotificationService.notify` depuis `afterCommit`, et `notify` (`@Transactional`, REQUIRED) rejoignait la transaction déjà validée : son `save` n'était jamais commité. Maintenant le notifier tourne dans sa propre transaction (`TransactionTemplate`, `PROPAGATION_REQUIRES_NEW`). Le message lui-même n'est pas touché : un échec de notification est toujours journalisé sans faire échouer l'envoi.
+- **Fichiers touchés** : `src/main/java/com/adac/portail/service/MessageServiceImpl.java` (champ `PlatformTransactionManager`, `afterCommit`) ; nouveau test `src/test/java/com/adac/portail/service/MessageNotificationIntegrationTest.java` (`@SpringBootTest`, vraie base : individuel, groupé à deux destinataires, et l'expéditeur ne se notifie pas).
+- **Tests** : rouge avant le correctif (les 2 tests de notification échouent, 0 ligne), vert après ; `MessageServiceImplTest` (53) et `NotificationServiceImplTest` (15) restent verts ; suite complète : seuls 2 tests de `CategoryRepositoryTest` échouent, aussi sur `dev` avec ma base locale (5 catégories au lieu de 6, données locales). Vérifié de bout en bout : un envoi groupé et un envoi individuel créent chacun une notification `NEW_MESSAGE` (`entityType` `MESSAGE`, `entityId` = expéditeur).
+- **Contrat** : aucun changement de `tech.md` ni de réponse d'API.
+- **À vérifier / risques** : (1) j'ai volontairement laissé `notify` tel quel : un `REQUIRES_NEW` directement dessus changerait l'atomicité des autres appelants (documents, etc.) ; (2) `MessageServiceImpl` a un champ de plus (le constructeur Lombok change, les tests unitaires l'ignorent car ils n'activent pas la synchronisation) ; (3) le test d'intégration écrit dans la base du profil `dev` et nettoie ses données (même principe que `ActivationServiceIntegrationTest`).
+- **Lien avec** : À7 a de `points-pour-charlotte.md` ; H18 de `decisions-messagerie.md`.
+
 ### 2026-11-19 — `AGENTS.md` : le plan d'un ticket peut être validé par n'importe quel humain, pas seulement Charlotte (prêt à relire)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `chore/agents-human-validation`, `0615bc4`. Non poussé.
