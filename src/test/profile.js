@@ -19,7 +19,7 @@ export function mockUpdateProfile(user, { error = null } = {}) {
   return calls
 }
 
-// PATCH /users/me/password : route annoncée par Charlotte (Q1), absente du back `dev` au 2026-11-09.
+// PATCH /users/me/password (Q1, mergé dans le back : PR #18) : 204, ou 400 / 403 (ancien mot de passe faux) / 429 (verrou).
 // `error` : { status, message } pour échouer. Renvoie les corps reçus (`calls.changed`).
 export function mockChangePassword({ error = null } = {}) {
   const calls = { changed: [] }

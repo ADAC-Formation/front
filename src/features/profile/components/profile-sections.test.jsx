@@ -105,11 +105,18 @@ describe('ChangePasswordForm', () => {
     expect(screen.getByLabelText('Confirmation du mot de passe')).toHaveValue('')
   })
 
-  it('affiche le message du back (401) et vide les champs', async () => {
-    mockChangePassword({ error: { status: 401, message: 'Ancien mot de passe incorrect' } })
+  // Contrat réel (tech.md, PATCH /users/me/password, mergé dans le back : PR #18) : 204 ; 400 règle du mot de passe ;
+  // 403 ancien mot de passe faux (volontairement pas 401, qui veut dire « session expirée ») ; 429 verrou après
+  // 5 ancien mots de passe erronés en 15 min. Le formulaire affiche le message du back dans tous les cas.
+  it.each([
+    [403, 'Ancien mot de passe incorrect'],
+    [429, 'Trop de tentatives. Réessayez dans 15 minutes.'],
+    [400, 'Le nouveau mot de passe ne respecte pas la règle'],
+  ])('affiche le message du back (%i) et vide les champs', async (status, message) => {
+    mockChangePassword({ error: { status, message } })
     renderWithProviders(<ChangePasswordForm />)
     await fill('Mauvais1234', 'Nouveau1234', 'Nouveau1234')
-    expect(await screen.findByRole('alert')).toHaveTextContent('Ancien mot de passe incorrect')
+    expect(await screen.findByRole('alert')).toHaveTextContent(message)
     expect(screen.getByLabelText('Nouveau mot de passe')).toHaveValue('')
   })
 
