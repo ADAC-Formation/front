@@ -14,7 +14,7 @@
 
 ## 3. Appels et hooks (TDD)
 
-- [x] 3.1 Étendre `src/test/messages.js` (`mockGroupPreview` avec capture des paramètres et `errorStatus`, `mockSendGroupMessage` avec capture du corps) ; RED : `hooks.test.jsx` — `useGroupPreview` (aucun appel tant que le filtre est incomplet, `userIds` répétés dans l'adresse, `400` → erreur sans nouvel essai), `useSendGroupMessage` (corps `{ content, filter }`, invalidation de `['messages']`, 403 / 404 / réseau en `ApiError`, double clic = un seul appel)
+- [x] 3.1 Étendre `src/test/messages.js` (`mockGroupPreview` avec capture des paramètres et `errorStatus`, `mockSendGroupMessage` avec capture du corps) ; RED : `hooks.test.jsx` — `useGroupPreview` (aucun appel tant que le filtre est incomplet, `userIds` répétés dans l'adresse, `400` → erreur sans nouvel essai), `useSendGroupMessage` (corps `{ content, filter }`, invalidation de `['messages']`, 403 / 404 / réseau en `ApiError`)
 - [x] 3.2 Ajouter `previewGroupRecipients` / `sendGroupMessage` à `api.js` et les deux hooks ; GREEN
 - [x] 3.3 Commit `feat: add the group messaging requests`
 
