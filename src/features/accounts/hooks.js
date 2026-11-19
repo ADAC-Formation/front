@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { resendActivation } from '../auth/api'
 import {
   createAccount,
   fetchAccount,
@@ -69,4 +70,10 @@ export function useSetAccountActive() {
     mutationFn: ({ id, active }) => setAccountActive(id, active),
     onSuccess: refresh,
   })
+}
+
+// Renvoie un code d'activation à un compte jamais activé (POST /auth/resend-activation, 3 codes par 15 min).
+// Rien à recharger : le compte reste « jamais activé » jusqu'à ce que la personne active son compte.
+export function useResendActivation() {
+  return useMutation({ mutationFn: ({ email }) => resendActivation({ email }) })
 }

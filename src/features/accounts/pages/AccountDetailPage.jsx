@@ -6,10 +6,18 @@ import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDi
 import { ROLES, roleLabels } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
 import StagiaireDocumentsSection from '../../documents/components/StagiaireDocumentsSection'
-import { ACCOUNT_KINDS, canManageAccounts, fullName } from '../accountKinds'
+import {
+  ACCOUNT_KINDS,
+  ACCOUNT_STATUS,
+  accountStatus,
+  accountStatusLabels,
+  activationCodeSentMessage,
+  canManageAccounts,
+  fullName,
+} from '../accountKinds'
 import AccountNotFound from '../components/AccountNotFound'
 import AccountNotice from '../components/AccountNotice'
-import { useAccount, useSetAccountActive } from '../hooks'
+import { useAccount, useResendActivation, useSetAccountActive } from '../hooks'
 import { canWriteToAccount } from '../../messagerie/recipients'
 import { useRecipients } from '../../messagerie/useRecipients'
 import styles from './AccountPages.module.css'
@@ -26,6 +34,7 @@ const AccountDetailPage = ({ kind }) => {
 
   const { data: account, isLoading, isError, error, refetch } = useAccount(id)
   const setActive = useSetAccountActive()
+  const resend = useResendActivation()
   // Le formateur n'écrit qu'aux stagiaires de ses formations : sa liste de destinataires décide du bouton.
   const { recipients } = useRecipients({ enabled: Boolean(account) && user?.role === ROLES.ADMIN })
 
@@ -51,6 +60,7 @@ const AccountDetailPage = ({ kind }) => {
   }
 
   const canMessage = canWriteToAccount(user, account, recipients)
+  const status = accountStatus(account)
 
   const changeStatus = (active) => {
     setActive.reset()
@@ -73,6 +83,8 @@ const AccountDetailPage = ({ kind }) => {
       <div className={styles.notices}>
         <AccountNotice />
         {setActive.error && <Alert variant="error">{setActive.error.message}</Alert>}
+        {resend.error && <Alert variant="error">{resend.error.message}</Alert>}
+        {resend.isSuccess && <Alert variant="success">{activationCodeSentMessage(account)}</Alert>}
       </div>
 
       <section className={styles.card}>
@@ -82,7 +94,7 @@ const AccountDetailPage = ({ kind }) => {
           <dt>Rôle</dt>
           <dd>{roleLabels[account.role] ?? account.role}</dd>
           <dt>Statut</dt>
-          <dd>{account.isActive ? 'Actif' : 'Inactif'}</dd>
+          <dd>{accountStatusLabels[status]}</dd>
         </dl>
 
         {(canManage || canMessage) && (
@@ -92,7 +104,19 @@ const AccountDetailPage = ({ kind }) => {
                 Envoyer un message
               </Link>
             )}
-            {canManage && (account.isActive ? (
+            {canManage && (status === ACCOUNT_STATUS.NEVER_ACTIVATED ? (
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={() => {
+                  resend.reset()
+                  resend.mutate({ email: account.email })
+                }}
+                disabled={resend.isPending}
+              >
+                Renvoyer le code d'activation
+              </button>
+            ) : account.isActive ? (
               <button type="button" className={styles.secondaryButton} onClick={() => setConfirming(true)}>
                 Suspendre
               </button>

@@ -40,12 +40,12 @@ describe('AccountDetailPage', () => {
     expect(screen.getByText('Actif')).toBeInTheDocument()
   })
 
-  it('affiche le libellé « Stagiaire » et le statut suspendu', async () => {
+  it('affiche le libellé « Stagiaire » et le statut « Jamais activé »', async () => {
     mockAccount(STAGIAIRES[1])
     renderDetail('stagiaires', 21, 'SUPER_ADMIN')
     expect(await screen.findByRole('heading', { level: 1, name: 'Omar Benali' })).toBeInTheDocument()
     expect(screen.getByText('Stagiaire')).toBeInTheDocument()
-    expect(screen.getByText('Inactif')).toBeInTheDocument()
+    expect(screen.getByText('Jamais activé')).toBeInTheDocument()
   })
 
   it('rend les contenus en texte, jamais en HTML', async () => {
@@ -94,7 +94,7 @@ describe('AccountDetailPage', () => {
       await userEvent.click(await screen.findByRole('button', { name: 'Suspendre' }))
       expect(calls.count).toBe(0)
       await userEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Suspendre' }))
-      expect(await screen.findByText('Inactif')).toBeInTheDocument()
+      expect(await screen.findByText('Suspendu')).toBeInTheDocument()
       expect(await screen.findByRole('button', { name: 'Réactiver' })).toBeInTheDocument()
     })
 
@@ -114,7 +114,56 @@ describe('AccountDetailPage', () => {
       renderDetail('formateurs', 11, 'SUPER_ADMIN')
       await userEvent.click(await screen.findByRole('button', { name: 'Réactiver' }))
       expect(await screen.findByRole('alert')).toHaveTextContent('Accès refusé')
-      expect(screen.getByText('Inactif')).toBeInTheDocument()
+      expect(screen.getByText('Suspendu')).toBeInTheDocument()
+    })
+  })
+
+  describe('statut « Jamais activé » et code d\'activation (Q8.3)', () => {
+    const suspendu = { ...STAGIAIRES[0], id: 22, prenom: 'Sam', nom: 'Roux', email: 'sam@adac.test', isActive: false, activated: true }
+    const resendButton = () => screen.findByRole('button', { name: "Renvoyer le code d'activation" })
+
+    it('propose « Renvoyer le code d\'activation » à la place de « Réactiver » pour un compte jamais activé', async () => {
+      mockAccount(STAGIAIRES[1])
+      renderDetail('stagiaires', 21, 'SUPER_ADMIN')
+      expect(await resendButton()).toBeInTheDocument()
+      expect(screen.getByText('Jamais activé')).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Réactiver' })).not.toBeInTheDocument()
+    })
+
+    it('un compte suspendu garde « Réactiver » et n\'a pas de renvoi de code', async () => {
+      mockAccount(suspendu)
+      renderDetail('stagiaires', 22, 'SUPER_ADMIN')
+      expect(await screen.findByRole('button', { name: 'Réactiver' })).toBeInTheDocument()
+      expect(screen.getByText('Suspendu')).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: "Renvoyer le code d'activation" })).not.toBeInTheDocument()
+    })
+
+    it('envoie l\'e-mail du compte à /auth/resend-activation puis annonce le succès', async () => {
+      mockAccount(STAGIAIRES[1])
+      const calls = mockRequest('post', '/auth/resend-activation', () =>
+        HttpResponse.json({ message: 'Si cet email existe, un code vous a été envoyé.' }),
+      )
+      renderDetail('stagiaires', 21, 'SUPER_ADMIN')
+      await userEvent.click(await resendButton())
+      expect(await screen.findByText("Un nouveau code d'activation a été envoyé à Omar Benali.")).toBeInTheDocument()
+      expect(calls.body).toEqual({ email: 'omar@adac.test' })
+    })
+
+    it('annonce la limite de 3 codes sur 15 minutes (429) avec le message du back', async () => {
+      mockAccount(STAGIAIRES[1])
+      mockRequest('post', '/auth/resend-activation', () => apiError(429, 'Trop de demandes. Réessayez dans 15 minutes.'))
+      renderDetail('stagiaires', 21, 'SUPER_ADMIN')
+      await userEvent.click(await resendButton())
+      expect(await screen.findByRole('alert')).toHaveTextContent('Trop de demandes. Réessayez dans 15 minutes.')
+      expect(screen.queryByText(/Un nouveau code/)).not.toBeInTheDocument()
+    })
+
+    it('le formateur (lecture seule) ne voit pas le renvoi de code', async () => {
+      mockAccount(STAGIAIRES[1])
+      renderDetail('stagiaires', 21, 'ADMIN')
+      await screen.findByRole('heading', { level: 1, name: 'Omar Benali' })
+      expect(screen.getByText('Jamais activé')).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: "Renvoyer le code d'activation" })).not.toBeInTheDocument()
     })
   })
 

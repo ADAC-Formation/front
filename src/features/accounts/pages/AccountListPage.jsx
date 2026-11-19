@@ -7,8 +7,15 @@ import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDi
 import { useCurrentUser } from '../../auth/hooks'
 import AccountNotice from '../components/AccountNotice'
 import AccountRow from '../components/AccountRow'
-import { ACCOUNT_KINDS, canManageAccounts, fullName } from '../accountKinds'
-import { useAccounts, useSetAccountActive } from '../hooks'
+import {
+  ACCOUNT_KINDS,
+  ACCOUNT_STATUS,
+  accountStatus,
+  activationCodeSentMessage,
+  canManageAccounts,
+  fullName,
+} from '../accountKinds'
+import { useAccounts, useResendActivation, useSetAccountActive } from '../hooks'
 import styles from './AccountPages.module.css'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 
@@ -29,8 +36,8 @@ const matchesSearch = (account, term) =>
 
 // Liste des formateurs ou des stagiaires, présentée comme la page Formations. La chargée de
 // formation filtre et gère les comptes ; le formateur consulte seulement (D54). « Inactifs » est
-// filtré côté client : l'API n'a que `?active=true`. « Inactif » regroupe comptes suspendus et
-// jamais activés : le back ne les distingue que par le 409 de `reactivate` (D55).
+// filtré côté client : l'API n'a que `?active=true`. « Inactifs » regroupe comptes suspendus et
+// jamais activés, que le back distingue avec `activated` (Q8.3, remplace le 409 de `reactivate`, D55).
 const AccountListPage = ({ kind }) => {
   const config = ACCOUNT_KINDS[kind]
   const { user } = useCurrentUser()
@@ -42,6 +49,8 @@ const AccountListPage = ({ kind }) => {
 
   const { data, isLoading, isError, error, refetch } = useAccounts(kind, { active: filter === 'active' })
   const setActive = useSetAccountActive()
+  const resend = useResendActivation()
+  const [codeSentTo, setCodeSentTo] = useState(null)
 
   const accounts = useMemo(() => {
     const term = search.toLowerCase().trim()
@@ -62,9 +71,24 @@ const AccountListPage = ({ kind }) => {
   const isEmptyList = !isLoading && !isError && (data ?? []).length === 0
   const hasNoMatch = !isLoading && !isError && !isEmptyList && count === 0
 
+  const resendCode = (account) => {
+    setCodeSentTo(null)
+    resend.reset()
+    resend.mutate({ email: account.email }, { onSuccess: () => setCodeSentTo(account) })
+  }
+
   const rowActions = (account) =>
     canManage &&
-    (account.isActive ? (
+    (accountStatus(account) === ACCOUNT_STATUS.NEVER_ACTIVATED ? (
+      <button
+        type="button"
+        aria-label={`Renvoyer le code à ${fullName(account)}`}
+        onClick={() => resendCode(account)}
+        disabled={resend.isPending}
+      >
+        Renvoyer le code
+      </button>
+    ) : account.isActive ? (
       <button
         type="button"
         aria-label={`Suspendre ${fullName(account)}`}
@@ -144,6 +168,8 @@ const AccountListPage = ({ kind }) => {
       <div className={styles.notices}>
         <AccountNotice />
         {setActive.error && <Alert variant="error">{setActive.error.message}</Alert>}
+        {resend.error && <Alert variant="error">{resend.error.message}</Alert>}
+        {codeSentTo && !resend.error && <Alert variant="success">{activationCodeSentMessage(codeSentTo)}</Alert>}
       </div>
 
       <section className={styles.card}>

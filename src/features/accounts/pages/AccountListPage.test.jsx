@@ -28,7 +28,7 @@ describe('AccountListPage', () => {
     const row = (await screen.findByRole('link', { name: 'Anne Martin' })).closest('li')
     expect(within(row).getByText('anne@adac.test')).toBeInTheDocument()
     expect(within(row).getByText('Actif')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('li')).toHaveTextContent('Inactif')
+    expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('li')).toHaveTextContent('Suspendu')
   })
 
   it('liste les stagiaires', async () => {
@@ -169,7 +169,67 @@ describe('AccountListPage', () => {
       renderList('formateurs', 'SUPER_ADMIN')
       await userEvent.click(await screen.findByRole('button', { name: 'Réactiver Paul Durand' }))
       expect(await screen.findByRole('alert')).toHaveTextContent('Accès refusé')
-      expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('li')).toHaveTextContent('Inactif')
+      expect(screen.getByRole('link', { name: 'Paul Durand' }).closest('li')).toHaveTextContent('Suspendu')
+    })
+  })
+
+  describe('statuts et code d\'activation (Q8.3)', () => {
+    const suspendu = { ...STAGIAIRES[0], id: 22, prenom: 'Sam', nom: 'Roux', email: 'sam@adac.test', isActive: false, activated: true }
+    const row = (name) => screen.getByRole('link', { name }).closest('li')
+
+    it('distingue « Actif », « Suspendu » et « Jamais activé »', async () => {
+      mockAccountList('stagiaires', [...STAGIAIRES, suspendu])
+      renderList('stagiaires', 'SUPER_ADMIN')
+      await screen.findByRole('link', { name: 'Léa Petit' })
+      expect(row('Léa Petit')).toHaveTextContent('Actif')
+      expect(row('Sam Roux')).toHaveTextContent('Suspendu')
+      expect(row('Omar Benali')).toHaveTextContent('Jamais activé')
+    })
+
+    it('propose « Renvoyer le code » (pas « Réactiver ») pour un compte jamais activé, et l\'inverse pour un suspendu', async () => {
+      mockAccountList('stagiaires', [...STAGIAIRES, suspendu])
+      renderList('stagiaires', 'SUPER_ADMIN')
+      await screen.findByRole('link', { name: 'Omar Benali' })
+      expect(screen.getByRole('button', { name: 'Renvoyer le code à Omar Benali' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Réactiver Omar Benali' })).not.toBeInTheDocument()
+      expect(screen.getByRole('button', { name: 'Réactiver Sam Roux' })).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Renvoyer le code à Sam Roux' })).not.toBeInTheDocument()
+    })
+
+    it('renvoie le code à l\'e-mail du compte et annonce le succès', async () => {
+      mockAccountList('stagiaires', STAGIAIRES)
+      const calls = mockRequest('post', '/auth/resend-activation', () =>
+        HttpResponse.json({ message: 'Si cet email existe, un code vous a été envoyé.' }),
+      )
+      renderList('stagiaires', 'SUPER_ADMIN')
+      await userEvent.click(await screen.findByRole('button', { name: 'Renvoyer le code à Omar Benali' }))
+      expect(await screen.findByText("Un nouveau code d'activation a été envoyé à Omar Benali.")).toBeInTheDocument()
+      expect(calls.body).toEqual({ email: 'omar@adac.test' })
+    })
+
+    it('annonce le refus du back (429) sans message de succès', async () => {
+      mockAccountList('stagiaires', STAGIAIRES)
+      mockRequest('post', '/auth/resend-activation', () => apiError(429, 'Trop de demandes. Réessayez dans 15 minutes.'))
+      renderList('stagiaires', 'SUPER_ADMIN')
+      await userEvent.click(await screen.findByRole('button', { name: 'Renvoyer le code à Omar Benali' }))
+      expect(await screen.findByRole('alert')).toHaveTextContent('Trop de demandes. Réessayez dans 15 minutes.')
+      expect(screen.queryByText(/Un nouveau code/)).not.toBeInTheDocument()
+    })
+
+    it('« Inactifs » regroupe les comptes suspendus et jamais activés', async () => {
+      mockAccountList('stagiaires', [...STAGIAIRES, suspendu])
+      renderList('stagiaires', 'SUPER_ADMIN')
+      await userEvent.click(await screen.findByRole('radio', { name: 'Inactifs' }))
+      expect(screen.getByRole('link', { name: 'Omar Benali' })).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Sam Roux' })).toBeInTheDocument()
+      expect(screen.queryByRole('link', { name: 'Léa Petit' })).not.toBeInTheDocument()
+    })
+
+    it('le formateur (lecture seule) ne voit pas « Renvoyer le code »', async () => {
+      mockAccountList('stagiaires', STAGIAIRES)
+      renderList('stagiaires', 'ADMIN')
+      await screen.findByRole('link', { name: 'Omar Benali' })
+      expect(screen.queryByRole('button', { name: /Renvoyer le code/ })).not.toBeInTheDocument()
     })
   })
 

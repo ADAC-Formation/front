@@ -4,12 +4,12 @@ import { API_URL } from './session'
 
 // Comptes fictifs (forme de UserResponse, tech.md § 2).
 export const FORMATEURS = [
-  { id: 10, email: 'anne@adac.test', prenom: 'Anne', nom: 'Martin', role: 'ADMIN', isActive: true, emailNotificationsEnabled: true },
-  { id: 11, email: 'paul@adac.test', prenom: 'Paul', nom: 'Durand', role: 'ADMIN', isActive: false, emailNotificationsEnabled: true },
+  { id: 10, email: 'anne@adac.test', prenom: 'Anne', nom: 'Martin', role: 'ADMIN', isActive: true, activated: true, emailNotificationsEnabled: true },
+  { id: 11, email: 'paul@adac.test', prenom: 'Paul', nom: 'Durand', role: 'ADMIN', isActive: false, activated: true, emailNotificationsEnabled: true },
 ]
 export const STAGIAIRES = [
-  { id: 20, email: 'lea@adac.test', prenom: 'Léa', nom: 'Petit', role: 'STAGIAIRE', isActive: true, emailNotificationsEnabled: true },
-  { id: 21, email: 'omar@adac.test', prenom: 'Omar', nom: 'Benali', role: 'STAGIAIRE', isActive: false, emailNotificationsEnabled: true },
+  { id: 20, email: 'lea@adac.test', prenom: 'Léa', nom: 'Petit', role: 'STAGIAIRE', isActive: true, activated: true, emailNotificationsEnabled: true },
+  { id: 21, email: 'omar@adac.test', prenom: 'Omar', nom: 'Benali', role: 'STAGIAIRE', isActive: false, activated: false, emailNotificationsEnabled: true },
 ]
 
 export const apiError = (status, message) => HttpResponse.json({ status, message, details: [] }, { status })
