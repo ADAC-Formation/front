@@ -8,9 +8,9 @@
 
 ## 2. Logique pure (TDD)
 
-- [ ] 2.1 RED : `groupFilters.test.js` — `filterTypesFor` (chargée : 3, formateur : 1, stagiaire : aucun), `formationsOfTrainer` (seulement les siennes), `isFilterComplete` (formation absente / choisie, `MANUAL` vide / non vide, `MISSING_DOCS`), `toPreviewParams`, `toSendBody` (`userIds` seulement pour `MANUAL`, `formationId` seulement pour `FORMATION`)
-- [ ] 2.2 Créer `groupFilters.js` ; GREEN
-- [ ] 2.3 Commit `feat: add the group messaging filter rules`
+- [x] 2.1 RED : `groupFilters.test.js` — `filterTypesFor` (chargée : 3, formateur : 1, stagiaire : aucun), `formationsOfTrainer` (seulement les siennes), `isFilterComplete` (formation absente / choisie, `MANUAL` vide / non vide, `MISSING_DOCS`), `toPreviewParams`, `toSendBody` (`userIds` seulement pour `MANUAL`, `formationId` seulement pour `FORMATION`)
+- [x] 2.2 Créer `groupFilters.js` ; GREEN
+- [x] 2.3 Commit `feat: add the group messaging filter rules`
 
 ## 3. Appels et hooks (TDD)
 
