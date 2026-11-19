@@ -6,7 +6,7 @@ import { routes } from './router'
 import { ThemeProvider } from '../context/ThemeProvider'
 import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList, mockRequest } from '../test/accounts'
-import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } from '../test/formations'
+import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions, mockUserInscriptions } from '../test/formations'
 import { mockDocumentApi } from '../test/documents'
 import { mockConversations } from '../test/messages'
 import { mockCategories } from '../test/categories'
@@ -33,6 +33,7 @@ function mockFormations() {
   mockFormationList()
   mockFormationDetail(FORMATIONS[0])
   mockInscriptions(101)
+  mockUserInscriptions(20, [{ id: 1, formation: FORMATIONS[0] }]) // profil du stagiaire 20 (chargée de formation)
   mockDocumentApi()
   mockCategories()
 }

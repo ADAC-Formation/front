@@ -31,3 +31,10 @@ export async function setAccountActive(id, active) {
   const { data } = await apiClient.patch(`/users/${id}/${active ? 'reactivate' : 'deactivate'}`)
   return data
 }
+
+// Formations où un compte est inscrit (Q16, tech.md § 2) : `[{ id, formation }]`. Réservé à la chargée de
+// formation : le back répond 403 au formateur.
+export async function listUserInscriptions(userId) {
+  const { data } = await apiClient.get(`/users/${userId}/inscriptions`)
+  return data
+}

@@ -6,15 +6,20 @@ import { Route, Routes } from 'react-router'
 import AccountDetailPage from './AccountDetailPage'
 import { renderWithProviders } from '../../../test/render'
 import { mockDocumentApi } from '../../../test/documents'
-import { FORMATIONS, INSCRITS, mockFormationList, mockInscriptions } from '../../../test/formations'
+import { FORMATIONS, INSCRITS, mockFormationList, mockInscriptions, mockUserInscriptions } from '../../../test/formations'
 import { mockSession } from '../../../test/session'
 import { FORMATEURS, STAGIAIRES, apiError, mockAccountList, mockRequest } from '../../../test/accounts'
 import { mockConversations } from '../../../test/messages'
 
 // Le formateur lit ses stagiaires pour savoir s'il peut leur écrire (bouton « Envoyer un message »).
-function renderDetail(kind, id, role, { state, formations = [], scopedStagiaires = STAGIAIRES } = {}) {
+// Section « Documents » du stagiaire : la chargée de formation lit `GET /users/{id}/inscriptions` (`enrolments`,
+// Q16) ; le formateur parcourt les formations (`formations`) et leurs inscrits.
+function renderDetail(kind, id, role, { state, formations = [], enrolments = [], scopedStagiaires = STAGIAIRES } = {}) {
   mockSession(role)
-  if (kind === 'stagiaires') mockFormationList(formations) // la section « Documents » du stagiaire
+  if (kind === 'stagiaires') {
+    mockFormationList(formations)
+    if (role === 'SUPER_ADMIN') mockUserInscriptions(id, enrolments)
+  }
   if (role === 'ADMIN') {
     mockConversations([])
     mockAccountList('stagiaires', scopedStagiaires)
@@ -196,7 +201,10 @@ describe('AccountDetailPage', () => {
       mockAccount(stagiaire)
       mockInscriptions(101)
       mockDocumentApi([sent])
-      renderDetail('stagiaires', 20, role, { formations: [FORMATIONS[0]] })
+      renderDetail('stagiaires', 20, role, {
+        formations: [FORMATIONS[0]],
+        enrolments: [{ id: 1, formation: FORMATIONS[0] }],
+      })
       const section = (await screen.findByRole('heading', { level: 2, name: 'Documents' })).closest('section')
       expect(await within(section).findByRole('link', { name: 'Premiers secours PSC1' })).toHaveAttribute(
         'href',
@@ -216,7 +224,10 @@ describe('AccountDetailPage', () => {
       mockAccount(stagiaire)
       mockInscriptions(101)
       mockDocumentApi([sent])
-      const { container } = renderDetail('stagiaires', 20, 'SUPER_ADMIN', { formations: [FORMATIONS[0]] })
+      const { container } = renderDetail('stagiaires', 20, 'SUPER_ADMIN', {
+        formations: [FORMATIONS[0]],
+        enrolments: [{ id: 1, formation: FORMATIONS[0] }],
+      })
       await screen.findByRole('button', { name: 'Télécharger Carte-identite.pdf' })
       expect(await axe(container)).toHaveNoViolations()
     })

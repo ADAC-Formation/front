@@ -106,6 +106,18 @@ export function mockInscriptions(formationId, inscrits = INSCRITS, { errorStatus
   return calls
 }
 
+// GET /users/{id}/inscriptions (Q16, chargée de formation seulement) : `[{ id, formation }]`, ou l'erreur demandée.
+export function mockUserInscriptions(userId, inscriptions = [], { errorStatus } = {}) {
+  const calls = { count: 0 }
+  server.use(
+    http.get(`${API_URL}/users/${userId}/inscriptions`, () => {
+      calls.count += 1
+      return errorStatus ? apiError(errorStatus, 'Erreur serveur') : HttpResponse.json(inscriptions)
+    }),
+  )
+  return calls
+}
+
 // PATCH /formations/{id}/archive : 200 avec la formation archivée, ou l'erreur demandée (409…).
 export function mockArchive(formation, { errorStatus } = {}) {
   const calls = { count: 0 }

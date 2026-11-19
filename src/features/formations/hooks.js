@@ -1,4 +1,7 @@
 import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/react-query'
+import { listUserInscriptions } from '../accounts/api'
+import { useCurrentUser } from '../auth/hooks'
+import { ROLES } from '../../utils/roles'
 import {
   archiveFormation,
   createFormation,
@@ -38,18 +41,42 @@ export function useInscriptions(id, { enabled = true } = {}) {
   return useQuery({ ...inscriptionsQuery(id), enabled })
 }
 
-// Les formations où un stagiaire est inscrit, parmi celles que l'appelant peut consulter (G17). Le back
-// n'a pas d'appel « inscriptions d'un compte » : on lit la liste d'inscrits de chaque formation de
-// l'appelant (même clé de cache que `useInscriptions`). Un 403 / 404 (formation hors périmètre du
-// formateur) est ignoré ; toute autre erreur est rendue dans `errors` sans masquer les autres formations.
-// `enrolled` : [{ formation, inscriptionId }] dans l'ordre du back ; `refetch` ne relance que les listes en échec.
+// Les formations où un stagiaire est inscrit (G17), au format `{ enrolled: [{ formation, inscriptionId }], isLoading,
+// errors, refetch }`.
+//   Chargée de formation : un seul appel `GET /users/{id}/inscriptions` (Q16). Le back le réserve à elle.
+//   Formateur : le back lui répond 403 ; on lit donc la liste d'inscrits de chaque formation qu'il peut consulter
+//   (même clé de cache que `useInscriptions`). Un 403 / 404 (formation hors de son périmètre) est ignoré ; toute
+//   autre erreur est rendue dans `errors` sans masquer les autres formations, et `refetch` ne relance que les
+//   listes en échec.
+// Sans session connue, rien n'est demandé.
 const isOutOfScope = (error) => error?.status === 403 || error?.status === 404
 
 export function useStagiaireInscriptions(stagiaireId) {
-  const formations = useFormations()
+  const { user, isLoading: isLoadingUser } = useCurrentUser()
+  const isManager = user?.role === ROLES.SUPER_ADMIN
+  const isTrainer = user?.role === ROLES.ADMIN
+
+  const direct = useQuery({
+    queryKey: ['users', String(stagiaireId), 'inscriptions'],
+    queryFn: () => listUserInscriptions(stagiaireId),
+    enabled: isManager,
+  })
+
+  const formations = useFormations({ enabled: isTrainer })
   const list = formations.data ?? []
-  const queries = useQueries({ queries: list.map((formation) => inscriptionsQuery(formation.id)) })
+  const queries = useQueries({
+    queries: list.map((formation) => ({ ...inscriptionsQuery(formation.id), enabled: isTrainer })),
+  })
   const failed = queries.filter((query) => query.isError && !isOutOfScope(query.error))
+
+  if (isManager) {
+    return {
+      enrolled: (direct.data ?? []).map(({ id, formation }) => ({ formation, inscriptionId: id })),
+      isLoading: direct.isLoading,
+      errors: direct.isError ? [direct.error] : [],
+      refetch: () => direct.refetch(),
+    }
+  }
 
   const enrolled = []
   queries.forEach((query, index) => {
@@ -59,7 +86,7 @@ export function useStagiaireInscriptions(stagiaireId) {
 
   return {
     enrolled,
-    isLoading: formations.isLoading || queries.some((query) => query.isLoading),
+    isLoading: isLoadingUser || formations.isLoading || queries.some((query) => query.isLoading),
     errors: [...(formations.isError ? [formations.error] : []), ...failed.map((query) => query.error)],
     refetch: () => {
       if (formations.isError) formations.refetch()
