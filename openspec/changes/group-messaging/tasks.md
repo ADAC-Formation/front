@@ -20,9 +20,9 @@
 
 ## 4. Composants de saisie (TDD)
 
-- [ ] 4.1 RED : `StagiairePicker.test.jsx` (cases natives, recherche sans casse ni accents, « Tout sélectionner » sur les résultats, sélection conservée entre deux recherches, compteur annoncé) ; `RecipientPreview.test.jsx` (noms sans e-mail, compte annoncé, « Aucun destinataire correspondant », chargement et erreur avec « Réessayer ») ; `GroupFilters.test.jsx` (types par rôle, texte d'aide `MISSING_DOCS`, changer de type vide formation et sélection)
-- [ ] 4.2 Créer `StagiairePicker`, `RecipientPreview`, `GroupFilters` (CSS Modules, jetons, rem, anneau de focus global) ; GREEN
-- [ ] 4.3 Commit `feat: add the group messaging inputs`
+- [x] 4.1 RED : `StagiairePicker.test.jsx` (cases natives, recherche sans casse ni accents, « Tout sélectionner » sur les résultats, sélection conservée entre deux recherches, compteur annoncé) ; `RecipientPreview.test.jsx` (noms sans e-mail, compte annoncé, « Aucun destinataire correspondant », chargement et erreur avec « Réessayer ») ; `GroupFilters.test.jsx` (types par rôle, texte d'aide `MISSING_DOCS`, changer de type vide formation et sélection)
+- [x] 4.2 Créer `StagiairePicker`, `RecipientPreview`, `GroupFilters` (CSS Modules, jetons, rem, anneau de focus global) ; GREEN
+- [x] 4.3 Commit `feat: add the group messaging inputs`
 
 ## 5. Page et route (TDD)
 

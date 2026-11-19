@@ -4,7 +4,7 @@
 //   search : texte cherché dans « prénom nom » de l'interlocuteur, sans casse ni accents.
 
 // « Léa » → « lea » : minuscules et accents retirés pour comparer.
-const normalize = (text) =>
+export const normalize = (text) =>
   text
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
