@@ -54,6 +54,12 @@ Contrat vérifié sur le back local (dépôt, liste, téléchargement, suppressi
 - **Double barre dans `fileUrl`** : si `SUPABASE_URL` se termine par `/`, l'adresse contient `//storage/...`. Retirer la barre finale dans `SupabaseConfig` évite le piège.
 - **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée ou pointant sur `/rest/v1/` donne `502 « Service de stockage indisponible »` ; la vraie cause (`PGRST125`, hôte inconnu…) n'est que dans les logs. À mentionner dans ta documentation de développement local : `SUPABASE_URL` = URL du projet seule (`https://<projet>.supabase.co`), clé `service_role`, bucket privé `adac-documents`.
 
+### À7. Message groupé : `recipients` expose l'e-mail de tous les destinataires (ticket 032) — nouveau
+
+`POST /api/messages/send` (branche groupée) renvoie un `MessageResponse` dont `recipients` contient un `UserResponse` complet par destinataire (e-mail, `createdAt`, etc.), et un destinataire reçoit ce même message dans son fil. Un stagiaire peut donc lire l'e-mail de tous les autres stagiaires du groupe, même sujet que `uploadedBy` (À5) et l'e-mail des co-inscrits. Le front n'affiche jamais cette liste (« Message groupé » seulement).
+
+Proposition : pour un destinataire, ne renvoyer dans `recipients` que lui-même (ou seulement un compteur), et réserver la liste complète à l'expéditeur. Rien n'est bloquant : le front peut avancer sans.
+
 ---
 
 ## 0. Réponses de Charlotte (reçues le 2026-11-09, `reponses-pour-manon.md`)

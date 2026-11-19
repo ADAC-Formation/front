@@ -190,3 +190,15 @@ Source : TICKET-031 (front), US-013, `tech.md` §7, décisions H1–H9 (`decisio
 - [ ] « Mes documents » : stagiaire seulement (inchangé).
 - [ ] Accessibilité : jest-axe sans violation.
 
+
+## Critères d'acceptation de la messagerie groupée (change `group-messaging`)
+
+Source : TICKET-032 (front), US-014, `tech.md` §7, décisions H12–H17 (`decisions-messagerie.md`). À valider par Manon (D49). Détail testable : `openspec/changes/group-messaging/specs/group-messaging/spec.md`.
+
+### TICKET-032 — Messagerie groupée
+- [ ] `/messages` : bouton « Message groupé » pour la chargée de formation et le formateur, absent pour le stagiaire ; il mène à `/messages/groupe` (« Retour » vers `/messages`), page réservée comme les autres.
+- [ ] Chargée de formation : filtres « Formation », « Documents manquants » (texte d'aide : stagiaires sans aucun document, toutes formations confondues) et « Sélection libre ». Formateur : « Formation » seulement, limité à ses formations actives. Formations proposées : `GET /formations?status=ACTIVE` (H17).
+- [ ] « Sélection libre » : stagiaires actifs en cases à cocher natives, recherche sans casse ni accents, « Tout sélectionner » sur les résultats, sélection conservée entre deux recherches, nombre annoncé.
+- [ ] Aperçu automatique (`GET /messages/group/preview`) dès que le filtre est complet : noms seulement, jamais d'e-mail, compte annoncé ; `400` ou liste vide → « Aucun destinataire correspondant » et envoi désactivé.
+- [ ] Texte seul, 1 à 5000 caractères (H9) ; « Envoyer à X destinataires » ouvre une confirmation ; `POST /messages/send` `{ content, filter }` n'est appelé qu'après confirmation, une seule fois ; succès → retour sur `/messages` avec « Message envoyé à X destinataires » ; `403` / `404` / réseau → erreur, texte conservé.
+- [ ] Fil : mention « Message groupé » pour `isGroup` ; la liste `recipients` n'est jamais affichée (H15).
