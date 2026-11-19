@@ -54,11 +54,17 @@ Contrat vérifié sur le back local (dépôt, liste, téléchargement, suppressi
 - **Double barre dans `fileUrl`** : si `SUPABASE_URL` se termine par `/`, l'adresse contient `//storage/...`. Retirer la barre finale dans `SupabaseConfig` évite le piège.
 - **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée ou pointant sur `/rest/v1/` donne `502 « Service de stockage indisponible »` ; la vraie cause (`PGRST125`, hôte inconnu…) n'est que dans les logs. À mentionner dans ta documentation de développement local : `SUPABASE_URL` = URL du projet seule (`https://<projet>.supabase.co`), clé `service_role`, bucket privé `adac-documents`.
 
-### À7. Message groupé : `recipients` expose l'e-mail de tous les destinataires (ticket 032) — nouveau
+### À7. Message groupé : constats sur le back local (vérifiés le 2026-11-19) — nouveau
 
-`POST /api/messages/send` (branche groupée) renvoie un `MessageResponse` dont `recipients` contient un `UserResponse` complet par destinataire (e-mail, `createdAt`, etc.), et un destinataire reçoit ce même message dans son fil. Un stagiaire peut donc lire l'e-mail de tous les autres stagiaires du groupe, même sujet que `uploadedBy` (À5) et l'e-mail des co-inscrits. Le front n'affiche jamais cette liste (« Message groupé » seulement).
+Vérifié sur le back local (`dev`, comptes de dev) en terminant le ticket 032. Le reste suit `tech.md` §7 : formation d'un autre formateur → `404`, filtre `MANUAL` ou `MISSING_DOCS` pour un formateur → `403`, groupe pour un stagiaire → `403`, et `recipients` limité au lecteur dans les fils et la liste des conversations (aucune fuite d'e-mails entre stagiaires). Quatre points restent :
 
-Proposition : pour un destinataire, ne renvoyer dans `recipients` que lui-même (ou seulement un compteur), et réserver la liste complète à l'expéditeur. Rien n'est bloquant : le front peut avancer sans.
+**a. Bug : les notifications de message ne sont jamais enregistrées (individuel et groupé).** Après plusieurs envois, la table `notifications` ne contient aucune ligne `NEW_MESSAGE` (seulement des `DOCUMENT_UPLOADED`). Cause probable : `MessageServiceImpl.notifyAfterCommit` appelle `NotificationServiceImpl.notify` depuis `afterCommit`, et `notify` est `@Transactional` (REQUIRED) : il rejoint la transaction déjà validée et son `save` n'est jamais commité. US-013 AC-07 et US-014 AC-04 (une notification par destinataire) ne sont donc pas tenues. Correctif possible : lancer l'envoi de `notifyAfterCommit` dans une nouvelle transaction (`TransactionTemplate` en `REQUIRES_NEW`, ou `@Transactional(propagation = REQUIRES_NEW)` sur `notify`). Le second choix change l'atomicité des autres appelants de `notify` : à décider ensemble. Manon peut l'écrire sur une branche, avec son test, si tu es d'accord.
+
+**b. `tech.md` §7, aperçu d'un groupe vide.** Il dit « mêmes règles que l'envoi » (donc `400`), mais le back répond `200 []` ; seul l'envoi répond `400 « Aucun destinataire trouvé pour ce filtre »`. À corriger dans `tech.md` : le front suit le comportement réel.
+
+**c. Comptes jamais activés dans les groupes.** Pour la chargée de formation, l'aperçu et l'envoi `FORMATION` et `MISSING_DOCS` incluent des stagiaires `isActive: false` (compte créé, jamais activé, qui ne peuvent pas se connecter) ; le formateur, lui, ne les voit pas (le filtre `canMessage(rôle de l'appelant, destinataire)` est appliqué après la résolution). Voulu ? Sinon, exclure les comptes inactifs pour tout le monde. À décider ensemble (qui reçoit quoi).
+
+**d. `userIds[]=…`.** Un aperçu écrit `userIds[]=3&userIds[]=13` répond `400` avec une page HTML de Tomcat (pas le JSON `{status, message, details}`). Le front envoie `userIds=3&userIds=13` (accepté), rien à faire ; à savoir si un autre client appelle cette route.
 
 ---
 

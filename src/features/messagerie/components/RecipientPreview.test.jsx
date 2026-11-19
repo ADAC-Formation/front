@@ -43,10 +43,13 @@ describe('RecipientPreview', () => {
     expect(screen.queryByRole('list')).not.toBeInTheDocument()
   })
 
-  it('un 400 du back (aucun destinataire) donne aussi « Aucun destinataire correspondant »', () => {
-    render(<RecipientPreview error={new ApiError({ status: 400, message: 'Aucun destinataire', details: [] })} />)
-    expect(screen.getByText('Aucun destinataire correspondant')).toBeInTheDocument()
-    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  // Le vrai back répond `200 []` pour un groupe vide (vérifié le 2026-11-19, H18) : un 400 est une requête
+  // refusée, donc une erreur à afficher et à pouvoir relancer, pas « aucun destinataire ».
+  it('un 400 du back est une erreur avec « Réessayer », pas une liste vide', () => {
+    render(<RecipientPreview error={new ApiError({ status: 400, message: 'Requête invalide', details: [] })} onRetry={() => {}} />)
+    expect(screen.getByRole('alert')).toHaveTextContent('Impossible de charger les destinataires.')
+    expect(screen.getByRole('button', { name: 'Réessayer' })).toBeInTheDocument()
+    expect(screen.queryByText('Aucun destinataire correspondant')).not.toBeInTheDocument()
   })
 
   it('une autre erreur affiche une alerte avec « Réessayer »', async () => {

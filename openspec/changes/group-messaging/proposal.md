@@ -11,7 +11,7 @@ La chargée de formation et les formateurs doivent pouvoir écrire à plusieurs 
 - Sélection libre : liste de cases à cocher avec recherche et « Tout sélectionner » (H14).
 - Envoi réussi : retour sur `/messages` avec « Message envoyé à X destinataires ».
 - Dans un fil, les messages `isGroup` portent la mention « Message groupé » ; la liste `recipients` n'est jamais affichée (H15).
-- **Front seulement.** Demande au back : À7 de `docs/charlotte/points-pour-charlotte.md` (`recipients` expose les e-mails), non bloquante.
+- **Front seulement.** Constats et demandes au back : À7 de `docs/charlotte/points-pour-charlotte.md` (notifications de message jamais enregistrées, `tech.md`, comptes jamais activés), non bloquantes pour le front.
 
 Hors périmètre : pièces jointes, programmation d'envoi, liste de diffusion enregistrée, définition par l'ADAC des « documents obligatoires » (`questions-pour-adac.md` §A : `MISSING_DOCS` garde la définition du back).
 
@@ -27,5 +27,5 @@ Hors périmètre : pièces jointes, programmation d'envoi, liste de diffusion en
 
 - Code : `src/features/messagerie/` (`api.js`, `hooks.js`, nouveau `groupFilters.js`, `pages/GroupMessagePage.jsx`, `components/GroupFilters.jsx`, `StagiairePicker.jsx`, `RecipientPreview.jsx`, `MessagesPage.jsx`, `Thread.jsx`) ; `router/router.jsx` (route `messages/groupe` avec `lazyPage`).
 - API (lecture seule, `tech.md` §7) : `GET /messages/group/preview`, `POST /messages/send` (branche `filter`) ; lectures : `GET /formations`, `GET /users/stagiaires?active=true`.
-- Docs : `decisions-messagerie.md` (H12–H16, fait), `points-pour-charlotte.md` (À7, fait), `etat-front.md`, `CLAUDE.md`.
+- Docs : `decisions-messagerie.md` (H12–H18, fait), `points-pour-charlotte.md` (À7, fait), `etat-front.md`, `CLAUDE.md`.
 - Aucun changement dans `back-readonly`. Dépendance Charlotte : aucune.

@@ -123,11 +123,12 @@ describe('GroupMessagePage — aperçu', () => {
     expect(sendButton()).toBeDisabled()
   })
 
-  it('un 400 du back (aucun destinataire) se comporte comme une liste vide', async () => {
-    mockGroupPreview([], { errorStatus: 400, errorMessage: 'Aucun destinataire' })
+  it('un 400 de l\'aperçu est une erreur (le vrai back répond 200 [] pour un groupe vide) : envoi désactivé', async () => {
+    mockGroupPreview([], { errorStatus: 400, errorMessage: 'Requête invalide' })
     renderPage()
     await chooseFormation()
-    expect(await screen.findByText('Aucun destinataire correspondant')).toBeInTheDocument()
+    expect(await screen.findByText('Impossible de charger les destinataires.')).toBeInTheDocument()
+    expect(screen.queryByText('Aucun destinataire correspondant')).not.toBeInTheDocument()
     expect(sendButton()).toBeDisabled()
   })
 })
@@ -212,6 +213,18 @@ describe('GroupMessagePage — confirmation et envoi', () => {
     await userEvent.dblClick(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Envoyer' }))
     await screen.findByText('liste des messages, envoyé à 2')
     expect(calls.count).toBe(1)
+  })
+
+  it('un 400 à l\'envoi (groupe devenu vide entre-temps) affiche le message du back et garde le texte', async () => {
+    mockGroupPreview(RECIPIENTS)
+    mockSendGroupMessage(RECIPIENTS, { errorStatus: 400, errorMessage: 'Aucun destinataire trouvé pour ce filtre' })
+    renderPage()
+    await readyToSend('Texte conservé')
+    await userEvent.click(screen.getByRole('button', { name: 'Envoyer à 2 destinataires' }))
+    await userEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Envoyer' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('Aucun destinataire trouvé pour ce filtre')
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(field()).toHaveValue('Texte conservé')
   })
 
   it.each([

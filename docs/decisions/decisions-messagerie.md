@@ -95,7 +95,7 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 
 ## H15 — Un message groupé dans un fil : pastille « Message groupé », jamais la liste des destinataires
 - Date : 2026-11-19
-- **Décision** : dans un fil (côté destinataire comme côté expéditeur), un message avec `isGroup: true` porte la mention texte « Message groupé » (pas seulement une couleur). La liste `recipients` n'est **jamais** affichée : le back y met un `UserResponse` complet par destinataire (e-mail compris), donc chaque stagiaire reçoit l'e-mail de tous les autres. Signalé à Charlotte (`points-pour-charlotte.md` À7).
+- **Décision** : dans un fil (côté destinataire comme côté expéditeur), un message avec `isGroup: true` porte la mention texte « Message groupé » (pas seulement une couleur). La liste `recipients` n'est **jamais** affichée : le back y met un `UserResponse` complet par destinataire (e-mail compris), mais le back ne le renvoie en entier qu'à l'expéditeur, dans la réponse de l'envoi (vérifié, H18) ; par prudence le front ne le lit jamais (le nombre de destinataires suffit). Correction du 2026-11-19 : la version initiale de cette décision et de l'ancienne À7 croyait à une fuite d'e-mails entre stagiaires ; il n'y en a pas.
 - **Pourquoi** : vie privée (D31, même sujet que `uploadedBy` et l'e-mail des co-inscrits) ; la mention évite qu'un stagiaire croie être le seul destinataire.
 - **Alternatives écartées** : afficher aussi le nombre de destinataires (révèle la taille du groupe) ; aucune distinction.
 
@@ -103,7 +103,7 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 - Date : 2026-11-19
 - **Décision** :
   - Chargée de formation : trois filtres (Formation, Documents manquants, Sélection libre) ; formateur : `FORMATION` seulement, limité à **ses** formations (`formation.formateur.id` = lui), car le back répond `404` sur celles des autres (D46 ne s'applique pas ici).
-  - L'aperçu (`GET /messages/group/preview`) se charge dès que le filtre est complet (formation choisie, ou ≥ 1 personne pour `MANUAL`, ou `MISSING_DOCS`). Un `400` « aucun destinataire » du back, comme une liste vide, affiche « Aucun destinataire correspondant » et désactive l'envoi.
+  - L'aperçu (`GET /messages/group/preview`) se charge dès que le filtre est complet (formation choisie, ou ≥ 1 personne pour `MANUAL`, ou `MISSING_DOCS`). Une liste vide (le back répond `200 []`, voir H18 ; un `400` est une erreur à relancer) affiche « Aucun destinataire correspondant » et désactive l'envoi.
   - Envoi réussi (`201`) : retour à `/messages` avec le message de confirmation « Message envoyé à X destinataires » (X = longueur de `recipients`) ; `['messages']` est invalidé.
   - Texte : mêmes règles que H9 (texte seul, 1–5000 caractères).
 - **Pourquoi** : critères d'acceptation du ticket 032 et `tech.md` §7 ; aucun choix de produit en jeu.
@@ -114,3 +114,16 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 - **Décision** : la liste des formations du filtre `FORMATION` vient de `GET /formations?status=ACTIVE` (valeur de `tech.md` §5) ; pour le formateur, puis restreinte aux siennes (H16). Les formations archivées ne sont pas proposées.
 - **Pourquoi** : on écrit aux stagiaires d'une formation en cours ; une formation archivée est en lecture seule dans le reste de l'interface (G3).
 - **Alternatives écartées** : proposer aussi les archivées (bruit dans la liste, cas d'usage non demandé) ; à reprendre si l'ADAC veut relancer d'anciens stagiaires.
+
+## H18 — Constats sur le back local pour la messagerie groupée (vérifiés le 2026-11-19, comptes de dev)
+- Date : 2026-11-19
+- **Constat** :
+  - Aperçu : `200` avec la liste de `UserResponse` ; **un groupe vide répond `200 []`** (et non `400` comme `tech.md` le laisse croire) ; `userIds=3&userIds=13` (répétés) → `200`, `userIds[]=3&userIds[]=13` → `400` avec une page HTML de Tomcat. Formateur : sa formation → `200`, la formation d'un autre → `404 « Formation introuvable »`, `MANUAL` → `403 « Ce filtre est réservé au Super Admin »` ; stagiaire → `403 « L'envoi groupé est réservé au Super Admin et aux formateurs »`.
+  - Envoi : groupe vide → `400 « Aucun destinataire trouvé pour ce filtre »` ; sinon `201`, avec `recipients` = tous les destinataires (e-mail compris) **dans cette réponse seulement**.
+  - Fils et liste des conversations : `recipients` d'un message groupé est **limité au lecteur** (un stagiaire ne voit que lui ; l'expéditeur ne voit que l'interlocuteur du fil). Il n'y a pas de fuite d'e-mails (corrige H15 et l'ancienne À7).
+  - `GET /formations` ne renvoie au formateur que ses formations (11 actives, toutes de lui) : `formationsOfTrainer` est redondant aujourd'hui et protège le jour où D46 / Q3 ouvriraient la liste.
+  - Chargée de formation : l'aperçu `FORMATION` et `MISSING_DOCS` inclut des comptes `isActive: false` (jamais activés) ; le formateur ne les reçoit pas (`canMessage` selon le rôle de l'appelant). Question pour Charlotte (À7 c).
+  - **Bug du back** : aucune notification `NEW_MESSAGE` n'est enregistrée, ni en individuel ni en groupé (`notify` est `@Transactional` et appelé depuis `afterCommit`). À7 a.
+- **Conséquences côté front** : un `400` de l'aperçu est une **erreur** (alerte + « Réessayer »), pas « aucun destinataire » ; seul un `200 []` donne « Aucun destinataire correspondant » (corrige H16). Un `400` à l'envoi affiche le message du back et garde le texte. Le bouton « Envoyer » ne dépend que d'un aperçu réussi, et « Réessayer » appelle `refetch()` sans argument (revue de code). La cloche ne comptera pas les messages tant que le bug des notifications n'est pas corrigé.
+- **Limite connue** : l'aperçu est un `GET` avec chaque `userIds` répété dans l'adresse (le contrat l'impose) ; une sélection de plusieurs centaines de stagiaires pourrait dépasser la longueur d'adresse acceptée par nginx (environ 8 Ko, soit autour de 600 personnes). Sans objet aux volumes de l'ADAC ; à revoir si un groupe dépasse la centaine.
+- **Non vérifié** : le passage visuel dans un navigateur (deux volets, mobile, « Grand texte ») : la page n'a été éprouvée que par ses tests et par des appels directs au back.

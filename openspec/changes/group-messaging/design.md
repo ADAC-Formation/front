@@ -16,7 +16,7 @@
 
 1. **Logique pure dans `groupFilters.js`** : `filterTypesFor(role)` (chargée : 3 types, formateur : `FORMATION`), `formationsOfTrainer(formations, userId)` (`formation.formateur.id === userId`), `isFilterComplete(filter)` (formation choisie / ≥ 1 `userId` / `MISSING_DOCS`), `toSendBody(filter, content)`, `toPreviewParams(filter)`. Testable sans React.
 2. **Appels dans `api.js`** : `previewGroupRecipients(filter)` et `sendGroupMessage({ filter, content })`. Le tableau `userIds` est sérialisé en `userIds=4&userIds=7` (`paramsSerializer: { indexes: null }` ; l'écriture `userIds[]=` par défaut d'axios n'est pas celle que Spring lit) : **à vérifier sur le vrai back** (tâche 8.3).
-3. **Hooks** : `useGroupPreview(filter)` (clé `['messages','group-preview', filter]`, `enabled` seulement si le filtre est complet, pas de sondage, `retry: false` pour qu'un `400` « personne » s'affiche sans délai) et `useSendGroupMessage()` (invalide `['messages']`). Les deux dans `hooks.js`.
+3. **Hooks** : `useGroupPreview(filter)` (clé `['messages','group-preview', filter]`, `enabled` seulement si le filtre est complet, pas de sondage, `retry: false` pour qu'une erreur de l'aperçu s'affiche sans délai ; seul `200 []` veut dire « aucun destinataire », H18) et `useSendGroupMessage()` (invalide `['messages']`). Les deux dans `hooks.js`.
 4. **Une page, quatre blocs** : `GroupMessagePage` = `GroupFilters` (type, puis formation ou `StagiairePicker` ou texte d'aide `MISSING_DOCS`) → `RecipientPreview` (nom seul, jamais l'e-mail, compte en `aria-live="polite"`) → champ de texte (réutilise `messageForm.js`) → bouton « Envoyer à X destinataires » → `ConfirmDialog`. Changer de type de filtre vide la formation et la sélection.
 5. **Aperçu sans e-mail** : `RecipientPreview` affiche « Prénom Nom » seulement (D31). La liste peut être longue : défilement dans la carte, compte annoncé en tête.
 6. **Retour après envoi** : `navigate('/messages', { state: { groupSent: n } })` ; `MessagesPage` lit `location.state` et affiche une ligne `role="status"` ; rien n'est stocké dans le navigateur (D31). Un rechargement de la page l'efface, c'est voulu.
@@ -25,7 +25,9 @@
 
 ## Risks / Trade-offs
 
-- `recipients` du back contient les e-mails de tous (À7) : le front n'y touche pas, mais la donnée arrive dans le navigateur ; tant que le back ne change pas, le risque est côté réseau, pas côté écran.
+- `recipients` d'un message groupé n'est complet que dans la réponse de l'envoi, pour l'expéditeur ; dans les fils il est limité au lecteur (vérifié, H18). Le front n'en lit que le nombre.
+- Notifications de message : le back ne les enregistre pas (À7 a) ; la cloche ne signalera donc pas les messages groupés tant que ce n'est pas corrigé.
+- L'aperçu est un `GET` avec `userIds` répétés : sélection de plusieurs centaines de personnes = adresse très longue (limite connue, H18).
 - Pas d'annulation d'un message groupé : d'où la confirmation (H13).
 - L'aperçu de `MANUAL` vient de l'appel d'aperçu comme les autres (source unique du compte affiché) ; la sélection cochée n'est pas rendue comme liste de destinataires.
 

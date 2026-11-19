@@ -6,12 +6,13 @@ import styles from './RecipientPreview.module.css'
 const countLabel = (count) => (count === 1 ? '1 destinataire' : `${count} destinataires`)
 
 // Aperçu des destinataires d'un envoi groupé (US-014 AC-03, décisions H15 et H16). Présentationnel : la page
-// passe le résultat de `useGroupPreview`. Le nom seul est affiché, jamais l'e-mail (D31). Une liste vide ou un
-// `400` du back (« aucun destinataire ») donnent le même message, pas une erreur : l'envoi reste simplement impossible.
+// passe le résultat de `useGroupPreview`. Le nom seul est affiché, jamais l'e-mail (D31). Un groupe vide (le back
+// répond `200 []`, H18) affiche « Aucun destinataire correspondant » et l'envoi reste impossible ; toute erreur,
+// `400` compris, est une vraie erreur avec « Réessayer ».
 const RecipientPreview = ({ recipients = [], isLoading = false, error = null, onRetry }) => {
   const titleId = useId()
-  const hasNoRecipient = error?.status === 400 || (!isLoading && !error && recipients.length === 0)
-  const hasFailed = Boolean(error) && error.status !== 400
+  const hasNoRecipient = !isLoading && !error && recipients.length === 0
+  const hasFailed = Boolean(error)
 
   return (
     <section className={styles.preview} aria-labelledby={titleId}>

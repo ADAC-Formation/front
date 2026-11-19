@@ -25,14 +25,14 @@ La chargée de formation SHALL pouvoir choisir « Formation », « Documents man
 - **THEN** seul « Formation » est proposé et la liste ne contient que sa formation
 
 ### Requirement: Aperçu automatique des destinataires
-Le système SHALL appeler `GET /messages/group/preview` dès que le filtre est complet (formation choisie, ou au moins une personne cochée, ou « Documents manquants ») et afficher les destinataires par leur nom seulement, sans e-mail, avec leur nombre annoncé aux lecteurs d'écran. Un `400` « aucun destinataire » ou une liste vide SHALL afficher « Aucun destinataire correspondant » et désactiver l'envoi.
+Le système SHALL appeler `GET /messages/group/preview` dès que le filtre est complet (formation choisie, ou au moins une personne cochée, ou « Documents manquants ») et afficher les destinataires par leur nom seulement, sans e-mail, avec leur nombre annoncé aux lecteurs d'écran. Une liste vide (`200 []`) SHALL afficher « Aucun destinataire correspondant » et désactiver l'envoi ; une erreur, `400` compris, SHALL afficher une alerte avec « Réessayer » et désactiver l'envoi.
 
 #### Scenario: Aperçu après le choix d'une formation
 - **WHEN** la chargée choisit une formation et le back renvoie 3 stagiaires
 - **THEN** 3 noms sont listés, sans e-mail, et le bouton indique « Envoyer à 3 destinataires »
 
 #### Scenario: Aucun destinataire
-- **WHEN** le back répond `400` ou une liste vide
+- **WHEN** le back répond `200 []`
 - **THEN** « Aucun destinataire correspondant » s'affiche et l'envoi est désactivé
 
 ### Requirement: Sélection libre
