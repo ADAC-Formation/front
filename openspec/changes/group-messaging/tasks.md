@@ -14,9 +14,9 @@
 
 ## 3. Appels et hooks (TDD)
 
-- [ ] 3.1 Étendre `src/test/messages.js` (`mockGroupPreview` avec capture des paramètres et `errorStatus`, `mockSendGroupMessage` avec capture du corps) ; RED : `hooks.test.jsx` — `useGroupPreview` (aucun appel tant que le filtre est incomplet, `userIds` répétés dans l'adresse, `400` → erreur sans nouvel essai), `useSendGroupMessage` (corps `{ content, filter }`, invalidation de `['messages']`, 403 / 404 / réseau en `ApiError`, double clic = un seul appel)
-- [ ] 3.2 Ajouter `previewGroupRecipients` / `sendGroupMessage` à `api.js` et les deux hooks ; GREEN
-- [ ] 3.3 Commit `feat: add the group messaging requests`
+- [x] 3.1 Étendre `src/test/messages.js` (`mockGroupPreview` avec capture des paramètres et `errorStatus`, `mockSendGroupMessage` avec capture du corps) ; RED : `hooks.test.jsx` — `useGroupPreview` (aucun appel tant que le filtre est incomplet, `userIds` répétés dans l'adresse, `400` → erreur sans nouvel essai), `useSendGroupMessage` (corps `{ content, filter }`, invalidation de `['messages']`, 403 / 404 / réseau en `ApiError`, double clic = un seul appel)
+- [x] 3.2 Ajouter `previewGroupRecipients` / `sendGroupMessage` à `api.js` et les deux hooks ; GREEN
+- [x] 3.3 Commit `feat: add the group messaging requests`
 
 ## 4. Composants de saisie (TDD)
 
@@ -26,7 +26,7 @@
 
 ## 5. Page et route (TDD)
 
-- [ ] 5.1 RED : `GroupMessagePage.test.jsx` — les 5 cas du ticket 032 (3 filtres chargée ; 1 filtre formateur ; formation choisie → aperçu ; 0 destinataire → envoi désactivé ; `201` → confirmation) + confirmation (Annuler = aucun appel, Envoyer = un seul appel) + texte vide refusé + 403 garde le texte + stagiaire redirigé + check jest-axe (page, et boîte de confirmation ouverte)
+- [ ] 5.1 RED : `GroupMessagePage.test.jsx` — les 5 cas du ticket 032 (3 filtres chargée ; 1 filtre formateur ; formation choisie → aperçu ; 0 destinataire → envoi désactivé ; `201` → confirmation) + confirmation (Annuler = aucun appel, Envoyer = un seul appel même en cas de double clic) + texte vide refusé + 403 garde le texte + stagiaire redirigé + check jest-axe (page, et boîte de confirmation ouverte)
 - [ ] 5.2 Créer `pages/GroupMessagePage.jsx` (`PageShell`, `BackButton to="/messages"`), route `messages/groupe` avant `messages/:userId` avec `lazyPage` et `RequireRole` ; GREEN ; `npm run check` (budget : la page reste hors de l'entrée)
 - [ ] 5.3 Commit `feat: add the group messaging page`
 

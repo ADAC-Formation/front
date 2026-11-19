@@ -1,5 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { fetchThread, listConversations, markThreadRead, sendMessage } from './api'
+import {
+  fetchThread,
+  listConversations,
+  markThreadRead,
+  previewGroupRecipients,
+  sendGroupMessage,
+  sendMessage,
+} from './api'
+import { isFilterComplete, toPreviewParams } from './groupFilters'
 import { totalUnread } from './unread'
 
 // Toutes les clés commencent par ['messages'] : une seule invalidation couvre la liste et les fils.
@@ -43,6 +51,28 @@ export function useSendMessage() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: sendMessage,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: MESSAGES_KEY }),
+  })
+}
+
+// Aperçu des destinataires : seulement quand le filtre est complet (aucun appel avant). `retry: false` : un
+// `400` « aucun destinataire » est une réponse normale à afficher tout de suite, pas une panne à retenter.
+// Clé hors de ['messages'] : envoyer le message ne doit pas redemander l'aperçu.
+export function useGroupPreview(filter) {
+  const complete = isFilterComplete(filter)
+  return useQuery({
+    queryKey: ['group-preview', complete ? toPreviewParams(filter) : null],
+    queryFn: () => previewGroupRecipients(filter),
+    enabled: complete,
+    retry: false,
+  })
+}
+
+// `mutate({ filter, content })` ; renvoie le message créé (`recipients` = tous les destinataires résolus).
+export function useSendGroupMessage() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: sendGroupMessage,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: MESSAGES_KEY }),
   })
 }

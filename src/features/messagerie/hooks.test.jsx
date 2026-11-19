@@ -10,16 +10,21 @@ import { FORMATIONS, mockFormationList } from '../../test/formations'
 import {
   CONVERSATIONS,
   THREAD,
+  STAGIAIRE_LEA,
   makeMessage,
   mockConversations,
+  mockGroupPreview,
   mockMarkRead,
+  mockSendGroupMessage,
   mockSendMessage,
   mockThread,
 } from '../../test/messages'
 import {
   POLL_INTERVAL_MS,
   useConversations,
+  useGroupPreview,
   useMarkThreadRead,
+  useSendGroupMessage,
   useSendMessage,
   useThread,
   useUnreadCount,
@@ -314,5 +319,143 @@ describe('useRecipients', () => {
     server.use(http.get(`${API_URL}/formations`, () => HttpResponse.json({ status: 500, message: 'x', details: [] }, { status: 500 })))
     renderWithProviders(<Probe />)
     expect(await screen.findByText('erreur')).toBeInTheDocument()
+  })
+})
+
+describe('useGroupPreview', () => {
+  const noRetryClient = () => new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  const formationFilter = { type: 'FORMATION', formationId: '101' }
+
+  it("n'appelle pas le back tant que le filtre est incomplet", async () => {
+    const calls = mockGroupPreview()
+    const { result } = renderHook(() => useGroupPreview({ type: 'FORMATION', formationId: '' }), {
+      wrapper: wrapperWith(noRetryClient()),
+    })
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(result.current.fetchStatus).toBe('idle')
+    expect(calls.count).toBe(0)
+  })
+
+  it("demande les destinataires d'une formation avec filterType et formationId", async () => {
+    const calls = mockGroupPreview([STAGIAIRE_LEA])
+    const { result } = renderHook(() => useGroupPreview(formationFilter), { wrapper: wrapperWith(noRetryClient()) })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(result.current.data).toEqual([STAGIAIRE_LEA])
+    expect(calls.searches[0].get('filterType')).toBe('FORMATION')
+    expect(calls.searches[0].get('formationId')).toBe('101')
+    expect(calls.searches[0].has('userIds')).toBe(false)
+  })
+
+  it('sérialise userIds en paramètres répétés (userIds=4&userIds=7), comme Spring les lit', async () => {
+    const calls = mockGroupPreview()
+    const { result } = renderHook(() => useGroupPreview({ type: 'MANUAL', userIds: [4, 7] }), {
+      wrapper: wrapperWith(noRetryClient()),
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect(calls.searches[0].get('filterType')).toBe('MANUAL')
+    expect(calls.searches[0].getAll('userIds')).toEqual(['4', '7'])
+    expect([...calls.searches[0].keys()]).not.toContain('userIds[]')
+  })
+
+  it('« Documents manquants » envoie seulement filterType', async () => {
+    const calls = mockGroupPreview()
+    const { result } = renderHook(() => useGroupPreview({ type: 'MISSING_DOCS' }), {
+      wrapper: wrapperWith(noRetryClient()),
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    expect([...calls.searches[0].keys()]).toEqual(['filterType'])
+  })
+
+  it('redemande quand le filtre change', async () => {
+    const calls = mockGroupPreview()
+    const { result, rerender } = renderHook(({ filter }) => useGroupPreview(filter), {
+      wrapper: wrapperWith(noRetryClient()),
+      initialProps: { filter: formationFilter },
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    rerender({ filter: { type: 'FORMATION', formationId: '102' } })
+    await waitFor(() => expect(calls.count).toBe(2))
+    expect(calls.searches[1].get('formationId')).toBe('102')
+  })
+
+  it('remonte un 400 (aucun destinataire) sans nouvel essai, même si le client en prévoit', async () => {
+    const calls = mockGroupPreview([], { errorStatus: 400, errorMessage: 'Aucun destinataire' })
+    const retryingClient = new QueryClient({ defaultOptions: { queries: { retry: 3, retryDelay: 1 } } })
+    const { result } = renderHook(() => useGroupPreview(formationFilter), { wrapper: wrapperWith(retryingClient) })
+    await waitFor(() => expect(result.current.isError).toBe(true))
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(result.current.error.status).toBe(400)
+    expect(calls.count).toBe(1)
+  })
+
+  it.each([403, 404])('remonte le statut %i du back', async (status) => {
+    mockGroupPreview([], { errorStatus: status })
+    const { result } = renderHook(() => useGroupPreview(formationFilter), { wrapper: wrapperWith(noRetryClient()) })
+    await waitFor(() => expect(result.current.isError).toBe(true))
+    expect(result.current.error.status).toBe(status)
+  })
+})
+
+describe('useSendGroupMessage', () => {
+  function Probe({ filter = { type: 'FORMATION', formationId: '101' }, content = 'Salut tout le monde' }) {
+    const { mutate, isPending, isSuccess, isError, error, data } = useSendGroupMessage()
+    return (
+      <div>
+        <button type="button" onClick={() => mutate({ filter, content })}>
+          envoyer
+        </button>
+        {isPending && <p>en cours</p>}
+        {isSuccess && <p>envoyé à {data.recipients.length}</p>}
+        {isError && <p>erreur {error.status ?? 'réseau'}</p>}
+      </div>
+    )
+  }
+
+  it('envoie { content, filter } sans recipientIds et renvoie le message avec ses destinataires', async () => {
+    const calls = mockSendGroupMessage([STAGIAIRE_LEA, { ...STAGIAIRE_LEA, id: 21 }, { ...STAGIAIRE_LEA, id: 22 }])
+    renderWithProviders(<Probe />)
+    await userEvent.click(screen.getByRole('button', { name: 'envoyer' }))
+    expect(await screen.findByText('envoyé à 3')).toBeInTheDocument()
+    expect(calls.bodies).toEqual([{ content: 'Salut tout le monde', filter: { type: 'FORMATION', formationId: 101 } }])
+    expect(calls.bodies[0]).not.toHaveProperty('recipientIds')
+  })
+
+  it('« Sélection libre » envoie les userIds', async () => {
+    const calls = mockSendGroupMessage()
+    renderWithProviders(<Probe filter={{ type: 'MANUAL', userIds: [4, 7] }} />)
+    await userEvent.click(screen.getByRole('button', { name: 'envoyer' }))
+    await screen.findByText(/^envoyé/)
+    expect(calls.bodies[0].filter).toEqual({ type: 'MANUAL', userIds: [4, 7] })
+  })
+
+  it('recharge la liste des conversations et le fil après un envoi', async () => {
+    mockSendGroupMessage()
+    const conversationCalls = mockConversations()
+    const threadCalls = mockThread(20)
+    function Both() {
+      useConversations()
+      useThread(20)
+      return <Probe />
+    }
+    renderWithProviders(<Both />)
+    await waitFor(() => expect(conversationCalls.count).toBe(1))
+    await waitFor(() => expect(threadCalls.count).toBe(1))
+    await userEvent.click(screen.getByRole('button', { name: 'envoyer' }))
+    await waitFor(() => expect(conversationCalls.count).toBe(2))
+    await waitFor(() => expect(threadCalls.count).toBe(2))
+  })
+
+  it.each([403, 404])('remonte le statut %i du back', async (status) => {
+    mockSendGroupMessage([], { errorStatus: status })
+    renderWithProviders(<Probe />)
+    await userEvent.click(screen.getByRole('button', { name: 'envoyer' }))
+    expect(await screen.findByText(`erreur ${status}`)).toBeInTheDocument()
+  })
+
+  it('remonte une erreur réseau', async () => {
+    server.use(http.post(`${API_URL}/messages/send`, () => HttpResponse.error()))
+    renderWithProviders(<Probe />)
+    await userEvent.click(screen.getByRole('button', { name: 'envoyer' }))
+    expect(await screen.findByText(/^erreur/)).toBeInTheDocument()
   })
 })

@@ -89,6 +89,46 @@ export function mockSendMessage({ errorStatus, errorMessage = 'Refusé', delayMs
   return calls
 }
 
+// GET /messages/group/preview : les destinataires donnés, ou l'erreur demandée. Mémorise les adresses reçues
+// (`calls.searches`, une `URLSearchParams` par appel) pour vérifier la sérialisation de `userIds`.
+export function mockGroupPreview(recipients = [lea], { errorStatus, errorMessage = 'Erreur serveur', delayMs = 0 } = {}) {
+  const calls = { count: 0, searches: [] }
+  server.use(
+    http.get(`${API_URL}/messages/group/preview`, async ({ request }) => {
+      calls.count += 1
+      calls.searches.push(new URL(request.url).searchParams)
+      if (delayMs) await delay(delayMs)
+      return errorStatus ? apiError(errorStatus, errorMessage) : HttpResponse.json(recipients)
+    }),
+  )
+  return calls
+}
+
+// POST /messages/send (branche groupée) : 201 avec un message `isGroup` dont `recipients` est la liste donnée ;
+// mémorise les corps reçus. `delayMs` laisse le temps de cliquer deux fois.
+export function mockSendGroupMessage(recipients = [lea], { errorStatus, errorMessage = 'Refusé', delayMs = 0, sender = USERS.SUPER_ADMIN } = {}) {
+  const calls = { count: 0, bodies: [] }
+  server.use(
+    http.post(`${API_URL}/messages/send`, async ({ request }) => {
+      calls.count += 1
+      const body = await request.json()
+      calls.bodies.push(body)
+      if (delayMs) await delay(delayMs)
+      if (errorStatus) return apiError(errorStatus, errorMessage)
+      const message = makeMessage({
+        id: 2000 + calls.count,
+        sender,
+        recipients,
+        content: body.content,
+        createdAt: '2026-11-19T08:00:00',
+        isGroup: true,
+      })
+      return HttpResponse.json(message, { status: 201 })
+    }),
+  )
+  return calls
+}
+
 // PATCH /messages/{id}/read : 200 ; les ids dans `failIds` répondent 500 (`failOnce: true` : au premier essai
 // seulement). `calls.ids` garde l'ordre d'arrivée.
 export function mockMarkRead({ failIds = [], failOnce = false } = {}) {
