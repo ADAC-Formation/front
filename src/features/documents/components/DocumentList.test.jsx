@@ -44,8 +44,13 @@ describe('DocumentList', () => {
     expect(screen.getByRole('button', { name: 'Télécharger Planning des sessions.xlsx' })).toBeEnabled()
   })
 
-  it('n’affiche jamais l’e-mail de l’expéditeur ni l’adresse du fichier', () => {
-    const { container } = renderList()
+  it('n’affiche jamais l’e-mail de l’expéditeur ni l’adresse du fichier, même si un ancien back les envoyait', () => {
+    const leaky = DOCUMENTS.map((document) => ({
+      ...document,
+      fileUrl: 'https://supabase.test/storage/1',
+      uploadedBy: { ...document.uploadedBy, email: 'formateur@adac.test' },
+    }))
+    const { container } = renderList({ documents: leaky })
     expect(container).not.toHaveTextContent('formateur@adac.test')
     expect(container).not.toHaveTextContent('supabase')
     expect(container.querySelector('a')).toBeNull()

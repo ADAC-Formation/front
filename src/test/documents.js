@@ -3,16 +3,20 @@ import { server } from './msw/server'
 import { API_URL, USERS } from './session'
 import { apiError } from './formations'
 
+// Forme réelle de `uploadedBy` depuis la PR #14 du back : `id`, `prenom` et `nom` seulement (ni e-mail ni rôle),
+// et `DocumentResponse` n'a plus de `fileUrl`. Les fixtures suivent ce contrat pour que le front ne puisse pas
+// en dépendre sans que les tests le voient.
+export const trimmedUser = (user) => ({ id: user.id, prenom: user.prenom, nom: user.nom })
+
 // Documents fictifs de la formation 101 (forme de DocumentResponse, tech.md § 6) : le premier a été
 // envoyé par le formateur (USERS.ADMIN), le second par la chargée de formation.
 export const DOCUMENTS = [
   {
     id: 501,
     fileName: 'Support de cours.pdf',
-    fileUrl: 'https://supabase.test/storage/501',
     fileSize: 245760,
     mimeType: 'application/pdf',
-    uploadedBy: USERS.ADMIN,
+    uploadedBy: trimmedUser(USERS.ADMIN),
     formationId: 101,
     inscriptionId: null,
     createdAt: '2026-02-20T10:30:00',
@@ -20,10 +24,9 @@ export const DOCUMENTS = [
   {
     id: 502,
     fileName: 'Programme.docx',
-    fileUrl: 'https://supabase.test/storage/502',
     fileSize: 51200,
     mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    uploadedBy: USERS.SUPER_ADMIN,
+    uploadedBy: trimmedUser(USERS.SUPER_ADMIN),
     formationId: 101,
     inscriptionId: null,
     createdAt: '2026-02-21T09:00:00',
@@ -80,10 +83,9 @@ export function mockDocumentApi(initial = DOCUMENTS, { errors = {}, uploader = U
       const document = {
         id: nextId++,
         fileName: file.name,
-        fileUrl: `https://supabase.test/storage/${nextId}`,
         fileSize: file.size,
         mimeType: file.type || 'application/octet-stream',
-        uploadedBy: uploader,
+        uploadedBy: trimmedUser(uploader),
         formationId,
         inscriptionId,
         createdAt: '2026-11-02T09:00:00',
