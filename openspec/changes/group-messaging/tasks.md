@@ -39,12 +39,12 @@
 
 ## 7. Documentation
 
-- [ ] 7.1 Mettre à jour `docs/dev/etat-front.md` (bullet messagerie : groupé, mocks `mockGroupPreview` / `mockSendGroupMessage`), `CLAUDE.md` (mocks obligatoires si un test déjà écrit les exige), `docs/projet/spec.md`
+- [x] 7.1 Mettre à jour `docs/dev/etat-front.md` (bullet messagerie : groupé, mocks `mockGroupPreview` / `mockSendGroupMessage`), `CLAUDE.md` (mocks obligatoires si un test déjà écrit les exige), `docs/projet/spec.md`
 - [ ] 7.2 Mettre à jour la section « À envoyer à Charlotte » si la vérification 8.3 relève un écart de contrat
 
 ## 8. Vérification
 
-- [ ] 8.1 `npm run check` vert (lint + tests + build + budget) et `git -C ../back-readonly status` propre
+- [x] 8.1 `npm run check` vert (lint + tests + build + budget) et `git -C ../back-readonly status` propre
 - [ ] 8.2 Relecture (`/code-review`) ; corriger les points bloquants
 - [ ] 8.3 Passage manuel sur le vrai back local : les trois filtres en chargée de formation, `FORMATION` en formateur (formation d'un autre → pas proposée), aperçu avec plusieurs `userIds` (**vérifier la sérialisation `userIds=4&userIds=7`**), envoi, notification et fil du destinataire avec « Message groupé », e-mails absents de l'écran, mobile et « Grand texte ». Consigner dans `decisions-messagerie.md` (H18) ; tout écart de contrat va dans `points-pour-charlotte.md`
 - [ ] 8.4 `/opsx:archive` ; D64 : pas de PR, avance rapide dans `dev` ; rien n'est poussé sans demande de Manon
