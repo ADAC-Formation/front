@@ -26,9 +26,9 @@
 
 ## 5. Page et route (TDD)
 
-- [ ] 5.1 RED : `GroupMessagePage.test.jsx` — les 5 cas du ticket 032 (3 filtres chargée ; 1 filtre formateur ; formation choisie → aperçu ; 0 destinataire → envoi désactivé ; `201` → confirmation) + confirmation (Annuler = aucun appel, Envoyer = un seul appel même en cas de double clic) + texte vide refusé + 403 garde le texte + stagiaire redirigé + check jest-axe (page, et boîte de confirmation ouverte)
-- [ ] 5.2 Créer `pages/GroupMessagePage.jsx` (`PageShell`, `BackButton to="/messages"`), route `messages/groupe` avant `messages/:userId` avec `lazyPage` et `RequireRole` ; GREEN ; `npm run check` (budget : la page reste hors de l'entrée)
-- [ ] 5.3 Commit `feat: add the group messaging page`
+- [x] 5.1 RED : `GroupMessagePage.test.jsx` — les 5 cas du ticket 032 (3 filtres chargée ; 1 filtre formateur ; formation choisie → aperçu ; 0 destinataire → envoi désactivé ; `201` → confirmation) + confirmation (Annuler = aucun appel, Envoyer = un seul appel même en cas de double clic) + texte vide refusé + 403 garde le texte + stagiaire redirigé + check jest-axe (page, et boîte de confirmation ouverte)
+- [x] 5.2 Créer `pages/GroupMessagePage.jsx` (`PageShell`, `BackButton to="/messages"`), route `messages/groupe` avant `messages/:userId` avec `lazyPage` et `RequireRole` ; GREEN ; `npm run check` (budget : la page reste hors de l'entrée)
+- [x] 5.3 Commit `feat: add the group messaging page`
 
 ## 6. Bouton, confirmation d'envoi et mention dans le fil (TDD)
 

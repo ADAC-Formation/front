@@ -58,3 +58,26 @@ describe('routes de la messagerie', () => {
     expect(await screen.findByText('Rendez-vous lundi ?')).toBeInTheDocument()
   })
 })
+
+describe('route du message groupé', () => {
+  it('un visiteur est redirigé de /messages/groupe vers la connexion', async () => {
+    mockNoSession()
+    const router = renderApp('/messages/groupe')
+    expect(await screen.findByRole('heading', { name: 'Connexion' })).toBeInTheDocument()
+    expect(router.state.location.pathname).toBe('/login')
+  })
+
+  it.each(['SUPER_ADMIN', 'ADMIN'])('/messages/groupe s\'ouvre pour le rôle %s, et non comme le fil « groupe »', async (role) => {
+    mockSession(role)
+    mockFormationList()
+    renderApp('/messages/groupe')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Message groupé' })).toBeInTheDocument()
+  })
+
+  it('un stagiaire reçoit « Accès refusé » sur /messages/groupe', async () => {
+    mockSession('STAGIAIRE')
+    renderApp('/messages/groupe')
+    expect(await screen.findByRole('heading', { name: 'Accès refusé' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Message groupé' })).not.toBeInTheDocument()
+  })
+})

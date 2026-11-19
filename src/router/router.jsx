@@ -47,6 +47,8 @@ export const routes = [
             element: <RequireRole roles={MANAGEMENT_ROLES} />,
             children: [
               { path: "admin/gestion", ...lazyPage(() => import("../components/Pages/ManagementMenu/ManagementMenu")) },
+              // Message groupé : « groupe » est une route statique, elle l'emporte sur `messages/:userId`.
+              { path: "messages/groupe", ...lazyPage(() => import("../features/messagerie/pages/GroupMessagePage")) },
               { path: "admin/formations", ...lazyPage(() => import("../features/formations/pages/FormationListPage")) },
               // Comptes : consultation pour les deux rôles de gestion (D54).
               { path: "admin/formateurs", ...lazyPage(() => import("../features/accounts/pages/AccountListPage"), { kind: "formateurs" }) },
