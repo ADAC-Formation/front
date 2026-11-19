@@ -4,14 +4,13 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { http, HttpResponse } from 'msw'
 import { renderWithProviders } from '../../test/render'
 import { server } from '../../test/msw/server'
-import { API_URL, USERS, mockSession } from '../../test/session'
+import { API_URL, mockSession } from '../../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList } from '../../test/accounts'
 import { FORMATIONS, mockFormationList } from '../../test/formations'
 import {
   CONVERSATIONS,
   THREAD,
   STAGIAIRE_LEA,
-  makeMessage,
   mockConversations,
   mockGroupPreview,
   mockMarkRead,
@@ -210,54 +209,53 @@ describe('useSendMessage', () => {
 })
 
 describe('useMarkThreadRead', () => {
-  function Probe({ messages, currentUserId = USERS.STAGIAIRE.id }) {
-    const { mutateAsync, isSuccess } = useMarkThreadRead()
+  function Probe({ conversationId = 10 }) {
+    const { mutateAsync, isSuccess, isError, error } = useMarkThreadRead()
     return (
       <div>
-        <button type="button" onClick={() => mutateAsync({ messages, currentUserId })}>
+        <button type="button" onClick={() => mutateAsync({ conversationId }).catch(() => {})}>
           lire
         </button>
         {isSuccess && <p>terminé</p>}
+        {isError && <p>erreur {error.status}</p>}
       </div>
     )
   }
 
-  it('envoie un PATCH par message reçu non lu, et aucun pour les autres', async () => {
+  it('marque tout le fil en un seul appel, vers /messages/conversations/{id}/read', async () => {
     const calls = mockMarkRead()
-    renderWithProviders(<Probe messages={THREAD} />)
+    renderWithProviders(<Probe conversationId={10} />)
     await userEvent.click(screen.getByRole('button', { name: 'lire' }))
     expect(await screen.findByText('terminé')).toBeInTheDocument()
-    expect([...calls.ids].sort()).toEqual([2, 3])
+    expect(calls.count).toBe(1)
+    expect(calls.conversationIds).toEqual([10])
   })
 
-  it('n\'envoie rien quand tout est lu', async () => {
-    const calls = mockMarkRead()
-    const allRead = THREAD.map((m) => ({ ...m, readAt: '2026-11-02T11:00:00' }))
-    renderWithProviders(<Probe messages={allRead} />)
-    await userEvent.click(screen.getByRole('button', { name: 'lire' }))
-    expect(await screen.findByText('terminé')).toBeInTheDocument()
-    expect(calls.count).toBe(0)
-  })
-
-  it('un échec n\'empêche pas les autres marquages ni la fin', async () => {
-    const calls = mockMarkRead({ failIds: [2] })
-    renderWithProviders(<Probe messages={THREAD} />)
-    await userEvent.click(screen.getByRole('button', { name: 'lire' }))
-    expect(await screen.findByText('terminé')).toBeInTheDocument()
-    expect([...calls.ids].sort()).toEqual([2, 3])
-  })
-
-  it('recharge la liste des conversations quand des messages ont été marqués', async () => {
+  it('recharge la liste des conversations après le marquage (les non lus changent)', async () => {
     mockMarkRead()
     const conversationCalls = mockConversations()
     function Both() {
       useConversations()
-      return <Probe messages={[makeMessage({ id: 5, sender: USERS.ADMIN, recipients: [USERS.STAGIAIRE] })]} />
+      return <Probe />
     }
     renderWithProviders(<Both />)
     await waitFor(() => expect(conversationCalls.count).toBe(1))
     await userEvent.click(screen.getByRole('button', { name: 'lire' }))
     await waitFor(() => expect(conversationCalls.count).toBe(2))
+  })
+
+  it('remonte l\'erreur du back sans recharger la liste', async () => {
+    mockMarkRead({ errorStatus: 404 })
+    const conversationCalls = mockConversations()
+    function Both() {
+      useConversations()
+      return <Probe />
+    }
+    renderWithProviders(<Both />)
+    await waitFor(() => expect(conversationCalls.count).toBe(1))
+    await userEvent.click(screen.getByRole('button', { name: 'lire' }))
+    expect(await screen.findByText('erreur 404')).toBeInTheDocument()
+    expect(conversationCalls.count).toBe(1)
   })
 })
 

@@ -16,7 +16,8 @@ const Thread = ({ userId }) => {
   const listRef = useRef(null)
   const alreadyMarked = useRef(new Set())
 
-  // Ouvrir le fil marque ses messages reçus non lus comme lus, une fois chacun (décision H5).
+  // Ouvrir le fil le marque comme lu en un appel quand il contient des messages reçus non lus (H5, Q15). Un
+  // message non lu arrivé pendant que le fil est ouvert déclenche un nouvel appel (le back est idempotent).
   useEffect(() => {
     if (!messages || !user) return
     const pending = messages.filter((message) => !alreadyMarked.current.has(message.id))
@@ -25,10 +26,8 @@ const Thread = ({ userId }) => {
     ids.forEach((id) => alreadyMarked.current.add(id))
     // Un marquage refusé est oublié : le rechargement suivant (`dataUpdatedAt` change même si les messages
     // sont identiques) le retente, au plus une fois par rechargement.
-    markRead({ messages: pending, currentUserId: user.id })
-      .then((markedIds) => ids.forEach((id) => markedIds.includes(id) || alreadyMarked.current.delete(id)))
-      .catch(() => ids.forEach((id) => alreadyMarked.current.delete(id)))
-  }, [messages, dataUpdatedAt, user, markRead])
+    markRead({ conversationId: userId }).catch(() => ids.forEach((id) => alreadyMarked.current.delete(id)))
+  }, [messages, dataUpdatedAt, user, userId, markRead])
 
   // Le plus récent reste visible : seulement quand le nombre de messages change.
   const messageCount = messages?.length ?? 0

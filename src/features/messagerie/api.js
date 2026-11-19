@@ -1,6 +1,5 @@
 import apiClient from '../../api/Axiosclient'
 import { toPreviewParams, toSendBody } from './groupFilters'
-import { unreadIncomingIds } from './unread'
 
 // Appels vers /messages (contrat : back-readonly/docs/tech.md § 7). Les erreurs arrivent déjà
 // normalisées en ApiError (intercepteur du client).
@@ -40,11 +39,8 @@ export async function sendGroupMessage({ filter, content }) {
   return data
 }
 
-// Le back ne sait marquer qu'un message à la fois (Q15 demande un endpoint de fil) : un PATCH par
-// message reçu non lu, en parallèle. Un échec n'empêche ni les autres ni l'affichage du fil.
-// Renvoie le nombre de messages que le back a bien marqués. Seul point à changer quand Q15 sera traitée.
-export async function markThreadRead(messages, currentUserId) {
-  const ids = unreadIncomingIds(messages, currentUserId)
-  const results = await Promise.allSettled(ids.map((id) => apiClient.patch(`/messages/${id}/read`)))
-  return ids.filter((_id, index) => results[index].status === 'fulfilled')
+// Marque tout le fil comme lu en un seul appel (Q15, tech.md § 7) : `conversationId` est l'id de l'autre
+// participant ; le back marque les messages non lus reçus de cette personne (idempotent, 204, 404 si inconnue).
+export async function markConversationRead(conversationId) {
+  await apiClient.patch(`/messages/conversations/${conversationId}/read`)
 }

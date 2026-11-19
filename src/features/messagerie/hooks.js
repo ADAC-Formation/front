@@ -2,7 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   fetchThread,
   listConversations,
-  markThreadRead,
+  markConversationRead,
   previewGroupRecipients,
   sendGroupMessage,
   sendMessage,
@@ -83,14 +83,12 @@ export function useSendGroupMessage() {
   })
 }
 
-// `mutate({ messages, currentUserId })` ; renvoie les ids effectivement marqués. La liste est rechargée
-// seulement si des messages ont été marqués.
+// `mutate({ conversationId })` : marque tout le fil comme lu en un appel (Q15). La liste est rechargée ensuite :
+// les compteurs de non lus (liste, pastille de la tuile) changent.
 export function useMarkThreadRead() {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ messages, currentUserId }) => markThreadRead(messages, currentUserId),
-    onSuccess: (markedIds) => {
-      if (markedIds.length > 0) queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY })
-    },
+    mutationFn: ({ conversationId }) => markConversationRead(conversationId),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: CONVERSATIONS_KEY }),
   })
 }

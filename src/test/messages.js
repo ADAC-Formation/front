@@ -129,19 +129,17 @@ export function mockSendGroupMessage(recipients = [lea], { errorStatus, errorMes
   return calls
 }
 
-// PATCH /messages/{id}/read : 200 ; les ids dans `failIds` répondent 500 (`failOnce: true` : au premier essai
-// seulement). `calls.ids` garde l'ordre d'arrivée.
-export function mockMarkRead({ failIds = [], failOnce = false } = {}) {
-  const calls = { count: 0, ids: [] }
-  const failed = new Set()
+// PATCH /messages/conversations/{conversationId}/read : 204, un seul appel pour tout le fil (Q15, mergé dans le
+// back). `calls.conversationIds` garde les fils marqués. `errorStatus` : répond cette erreur ; avec `failOnce: true`,
+// seulement au premier appel (pour vérifier le nouvel essai au rechargement).
+export function mockMarkRead({ errorStatus, failOnce = false } = {}) {
+  const calls = { count: 0, conversationIds: [] }
   server.use(
-    http.patch(`${API_URL}/messages/:id/read`, ({ params }) => {
-      const id = Number(params.id)
+    http.patch(`${API_URL}/messages/conversations/:conversationId/read`, ({ params }) => {
       calls.count += 1
-      calls.ids.push(id)
-      const shouldFail = failIds.includes(id) && !(failOnce && failed.has(id))
-      failed.add(id)
-      return shouldFail ? apiError(500, 'Erreur serveur') : new HttpResponse(null, { status: 200 })
+      calls.conversationIds.push(Number(params.conversationId))
+      const shouldFail = errorStatus && !(failOnce && calls.count > 1)
+      return shouldFail ? apiError(errorStatus, 'Erreur serveur') : new HttpResponse(null, { status: 204 })
     }),
   )
   return calls

@@ -67,10 +67,23 @@ describe('Thread', () => {
     const calls = mockMarkRead()
     render()
     await screen.findAllByRole('listitem')
-    await waitFor(() => expect(calls.ids.length).toBe(2))
-    expect([...calls.ids].sort()).toEqual([2, 3])
+    await waitFor(() => expect(calls.count).toBe(1))
+    expect(calls.conversationIds).toEqual([10])
     await new Promise((resolve) => setTimeout(resolve, 100))
-    expect(calls.count).toBe(2)
+    expect(calls.count).toBe(1)
+  })
+
+  it('marque de nouveau, en un appel, quand un message non lu arrive pendant que le fil est ouvert', async () => {
+    mockThread(10)
+    const calls = mockMarkRead()
+    render()
+    await waitFor(() => expect(calls.count).toBe(1))
+    const arrived = makeMessage({ id: 4, sender: FORMATEUR_ANNE, recipients: [USERS.STAGIAIRE], content: 'Nouveau', createdAt: '2026-11-02T11:00:00' })
+    mockThread(10, [...THREAD, arrived])
+    window.dispatchEvent(new Event('visibilitychange'))
+    expect(await screen.findByText('Nouveau')).toBeInTheDocument()
+    await waitFor(() => expect(calls.count).toBe(2))
+    expect(calls.conversationIds).toEqual([10, 10])
   })
 
   it('ne marque rien quand tout est lu', async () => {
@@ -84,13 +97,14 @@ describe('Thread', () => {
 
   it('réessaie au rechargement suivant un marquage qui avait échoué', async () => {
     mockThread(10)
-    const calls = mockMarkRead({ failIds: [2, 3], failOnce: true })
+    const calls = mockMarkRead({ errorStatus: 500, failOnce: true })
     render()
     await screen.findAllByRole('listitem')
-    await waitFor(() => expect(calls.ids.length).toBe(2))
+    await waitFor(() => expect(calls.count).toBe(1))
     window.dispatchEvent(new Event('visibilitychange'))
-    await waitFor(() => expect(calls.ids.length).toBe(4))
-    expect([...calls.ids].sort()).toEqual([2, 2, 3, 3])
+    await waitFor(() => expect(calls.count).toBe(2))
+    await new Promise((resolve) => setTimeout(resolve, 100))
+    expect(calls.count).toBe(2)
   })
 
   it('affiche un message dont l’expéditeur est inconnu, sans planter', async () => {
@@ -102,7 +116,7 @@ describe('Thread', () => {
 
   it('affiche le fil même quand le marquage échoue', async () => {
     mockThread(10)
-    mockMarkRead({ failIds: [2, 3] })
+    mockMarkRead({ errorStatus: 500 })
     render()
     expect(await screen.findAllByRole('listitem')).toHaveLength(3)
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
