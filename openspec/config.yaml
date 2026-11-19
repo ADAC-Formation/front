@@ -10,10 +10,15 @@ context: |
 
   Layout: front and back are two SEPARATE git repos, not a monorepo.
     - this repo (ADAC Front/front) -> React 19 + Vite, plain JS (Manon). Owned by this workstream.
-    - ../../back-readonly          -> Spring Boot 3 / Java 21 / PostgreSQL (Charlotte). READ-ONLY.
-  Never modify, commit or push in back-readonly, and never run write calls (gh/API)
-  against the ADAC-Formation org unless explicitly asked. Backend needs are written up as
-  change requests (front/docs/points-pour-charlotte.md), not implemented.
+    - ../../back-readonly          -> Spring Boot 3 / Java 21 / PostgreSQL (Charlotte). Writable on a
+                                      work branch only (since 2026-11-19, D66).
+  Backend changes: work on a branch created from origin/dev (never on dev itself), follow the
+  back's own rules (AGENTS.md, CLAUDE.md, docs/BACKEND_WORKFLOW.md), and log every change in
+  front/docs/charlotte/changements-back.md. Never push, never touch back dev, and never run write
+  calls (gh/API) against the ADAC-Formation org unless explicitly asked. PARKED, not to be done
+  without Manon's agreement: changes to who can see/do what, changes to the UX users see,
+  DB schema/migrations/Docker/nginx/CI/deployment, and breaking changes to existing endpoints;
+  write those up in front/docs/charlotte/points-pour-charlotte.md instead.
 
   API contract: back-readonly/docs/tech.md wins over any other backend doc on conflict.
   Use the backend `dev` branch, not `main` (obsolete).

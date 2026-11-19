@@ -15,7 +15,7 @@ Pas un monorepo : `front` et `back` sont deux repos GitHub distincts sous l'orga
 Ce repo (`ADAC-Formation/front`, racine git = `front`) porte le code frontend. La documentation partagée et l'infra vivent dans le repo `back` (Charlotte gère le déploiement) ; le seul fichier de contrat à lire là-bas est `docs/tech.md`.
 
 ```
-front/ (ce repo)                back-readonly/ (clone local, LECTURE SEULE)
+front/ (ce repo)                back-readonly/ (clone local du back, branches de travail, D66)
 ├── src/                        ├── src/ ... Spring Boot
 │   ├── api/                    ├── docs/
 │   ├── components/             │   ├── tech.md   ← contrat API
@@ -61,6 +61,7 @@ Clone local du back : `../back-readonly` (branche `dev`).
 | `docs/design/design-front.md`                       | Design du front (structure de `DESIGN.md`) — référence visuelle, D41     |
 | Board GitHub (projet 1, statuts « Pending Charlotte » / « Pending ADAC »)  | **Reprendre ici** : travail en cours et points en attente de Charlotte ou de l'ADAC |
 | `docs/charlotte/points-pour-charlotte.md`              | Décisions, impacts sur le back, questions et conflits `tech.md`          |
+| `docs/charlotte/changements-back.md`                   | Journal des changements faits par Manon dans le back, sur branche (D66)  |
 | `docs/adac/questions-pour-adac.md`                | Questions pour l'ADAC (documents obligatoires, champs d'une formation) — pas pour Charlotte |
 | `docs/dev/etat-front.md`                              | État détaillé par fonctionnalité : changes livrés, pièges, contrats, mocks de test |
 | `docs/projet/spec.md`, `docs/projet/plan-de-proyecto.md`   | Spec et plan du front                                                    |
@@ -78,11 +79,15 @@ Rôles du back (source de vérité, rôle lu via `GET /auth/me`) :
 Libellés affichés : Chargée de formation / Formateur / Stagiaire (D33). D46 (l'emporte sur `tech.md`, exception à D40) : le formateur voit toutes les formations en lecture seule, « Mes formations » par défaut, **côté client seulement** : le back ne le permet pas encore et Charlotte demande de **ne rien développer de plus** avant la décision commune (Q3, Q8.2), qui attend l'avis de l'ADAC (`docs/adac/questions-pour-adac.md` §C).
 Les rôles du front (`utils/roles.js` : `ROLES`, `roleLabels`) sont alignés sur ceux du back.
 
-## Back-end en LECTURE SEULE — règle absolue
+## Back-end : modifiable sur branche, avec journal pour Charlotte (D66, remplace l'ancienne règle « lecture seule »)
 
-- **Ne jamais modifier, committer ni pousser dans `../back-readonly`** (URL de push désactivée).
-- **Ne jamais lancer d'appel `gh`/API en écriture sur `ADAC-Formation`** (PR, issues, commentaires, boards) sauf demande explicite de Manon.
-- `git -C ../back-readonly status` doit rester propre.
+Depuis le 2026-11-19, d'accord avec Charlotte, Manon peut faire modifier le back (`../back-readonly`, clone de `ADAC-Formation/back`) pour ce dont le front a besoin, au lieu d'attendre Charlotte. Le dossier garde son nom `back-readonly` (chemins, compose, docs) ; il n'est plus en lecture seule.
+
+- **Où** : toujours sur une **branche de travail** créée depuis `origin/dev` (`feature/…` ou `fix/…`), **jamais directement sur `dev`**. Un commit par changement, en Conventional Commits. Avant de toucher au back, lire ses propres règles : `../back-readonly/AGENTS.md`, `CLAUDE.md` et `docs/BACKEND_WORKFLOW.md` (TDD, conventions) et les appliquer au code du back.
+- **Journal obligatoire** : chaque changement du back est consigné dans `docs/charlotte/changements-back.md` (quoi, pourquoi, fichiers, branche et commit, impact sur le contrat `tech.md`, ce qui reste à vérifier). Si le contrat change, mettre aussi `tech.md` à jour **dans la même branche du back**. Les demandes qui restent à Charlotte (Q…, À…) restent dans `docs/charlotte/points-pour-charlotte.md`.
+- **Mis de côté : à décider avec Manon (et peut-être Charlotte), cas par cas, sans rien faire avant son accord** : (1) un changement de contrat qui modifie qui voit ou fait quoi (rôles, permissions, visibilité, ex. Q3 / Q8.2) ; (2) tout ce qui change ce que l'utilisateur voit (parcours, messages, contenu des notifications, données affichées) ; (3) schéma de base de données, migrations, Docker, nginx, CI/CD, `.env`, déploiement ; (4) un changement qui casse un endpoint existant (champ ou chemin renommé ou retiré). Pour ces cas : l'écrire dans `points-pour-charlotte.md` et le dire à Manon, ne pas le coder.
+- **Jamais sans demande explicite de Manon** : `git push` (l'URL de push du clone est désactivée, Manon la réactive quand elle le décide), toucher à `dev` du back, appel `gh`/API en écriture sur `ADAC-Formation` (PR, issues, commentaires, boards).
+- `git -C ../back-readonly status` ne doit montrer que les changements voulus de la branche de travail ; revenir sur `dev` propre quand le travail est fini ou pour tester le contrat de `dev`.
 - Tickets front à implémenter = lignes « front » de `TICKETS.md` du back (008, 016–018, 021, 024, 025, 027, 028, 031, 032, 035, 036, 043, 044, 048, 049).
 
 ## Règle TDD — obligatoire sur chaque ticket
@@ -120,9 +125,9 @@ npm run test                 # lancer les tests (Vitest)
 npm run check                # lint + test + build + budget du bundle (gate pre-commit, D26 ; aussi exécuté par la CI)
 ```
 
-### Backend (repo séparé, lecture seule ici)
+### Backend (repo séparé, celui de Charlotte)
 
-Cloné dans `../back-readonly`. Lancé uniquement via Docker compose (voir ci-dessous) ; ne rien y modifier.
+Cloné dans `../back-readonly`. Lancé uniquement via Docker compose (voir ci-dessous). Modifiable sur branche de travail seulement, voir la règle « Back-end : modifiable sur branche » plus haut (D66).
 Swagger UI : `http://localhost:8080/swagger-ui.html`
 
 ### Docker
