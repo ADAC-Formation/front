@@ -1,7 +1,7 @@
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { http, HttpResponse } from 'msw'
-import { Route, Routes } from 'react-router'
+import { Route, Routes, useLocation } from 'react-router'
 import { axe } from 'jest-axe'
 import { cssSheets, stripComments } from '../../../test/css-sheets'
 import { renderWithProviders } from '../../../test/render'
@@ -102,6 +102,24 @@ describe('MessagesPage — message groupé', () => {
     mockSession('SUPER_ADMIN')
     renderPage({ pathname: '/messages', state: { groupSent } })
     expect(await screen.findByText(message)).toBeInTheDocument()
+  })
+
+  it("efface l'état de navigation après lecture : un rechargement ou un retour arrière ne réaffiche pas la confirmation", async () => {
+    mockSession('SUPER_ADMIN')
+    function Probe() {
+      const { state } = useLocation()
+      return <p>état : {state ? JSON.stringify(state) : 'vide'}</p>
+    }
+    renderWithProviders(
+      <Routes>
+        <Route path="/messages" element={<><MessagesPage /><Probe /></>} />
+      </Routes>,
+      { route: { pathname: '/messages', state: { groupSent: 3 } } },
+    )
+    expect(await screen.findByText('Message envoyé à 3 destinataires')).toBeInTheDocument()
+    expect(await screen.findByText('état : vide')).toBeInTheDocument()
+    // La confirmation reste affichée pendant cette visite.
+    expect(screen.getByText('Message envoyé à 3 destinataires')).toBeInTheDocument()
   })
 
   it('sans envoi récent, aucune confirmation n\'est affichée', async () => {

@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Search } from 'lucide-react'
-import { Link, useLocation, useParams } from 'react-router'
+import { Link, useLocation, useNavigate, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import { MANAGEMENT_ROLES, ROLES, roleLabels } from '../../../utils/roles'
@@ -97,8 +97,14 @@ const sentLabel = (count) => `Message envoyé à ${count} ${count === 1 ? 'desti
 const MessagesPage = () => {
   const { userId } = useParams()
   const { user } = useCurrentUser()
-  // Après un envoi groupé, la page de composition revient ici avec le nombre de destinataires (H16).
-  const groupSent = useLocation().state?.groupSent
+  // Après un envoi groupé, la page de composition revient ici avec le nombre de destinataires (H16). Lu une
+  // fois puis effacé de l'historique : un rechargement ou un retour arrière ne réaffiche pas la confirmation.
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [groupSent] = useState(() => location.state?.groupSent)
+  useEffect(() => {
+    if (location.state?.groupSent !== undefined) navigate(location.pathname, { replace: true, state: null })
+  }, [location.pathname, location.state, navigate])
   const canWriteToGroups = MANAGEMENT_ROLES.includes(user?.role)
   const [filter, setFilter] = useState('all')
   const [role, setRole] = useState('all')

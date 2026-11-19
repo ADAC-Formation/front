@@ -55,5 +55,7 @@ describe('RecipientPreview', () => {
     expect(screen.getByRole('alert')).toHaveTextContent('Impossible de charger les destinataires.')
     await userEvent.click(screen.getByRole('button', { name: 'Réessayer' }))
     expect(onRetry).toHaveBeenCalledTimes(1)
+    // Sans argument : `refetch` de TanStack lirait l'événement du clic comme ses options.
+    expect(onRetry).toHaveBeenCalledWith()
   })
 })

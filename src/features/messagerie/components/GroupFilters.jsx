@@ -24,7 +24,7 @@ const FormationSelect = ({ user, value, onChange }) => {
     return (
       <div className={styles.feedback}>
         <Alert>Impossible de charger les formations.</Alert>
-        <button type="button" className={styles.button} onClick={refetch}>
+        <button type="button" className={styles.button} onClick={() => refetch()}>
           Réessayer
         </button>
       </div>

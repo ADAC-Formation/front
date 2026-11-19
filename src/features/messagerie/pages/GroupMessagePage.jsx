@@ -40,7 +40,8 @@ const GroupMessageForm = ({ user }) => {
   const { mutate, isPending } = useSendGroupMessage()
 
   const complete = isFilterComplete(filter)
-  const recipients = preview.data ?? []
+  // Seulement un aperçu réussi : après un rechargement raté, TanStack garde l'ancienne liste en `data`.
+  const recipients = preview.isSuccess ? preview.data : []
   const count = recipients.length
   const canSend = complete && count > 0
 

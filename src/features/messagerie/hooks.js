@@ -55,13 +55,19 @@ export function useSendMessage() {
   })
 }
 
+// Les mêmes personnes cochées dans un autre ordre = les mêmes destinataires = une seule requête en cache.
+const previewKey = (filter) => {
+  const params = toPreviewParams(filter)
+  return params.userIds ? { ...params, userIds: [...params.userIds].sort((a, b) => a - b) } : params
+}
+
 // Aperçu des destinataires : seulement quand le filtre est complet (aucun appel avant). `retry: false` : un
 // `400` « aucun destinataire » est une réponse normale à afficher tout de suite, pas une panne à retenter.
 // Clé hors de ['messages'] : envoyer le message ne doit pas redemander l'aperçu.
 export function useGroupPreview(filter) {
   const complete = isFilterComplete(filter)
   return useQuery({
-    queryKey: ['group-preview', complete ? toPreviewParams(filter) : null],
+    queryKey: ['group-preview', complete ? previewKey(filter) : null],
     queryFn: () => previewGroupRecipients(filter),
     enabled: complete,
     retry: false,

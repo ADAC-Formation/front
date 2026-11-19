@@ -104,6 +104,17 @@ describe('GroupMessagePage — aperçu', () => {
     expect(calls.searches[0].getAll('userIds')).toEqual(['20'])
   })
 
+  it("désactive l'envoi quand un rechargement de l'aperçu échoue, même si l'ancienne liste est encore en cache", async () => {
+    mockGroupPreview(RECIPIENTS)
+    renderPage()
+    await chooseFormation()
+    await screen.findByRole('button', { name: 'Envoyer à 2 destinataires' })
+    mockGroupPreview([], { errorStatus: 500 })
+    window.dispatchEvent(new Event('visibilitychange')) // retour sur l'onglet : TanStack recharge (il écoute `window`)
+    expect(await screen.findByText('Impossible de charger les destinataires.')).toBeInTheDocument()
+    expect(sendButton()).toBeDisabled()
+  })
+
   it('0 destinataire : « Aucun destinataire correspondant » et envoi désactivé', async () => {
     mockGroupPreview([])
     renderPage()

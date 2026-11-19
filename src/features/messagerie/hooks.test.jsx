@@ -366,6 +366,18 @@ describe('useGroupPreview', () => {
     expect([...calls.searches[0].keys()]).toEqual(['filterType'])
   })
 
+  it("ne redemande pas quand les mêmes personnes sont cochées dans un autre ordre", async () => {
+    const calls = mockGroupPreview()
+    const { result, rerender } = renderHook(({ filter }) => useGroupPreview(filter), {
+      wrapper: wrapperWith(noRetryClient()),
+      initialProps: { filter: { type: 'MANUAL', userIds: [4, 7] } },
+    })
+    await waitFor(() => expect(result.current.isSuccess).toBe(true))
+    rerender({ filter: { type: 'MANUAL', userIds: [7, 4] } })
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(calls.count).toBe(1)
+  })
+
   it('redemande quand le filtre change', async () => {
     const calls = mockGroupPreview()
     const { result, rerender } = renderHook(({ filter }) => useGroupPreview(filter), {

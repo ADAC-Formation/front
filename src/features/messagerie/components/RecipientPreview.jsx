@@ -24,7 +24,7 @@ const RecipientPreview = ({ recipients = [], isLoading = false, error = null, on
       {hasFailed && (
         <div className={styles.feedback}>
           <Alert>Impossible de charger les destinataires.</Alert>
-          <button type="button" className={styles.retry} onClick={onRetry}>
+          <button type="button" className={styles.retry} onClick={() => onRetry?.()}>
             Réessayer
           </button>
         </div>
