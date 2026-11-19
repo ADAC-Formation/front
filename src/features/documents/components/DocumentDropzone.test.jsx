@@ -19,7 +19,7 @@ describe('DocumentDropzone', () => {
   it('annonce les types et la taille acceptés', () => {
     renderZone()
     expect(zone()).toHaveTextContent('Glissez-déposez vos fichiers ici')
-    expect(zone()).toHaveTextContent('PDF, JPG, PNG ou DOCX')
+    expect(zone()).toHaveTextContent('PDF, JPG, PNG, DOCX ou XLSX')
     expect(zone()).toHaveTextContent('10 Mo')
   })
 
@@ -27,7 +27,7 @@ describe('DocumentDropzone', () => {
     const { container } = renderZone()
     expect(screen.getByRole('button', { name: 'Choisir des fichiers' })).toBeEnabled()
     expect(input(container)).toHaveAttribute('multiple')
-    expect(input(container)).toHaveAttribute('accept', '.pdf,.jpg,.jpeg,.png,.docx')
+    expect(input(container)).toHaveAttribute('accept', '.pdf,.jpg,.jpeg,.png,.docx,.xlsx')
   })
 
   it('transmet les fichiers choisis avec le champ', async () => {

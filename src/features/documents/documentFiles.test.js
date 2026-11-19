@@ -16,7 +16,7 @@ import {
 const file = (name, size = 1000) => ({ name, size })
 
 describe('validateDocumentFile', () => {
-  it.each(['cours.pdf', 'photo.jpg', 'photo.jpeg', 'schema.png', 'support.docx'])('accepte %s', (name) => {
+  it.each(['cours.pdf', 'photo.jpg', 'photo.jpeg', 'schema.png', 'support.docx', 'planning.xlsx', 'PLANNING.XLSX'])('accepte %s', (name) => {
     expect(validateDocumentFile(file(name))).toBeNull()
   })
 
@@ -26,10 +26,10 @@ describe('validateDocumentFile', () => {
   })
 
   it('cite JPEG dans le message de refus', () => {
-    expect(validateDocumentFile(file('virus.exe'))).toBe('Format non autorisé (PDF, JPG, JPEG, PNG ou DOCX).')
+    expect(validateDocumentFile(file('virus.exe'))).toBe('Format non autorisé (PDF, JPG, JPEG, PNG, DOCX ou XLSX).')
   })
 
-  it.each(['virus.exe', 'ancien.doc', 'tableau.xlsx', 'sans-extension', 'archive.pdf.zip'])('refuse %s', (name) => {
+  it.each(['virus.exe', 'ancien.doc', 'ancien.xls', 'macros.xlsm', 'sans-extension', 'archive.pdf.zip'])('refuse %s', (name) => {
     expect(validateDocumentFile(file(name))).toMatch(/Format non autorisé/)
   })
 
@@ -75,6 +75,7 @@ describe('documentKind', () => {
     ['photo.JPG', 'Image'],
     ['schema.png', 'Image'],
     ['support.docx', 'Word'],
+    ['planning.xlsx', 'Excel'],
     ['inconnu.bin', 'Fichier'],
   ])('%s → %s', (name, kind) => {
     expect(documentKind(name)).toBe(kind)

@@ -46,7 +46,7 @@ const DocumentDropzone = ({ onFiles, isPending = false }) => {
     >
       <Upload size={28} aria-hidden="true" />
       <p className={styles.dropzoneTitle}>Glissez-déposez vos fichiers ici</p>
-      <p className={styles.dropzoneHint}>PDF, JPG, PNG ou DOCX · 10 Mo au maximum par fichier</p>
+      <p className={styles.dropzoneHint}>PDF, JPG, PNG, DOCX ou XLSX · 10 Mo au maximum par fichier</p>
 
       <input
         ref={inputRef}

@@ -4,10 +4,10 @@ import { ROLES } from '../../utils/roles'
 // revérifie, signature comprise), libellés, et droits de dépôt et de suppression (tech.md § 6).
 
 export const MAX_FILE_SIZE = 10 * 1024 * 1024
-export const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png', 'docx']
+export const ALLOWED_EXTENSIONS = ['pdf', 'jpg', 'jpeg', 'png', 'docx', 'xlsx']
 export const ACCEPT_ATTRIBUTE = ALLOWED_EXTENSIONS.map((extension) => `.${extension}`).join(',')
 
-const KINDS = { pdf: 'PDF', jpg: 'Image', jpeg: 'Image', png: 'Image', docx: 'Word' }
+const KINDS = { pdf: 'PDF', jpg: 'Image', jpeg: 'Image', png: 'Image', docx: 'Word', xlsx: 'Excel' }
 
 function extensionOf(fileName) {
   const dot = fileName.lastIndexOf('.')
@@ -17,7 +17,7 @@ function extensionOf(fileName) {
 // Renvoie le message du refus, ou `null` si le fichier peut être envoyé.
 export function validateDocumentFile(file) {
   if (!ALLOWED_EXTENSIONS.includes(extensionOf(file.name))) {
-    return 'Format non autorisé (PDF, JPG, JPEG, PNG ou DOCX).'
+    return 'Format non autorisé (PDF, JPG, JPEG, PNG, DOCX ou XLSX).'
   }
   if (file.size === 0) return 'Le fichier est vide.'
   if (file.size > MAX_FILE_SIZE) return 'Fichier trop volumineux (10 Mo au maximum).'

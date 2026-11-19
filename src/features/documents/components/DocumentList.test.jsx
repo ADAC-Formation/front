@@ -36,6 +36,14 @@ describe('DocumentList', () => {
     expect(screen.getAllByRole('listitem')[1]).toHaveTextContent('Word')
   })
 
+  it('écrit « Excel » pour un classeur .xlsx (type en toutes lettres, pas seulement l\'icône)', () => {
+    renderList({ documents: [{ ...programme, id: 77, fileName: 'Planning des sessions.xlsx' }] })
+    const item = screen.getByRole('listitem')
+    expect(item).toHaveTextContent('Excel')
+    expect(item).toHaveTextContent('Planning des sessions.xlsx')
+    expect(screen.getByRole('button', { name: 'Télécharger Planning des sessions.xlsx' })).toBeEnabled()
+  })
+
   it('n’affiche jamais l’e-mail de l’expéditeur ni l’adresse du fichier', () => {
     const { container } = renderList()
     expect(container).not.toHaveTextContent('formateur@adac.test')

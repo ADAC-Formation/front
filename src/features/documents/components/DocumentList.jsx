@@ -1,9 +1,9 @@
-import { Download, File, FileImage, FileText, Trash2 } from 'lucide-react'
+import { Download, File, FileImage, FileSpreadsheet, FileText, Trash2 } from 'lucide-react'
 import { Link } from 'react-router'
 import { documentKind, formatDocumentDate, formatFileSize } from '../documentFiles'
 import styles from './Documents.module.css'
 
-const ICONS = { PDF: FileText, Word: FileText, Image: FileImage }
+const ICONS = { PDF: FileText, Word: FileText, Excel: FileSpreadsheet, Image: FileImage }
 
 const senderLabel = (uploadedBy) =>
   uploadedBy ? `Envoyé par ${uploadedBy.prenom} ${uploadedBy.nom}` : 'Expéditeur inconnu'
