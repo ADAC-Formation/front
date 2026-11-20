@@ -4,29 +4,29 @@ Deux branches : **back** `feature/document-types` (depuis `origin/dev` dans `../
 
 ## 1. Préparation
 
-- [ ] 1.1 Plan validé par Manon (point exigé par `AGENTS.md` du back : un humain valide le plan avant le travail)
-- [ ] 1.2 Back : `git fetch`, branche `feature/document-types` depuis `origin/dev` ; relire `AGENTS.md`, `CLAUDE.md`, `docs/BACKEND_WORKFLOW.md` ; suite de départ verte (hors les 3 échecs liés aux données locales, voir `changements-back.md`)
+- [x] 1.1 Plan validé par Manon (point exigé par `AGENTS.md` du back : un humain valide le plan avant le travail)
+- [x] 1.2 Back : `git fetch`, branche `feature/document-types` depuis `origin/dev` ; relire `AGENTS.md`, `CLAUDE.md`, `docs/BACKEND_WORKFLOW.md` ; suite de départ verte (hors les 3 échecs liés aux données locales, voir `changements-back.md`)
 - [ ] 1.3 Front : branche `feature/document-types-catalogue` depuis `dev`, `npm run check` vert au départ
-- [ ] 1.4 Back : ticket `docs/tickets/TICKET-051.md` (format des tickets existants) et ligne dans `TICKETS.md`
+- [x] 1.4 Back : ticket `docs/tickets/TICKET-051.md` (format des tickets existants) et ligne dans `TICKETS.md`
 
 ## 2. Back : base et entité (TDD)
 
-- [ ] 2.1 RED : `DocumentTypeRepositoryTest` (base réelle, comme `CategoryRepositoryTest`) — enregistrer un type avec deux catégories et le relire ; nom en double refusé quelle que soit la casse (index unique) ; `deadline_days` sans `deadline_anchor` refusé ; jours hors de 0 à 365 refusés ; `findAllByIsActive`
-- [ ] 2.2 Migration `V6__add_document_types.sql`, entité `DocumentType`, enum `DeadlineAnchor`, `DocumentTypeRepository` ; GREEN
-- [ ] 2.3 Commit `feat(document-types): add the document types table and entity`
+- [x] 2.1 RED : `DocumentTypeRepositoryTest` (base réelle, comme `CategoryRepositoryTest`) — enregistrer un type avec deux catégories et le relire ; nom en double refusé quelle que soit la casse (index unique) ; `deadline_days` sans `deadline_anchor` refusé ; jours hors de 0 à 365 refusés ; `findAllByIsActive`
+- [x] 2.2 Migration `V6__add_document_types.sql`, entité `DocumentType`, enum `DeadlineAnchor`, `DocumentTypeRepository` ; GREEN
+- [x] 2.3 Commit `feat(document-types): add the document types table and entity`
 
 ## 3. Back : service (TDD)
 
-- [ ] 3.1 RED : `DocumentTypeServiceImplTest` — créer (nom normalisé, catégories liées), nom en double `409` (casse ignorée), portée « toutes » avec des catégories `400`, portée « certaines » sans catégorie `400`, catégorie inconnue `404`, délai incomplet `400`, jours hors bornes `400`, format inconnu `400`, liste de formats vide traitée comme absente, modifier (`409` si le nom appartient à un autre type, même nom autorisé pour lui-même), activer et désactiver, type inconnu `404`, liste filtrée par `active`
-- [ ] 3.2 `DocumentTypeService(Impl)`, DTO `CreateDocumentTypeRequest` / `UpdateDocumentTypeRequest` / `DocumentTypeResponse` (`@JsonProperty("isRequired" | "isSensitive" | "isActive")`), `DocumentTypeMapper` ; GREEN
-- [ ] 3.3 Commit `feat(document-types): add the document types service`
+- [x] 3.1 RED : `DocumentTypeServiceImplTest` — créer (nom normalisé, catégories liées), nom en double `409` (casse ignorée), portée « toutes » avec des catégories `400`, portée « certaines » sans catégorie `400`, catégorie inconnue `404`, délai incomplet `400`, jours hors bornes `400`, format inconnu `400`, liste de formats vide traitée comme absente, modifier (`409` si le nom appartient à un autre type, même nom autorisé pour lui-même), activer et désactiver, type inconnu `404`, liste filtrée par `active`
+- [x] 3.2 `DocumentTypeService(Impl)`, DTO `CreateDocumentTypeRequest` / `UpdateDocumentTypeRequest` / `DocumentTypeResponse` (`@JsonProperty("isRequired" | "isSensitive" | "isActive")`), `DocumentTypeMapper` ; GREEN
+- [x] 3.3 Commit `feat(document-types): add the document types service`
 
 ## 4. Back : contrôleur (TDD)
 
-- [ ] 4.1 RED : `DocumentTypeControllerTest` — chaque endpoint de `design.md` point 3 : `201`, `200`, `204` jamais utilisé ; `403` pour ADMIN et STAGIAIRE sur chacun (liste comprise) ; `401` sans session ; `400` de validation ; `404` ; `409`
-- [ ] 4.2 `DocumentTypeController` (`/api/document-types`, `@PreAuthorize("hasRole('SUPER_ADMIN')")`, Swagger comme `CategoryController`) ; GREEN
-- [ ] 4.3 `docs/tech.md` (section « Types de document », ajoutée après les catégories), `docs/DB_MODEL.md` et `.mmd` ; commit `feat(document-types): expose /api/document-types`
-- [ ] 4.4 Suite complète du back : aucun échec nouveau ; reconstruire le back local et vérifier à la main avec `curl` (création, doublon, délai invalide, `403` formateur) ; consigner dans `docs/charlotte/changements-back.md` (entrée « prêt à relire », branche et commit) et mettre `etat-front.md` à jour
+- [x] 4.1 RED : `DocumentTypeControllerTest` — chaque endpoint de `design.md` point 3 : `201`, `200`, `204` jamais utilisé ; `403` pour ADMIN et STAGIAIRE sur chacun (liste comprise) ; `401` sans session ; `400` de validation ; `404` ; `409`
+- [x] 4.2 `DocumentTypeController` (`/api/document-types`, `@PreAuthorize("hasRole('SUPER_ADMIN')")`, Swagger comme `CategoryController`) ; GREEN
+- [x] 4.3 `docs/tech.md` (section « Types de document », ajoutée après les catégories), `docs/DB_MODEL.md` et `.mmd` ; commit `feat(document-types): expose /api/document-types`
+- [x] 4.4 Suite complète du back : aucun échec nouveau ; reconstruire le back local et vérifier à la main avec `curl` (création, doublon, délai invalide, `403` formateur) ; consigner dans `docs/charlotte/changements-back.md` (entrée « prêt à relire », branche et commit) et mettre `etat-front.md` à jour
 
 ## 5. Front : logique pure (TDD)
 
