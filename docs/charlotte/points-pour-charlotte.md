@@ -19,40 +19,29 @@ Tout est pris en compte côté front ; rien de ce qui suit n'est une question.
 - **Accords de Manon** : Q8.3 (`activated`), Q14 (`GET /messages/recipients`) et Q15 (chemin `PATCH /api/messages/conversations/{conversationId}/read`) sont validés ; le front passera à chacun dès qu'il est mergé.
 - **Q3, Q8.2, Q9, Q10, Q12** : Manon a demandé l'avis de l'ADAC (document de questions prêt), rien à faire de ton côté d'ici là, **sauf à ne rien développer** pour Q3 et Q8.2 (formateur). Q10 est tranché : PCB = Point Conseil Budget.
 
-### À2. Attendu de toi (déjà d'accord, pas encore dans le back `dev`)
+### À2. Ce que tu as mergé le 2026-11-19 (PR #14 à #20), et ce que le front en fait
 
-Vérifié le 2026-11-09 sur `dev` (dernier merge : PR #13) : aucun de ces points n'est encore là.
+Merci : tout ce qui était « attendu » est dans `dev`. Côté front (branche `feature/adopt-back-endpoints`, décision H19) :
 
-| Réf. | Attendu | Ce que le front fera au merge |
+| Réf. | Mergé | Côté front |
 |---|---|---|
-| Q1 | `PATCH /api/users/me/password` `{ oldPassword, newPassword }`, annoncée dans la V1. Peux-tu confirmer l'arrivée et les erreurs : `400` règle du mot de passe, `401` ou `403` si l'ancien est faux ? | Le formulaire du profil est fait et testé sur MSW seulement ; il affiche le `message` du back et ne déconnecte pas sur un `401` de cette route. À éprouver sur le vrai back. |
-| Q8.3 | Champ booléen `activated` sur `UserResponse`. | « Jamais activé » / « Suspendu » + bouton « Renvoyer le code ». |
-| Q14 | `GET /api/messages/recipients` → `UserResponse[]` des destinataires autorisés. | `useRecipients` l'appelle au lieu de charger trois listes complètes. |
-| Q15 | `PATCH /api/messages/conversations/{conversationId}/read`. | Un appel au lieu de N par fil ouvert. |
+| Q1 | `PATCH /users/me/password` (#18) | Formulaire du profil prêt ; `400`, `403` (ancien mot de passe faux) et `429` (verrou) affichent ton message. À éprouver à la main sur le vrai back. |
+| Q8.3 | champ `activated` (#17) | Fait : « Actif », « Suspendu » ou « Jamais activé », et « Renvoyer le code » à la place de « Réactiver » (qui répondrait `409`) pour un compte jamais activé. |
+| Q14 | `GET /messages/recipients` (#19) | Fait, **usage volontairement restreint** : ta liste est plus large que la règle du front (formateur : tout formateur et stagiaire actif ; stagiaire : tout formateur actif). Le front garde sa règle (formateur : ses stagiaires ; stagiaire : les formateurs de ses formations) et n'utilise l'endpoint que pour trouver la chargée de formation. |
+| Q15 | `PATCH /messages/conversations/{id}/read` (#19) | Fait : un appel par fil (et un de plus si un message arrive pendant que le fil est ouvert). |
+| Q16 | `GET /users/{id}/inscriptions` (#20) | Fait pour la chargée de formation (un appel). Le formateur reçoit `403` : le front garde pour lui le parcours des formations. **Question, non bloquante** : veux-tu l'ouvrir au formateur pour les formations dont il est le formateur ? |
+| Q11b | `404` pour une route inconnue (#15) | Vérifié sur le back local : `PATCH …/formateur` répond `404`. Rien à faire. |
+| `.xlsx` | accepté (#16) | Fait : accepté et libellé « Excel » ; `.xls` et `.xlsm` restent refusés. |
+| Formation archivée | `409` au dépôt et à la suppression (#16) | Le front les rendait déjà en lecture seule ; ton `409` ne sert que si la formation est archivée pendant que la page est ouverte (le message du back s'affiche). |
+| `uploadedBy`, `fileUrl`, barre finale | `id` / `prenom` / `nom` seulement, `fileUrl` retiré (#14) | Le front ne lisait que ces trois champs et jamais `fileUrl` : rien à changer, fixtures de test alignées sur ta réponse. |
 
-### À3. Relance : Q16 — pas de réponse
+### À3. Toujours en attente
 
-#### Q16 — Inscriptions d'un stagiaire (profil vu par la chargée de formation / le formateur)
-Pour afficher, sur le profil d'un stagiaire, ce qu'il a envoyé dans chacune de ses formations, le front doit connaître ses inscriptions. Aucun endpoint ne les donne (`GET /users/{id}` ne les contient pas) : le front lit la liste d'inscrits de chaque formation que l'appelant peut consulter et retient celles du stagiaire (une requête par formation, `404` ignoré pour le formateur hors de ses formations).
-
-Proposition : `GET /api/users/{id}/inscriptions` → `{ id, formation }[]` (SUPER_ADMIN : toutes ; ADMIN : celles de ses formations ; la même règle que `GET /api/documents?inscriptionId=`). Le front passera à cet appel unique dès qu'il existe.
-
-### À4. Corrections déjà demandées, à confirmer
-
-- **Q11b** : `PATCH /api/formations/{id}/formateur` répond `500` (constaté le 2026-11-01) au lieu d'un `404` ou `405`. Tu as dit le corriger : sera-t-il dans le prochain merge ?
-- **Q12** : remplir `details[]` de l'import Excel (`{ligne, colonne, message}`), d'accord sur le principe. Le front découpe le message en attendant. Le fichier réel de l'ADAC n'est pas encore arrivé (R10) : les colonnes restent celles de `tech.md`.
-- **Contrat `FormationResponse`** : `role` doit toujours être présent sur le `formateur` (la messagerie du stagiaire en dépend).
-
-### À5. Documents d'une formation (ticket 027) — pas de réponse sur ces points
-
-Contrat vérifié sur le back local (dépôt, liste, téléchargement, suppression, avec un vrai bucket Supabase) : tout fonctionne comme dans `tech.md` §6. À confirmer ou à améliorer :
-
-- **URL signée ou proxy ?** Le ticket 027 parle d'« URL signée » ; `tech.md` §6 et le back décrivent un proxy binaire (`GET /documents/{id}/download`). Le front suit `tech.md` (décision G1) et n'utilise jamais `fileUrl`. Rien à changer si le proxy est bien le choix voulu.
-- **Formation archivée** : le front rend les documents en lecture seule (G3), mais le back accepte encore le dépôt et la suppression sur une formation archivée. Souhaites-tu les refuser côté back (`409` / `403`) ?
-- **`uploadedBy` expose trop au stagiaire** : chaque `DocumentResponse` contient l'utilisateur complet (`email`, `createdAt`, `emailNotificationsEnabled`, `isActive`…). Un stagiaire reçoit donc l'e-mail du formateur et de la chargée de formation qui ont déposé le document, alors que le front n'affiche que « Envoyé par Prénom Nom ». Pour la vie privée (D31, même sujet que l'e-mail des co-inscrits, `tech.md` §5), pourrait-on renvoyer seulement `id`, `prenom` et `nom` ? Le front n'a besoin que de ces trois champs (l'`id` sert à savoir si le formateur est l'auteur du dépôt).
-- **`fileUrl`** : c'est l'adresse brute du stockage (bucket privé, inutilisable par un navigateur). Elle fuit le nom du bucket et le chemin ; la retirer de `DocumentResponse` serait plus propre si rien ne l'utilise.
-- **Double barre dans `fileUrl`** : si `SUPABASE_URL` se termine par `/`, l'adresse contient `//storage/...`. Retirer la barre finale dans `SupabaseConfig` évite le piège.
-- **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée ou pointant sur `/rest/v1/` donne `502 « Service de stockage indisponible »` ; la vraie cause (`PGRST125`, hôte inconnu…) n'est que dans les logs. À mentionner dans ta documentation de développement local : `SUPABASE_URL` = URL du projet seule (`https://<projet>.supabase.co`), clé `service_role`, bucket privé `adac-documents`.
+- **Q3, Q8.2 (formateur)** : ne rien développer avant la décision commune ; Manon attend l'avis de l'ADAC (`questions-pour-adac.md` §C).
+- **Q9, Q10, Q12** : Q9 (`reference`) et Q10 (« Spécial PCB ») attendent l'ADAC ; Q12 (`details[]` de l'import Excel : `{ligne, colonne, message}`) attend le vrai fichier de l'ADAC (R10), les colonnes restent celles de `tech.md`.
+- **`role` sur le `formateur` de `FormationResponse`** : la messagerie du stagiaire en dépend ; à confirmer que le champ est toujours présent.
+- **URL signée ou proxy ?** Le ticket 027 parle d'« URL signée » ; `tech.md` §6 décrit un proxy binaire (`GET /documents/{id}/download`). Le front suit `tech.md` (G1). Rien à changer si le proxy est le choix voulu.
+- **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée donne `502 « Service de stockage indisponible »` ; à mentionner dans ta documentation de développement local (`SUPABASE_URL` = URL du projet seule, clé `service_role`, bucket privé `adac-documents`).
 
 ### À7. Message groupé : constats sur le back local (vérifiés le 2026-11-19) — nouveau
 
