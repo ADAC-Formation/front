@@ -127,3 +127,105 @@ Suite du thème : mêmes composants et règles de fichier que 027 (G4), dépôt 
 - **Décision** : (1) `/profile` affiche « Mes documents » (`DocumentsSummary`) pour le stagiaire **et** le formateur ; la chargée de formation ne l'a toujours pas ; (2) `DocumentsSummary` reçoit `user` de la page ; `useMyDocuments(formations, user)` choisit la source selon le rôle : stagiaire = une liste `?inscriptionId=` par inscription (G16, inchangé), formateur = une liste `?formationId=` par formation, filtrée sur `uploadedBy.id` = lui ; le hook renvoie `formationOf(document)` à la place de `formationByInscriptionId` ; (3) même clé de cache que la section « Documents » de la formation : un dépôt ou une suppression y met le résumé à jour ; (4) textes du formateur : « Aucune formation ne vous est attribuée pour le moment » et « … dans la section « Documents » » ; le reste (lecture seule, « Déposé dans », erreurs par liste) est celui de G16.
 - **Pourquoi** : aucun changement du back ; même rendu que pour le stagiaire.
 - **Alternatives écartées** : un endpoint « mes dépôts » côté back (inutile pour quelques formations par formateur).
+
+
+## G19 — Checklist des documents : le catalogue des types est tenu par la chargée de formation, dans une page de réglages
+- Date : 2026-11-20
+- **Contexte** : G17 avait reporté la checklist nommée faute de liste de l'ADAC. Le back peut maintenant être modifié par Manon (D66) et une liste fictive sert de base (`docs/adac/documents-obligatoires-factices.md`). Série de décisions G19+ issue du grill du même jour.
+- **Décision** : il existe un **catalogue de types de document** (ex. « Pièce d'identité », « Certificat médical ») que la **chargée de formation** crée, modifie et désactive elle-même dans une page de réglages du portail. La liste fictive sert de données de départ (seed), pas de liste figée.
+- **Pourquoi** : la vraie liste de l'ADAC n'est pas connue et changera ; la laisser modifiable sans passer par un développeur évite de refaire une migration à chaque réponse de l'ADAC.
+- **Alternatives écartées** : catalogue en seed seul, sans écran (plus petit, mais chaque changement passe par le back) ; liste propre à chaque formation, saisie à la création (même type ressaisi à chaque formation, pas de vue d'ensemble).
+- **Conséquence** : un CRUD de types (back + front) est à prévoir ; son périmètre exact (champs d'un type) est tranché dans les décisions suivantes.
+
+
+## G20 — Un type s'applique à toutes les formations ou à un ensemble de catégories
+- Date : 2026-11-20
+- **Décision** : un type de document est soit « toutes les formations », soit lié à **une ou plusieurs catégories**. La liste des documents requis d'une formation = les types « toutes » + les types liés à sa catégorie. Pas d'exception par formation.
+- **Pourquoi** : la liste fictive distingue des pièces communes et des pièces propres à une catégorie (Secourisme, Numérique, Intra) ; un type utile à deux catégories ne doit pas être dupliqué ; la liste d'une formation reste prévisible.
+- **Alternatives écartées** : une seule catégorie par type (obligerait à dupliquer) ; exceptions par formation (deuxième écran et règle de priorité à expliquer ; à ajouter plus tard si l'ADAC le demande, à noter dans `future-implementation-ideas.md`).
+
+
+## G21 — Obligatoire ou facultatif, et « non applicable » par stagiaire
+- Date : 2026-11-20
+- **Décision** : un type est **obligatoire** ou **facultatif**. Le cas « selon la situation » (liste fictive : justificatif de prise en charge, attestation de handicap) n'est pas un troisième état du type : la chargée de formation peut marquer un type obligatoire comme **« non applicable »** pour **un stagiaire dans une formation**, et il ne compte alors plus comme manquant. Seul un type obligatoire peut manquer.
+- **Pourquoi** : le besoin réel est « ce stagiaire n'a pas à fournir cette pièce » ; un état sur le type ne distingue pas les stagiaires. Une exemption par stagiaire garde « manquant » exact et le filtre de messagerie juste.
+- **Alternatives écartées** : trois états sur le type (« selon la situation » n'est jamais relancé, donc jamais fourni) ; obligatoire/facultatif seulement (un stagiaire sans financeur resterait incomplet).
+- **Conséquence** : une donnée de plus à stocker (exemption : stagiaire + formation + type, avec qui l'a posée) et un geste dans l'interface de la chargée ; son périmètre de droits est à trancher.
+
+
+## G22 — Le stagiaire dépose dans une ligne de checklist ; la zone libre reste pour les autres documents
+- Date : 2026-11-20
+- **Décision** : sur la page de la formation (G16), le stagiaire voit la liste des documents requis de sa formation (G20), une ligne par type : nom, obligatoire ou facultatif, état (manquant / reçu) et un bouton **« Déposer »** propre à la ligne. Le fichier déposé est rattaché au type de la ligne. La zone de dépôt libre actuelle reste, pour les « autres documents » **sans type**.
+- **Pourquoi** : le stagiaire voit d'un coup ce qui manque et dépose au bon endroit ; aucun choix de type à faire (donc pas d'erreur de type).
+- **Alternatives écartées** : un menu « Type de document » dans la zone de dépôt unique (oubli ou mauvais choix, on ne voit pas ce qui manque) ; la chargée rattache le type après coup (étape manuelle par fichier, « manquant » faux en attendant).
+- **Conséquence** : `POST /documents` reçoit un `documentTypeId` optionnel (back à modifier) ; un document garde un type nul s'il est déposé hors checklist.
+
+
+## G23 — Plusieurs fichiers par type ; « reçu » = au moins un fichier
+- Date : 2026-11-20
+- **Décision** : un stagiaire peut déposer plusieurs fichiers pour un même type (recto et verso d'une pièce d'identité) et supprimer les siens (règles G15 inchangées). Un type est **« reçu »** dès qu'il a au moins un fichier du stagiaire pour cette inscription ; supprimer le dernier le remet à « manquant ». Pas d'état « validé » ni « à refaire » dans cette version.
+- **Pourquoi** : même fonctionnement que les dépôts actuels, aucun flux de remplacement à construire.
+- **Alternatives écartées** : un fichier par type avec remplacement (action de plus, recto-verso à fusionner par le stagiaire) ; validation par la chargée (question A6 à l'ADAC : à ajouter si elle est voulue, noter dans `future-implementation-ideas.md`).
+
+
+## G24 — Types sensibles : le formateur voit l'état, jamais les fichiers
+- Date : 2026-11-20
+- **Décision** : un type peut être marqué **sensible**. Pour un type sensible, le formateur de la formation voit seulement l'état (« reçu » ou « manquant ») dans la checklist, mais **ne peut ni lister ni télécharger les fichiers** ; le back l'impose (liste filtrée, téléchargement refusé). La chargée de formation voit et télécharge tout. Le stagiaire voit les siens. Dans la liste fictive : pièce d'identité, justificatif de prise en charge, attestation de handicap.
+- **Pourquoi** : le formateur a besoin de savoir qui est prêt, pas de lire des pièces personnelles (ADAC question A8) ; l'interdit doit venir du back, pas de l'interface.
+- **Alternatives écartées** : cacher aussi l'état au formateur (il ne saurait plus qui est incomplet) ; aucune restriction (pièces d'identité et de santé exposées sans besoin).
+- **Conséquence** : le back filtre `GET /documents` et `GET /documents/{id}/download` selon le rôle et le type ; à vérifier : l'état « reçu » doit venir d'une réponse qui n'expose pas les noms de fichiers sensibles.
+
+
+## G25 — Délai relatif sur le type, « en retard » affiché ; pas de relance automatique
+- Date : 2026-11-20
+- **Décision** : un type peut porter un **délai optionnel** : N jours **avant le début** ou N jours **après la fin** de la formation. La checklist affiche la date calculée et marque **« en retard »** un type obligatoire encore manquant après cette date (et non marqué « non applicable », G21). Aucun type sans délai n'est jamais en retard. **Pas de relance automatique** : la chargée relance à la main (message groupé, G26).
+- **Pourquoi** : la liste fictive distingue les pièces d'inscription (J-7) de l'évaluation (J+15) ; un délai relatif suit les dates de chaque formation sans les ressaisir. Une relance automatique demanderait un ordonnanceur côté back et une politique de relance que l'ADAC n'a pas définie (question A7).
+- **Alternatives écartées** : aucun délai (rien ne signale un retard) ; délais plus relances automatiques (ordonnanceur et politique non définis ; à noter dans `future-implementation-ideas.md`).
+
+
+## G26 — Le filtre « Documents manquants » du message groupé disparaît ; le suivi passera par un tableau de bord (reporté)
+- Date : 2026-11-20
+- **Décision** : le concept de filtre **« Documents manquants »** du message groupé est **supprimé** (front : le filtre `MISSING_DOCS` n'est plus proposé ; back : le type de filtre est retiré, voir `changements-back.md` à l'implémentation). Le suivi des pièces manquantes par la chargée de formation se fera par un **tableau de bord** dont la forme reste à définir (Manon y réfléchira ; idée parquée dans `docs/future-implementation-ideas.md`). D'ici là, la page de la formation et le profil d'un stagiaire donnent l'état de la checklist (G17, G22) ; la chargée relance par message groupé « Formation » ou « Sélection libre ».
+- **Pourquoi** : « aucun document déposé » ne correspond plus au besoin une fois les types connus ; relancer « tous ceux à qui il manque quelque chose » est trop large ; un outil de suivi dédié répond mieux que d'enrichir un filtre de message.
+- **Alternatives écartées** : redéfinir `MISSING_DOCS` en « un type obligatoire manque », avec formation et type en option (écarté par Manon) ; conserver l'ancienne définition à côté d'un nouveau filtre (deux filtres proches, l'ancien presque inutile).
+- **Conséquence** : modifie H12, H17 et H20 de `decisions-messagerie.md` (liste des filtres : Formation et Sélection libre pour la chargée ; Formation pour le formateur) ; un changement de contrat à journaliser pour le back.
+
+
+## G27 — Le catalogue s'applique en direct aux formations non archivées
+- Date : 2026-11-20
+- **Décision** : la checklist d'une formation est **calculée à chaque lecture** depuis le catalogue courant (G20) : ajouter un type, le rendre obligatoire ou changer son délai atteint immédiatement toutes les formations **non archivées**. Rien n'est copié par formation. Une formation **archivée** n'est plus suivie : pas de « manquant » ni de « en retard », ses documents restent consultables comme avant (G3). Désactiver un type le retire des checklists ; ses fichiers déjà déposés restent, rattachés à leur type, visibles dans « Autres documents ».
+- **Pourquoi** : aucune copie ni migration à maintenir ; la chargée voit tout de suite l'effet d'un réglage.
+- **Alternatives écartées** : instantané à la création de la formation (un nouveau type n'atteint jamais les formations en cours, table de copie) ; changement limité aux formations pas encore commencées (règle de gel à la date de début à définir).
+- **Conséquence** : un type activé, désactivé ou modifié change le résultat d'une checklist sans toucher aux documents ; à décrire dans l'écran de réglages (« s'applique aux formations en cours »).
+
+
+## G28 — « Non applicable » : le stagiaire, le formateur et la chargée peuvent le poser et le lever
+- Date : 2026-11-20
+- **Décision** (choix de Manon, contre la recommandation « chargée seule ») : pour un type obligatoire (G21), **le stagiaire concerné, le formateur de la formation et la chargée de formation** peuvent le marquer « non applicable » pour une inscription, et le **lever**. Le stagiaire ne le fait que pour **ses** inscriptions, le formateur que pour **ses** formations. Le back enregistre **qui** l'a posé et **quand**, et la checklist l'affiche (« Non applicable, par Léa Petit, le 20/11 ») : la chargée voit toujours qui a écarté une pièce et peut la remettre.
+- **Pourquoi** : le besoin est « je n'ai pas à fournir cette pièce » ; celui qui le sait le dit lui-même, sans attendre la chargée.
+- **Alternatives écartées** : la chargée seule (un point de contrôle unique, mais chaque exemption passe par elle) ; la chargée et le formateur (le stagiaire dépend encore d'un tiers).
+- **Risque accepté** : un stagiaire peut écarter une pièce qu'il devrait fournir. Garde-fous retenus : l'auteur et la date sont visibles, la chargée peut lever l'exemption, et une exemption écarte seulement le « manquant » (le filtre de messagerie n'existe plus, G26). À revoir si l'ADAC veut que la chargée valide.
+- **Conséquence** : droits à tester côté back (403 sur l'inscription d'un autre, ou sur une formation qui n'est pas la sienne).
+
+
+## G29 — Vue de la chargée et du formateur : résumé par stagiaire, détail dépliable
+- Date : 2026-11-20
+- **Décision** : dans « Stagiaires inscrits » (page de la formation) et dans la section « Documents » du profil d'un stagiaire (G17), chaque stagiaire a un **résumé** (« 3 sur 5 pièces obligatoires », et un repère « en retard » le cas échéant). Le déplier liste chaque type avec son état (**Reçu**, **Manquant**, **En retard**, **Non applicable** avec son auteur, G28) et les liens de téléchargement ; pour un type sensible, le formateur voit l'état sans les fichiers (G24). Cela **remplace** la coche unique « Documents envoyés » de G17. Les documents sans type restent listés sous « Autres documents ».
+- **Pourquoi** : une ligne par stagiaire reste lisible sur mobile et le détail est à un clic ; le tableau croisé et le tableau de bord relèvent de l'idée reportée (G26).
+- **Alternatives écartées** : tableau stagiaires × types (large sur mobile, proche du tableau de bord à penser à part) ; liste toujours ouverte (longue dès qu'il y a beaucoup de stagiaires et de types).
+
+
+## G30 — Champs d'un type de document
+- Date : 2026-11-20
+- **Décision** : un type a : **nom** (unique sans tenir compte de la casse, 255 au plus), **texte d'aide** optionnel (une ligne affichée sous la ligne de la checklist), **obligatoire ou facultatif** (G21), **sensible** (G24), **portée** : toutes les formations ou une ou plusieurs catégories (G20), **délai** optionnel (N jours avant le début ou après la fin, G25), **formats acceptés** optionnels (sous-ensemble de PDF, JPG, JPEG, PNG, DOCX, XLSX ; sans réglage, la règle générale s'applique, 10 Mo au plus), **actif** (désactiver au lieu de supprimer, G27). La checklist est triée par **ordre alphabétique** : pas d'ordre d'affichage réglable.
+- **Pourquoi** : le texte d'aide limite les mauvais dépôts ; les formats par type évitent d'envoyer une photo là où un PDF est attendu ; l'ordre réglable ajouterait un geste de plus pour peu de gain.
+- **Alternatives écartées** : ordre d'affichage choisi par la chargée (repoussé, à ajouter si l'ADAC le demande) ; suppression d'un type (on désactive, les fichiers déjà déposés gardent leur type).
+
+
+## G31 — Découpage en quatre tranches
+- Date : 2026-11-20
+- **Décision** : quatre tranches, chacune un changement du back (PR) plus le travail du front, développées en TDD et utilisables seules : **(1)** catalogue : CRUD des types (G19, G20, G21, G25, G27, G30), page de réglages de la chargée, liste fictive en données de départ ; **(2)** checklist du stagiaire : dépôt typé (G22, G23), « non applicable » (G28), délais et « en retard » (G25) sur la page de la formation ; **(3)** vue de la chargée et du formateur : résumé et détail dépliable (G29), règles des types sensibles (G24) ; **(4)** suppression du filtre « Documents manquants » du message groupé (G26, H21).
+- **Pourquoi** : chaque tranche se relit seule ; la première donne déjà une page de réglages visible ; la suppression du filtre est petite et indépendante.
+- **Alternatives écartées** : trois tranches avec la suppression du filtre dans la première ; un seul changement (revue énorme, rien d'utilisable avant la fin).
+- **Ordre** : 1 avant 2 et 3 (elles lisent le catalogue) ; 2 avant 3 ; 4 est indépendante.
+- **Questions techniques laissées au plan de chaque tranche** (non tranchées ici) : forme des endpoints de checklist (un appel par formation évitera une requête par stagiaire, comme Q16) ; modèle de l'exemption ; type nul des documents existants.

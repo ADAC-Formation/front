@@ -144,3 +144,9 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 - **Pourquoi** : écarter quelqu'un d'un groupe sans passer par la sélection libre. Première version (chargée seulement) : envoi en `MANUAL` avec les cochés, car le back n'avait pas d'exclusion et réserve `MANUAL` à la chargée.
 - **Changement du back** (Manon, D66, décision du 2026-11-20 : pas de discussion préalable avec Charlotte) : champ optionnel `excludedUserIds` sur `filter`, voir `docs/charlotte/changements-back.md`. Il évite d'ouvrir `MANUAL` au formateur (nouveau droit) et fonctionne pour tout rôle autorisé à utiliser le filtre.
 - **Écarté** : un message individuel par personne cochée (perd le badge « Message groupé », autant de messages que de personnes, pas d'atomicité) ; ouvrir `MANUAL` au formateur (élargit ses droits).
+
+
+## H21 — « Documents manquants » retiré du message groupé
+- **Date** : 2026-11-20 · demande de Manon pendant le grill de la checklist des documents (voir G26 de `decisions-documents.md`).
+- **Décision** : la chargée de formation n'a plus que les filtres « Formation » et « Sélection libre ». Le filtre `MISSING_DOCS` n'est plus proposé (H12), et sa mention dans l'aperçu décochable (H20) disparaît. Le suivi des pièces manquantes passera par un tableau de bord, hors messagerie.
+- **Pourquoi** : voir G26. Pas encore implémenté : H12 et H20 restent vrais jusqu'au changement de code.
