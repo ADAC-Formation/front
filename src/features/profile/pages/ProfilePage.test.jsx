@@ -57,7 +57,7 @@ describe('ProfilePage', () => {
     expect(screen.queryByRole('heading', { name: 'Mes documents' })).not.toBeInTheDocument()
   })
 
-  it.each(['STAGIAIRE', 'ADMIN', 'SUPER_ADMIN'])('%s : informations, notifications par e-mail et mot de passe', async (role) => {
+  it.each(['STAGIAIRE', 'ADMIN', 'SUPER_ADMIN'])('%s : informations et mot de passe', async (role) => {
     if (role !== 'SUPER_ADMIN') {
       mockFormationList([])
       mockDocumentApi([], { uploader: USERS[role] })
@@ -65,8 +65,26 @@ describe('ProfilePage', () => {
     renderProfile(role)
     expect(await screen.findByRole('heading', { level: 2, name: 'Mes informations' })).toBeInTheDocument()
     expect(screen.getByText(USERS[role].email)).toBeInTheDocument()
-    expect(await screen.findByRole('switch', { name: 'Recevoir les notifications par e-mail' })).toBeInTheDocument()
     expect(screen.getByRole('heading', { level: 2, name: 'Mot de passe' })).toBeInTheDocument()
+  })
+
+  it.each(['ADMIN', 'SUPER_ADMIN'])('%s : garde le réglage « Notifications par e-mail »', async (role) => {
+    if (role === 'ADMIN') {
+      mockFormationList([])
+      mockDocumentApi([], { uploader: USERS.ADMIN })
+    }
+    renderProfile(role)
+    expect(await screen.findByRole('switch', { name: 'Recevoir les notifications par e-mail' })).toBeInTheDocument()
+  })
+
+  it('stagiaire : aucun réglage des e-mails, ils sont toujours envoyés (NOTES-04, ind. 30)', async () => {
+    mockFormationList([])
+    mockDocumentApi([], { uploader: USERS.STAGIAIRE })
+    renderProfile('STAGIAIRE')
+    // « Mes informations » attend la session : le réglage, s'il existait, serait déjà rendu.
+    expect(await screen.findByRole('heading', { level: 2, name: 'Mes informations' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Notifications par e-mail' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('switch')).not.toBeInTheDocument()
   })
 
   it('n’a aucun <main> (celui du Layout est le seul) et aucune violation jest-axe', async () => {

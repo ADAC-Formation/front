@@ -26,3 +26,9 @@ Branche `feature/profile` (depuis `dev`). Contrat : `tech.md` §1 (`GET /auth/me
 ## P5 — Libellé du rôle
 
 - **Décision** : le rôle est affiché avec `roleLabels` (« Chargée de formation », « Formateur », « Stagiaire », D33).
+
+## P6 — Le stagiaire n'a plus le réglage des e-mails (NOTES-04)
+- Date : 2026-11-20
+- **Décision** (Manon) : « Notifications par e-mail » est retiré du profil du stagiaire, qui doit toujours recevoir les e-mails (Qualiopi ind. 30 : questionnaire à froid six mois après la formation). Le formateur et la chargée de formation gardent l'interrupteur (P3 inchangé pour eux). Modifie P1 et P3 pour le stagiaire.
+- **Back** : il saute encore les comptes à `emailNotificationsEnabled = false` ; envoi forcé et remise à `true` des comptes déjà coupés proposés à Charlotte (`points-pour-charlotte.md` Q17), à décider avec Manon (D66).
+- **Alternatives écartées** : laisser l'interrupteur désactivé et coché (un réglage qu'on ne peut pas changer n'apporte rien) ; rallumer le champ depuis le front à l'ouverture du profil (écriture cachée, ne couvre pas qui n'ouvre jamais son profil).

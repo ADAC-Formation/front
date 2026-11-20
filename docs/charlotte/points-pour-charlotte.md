@@ -212,6 +212,13 @@ Pour afficher, sur le profil d'un stagiaire, ce qu'il a envoyé dans chacune de 
 
 Proposition : `GET /api/users/{id}/inscriptions` → `{ id, formation }[]` (SUPER_ADMIN : toutes ; ADMIN : celles de ses formations ; la même règle que `GET /api/documents?inscriptionId=`). Le front passera à cet appel unique dès qu'il existe.
 
+### Q17 — Toujours envoyer les e-mails de notification au stagiaire (NOTES-04, Qualiopi ind. 30) — nouveau, 2026-11-20
+Décision de Manon : le stagiaire doit toujours recevoir les e-mails, notamment le futur questionnaire à froid (six mois après la formation). Le front a retiré l'interrupteur « Notifications par e-mail » du profil du stagiaire ; le formateur et la chargée de formation le gardent.
+
+Côté back, rien n'empêche encore un stagiaire d'être sans e-mails : `EmailServiceImpl.sendNotificationEmail` saute tout compte à `emailNotificationsEnabled = false`, et `PATCH /users/me` accepte ce champ pour tous les rôles. Sans l'interrupteur, un stagiaire qui l'aurait coupé avant ne pourrait plus le rallumer (en local au 2026-11-20 : aucun, les 13 stagiaires sont à `true`).
+
+Proposition : (1) envoyer la notification au stagiaire quel que soit le champ (ou refuser `emailNotificationsEnabled` de `PATCH /users/me` pour le rôle STAGIAIRE) ; (2) remettre à `true` les stagiaires déjà à `false` (migration), si des comptes existent en production. À décider avec Manon (D66 : change ce que l'utilisateur reçoit, et la migration touche le schéma de données) : rien n'est codé côté back.
+
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
 Règle appliquée : **`tech.md` l'emporte** (D40). La colonne « Décision » est à trancher par Manon, puis à communiquer à Charlotte.
