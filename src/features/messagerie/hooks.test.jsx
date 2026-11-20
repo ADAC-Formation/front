@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { http, HttpResponse } from 'msw'
 import { renderWithProviders } from '../../test/render'
 import { server } from '../../test/msw/server'
-import { API_URL, mockSession } from '../../test/session'
+import { API_URL, USERS, mockSession } from '../../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList } from '../../test/accounts'
 import { FORMATIONS, mockFormationList } from '../../test/formations'
 import {
@@ -14,6 +14,7 @@ import {
   mockConversations,
   mockGroupPreview,
   mockMarkRead,
+  mockRecipients,
   mockSendGroupMessage,
   mockSendMessage,
   mockThread,
@@ -275,45 +276,73 @@ describe('useRecipients', () => {
 
   const names = async () => (await screen.findAllByRole('listitem')).map((li) => li.textContent)
 
-  it('chargée de formation : formateurs et stagiaires actifs', async () => {
+  // Ce que le back laisse contacter (Q14), plus large que la règle H1 : tout le monde, actifs ou non.
+  const BACK_LIST = [USERS.SUPER_ADMIN, ...FORMATEURS, ...STAGIAIRES]
+
+  it('chargée de formation : formateurs et stagiaires actifs, sans appeler /messages/recipients', async () => {
     mockSession('SUPER_ADMIN')
     mockConversations([])
     const formateurs = mockAccountList('formateurs', FORMATEURS)
     mockAccountList('stagiaires', STAGIAIRES)
+    const endpoint = mockRecipients(BACK_LIST)
     renderWithProviders(<Probe />)
     expect(await names()).toEqual(['Anne', 'Léa'])
     expect(formateurs.urls[0]).toContain('active=true')
+    expect(endpoint.count).toBe(0)
   })
 
-  it('formateur : stagiaires actifs et chargée de formation connue par une conversation', async () => {
+  it('formateur : ses stagiaires, plus la chargée de formation trouvée par /messages/recipients (sans conversation)', async () => {
     mockSession('ADMIN')
-    mockConversations([{ ...CONVERSATIONS[1], unreadCount: 0 }])
+    mockConversations([])
     mockAccountList('stagiaires', STAGIAIRES)
+    mockRecipients(BACK_LIST)
     renderWithProviders(<Probe />)
     expect(await names()).toEqual(['Léa', 'Chargée'])
   })
 
-  it('stagiaire : formateurs de ses formations, sans doublon', async () => {
+  it('formateur : ne reprend pas les autres formateurs que le back autorise (règle H1 conservée)', async () => {
+    mockSession('ADMIN')
+    mockConversations([])
+    mockAccountList('stagiaires', [STAGIAIRES[0]])
+    mockRecipients(BACK_LIST)
+    renderWithProviders(<Probe />)
+    await names()
+    expect(screen.queryByText('Anne')).not.toBeInTheDocument()
+  })
+
+  it('stagiaire : formateurs de ses formations (sans doublon) plus la chargée, sans les autres formateurs', async () => {
     mockSession('STAGIAIRE')
     mockConversations([])
     mockFormationList([FORMATIONS[0], { ...FORMATIONS[0], id: 102 }])
+    mockRecipients(BACK_LIST)
     renderWithProviders(<Probe />)
-    expect(await names()).toEqual(['Formateur'])
+    expect(await names()).toEqual(['Formateur', 'Chargée'])
+    expect(screen.queryByText('Anne')).not.toBeInTheDocument()
   })
 
-  it('ne lance aucun appel de destinataires tant qu\'il est désactivé', async () => {
-    mockSession('SUPER_ADMIN')
+  it('ne lance aucun appel de destinataires tant que le hook est désactivé', async () => {
+    mockSession('ADMIN')
     const conversations = mockConversations([])
-    const formateurs = mockAccountList('formateurs', FORMATEURS)
     const stagiaires = mockAccountList('stagiaires', STAGIAIRES)
+    const endpoint = mockRecipients(BACK_LIST)
     renderWithProviders(<Probe enabled={false} />)
     await new Promise((resolve) => setTimeout(resolve, 80))
-    expect(conversations.count + formateurs.count + stagiaires.count).toBe(0)
+    expect(conversations.count + stagiaires.count + endpoint.count).toBe(0)
   })
 
-  it('signale une erreur du back', async () => {
+  it('signale une erreur de /messages/recipients', async () => {
+    mockSession('ADMIN')
+    mockConversations([])
+    mockAccountList('stagiaires', STAGIAIRES)
+    mockRecipients([], { errorStatus: 500 })
+    renderWithProviders(<Probe />)
+    expect(await screen.findByText('erreur')).toBeInTheDocument()
+  })
+
+  it('signale une erreur des formations (stagiaire)', async () => {
     mockSession('STAGIAIRE')
     mockConversations([])
+    mockRecipients(BACK_LIST)
     server.use(http.get(`${API_URL}/formations`, () => HttpResponse.json({ status: 500, message: 'x', details: [] }, { status: 500 })))
     renderWithProviders(<Probe />)
     expect(await screen.findByText('erreur')).toBeInTheDocument()

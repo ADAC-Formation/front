@@ -39,6 +39,13 @@ export async function sendGroupMessage({ filter, content }) {
   return data
 }
 
+// Utilisateurs que le back laisse l'appelant contacter (Q14, tech.md § 7), l'appelant exclu. Plus large que la règle
+// H1 du front : seule la chargée de formation en est reprise (H19, `useRecipients`).
+export async function listRecipients() {
+  const { data } = await apiClient.get('/messages/recipients')
+  return data
+}
+
 // Marque tout le fil comme lu en un seul appel (Q15, tech.md § 7) : `conversationId` est l'id de l'autre
 // participant ; le back marque les messages non lus reçus de cette personne (idempotent, 204, 404 si inconnue).
 export async function markConversationRead(conversationId) {

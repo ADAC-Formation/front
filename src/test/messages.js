@@ -89,6 +89,20 @@ export function mockSendMessage({ errorStatus, errorMessage = 'Refusé', delayMs
   return calls
 }
 
+// GET /messages/recipients (Q14) : les utilisateurs que le BACK laisse l'appelant contacter, plus large que la règle H1
+// du front (formateur : tous les formateurs et stagiaires actifs ; stagiaire : tous les formateurs actifs). Le front
+// n'en garde que la chargée de formation (H19). `calls.count` compte les requêtes.
+export function mockRecipients(users = [USERS.SUPER_ADMIN], { errorStatus } = {}) {
+  const calls = { count: 0 }
+  server.use(
+    http.get(`${API_URL}/messages/recipients`, () => {
+      calls.count += 1
+      return errorStatus ? apiError(errorStatus, 'Erreur serveur') : HttpResponse.json(users)
+    }),
+  )
+  return calls
+}
+
 // GET /messages/group/preview : les destinataires donnés, ou l'erreur demandée. Mémorise les adresses reçues
 // (`calls.searches`, une `URLSearchParams` par appel) pour vérifier la sérialisation de `userIds`.
 export function mockGroupPreview(recipients = [lea], { errorStatus, errorMessage = 'Erreur serveur', delayMs = 0 } = {}) {

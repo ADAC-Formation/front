@@ -9,9 +9,11 @@ import { ROLES } from '../../utils/roles'
 
 const isActive = (user) => user.isActive !== false
 
-// Les chargées de formation connues par ailleurs (conversations, formateur d'une formation).
-function knownTrainingOfficers({ conversations = [], formations = [] }) {
+// Les chargées de formation connues : celles de `GET /messages/recipients` (`contacts`, plus large que H1 : on n'en
+// garde que les chargées, H19), puis celles des conversations et des formations (formateur d'une formation).
+function knownTrainingOfficers({ contacts = [], conversations = [], formations = [] }) {
   const candidates = [
+    ...contacts,
     ...conversations.map((conversation) => conversation.participant),
     ...formations.map((formation) => formation.formateur),
   ]
