@@ -16,6 +16,17 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-20 — Message groupé : mêmes destinataires pour tous les rôles, comptes suspendus écartés ; `tech.md` corrigé (prêt à relire)
+
+- **Branche et commit** (clone `back-readonly`) : `fix/group-message-recipient-rules`, `4b9d488`. **Empilée sur** `feature/group-message-excluded-users` (même méthode `resolveGroupRecipients`) : relire et merger celle-là d'abord. Pas poussé.
+- **Quoi et pourquoi** : (1) un message groupé de la chargée atteignait les stagiaires jamais activés, celui du formateur non (`canMessage` exige `isActive` pour un ADMIN) ; or le message les attend dans leur fil et leur cloche. Décision de Manon : même règle pour tous. (2) Les comptes **suspendus** (activés un jour, puis désactivés) ne reçoivent plus de message groupé, même de la chargée. (3) `tech.md` disait qu'un aperçu de groupe vide répond 400 ; il répond `200 []` (c'est l'envoi qui répond 400).
+- **Règle** : actif → `canMessage` comme avant ; inactif → écarté si `hasEverActivated`, sinon reçu par la chargée et par le formateur. Les envois individuels ne changent pas.
+- **Fichiers touchés** : `service/MessageServiceImpl.java` (`canReceiveGroupMessage`, `ActivationService` injecté), `docs/tech.md`, `MessageServiceImplTest` (3 tests ajoutés, 1 réécrit : « jamais activé » reçu par la chargée et le formateur, suspendu écarté, aperçu).
+- **Tests** : rouge avant, vert après ; `Message*Test` : 91 verts.
+- **Contrat** : `tech.md` (section groupée et aperçu). Aucun champ ni code HTTP nouveau.
+- **À vérifier / risques** : un appel `hasEverActivated` (une requête) par destinataire inactif d'un groupe ; négligeable pour des formations, à surveiller sur `MISSING_DOCS` si beaucoup de comptes inactifs.
+- **Lien avec** : À7 b et c de `points-pour-charlotte.md`.
+
 ### 2026-11-20 — Message groupé : `filter.excludedUserIds` pour retirer des personnes d'un envoi (prêt à relire)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/group-message-excluded-users`, `9974577`. Pas poussé : à pousser et ouvrir en PR quand Manon le décide.
