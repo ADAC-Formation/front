@@ -2,7 +2,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { describe, expect, it } from 'vitest'
-import { mockDocumentApi } from '../../../test/documents'
+import { mockDocumentApi, trimmedUser } from '../../../test/documents'
 import { FORMATIONS, mockFormationList, mockFormationListError } from '../../../test/formations'
 import { renderWithProviders } from '../../../test/render'
 import { USERS, mockSession } from '../../../test/session'
@@ -40,7 +40,7 @@ const api = (documents = MY_DOCUMENTS, options = {}) =>
 function renderSummary(formations = mine) {
   mockSession('STAGIAIRE')
   mockFormationList(formations)
-  return renderWithProviders(<DocumentsSummary />)
+  return renderWithProviders(<DocumentsSummary user={USERS.STAGIAIRE} />)
 }
 
 describe('DocumentsSummary', () => {
@@ -102,7 +102,7 @@ describe('DocumentsSummary', () => {
     api()
     mockSession('STAGIAIRE')
     mockFormationListError(500)
-    renderWithProviders(<DocumentsSummary />)
+    renderWithProviders(<DocumentsSummary user={USERS.STAGIAIRE} />)
     expect(await screen.findByRole('alert')).toHaveTextContent('Erreur serveur')
     mockFormationList(mine)
     await userEvent.click(screen.getByRole('button', { name: 'Réessayer' }))
@@ -135,6 +135,69 @@ describe('DocumentsSummary', () => {
   it('n’a aucune violation jest-axe', async () => {
     api()
     const { container } = renderSummary()
+    await waitFor(() => expect(screen.getAllByRole('listitem')).toHaveLength(3))
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+// NOTES-08 : le formateur voit dans son profil les documents qu'il a lui-même déposés sur ses formations
+// (le back ne lui permet de déposer que sur une formation, jamais sur une inscription).
+describe('DocumentsSummary (formateur)', () => {
+  const [, , archived] = FORMATIONS
+  const myFormations = [psc1, archived]
+  const formationDocument = (id, fileName, formationId, uploader, createdAt) => ({
+    ...document(id, fileName, null, createdAt),
+    uploadedBy: trimmedUser(uploader),
+    formationId,
+  })
+  const FORMATION_DOCUMENTS = [
+    formationDocument(701, 'Support PSC1.pdf', 101, USERS.ADMIN, '2026-03-01T10:00:00'),
+    formationDocument(702, 'Programme.pdf', 101, USERS.SUPER_ADMIN, '2026-03-04T10:00:00'),
+    formationDocument(703, 'Fiche gestes.pdf', 103, USERS.ADMIN, '2025-11-01T10:00:00'),
+    formationDocument(704, 'Récent.pdf', 103, USERS.ADMIN, '2026-03-06T10:00:00'),
+  ]
+
+  function renderFormateurSummary(formations = myFormations) {
+    mockSession('ADMIN')
+    mockFormationList(formations)
+    return renderWithProviders(<DocumentsSummary user={USERS.ADMIN} />)
+  }
+
+  it('liste seulement ses propres dépôts, le plus récent d’abord, avec un lien vers la formation', async () => {
+    mockDocumentApi(FORMATION_DOCUMENTS, { uploader: USERS.ADMIN })
+    renderFormateurSummary()
+    await waitFor(() => expect(screen.getAllByRole('listitem')).toHaveLength(3))
+    const names = screen.getAllByRole('listitem').map((item) => item.querySelector('p').textContent)
+    expect(names).toEqual(['Récent.pdf', 'Support PSC1.pdf', 'Fiche gestes.pdf'])
+    expect(screen.queryByText('Programme.pdf')).not.toBeInTheDocument()
+    const item = screen.getByText('Support PSC1.pdf').closest('li')
+    expect(within(item).getByRole('link', { name: 'Premiers secours PSC1' })).toHaveAttribute('href', '/formations/101')
+  })
+
+  it('n’interroge que ses formations, jamais une inscription', async () => {
+    const { calls } = mockDocumentApi(FORMATION_DOCUMENTS, { uploader: USERS.ADMIN })
+    renderFormateurSummary()
+    await screen.findByText('Fiche gestes.pdf')
+    expect(calls.list).toBe(2)
+    expect(calls.listUrls.every((url) => url.includes('formationId=') && !url.includes('inscriptionId'))).toBe(true)
+  })
+
+  it('affiche un message sans formation attribuée', async () => {
+    mockDocumentApi([], { uploader: USERS.ADMIN })
+    renderFormateurSummary([])
+    expect(await screen.findByText('Aucune formation ne vous est attribuée pour le moment')).toBeInTheDocument()
+  })
+
+  it('explique où déposer quand il n’a rien déposé', async () => {
+    mockDocumentApi([FORMATION_DOCUMENTS[1]], { uploader: USERS.ADMIN })
+    renderFormateurSummary()
+    expect(await screen.findByText('Aucun document déposé pour le moment')).toBeInTheDocument()
+    expect(screen.getByText(/dans la section « Documents »/)).toBeInTheDocument()
+  })
+
+  it('n’a aucune violation jest-axe', async () => {
+    mockDocumentApi(FORMATION_DOCUMENTS, { uploader: USERS.ADMIN })
+    const { container } = renderFormateurSummary()
     await waitFor(() => expect(screen.getAllByRole('listitem')).toHaveLength(3))
     expect(await axe(container)).toHaveNoViolations()
   })

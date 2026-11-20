@@ -2,6 +2,7 @@ import { useMutation, useQueries, useQuery, useQueryClient } from '@tanstack/rea
 import { deleteDocument, downloadDocument, listDocuments, uploadDocument } from './api'
 import { inscriptionIdOf, validateDocumentFile } from './documentFiles'
 import { saveBlob } from './saveBlob'
+import { ROLES } from '../../utils/roles'
 
 // Clé de la liste : formation `['documents', formationId]` (027), inscription
 // `['documents', 'inscription', inscriptionId]` (028) ; les deux commencent par `['documents']`.
@@ -18,22 +19,42 @@ export function useDocuments(target, { enabled = true } = {}) {
   })
 }
 
-// Tous les dépôts du stagiaire, une liste par formation où il est inscrit (`inscriptionId` connu), partageant
-// la clé de `useDocuments` : un dépôt ou une suppression sur la page d'une formation met le résumé à jour.
-// `documents` : le plus récent d'abord ; `formationByInscriptionId` : où chaque document a été déposé ;
+// Où lire les dépôts d'un utilisateur, selon son rôle (tech.md § 6) : le stagiaire dépose sur ses inscriptions
+// (formations sans `inscriptionId` ignorées, G11) ; le formateur dépose sur ses formations, dont la liste
+// contient aussi les documents des autres : on ne garde que les siens (NOTES-08).
+function sourcesOf(formations, user) {
+  if (user?.role === ROLES.STAGIAIRE) {
+    return formations
+      .filter((formation) => inscriptionIdOf(formation) !== null)
+      .map((formation) => ({ formation, target: { inscriptionId: inscriptionIdOf(formation) } }))
+  }
+  return formations.map((formation) => ({ formation, target: { formationId: formation.id } }))
+}
+
+const isUploadedBy = (user) => (document) => user?.role === ROLES.STAGIAIRE || document.uploadedBy?.id === user?.id
+
+// Tous les dépôts de `user` (stagiaire ou formateur), une liste par formation, partageant la clé de
+// `useDocuments` : un dépôt ou une suppression sur la page d'une formation met le résumé à jour.
+// `documents` : le plus récent d'abord ; `formationOf(document)` : où il a été déposé ;
 // `errors` : une erreur par liste en échec (les autres listes restent affichées) ; `refetch` ne relance que celles-ci.
-export function useMyDocuments(formations) {
-  const enrolled = formations.filter((formation) => inscriptionIdOf(formation) !== null)
+export function useMyDocuments(formations, user) {
+  const sources = sourcesOf(formations, user)
   const queries = useQueries({
-    queries: enrolled.map((formation) => {
-      const target = { inscriptionId: inscriptionIdOf(formation) }
-      return { queryKey: documentsKey(target), queryFn: () => listDocuments(target) }
-    }),
+    queries: sources.map(({ target }) => ({ queryKey: documentsKey(target), queryFn: () => listDocuments(target) })),
   })
   const byDate = (a, b) => new Date(b.createdAt ?? 0) - new Date(a.createdAt ?? 0)
+  const formationOf = (document) =>
+    sources.find(({ target }) =>
+      target.inscriptionId != null
+        ? target.inscriptionId === document.inscriptionId
+        : target.formationId === document.formationId,
+    )?.formation
   return {
-    documents: queries.flatMap((query) => query.data ?? []).sort(byDate),
-    formationByInscriptionId: new Map(enrolled.map((formation) => [inscriptionIdOf(formation), formation])),
+    documents: queries
+      .flatMap((query) => query.data ?? [])
+      .filter(isUploadedBy(user))
+      .sort(byDate),
+    formationOf,
     isLoading: queries.some((query) => query.isLoading),
     isSettled: queries.every((query) => !query.isLoading),
     errors: queries.filter((query) => query.isError).map((query) => query.error),

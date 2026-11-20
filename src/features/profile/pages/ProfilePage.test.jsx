@@ -39,20 +39,28 @@ describe('ProfilePage', () => {
     expect(screen.queryByRole('group', { name: 'Zone de dépôt de documents' })).not.toBeInTheDocument()
   })
 
-  it.each(['ADMIN', 'SUPER_ADMIN'])(
-    '%s : titre seul, sans « Mes documents » ni aucun appel (formations ou documents)',
-    async (role) => {
-      // Aucun mock de formations ni de documents : un appel non déclaré ferait échouer le test.
-      renderProfile(role)
-      expect(await screen.findByRole('heading', { level: 1, name: 'Mon profil' })).toBeInTheDocument()
-      expect(screen.queryByRole('heading', { name: 'Mes documents' })).not.toBeInTheDocument()
-    },
-  )
+  it('formateur : résumé « Mes documents » de ses propres dépôts, avec le lien vers la formation (NOTES-08)', async () => {
+    mockFormationList([FORMATIONS[0]])
+    mockDocumentApi([{ ...myDocument, uploadedBy: USERS.ADMIN, formationId: 101, inscriptionId: null }], {
+      uploader: USERS.ADMIN,
+    })
+    renderProfile('ADMIN')
+    expect(await screen.findByRole('heading', { level: 2, name: 'Mes documents' })).toBeInTheDocument()
+    const item = (await screen.findByText('Justificatif.pdf')).closest('li')
+    expect(within(item).getByRole('link', { name: 'Premiers secours PSC1' })).toHaveAttribute('href', '/formations/101')
+  })
+
+  it('SUPER_ADMIN : titre seul, sans « Mes documents » ni aucun appel (formations ou documents)', async () => {
+    // Aucun mock de formations ni de documents : un appel non déclaré ferait échouer le test.
+    renderProfile('SUPER_ADMIN')
+    expect(await screen.findByRole('heading', { level: 1, name: 'Mon profil' })).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Mes documents' })).not.toBeInTheDocument()
+  })
 
   it.each(['STAGIAIRE', 'ADMIN', 'SUPER_ADMIN'])('%s : informations, notifications par e-mail et mot de passe', async (role) => {
-    if (role === 'STAGIAIRE') {
+    if (role !== 'SUPER_ADMIN') {
       mockFormationList([])
-      mockDocumentApi([], { uploader: USERS.STAGIAIRE })
+      mockDocumentApi([], { uploader: USERS[role] })
     }
     renderProfile(role)
     expect(await screen.findByRole('heading', { level: 2, name: 'Mes informations' })).toBeInTheDocument()

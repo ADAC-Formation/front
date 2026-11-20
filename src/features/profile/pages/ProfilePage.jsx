@@ -9,7 +9,10 @@ import ProfileInfo from '../components/ProfileInfo'
 import styles from './ProfilePage.module.css'
 
 // Page de profil (tickets 028, 036, 044 ; G9, G16, P1-P5) : informations, notifications par e-mail,
-// mot de passe et, pour le seul stagiaire, le résumé de « Mes documents » (le dépôt est sur la page de chaque formation).
+// mot de passe et, pour le stagiaire et le formateur (NOTES-08), le résumé de « Mes documents » (le dépôt est sur la
+// page de chaque formation). La chargée de formation n'a pas ce résumé.
+const HAS_OWN_DOCUMENTS = [ROLES.STAGIAIRE, ROLES.ADMIN]
+
 const ProfilePage = () => {
   const { user } = useCurrentUser()
 
@@ -20,7 +23,7 @@ const ProfilePage = () => {
       {user && <ProfileInfo user={user} className={styles.section} />}
       <EmailNotificationToggle className={styles.section} />
       <ChangePasswordForm className={styles.section} />
-      {user?.role === ROLES.STAGIAIRE && <DocumentsSummary className={styles.section} />}
+      {HAS_OWN_DOCUMENTS.includes(user?.role) && <DocumentsSummary user={user} className={styles.section} />}
     </PageShell>
   )
 }

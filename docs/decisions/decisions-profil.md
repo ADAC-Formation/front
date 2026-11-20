@@ -5,7 +5,7 @@ Branche `feature/profile` (depuis `dev`). Contrat : `tech.md` §1 (`GET /auth/me
 ## P1 — Contenu de la page
 
 - **Date** : 2026-11-09
-- **Décision** : `/profile` affiche, pour tous les rôles, quatre sections : « Mes informations » (prénom, nom, e-mail, rôle, en lecture seule), « Notifications par e-mail » (interrupteur), « Mot de passe » (formulaire) et, pour le stagiaire seulement, « Mes documents » (résumé, G16).
+- **Décision** : `/profile` affiche, pour tous les rôles, quatre sections : « Mes informations » (prénom, nom, e-mail, rôle, en lecture seule), « Notifications par e-mail » (interrupteur), « Mot de passe » (formulaire) et, pour le stagiaire seulement, « Mes documents » (résumé, G16). **Modifié le 2026-11-20 (G18, NOTES-08)** : le formateur a aussi « Mes documents » (ses propres dépôts).
 - **Pourquoi** : c'est le contenu du ticket 044, plus l'interrupteur du ticket 036 qui vit sur la même page.
 
 ## P2 — Informations en lecture seule
