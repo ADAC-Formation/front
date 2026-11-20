@@ -38,17 +38,18 @@ export function isFilterComplete(filter) {
   }
 }
 
-// Filtres dont la liste d'aperçu peut être décochée personne par personne (H20). Réservé à la chargée de formation :
-// le back refuse `MANUAL` au formateur, et c'est `MANUAL` qui porte la liste réduite à l'envoi.
+// Filtres dont la liste d'aperçu peut être décochée personne par personne (H20), pour la chargée de formation et
+// le formateur : le back retire `excludedUserIds` des destinataires résolus.
 export function canExcludeRecipients(role, filter) {
-  return role === ROLES.SUPER_ADMIN && (filter?.type === FILTER_TYPES.FORMATION || filter?.type === FILTER_TYPES.MISSING_DOCS)
+  return filterTypesFor(role).includes(filter?.type) && filter.type !== FILTER_TYPES.MANUAL
 }
 
-// Filtre réellement envoyé : celui du formulaire, ou `MANUAL` avec les personnes encore cochées si l'on en a
-// décoché au moins une (`kept` = destinataires de l'aperçu restant cochés, `previewed` = tous ceux de l'aperçu).
+// Filtre réellement envoyé : celui du formulaire, avec les personnes décochées en `excludedUserIds`. Le champ
+// n'existe pas sans exclusion, et n'est jamais envoyé à l'aperçu (qui liste tout le monde, cases comprises).
 export function effectiveFilter(filter, previewed, kept) {
   if (kept.length === previewed.length) return filter
-  return { type: FILTER_TYPES.MANUAL, userIds: kept.map((recipient) => recipient.id) }
+  const keptIds = new Set(kept.map((recipient) => recipient.id))
+  return { ...filter, excludedUserIds: previewed.filter((recipient) => !keptIds.has(recipient.id)).map((recipient) => recipient.id) }
 }
 
 // Seuls les champs du type choisi partent au back : un champ d'un autre type serait refusé ou ignoré.
@@ -70,5 +71,6 @@ export function toPreviewParams(filter) {
 
 // Corps de POST /messages/send, branche groupée. Le texte est envoyé tel quel (H9).
 export function toSendBody(filter, content) {
-  return { content, filter: { type: filter.type, ...filterFields(filter) } }
+  const excluded = filter.excludedUserIds?.length ? { excludedUserIds: filter.excludedUserIds } : {}
+  return { content, filter: { type: filter.type, ...filterFields(filter), ...excluded } }
 }

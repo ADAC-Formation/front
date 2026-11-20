@@ -16,6 +16,16 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-20 — Message groupé : `filter.excludedUserIds` pour retirer des personnes d'un envoi (prêt à relire)
+
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/group-message-excluded-users`, `9974577`. Pas poussé : à pousser et ouvrir en PR quand Manon le décide.
+- **Quoi et pourquoi** : sur la page « Message groupé » du front, chaque personne de l'aperçu a une case (cochée par défaut, H20) pour la retirer de l'envoi, y compris pour le formateur. Le back n'avait pas d'exclusion, et `MANUAL` est réservé à la chargée de formation. Nouveau champ optionnel `filter.excludedUserIds` : les destinataires résolus (tout type de filtre) dont l'id y figure sont retirés avant l'envoi. Aucun nouveau droit : le formateur reste limité à ses formations, la règle `canMessage` s'applique toujours. Tout exclure donne le même 400 que « aucun destinataire ».
+- **Fichiers touchés** : `dto/request/SendMessageRequest.java` (champ `excludedUserIds` + constructeur à 3 arguments conservé), `service/MessageServiceImpl.java` (`resolveGroupRecipients`), `docs/tech.md` (§ POST /messages/send) ; tests dans `MessageServiceImplTest` (4 : chargée, formateur sur sa formation, tout exclu → 400, id hors groupe sans effet).
+- **Tests** : rouge (compilation) avant, vert après ; `Message*Test` : 87 verts. Vérifié sur le back local : formateur, formation à 4 stagiaires, une exclue → 3 destinataires ; quatre exclues → 400.
+- **Contrat** : `tech.md` change (champ optionnel, rétrocompatible). L'aperçu (`GET /messages/group/preview`) ne prend pas le paramètre : il liste tout le monde, les cases du front font le reste.
+- **À vérifier / risques** : un id inconnu ou hors groupe dans `excludedUserIds` est ignoré sans erreur (voulu, pour qu'une liste périmée ne bloque pas l'envoi).
+- **Lien avec** : H20 de `decisions-messagerie.md`.
+
 ### 2026-11-19 — Les notifications de message n'étaient jamais enregistrées : correctif (mergé)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `fix/message-notifications-not-persisted`, `42dbdcb`. Mergé dans `dev` le 2026-11-20 (PR #22).

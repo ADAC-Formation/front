@@ -112,6 +112,10 @@ describe('toSendBody', () => {
   })
 
   it('« Sélection libre » : userIds seulement, sans formationId', () => {
+    expect(toSendBody({ type: FILTER_TYPES.FORMATION, formationId: '101', excludedUserIds: [4] }, 'Bonjour')).toEqual({
+      content: 'Bonjour',
+      filter: { type: 'FORMATION', formationId: 101, excludedUserIds: [4] },
+    })
     expect(toSendBody({ type: FILTER_TYPES.MANUAL, userIds: [4, 7], formationId: '101' }, 'Bonjour')).toEqual({
       content: 'Bonjour',
       filter: { type: 'MANUAL', userIds: [4, 7] },

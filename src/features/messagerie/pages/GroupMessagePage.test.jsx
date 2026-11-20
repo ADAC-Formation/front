@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { Route, Routes, useLocation } from 'react-router'
 import { axe } from 'jest-axe'
 import { renderWithProviders } from '../../../test/render'
-import { mockSession } from '../../../test/session'
+import { USERS, mockSession } from '../../../test/session'
 import { STAGIAIRES, mockAccountList } from '../../../test/accounts'
 import { mockFormationList } from '../../../test/formations'
 import { STAGIAIRE_LEA, mockGroupPreview, mockSendGroupMessage } from '../../../test/messages'
@@ -276,7 +276,7 @@ describe('GroupMessagePage — décocher des destinataires (H20)', () => {
     expect(await screen.findByRole('heading', { name: 'Envoyer ce message à 1 personne ?' })).toBeInTheDocument()
   })
 
-  it('envoie alors aux seules personnes cochées (filtre MANUAL), et recocher les remet', async () => {
+  it('envoie alors le filtre avec les personnes décochées en excludedUserIds', async () => {
     mockGroupPreview(RECIPIENTS)
     const calls = mockSendGroupMessage([STAGIAIRE_LEA])
     renderPage()
@@ -284,7 +284,7 @@ describe('GroupMessagePage — décocher des destinataires (H20)', () => {
     await userEvent.click(screen.getByRole('checkbox', { name: 'Marc Dubois' }))
     await confirmSend()
     expect(await screen.findByText('liste des messages, envoyé à 1')).toBeInTheDocument()
-    expect(calls.bodies).toEqual([{ content: 'Bonjour Léa', filter: { type: 'MANUAL', userIds: [20] } }])
+    expect(calls.bodies).toEqual([{ content: 'Bonjour Léa', filter: { type: 'FORMATION', formationId: 101, excludedUserIds: [22] } }])
   })
 
   it('recocher une personne annule son exclusion, le filtre de départ est envoyé', async () => {
@@ -317,12 +317,16 @@ describe('GroupMessagePage — décocher des destinataires (H20)', () => {
     expect(await screen.findByRole('checkbox', { name: 'Marc Dubois' })).toBeChecked()
   })
 
-  it('formateur : pas de cases (le back réserve MANUAL à la chargée de formation, point pour Charlotte)', async () => {
+  it('formateur : mêmes cases, et il envoie lui aussi avec excludedUserIds', async () => {
     mockGroupPreview(RECIPIENTS)
+    const calls = mockSendGroupMessage([marc], { sender: USERS.ADMIN })
     renderPage('ADMIN')
     await chooseFormation()
-    expect(await screen.findByText('Léa Petit')).toBeInTheDocument()
-    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+    await userEvent.click(await screen.findByRole('checkbox', { name: 'Léa Petit' }))
+    await userEvent.type(field(), 'Bonjour Marc')
+    await confirmSend()
+    await screen.findByText('liste des messages, envoyé à 1')
+    expect(calls.bodies).toEqual([{ content: 'Bonjour Marc', filter: { type: 'FORMATION', formationId: 101, excludedUserIds: [20] } }])
   })
 })
 
