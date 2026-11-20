@@ -134,7 +134,11 @@ const MessagesPage = () => {
         </div>
       </div>
 
-      {groupSent !== undefined && <Alert variant="success">{sentLabel(groupSent)}</Alert>}
+      {groupSent !== undefined && (
+        <div className={styles.notice}>
+          <Alert variant="success">{sentLabel(groupSent)}</Alert>
+        </div>
+      )}
 
       <section className={styles.toolbar}>
         <div className={styles.searchContainer}>

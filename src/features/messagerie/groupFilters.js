@@ -38,6 +38,19 @@ export function isFilterComplete(filter) {
   }
 }
 
+// Filtres dont la liste d'aperçu peut être décochée personne par personne (H20). Réservé à la chargée de formation :
+// le back refuse `MANUAL` au formateur, et c'est `MANUAL` qui porte la liste réduite à l'envoi.
+export function canExcludeRecipients(role, filter) {
+  return role === ROLES.SUPER_ADMIN && (filter?.type === FILTER_TYPES.FORMATION || filter?.type === FILTER_TYPES.MISSING_DOCS)
+}
+
+// Filtre réellement envoyé : celui du formulaire, ou `MANUAL` avec les personnes encore cochées si l'on en a
+// décoché au moins une (`kept` = destinataires de l'aperçu restant cochés, `previewed` = tous ceux de l'aperçu).
+export function effectiveFilter(filter, previewed, kept) {
+  if (kept.length === previewed.length) return filter
+  return { type: FILTER_TYPES.MANUAL, userIds: kept.map((recipient) => recipient.id) }
+}
+
 // Seuls les champs du type choisi partent au back : un champ d'un autre type serait refusé ou ignoré.
 function filterFields(filter) {
   switch (filter.type) {

@@ -318,3 +318,8 @@
 
   cursor: pointer;
 }
+
+/* Confirmation d'un envoi groupé : à distance des boutons d'action de l'en-tête. */
+.notice {
+  margin-top: 1.25rem;
+}

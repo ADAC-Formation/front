@@ -69,3 +69,12 @@
 
   cursor: pointer;
 }
+
+/* Une case par destinataire (H20) : la ligne entière est cliquable. */
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  cursor: pointer;
+}

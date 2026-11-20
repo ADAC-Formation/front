@@ -10,7 +10,7 @@ import { PageShell } from '../../../templates/PageShell/PageShell'
 import { useCurrentUser } from '../../auth/hooks'
 import GroupFilters from '../components/GroupFilters'
 import RecipientPreview from '../components/RecipientPreview'
-import { filterTypesFor, isFilterComplete } from '../groupFilters'
+import { canExcludeRecipients, effectiveFilter, filterTypesFor, isFilterComplete } from '../groupFilters'
 import { useGroupPreview, useSendGroupMessage } from '../hooks'
 import { REMAINING_WARNING_THRESHOLD, remainingCharacters, validateMessage } from '../messageForm'
 import styles from './GroupMessagePage.module.css'
@@ -30,6 +30,8 @@ function sendErrorMessage(error) {
 const GroupMessageForm = ({ user }) => {
   const navigate = useNavigate()
   const [filter, setFilter] = useState(() => ({ type: filterTypesFor(user.role)[0], formationId: '', userIds: [] }))
+  // Destinataires décochés dans l'aperçu (H20) : tout le monde est coché au départ et à chaque changement de filtre.
+  const [excludedIds, setExcludedIds] = useState(() => new Set())
   const [confirmingContent, setConfirmingContent] = useState(null)
   const [sendError, setSendError] = useState(null)
 
@@ -41,9 +43,23 @@ const GroupMessageForm = ({ user }) => {
 
   const complete = isFilterComplete(filter)
   // Seulement un aperçu réussi : après un rechargement raté, TanStack garde l'ancienne liste en `data`.
-  const recipients = preview.isSuccess ? preview.data : []
+  const previewed = preview.isSuccess ? preview.data : []
+  const canExclude = canExcludeRecipients(user.role, filter)
+  const recipients = canExclude ? previewed.filter((recipient) => !excludedIds.has(recipient.id)) : previewed
   const count = recipients.length
   const canSend = complete && count > 0
+
+  const changeFilter = (next) => {
+    setFilter(next)
+    setExcludedIds(new Set())
+  }
+
+  const toggleRecipient = (id) =>
+    setExcludedIds((current) => {
+      const next = new Set(current)
+      if (!next.delete(id)) next.add(id)
+      return next
+    })
 
   const askConfirmation = ({ content }) => {
     setSendError(null)
@@ -53,7 +69,7 @@ const GroupMessageForm = ({ user }) => {
   const send = () => {
     if (isPending) return
     mutate(
-      { filter, content: confirmingContent },
+      { filter: effectiveFilter(filter, previewed, recipients), content: confirmingContent },
       {
         onSuccess: (message) => navigate('/messages', { state: { groupSent: message.recipients?.length ?? count } }),
         onError: (error) => {
@@ -66,11 +82,13 @@ const GroupMessageForm = ({ user }) => {
 
   return (
     <>
-      <GroupFilters user={user} filter={filter} onChange={setFilter} />
+      <GroupFilters user={user} filter={filter} onChange={changeFilter} />
 
       {complete && (
         <RecipientPreview
-          recipients={recipients}
+          recipients={previewed}
+          excludedIds={excludedIds}
+          onToggle={canExclude ? toggleRecipient : undefined}
           isLoading={preview.isLoading}
           error={preview.error}
           onRetry={preview.refetch}

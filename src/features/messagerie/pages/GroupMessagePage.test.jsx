@@ -244,6 +244,88 @@ describe('GroupMessagePage — confirmation et envoi', () => {
   })
 })
 
+describe('GroupMessagePage — décocher des destinataires (H20)', () => {
+  const confirmSend = async () => {
+    await userEvent.click(screen.getByRole('button', { name: /^Envoyer à \d+ destinataires?$/ }))
+    await userEvent.click(within(await screen.findByRole('dialog')).getByRole('button', { name: 'Envoyer' }))
+  }
+
+  it('chargée, filtre Formation : chaque destinataire a une case, cochée par défaut', async () => {
+    mockGroupPreview(RECIPIENTS)
+    renderPage()
+    await chooseFormation()
+    expect(await screen.findByRole('checkbox', { name: 'Léa Petit' })).toBeChecked()
+    expect(screen.getByRole('checkbox', { name: 'Marc Dubois' })).toBeChecked()
+  })
+
+  it('« Documents manquants » propose aussi les cases', async () => {
+    mockGroupPreview(RECIPIENTS)
+    renderPage()
+    await userEvent.click(await screen.findByRole('radio', { name: 'Documents manquants' }))
+    expect(await screen.findByRole('checkbox', { name: 'Léa Petit' })).toBeChecked()
+  })
+
+  it('décocher une personne baisse le décompte, le bouton et la confirmation', async () => {
+    mockGroupPreview(RECIPIENTS)
+    renderPage()
+    await readyToSend()
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Marc Dubois' }))
+    expect(screen.getByRole('button', { name: 'Envoyer à 1 destinataire' })).toBeEnabled()
+    expect(screen.getByText('1 sur 2 destinataires')).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: 'Envoyer à 1 destinataire' }))
+    expect(await screen.findByRole('heading', { name: 'Envoyer ce message à 1 personne ?' })).toBeInTheDocument()
+  })
+
+  it('envoie alors aux seules personnes cochées (filtre MANUAL), et recocher les remet', async () => {
+    mockGroupPreview(RECIPIENTS)
+    const calls = mockSendGroupMessage([STAGIAIRE_LEA])
+    renderPage()
+    await readyToSend('Bonjour Léa')
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Marc Dubois' }))
+    await confirmSend()
+    expect(await screen.findByText('liste des messages, envoyé à 1')).toBeInTheDocument()
+    expect(calls.bodies).toEqual([{ content: 'Bonjour Léa', filter: { type: 'MANUAL', userIds: [20] } }])
+  })
+
+  it('recocher une personne annule son exclusion, le filtre de départ est envoyé', async () => {
+    mockGroupPreview(RECIPIENTS)
+    const calls = mockSendGroupMessage(RECIPIENTS)
+    renderPage()
+    await readyToSend()
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Marc Dubois' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Marc Dubois' }))
+    await confirmSend()
+    await screen.findByText('liste des messages, envoyé à 2')
+    expect(calls.bodies[0].filter).toEqual({ type: 'FORMATION', formationId: 101 })
+  })
+
+  it('tout décocher désactive l envoi', async () => {
+    mockGroupPreview(RECIPIENTS)
+    renderPage()
+    await readyToSend()
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Léa Petit' }))
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Marc Dubois' }))
+    expect(screen.getByRole('button', { name: 'Envoyer' })).toBeDisabled()
+  })
+
+  it('changer de formation recoche tout le monde', async () => {
+    mockGroupPreview(RECIPIENTS)
+    renderPage()
+    await readyToSend()
+    await userEvent.click(screen.getByRole('checkbox', { name: 'Marc Dubois' }))
+    await chooseFormation('Excel niveau 1')
+    expect(await screen.findByRole('checkbox', { name: 'Marc Dubois' })).toBeChecked()
+  })
+
+  it('formateur : pas de cases (le back réserve MANUAL à la chargée de formation, point pour Charlotte)', async () => {
+    mockGroupPreview(RECIPIENTS)
+    renderPage('ADMIN')
+    await chooseFormation()
+    expect(await screen.findByText('Léa Petit')).toBeInTheDocument()
+    expect(screen.queryByRole('checkbox')).not.toBeInTheDocument()
+  })
+})
+
 describe('GroupMessagePage — accessibilité', () => {
   it('sans violation jest-axe, aperçu et texte affichés', async () => {
     mockGroupPreview(RECIPIENTS)
