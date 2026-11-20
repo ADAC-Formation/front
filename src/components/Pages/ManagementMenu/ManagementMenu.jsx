@@ -1,6 +1,6 @@
 import { BookOpen, GraduationCap, UserRound } from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks";
-import { canManageAccounts } from "../../../features/accounts/accountKinds";
+import { ACCOUNT_IMPORT_PATH, canManageAccounts } from "../../../features/accounts/accountKinds";
 import BackButton from "../../molecules/BackButton/BackButton";
 import ManagementTile from "../../molecules/ManagementTiles/ManagementTiles";
 import { PageShell } from "../../../templates/PageShell/PageShell";
@@ -26,6 +26,8 @@ const managementTiles = [
     listLabel: "Consulter profils existants",
     createPath: "/admin/formateurs/nouveau",
     listPath: "/admin/formateurs",
+    manageLabel: "Importer depuis Excel",
+    managePath: ACCOUNT_IMPORT_PATH,
   },
   {
     label: "Stagiaires",
@@ -35,6 +37,8 @@ const managementTiles = [
     listLabel: "Consulter profils existants",
     createPath: "/admin/stagiaires/nouveau",
     listPath: "/admin/stagiaires",
+    manageLabel: "Importer depuis Excel",
+    managePath: ACCOUNT_IMPORT_PATH,
   },
 ];
 

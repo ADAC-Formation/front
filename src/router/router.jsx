@@ -71,6 +71,8 @@ export const routes = [
               { path: "admin/formateurs/:id/modifier", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "formateurs" }) },
               { path: "admin/stagiaires/nouveau", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "stagiaires" }) },
               { path: "admin/stagiaires/:id/modifier", ...lazyPage(() => import("../features/accounts/pages/AccountFormPage"), { kind: "stagiaires" }) },
+              // Import Excel des comptes, formateurs et stagiaires (NOTES-09).
+              { path: "admin/comptes/importer", ...lazyPage(() => import("../features/accounts/pages/AccountImportPage")) },
             ],
           },
         ],

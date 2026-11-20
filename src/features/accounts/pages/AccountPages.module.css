@@ -73,6 +73,46 @@
   transform: translateY(-1px);
 }
 
+/* Actions de l'en-tête : import Excel (NOTES-09) puis création. */
+.headerActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.secondaryAction {
+  touch-action: manipulation;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0.7rem 1rem;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background-color: var(--background);
+  color: var(--foreground);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.secondaryAction:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 /* ---------- Barre d'outils : recherche + « Organiser par » ---------- */
 
 .toolbar {
@@ -451,7 +491,14 @@
     flex-direction: column;
   }
 
-  .createButton {
+  .headerActions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .createButton,
+  .secondaryAction {
     width: 100%;
   }
 
@@ -484,6 +531,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .createButton,
+  .secondaryAction,
   .pill,
   .cancelButton,
   .submitButton,

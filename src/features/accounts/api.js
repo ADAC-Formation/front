@@ -38,3 +38,13 @@ export async function listUserInscriptions(userId) {
   const { data } = await apiClient.get(`/users/${userId}/inscriptions`)
   return data
 }
+
+// Import de comptes par fichier Excel (NOTES-09, tech.md § POST /api/users/import) : ligne par ligne,
+// `{ created: UserResponse[], errors: [{ ligne, colonne, message }] }`. Multipart : le navigateur écrit
+// lui-même l'en-tête et sa limite.
+export async function importAccounts(file) {
+  const body = new FormData()
+  body.append('file', file)
+  const { data } = await apiClient.post('/users/import', body, { headers: { 'Content-Type': undefined } })
+  return data
+}

@@ -40,3 +40,19 @@ export function mockRequest(method, path, respond) {
   )
   return calls
 }
+
+// POST /users/import (NOTES-09, tech.md) : ligne par ligne, `{ created: UserResponse[], errors: [{ ligne, colonne, message }] }`.
+// `errorStatus` : fichier refusé en entier (`{ status, message }`). `calls.body` garde le multipart reçu.
+export function mockImportAccounts({ created = [], errors = [], errorStatus, errorMessage = 'Fichier invalide' } = {}) {
+  const calls = { count: 0, body: '', contentType: null }
+  server.use(
+    http.post(`${API_URL}/users/import`, async ({ request }) => {
+      calls.count += 1
+      calls.contentType = request.headers.get('content-type')
+      calls.body = await request.text()
+      if (errorStatus) return apiError(errorStatus, errorMessage)
+      return HttpResponse.json({ created, errors })
+    }),
+  )
+  return calls
+}

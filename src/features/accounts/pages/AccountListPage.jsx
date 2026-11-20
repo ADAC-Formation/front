@@ -8,6 +8,7 @@ import { useCurrentUser } from '../../auth/hooks'
 import AccountNotice from '../components/AccountNotice'
 import AccountRow from '../components/AccountRow'
 import {
+  ACCOUNT_IMPORT_PATH,
   ACCOUNT_KINDS,
   ACCOUNT_STATUS,
   accountStatus,
@@ -114,9 +115,14 @@ const AccountListPage = ({ kind }) => {
       <div className={styles.header}>
         <h1 className={styles.title}>{config.title}</h1>
         {canManage && (
-          <Link className={styles.createButton} to={`${config.basePath}/nouveau`}>
-            {config.createLabel}
-          </Link>
+          <div className={styles.headerActions}>
+            <Link className={styles.secondaryAction} to={ACCOUNT_IMPORT_PATH}>
+              Importer depuis Excel
+            </Link>
+            <Link className={styles.createButton} to={`${config.basePath}/nouveau`}>
+              {config.createLabel}
+            </Link>
+          </div>
         )}
       </div>
 

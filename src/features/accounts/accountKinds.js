@@ -27,6 +27,9 @@ export const ACCOUNT_KINDS = {
   },
 }
 
+// Page d'import Excel des comptes, formateurs et stagiaires à la fois (NOTES-09).
+export const ACCOUNT_IMPORT_PATH = '/admin/comptes/importer'
+
 // Seule la chargée de formation gère les comptes ; le formateur les consulte (D54).
 export const canManageAccounts = (user) => user?.role === ROLES.SUPER_ADMIN
 

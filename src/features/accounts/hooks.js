@@ -3,6 +3,7 @@ import { resendActivation } from '../auth/api'
 import {
   createAccount,
   fetchAccount,
+  importAccounts,
   listAccounts,
   setAccountActive,
   updateAccount,
@@ -24,6 +25,18 @@ export function useAccount(id, { enabled = true } = {}) {
     queryKey: accountDetailKey(id),
     queryFn: () => fetchAccount(id),
     enabled,
+  })
+}
+
+// Import Excel (NOTES-09) : formateurs et stagiaires à la fois, on recharge les deux listes.
+export function useImportAccounts() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: importAccounts,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: accountListsKey('formateurs') })
+      queryClient.invalidateQueries({ queryKey: accountListsKey('stagiaires') })
+    },
   })
 }
 

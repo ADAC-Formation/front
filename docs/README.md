@@ -17,6 +17,7 @@ Un dossier par public. En cas de doute : le dev lit `projet/` et `decisions/`, C
 | `decisions-front-foundations.md` | Décisions générales D1 à D66 (socle, design, accessibilité, déploiement) |
 | `decisions-formations.md`, `decisions-documents.md`, `decisions-categories.md` | Formations (F), documents (G), catégories (C) |
 | `decisions-messagerie.md`, `decisions-notifications.md`, `decisions-profil.md` | Messagerie (H), notifications (N), profil (P) |
+| `decisions-import-comptes.md` | Import de comptes par fichier Excel (I, NOTES-09) |
 
 ## `design/` : design
 

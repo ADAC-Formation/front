@@ -67,6 +67,25 @@ describe('ManagementMenu', () => {
     })
   })
 
+  describe('import de comptes par Excel (NOTES-09)', () => {
+    it('la chargée de formation importe depuis les tuiles Formateurs et Stagiaires', async () => {
+      renderMenu('SUPER_ADMIN')
+      const links = await screen.findAllByRole('link', { name: 'Importer depuis Excel' })
+      expect(links).toHaveLength(2)
+      expect(links.map((link) => link.closest('article').textContent)).toEqual([
+        expect.stringContaining('Formateurs'),
+        expect.stringContaining('Stagiaires'),
+      ])
+      links.forEach((link) => expect(link).toHaveAttribute('href', '/admin/comptes/importer'))
+    })
+
+    it("le formateur n'a pas l'action", async () => {
+      renderMenu('ADMIN')
+      await screen.findByRole('link', { name: 'Consulter formations existantes' })
+      expect(screen.queryByRole('link', { name: 'Importer depuis Excel' })).not.toBeInTheDocument()
+    })
+  })
+
   it("n'a aucune violation d'accessibilité (jest-axe)", async () => {
     const { container } = renderMenu('SUPER_ADMIN')
     await screen.findByRole('link', { name: 'Retour' })

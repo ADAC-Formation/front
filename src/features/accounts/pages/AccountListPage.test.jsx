@@ -59,6 +59,13 @@ describe('AccountListPage', () => {
     expect(await screen.findByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/admin/gestion')
   })
 
+  it('ne propose pas l’import Excel au formateur (NOTES-09)', async () => {
+    mockAccountList('formateurs', FORMATEURS)
+    renderList('formateurs', 'ADMIN')
+    await screen.findByRole('link', { name: 'Anne Martin' })
+    expect(screen.queryByRole('link', { name: 'Importer depuis Excel' })).not.toBeInTheDocument()
+  })
+
   describe('recherche et tri', () => {
     it('filtre par prénom, nom ou e-mail sans appel supplémentaire', async () => {
       const calls = mockAccountList('formateurs', FORMATEURS)
@@ -108,6 +115,13 @@ describe('AccountListPage', () => {
       renderList('formateurs', 'SUPER_ADMIN')
       const create = await screen.findByRole('link', { name: 'Créer un formateur' })
       expect(create).toHaveAttribute('href', '/admin/formateurs/nouveau')
+    })
+
+    it.each(['formateurs', 'stagiaires'])('propose l’import Excel des comptes (%s, NOTES-09)', async (kind) => {
+      mockAccountList(kind, kind === 'formateurs' ? FORMATEURS : STAGIAIRES)
+      renderList(kind, 'SUPER_ADMIN')
+      const link = await screen.findByRole('link', { name: 'Importer depuis Excel' })
+      expect(link).toHaveAttribute('href', '/admin/comptes/importer')
     })
 
     it('filtre sur les comptes actifs avec active=true', async () => {
