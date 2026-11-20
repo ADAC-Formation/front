@@ -16,6 +16,16 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-20 — `GET /users/{id}/inscriptions` ouvert au formateur pour ses propres formations (Q16) ; variables de stockage documentées (prêt à relire)
+
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/user-inscriptions-for-formateur`, `d25a0d4`. Indépendante des deux autres branches. Pas poussée.
+- **Quoi et pourquoi** : l'endpoint de la Q16 était réservé à la chargée ; le front du formateur devait donc lire les inscrits de **chaque** formation pour savoir où est inscrit un stagiaire. Décision de Manon (2026-11-20, sans discussion préalable) : un formateur (`ADMIN`) appelle le même endpoint et reçoit **seulement les formations qu'il anime**, et seulement pour un stagiaire qu'il peut déjà voir (actif, inscrit à l'une de ses formations ; sinon `404`, comme `GET /users/{id}`). Il ne voit donc jamais les autres formations du même stagiaire. Le stagiaire garde `403`. La règle de visibilité de `getById` est extraite en une méthode privée partagée (`getVisibleToAdminOrThrow`), sans changement de comportement pour `getById`.
+- **Fichiers touchés** : `UserController` (`hasAnyRole('SUPER_ADMIN','ADMIN')`, principal), `UserService` et `UserServiceImpl` (`getInscriptionsOf(id, principal)`), `docs/tech.md`, `.env.example` (commentaires `SUPABASE_*` : URL du projet seule, clé `service_role`, bucket privé, 502 si URL mal formée) ; tests : `UserServiceImplTest` (+2 : filtre sur ses formations, stagiaire d'un autre formateur → 404) et `UserControllerTest` (ADMIN autorisé, STAGIAIRE refusé).
+- **Tests** : `UserServiceImplTest` et `UserControllerTest` : 95 verts. Suite complète : 3 échecs, tous liés aux données de ma base locale et sans rapport (`CategoryRepositoryTest` ×2 : 5 catégories au lieu de 6 ; `ActivationTokenRepositoryTest` ×1 : jetons d'activation locaux préexistants).
+- **Contrat** : `tech.md` (§ `GET /api/users/{id}/inscriptions`). Rétrocompatible pour la chargée.
+- **À vérifier / risques** : (1) le front **ne l'utilise pas encore** pour le formateur : il garde son parcours des formations tant que cette branche n'est pas mergée et déployée (sinon `403` sur un back qui ne l'a pas) ; à basculer ensuite, c'est une simplification ; (2) c'est un élargissement de droit (le formateur lit un endpoint auparavant réservé), limité à ses propres formations et stagiaires.
+- **Lien avec** : Q16 de `points-pour-charlotte.md` (À2).
+
 ### 2026-11-20 — Message groupé : mêmes destinataires pour tous les rôles, comptes suspendus écartés ; `tech.md` corrigé (prêt à relire)
 
 - **Branche et commit** (clone `back-readonly`) : `fix/group-message-recipient-rules`, `4b9d488`. **Empilée sur** `feature/group-message-excluded-users` (même méthode `resolveGroupRecipients`) : relire et merger celle-là d'abord. Pas poussé.

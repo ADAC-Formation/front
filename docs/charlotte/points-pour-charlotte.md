@@ -29,7 +29,7 @@ Merci : tout ce qui était « attendu » est dans `dev`. Côté front (branche `
 | Q8.3 | champ `activated` (#17) | Fait : « Actif », « Suspendu » ou « Jamais activé », et « Renvoyer le code » à la place de « Réactiver » (qui répondrait `409`) pour un compte jamais activé. |
 | Q14 | `GET /messages/recipients` (#19) | Fait, **usage volontairement restreint** : ta liste est plus large que la règle du front (formateur : tout formateur et stagiaire actif ; stagiaire : tout formateur actif). Le front garde sa règle (formateur : ses stagiaires ; stagiaire : les formateurs de ses formations) et n'utilise l'endpoint que pour trouver la chargée de formation. |
 | Q15 | `PATCH /messages/conversations/{id}/read` (#19) | Fait : un appel par fil (et un de plus si un message arrive pendant que le fil est ouvert). |
-| Q16 | `GET /users/{id}/inscriptions` (#20) | Fait pour la chargée de formation (un appel). Le formateur reçoit `403` : le front garde pour lui le parcours des formations. **Question, non bloquante** : veux-tu l'ouvrir au formateur pour les formations dont il est le formateur ? |
+| Q16 | `GET /users/{id}/inscriptions` (#20) | Fait pour la chargée de formation (un appel). Le formateur reçoit `403` : le front garde pour lui le parcours des formations. **Réglé le 2026-11-20 par Manon** : ouvert au formateur pour ses propres formations (branche `feature/user-inscriptions-for-formateur`, à relire) ; le front bascule après le merge. |
 | Q11b | `404` pour une route inconnue (#15) | Vérifié sur le back local : `PATCH …/formateur` répond `404`. Rien à faire. |
 | `.xlsx` | accepté (#16) | Fait : accepté et libellé « Excel » ; `.xls` et `.xlsm` restent refusés. |
 | Formation archivée | `409` au dépôt et à la suppression (#16) | Le front les rendait déjà en lecture seule ; ton `409` ne sert que si la formation est archivée pendant que la page est ouverte (le message du back s'affiche). |
@@ -39,9 +39,9 @@ Merci : tout ce qui était « attendu » est dans `dev`. Côté front (branche `
 
 - **Q3, Q8.2 (formateur)** : ne rien développer avant la décision commune ; Manon attend l'avis de l'ADAC (`questions-pour-adac.md` §C).
 - **Q9, Q10, Q12** : Q9 (`reference`) et Q10 (« Spécial PCB ») attendent l'ADAC ; Q12 (`details[]` de l'import Excel : `{ligne, colonne, message}`) attend le vrai fichier de l'ADAC (R10), les colonnes restent celles de `tech.md`.
-- **`role` sur le `formateur` de `FormationResponse`** : la messagerie du stagiaire en dépend ; à confirmer que le champ est toujours présent.
+- ~~**`role` sur le `formateur` de `FormationResponse`**~~ : vérifié le 2026-11-20 sur le back local (les trois formations d'un stagiaire renvoient `formateur.role = ADMIN`). Rien à faire.
 - **URL signée ou proxy ?** Le ticket 027 parle d'« URL signée » ; `tech.md` §6 décrit un proxy binaire (`GET /documents/{id}/download`). Le front suit `tech.md` (G1). Rien à changer si le proxy est le choix voulu.
-- **Erreur de configuration du stockage** : une `SUPABASE_URL` mal formée donne `502 « Service de stockage indisponible »` ; à mentionner dans ta documentation de développement local (`SUPABASE_URL` = URL du projet seule, clé `service_role`, bucket privé `adac-documents`).
+- ~~**Erreur de configuration du stockage**~~ : documenté par Manon dans `.env.example` du back (même branche que la Q16 formateur).
 
 ### À7. Message groupé : constats sur le back local (vérifiés le 2026-11-19) — nouveau
 
