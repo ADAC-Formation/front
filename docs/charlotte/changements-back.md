@@ -16,9 +16,9 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
-### 2026-11-20 — `POST /users/import` : créer des comptes depuis un fichier Excel (TICKET-051, NOTES-09) (prêt à relire)
+### 2026-11-20 — `POST /users/import` : créer des comptes depuis un fichier Excel (TICKET-051, NOTES-09) (poussé, PR #26)
 
-- **Branche et commit** (worktree `back-notes09` du clone, depuis `origin/dev`) : `feature/user-import`, `672c1ca`. Indépendante des autres branches. **Non poussée.**
+- **Branche et commit** (worktree `back-notes09` du clone, depuis `origin/dev`) : `feature/user-import`, `672c1ca`. Indépendante des autres branches. Poussée, PR #26.
 - **Quoi et pourquoi** : la chargée de formation crée plusieurs comptes d'un coup. Décisions de Manon : un seul fichier avec une colonne `role` (Formateur | Stagiaire), traitement **ligne par ligne** (les lignes valides sont créées, les autres renvoyées dans `errors` avec ligne, colonne, message), e-mail déjà utilisé ou répété = erreur de ligne, pas d'inscription à une formation (NOTES-10). Chaque compte créé reçoit l'e-mail d'activation, par le même chemin que `createFormateur` / `createStagiaire`.
 - **Fichiers touchés** : `UserController` (route), `UserService` / `UserServiceImpl` (`importAccounts`), `utils/AccountImportParser` (nouveau), `utils/ExcelWorkbooks` (nouveau : lecture des classeurs sortie de `ExcelImportUtil`, sans changement de comportement de l'import des formations), `dto/response/AccountImportResponse` et `ImportErrorResponse` (nouveaux), `docs/tech.md`, `docs/TICKETS.md`, `docs/tickets/TICKET-051.md`, `docs/AGENT_HANDOFF.md` ; tests : `AccountImportParserTest` (9, nouveau), `UserServiceImplTest` (+1), `UserControllerTest` (+4).
 - **Tests** : RED constaté, puis `mvn test` complet : 579 tests, 0 échec (sur un PostgreSQL 16 jetable, pas la base locale).
