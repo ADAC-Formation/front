@@ -16,9 +16,9 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
-### 2026-11-20 — `GET /users/{id}/inscriptions` ouvert au formateur pour ses propres formations (Q16) ; variables de stockage documentées (prêt à relire)
+### 2026-11-20 — `GET /users/{id}/inscriptions` ouvert au formateur pour ses propres formations (Q16) ; variables de stockage documentées (poussé, PR #25)
 
-- **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/user-inscriptions-for-formateur`, `d25a0d4`. Indépendante des deux autres branches. Pas poussée.
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/user-inscriptions-for-formateur`, `d25a0d4`. Indépendante des deux autres branches. Poussée, PR #25.
 - **Quoi et pourquoi** : l'endpoint de la Q16 était réservé à la chargée ; le front du formateur devait donc lire les inscrits de **chaque** formation pour savoir où est inscrit un stagiaire. Décision de Manon (2026-11-20, sans discussion préalable) : un formateur (`ADMIN`) appelle le même endpoint et reçoit **seulement les formations qu'il anime**, et seulement pour un stagiaire qu'il peut déjà voir (actif, inscrit à l'une de ses formations ; sinon `404`, comme `GET /users/{id}`). Il ne voit donc jamais les autres formations du même stagiaire. Le stagiaire garde `403`. La règle de visibilité de `getById` est extraite en une méthode privée partagée (`getVisibleToAdminOrThrow`), sans changement de comportement pour `getById`.
 - **Fichiers touchés** : `UserController` (`hasAnyRole('SUPER_ADMIN','ADMIN')`, principal), `UserService` et `UserServiceImpl` (`getInscriptionsOf(id, principal)`), `docs/tech.md`, `.env.example` (commentaires `SUPABASE_*` : URL du projet seule, clé `service_role`, bucket privé, 502 si URL mal formée) ; tests : `UserServiceImplTest` (+2 : filtre sur ses formations, stagiaire d'un autre formateur → 404) et `UserControllerTest` (ADMIN autorisé, STAGIAIRE refusé).
 - **Tests** : `UserServiceImplTest` et `UserControllerTest` : 95 verts. Suite complète : 3 échecs, tous liés aux données de ma base locale et sans rapport (`CategoryRepositoryTest` ×2 : 5 catégories au lieu de 6 ; `ActivationTokenRepositoryTest` ×1 : jetons d'activation locaux préexistants).
@@ -26,9 +26,9 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : (1) le front **ne l'utilise pas encore** pour le formateur : il garde son parcours des formations tant que cette branche n'est pas mergée et déployée (sinon `403` sur un back qui ne l'a pas) ; à basculer ensuite, c'est une simplification ; (2) c'est un élargissement de droit (le formateur lit un endpoint auparavant réservé), limité à ses propres formations et stagiaires.
 - **Lien avec** : Q16 de `points-pour-charlotte.md` (À2).
 
-### 2026-11-20 — Message groupé : mêmes destinataires pour tous les rôles, comptes suspendus écartés ; `tech.md` corrigé (prêt à relire)
+### 2026-11-20 — Message groupé : mêmes destinataires pour tous les rôles, comptes suspendus écartés ; `tech.md` corrigé (poussé, PR #24, basée sur #23)
 
-- **Branche et commit** (clone `back-readonly`) : `fix/group-message-recipient-rules`, `4b9d488`. **Empilée sur** `feature/group-message-excluded-users` (même méthode `resolveGroupRecipients`) : relire et merger celle-là d'abord. Pas poussé.
+- **Branche et commit** (clone `back-readonly`) : `fix/group-message-recipient-rules`, `4b9d488`. **Empilée sur** `feature/group-message-excluded-users` (même méthode `resolveGroupRecipients`) : relire et merger celle-là d'abord. Poussé.
 - **Quoi et pourquoi** : (1) un message groupé de la chargée atteignait les stagiaires jamais activés, celui du formateur non (`canMessage` exige `isActive` pour un ADMIN) ; or le message les attend dans leur fil et leur cloche. Décision de Manon : même règle pour tous. (2) Les comptes **suspendus** (activés un jour, puis désactivés) ne reçoivent plus de message groupé, même de la chargée. (3) `tech.md` disait qu'un aperçu de groupe vide répond 400 ; il répond `200 []` (c'est l'envoi qui répond 400).
 - **Règle** : actif → `canMessage` comme avant ; inactif → écarté si `hasEverActivated`, sinon reçu par la chargée et par le formateur. Les envois individuels ne changent pas.
 - **Fichiers touchés** : `service/MessageServiceImpl.java` (`canReceiveGroupMessage`, `ActivationService` injecté), `docs/tech.md`, `MessageServiceImplTest` (3 tests ajoutés, 1 réécrit : « jamais activé » reçu par la chargée et le formateur, suspendu écarté, aperçu).
@@ -37,7 +37,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : un appel `hasEverActivated` (une requête) par destinataire inactif d'un groupe ; négligeable pour des formations, à surveiller sur `MISSING_DOCS` si beaucoup de comptes inactifs.
 - **Lien avec** : À7 b et c de `points-pour-charlotte.md`.
 
-### 2026-11-20 — Message groupé : `filter.excludedUserIds` pour retirer des personnes d'un envoi (prêt à relire)
+### 2026-11-20 — Message groupé : `filter.excludedUserIds` pour retirer des personnes d'un envoi (poussé, PR #23)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/group-message-excluded-users`, `9974577`. Pas poussé : à pousser et ouvrir en PR quand Manon le décide.
 - **Quoi et pourquoi** : sur la page « Message groupé » du front, chaque personne de l'aperçu a une case (cochée par défaut, H20) pour la retirer de l'envoi, y compris pour le formateur. Le back n'avait pas d'exclusion, et `MANUAL` est réservé à la chargée de formation. Nouveau champ optionnel `filter.excludedUserIds` : les destinataires résolus (tout type de filtre) dont l'id y figure sont retirés avant l'envoi. Aucun nouveau droit : le formateur reste limité à ses formations, la règle `canMessage` s'applique toujours. Tout exclure donne le même 400 que « aucun destinataire ».
