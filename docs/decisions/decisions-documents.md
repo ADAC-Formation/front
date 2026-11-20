@@ -132,7 +132,7 @@ Suite du thème : mêmes composants et règles de fichier que 027 (G4), dépôt 
 ## G19 — Checklist des documents : le catalogue des types est tenu par la chargée de formation, dans une page de réglages
 - Date : 2026-11-20
 - **Contexte** : G17 avait reporté la checklist nommée faute de liste de l'ADAC. Le back peut maintenant être modifié par Manon (D66) et une liste fictive sert de base (`docs/adac/documents-obligatoires-factices.md`). Série de décisions G19+ issue du grill du même jour.
-- **Décision** : il existe un **catalogue de types de document** (ex. « Pièce d'identité », « Certificat médical ») que la **chargée de formation** crée, modifie et désactive elle-même dans une page de réglages du portail. La liste fictive sert de données de départ (seed), pas de liste figée.
+- **Décision** : il existe un **catalogue de types de document** (ex. « Pièce d'identité », « Certificat médical ») que la **chargée de formation** crée, modifie et désactive elle-même dans une page de réglages du portail, rangée dans « Gestion » (voir G32). La liste fictive sert de données de départ (seed), pas de liste figée.
 - **Pourquoi** : la vraie liste de l'ADAC n'est pas connue et changera ; la laisser modifiable sans passer par un développeur évite de refaire une migration à chaque réponse de l'ADAC.
 - **Alternatives écartées** : catalogue en seed seul, sans écran (plus petit, mais chaque changement passe par le back) ; liste propre à chaque formation, saisie à la création (même type ressaisi à chaque formation, pas de vue d'ensemble).
 - **Conséquence** : un CRUD de types (back + front) est à prévoir ; son périmètre exact (champs d'un type) est tranché dans les décisions suivantes.
@@ -229,3 +229,12 @@ Suite du thème : mêmes composants et règles de fichier que 027 (G4), dépôt 
 - **Alternatives écartées** : trois tranches avec la suppression du filtre dans la première ; un seul changement (revue énorme, rien d'utilisable avant la fin).
 - **Ordre** : 1 avant 2 et 3 (elles lisent le catalogue) ; 2 avant 3 ; 4 est indépendante.
 - **Questions techniques laissées au plan de chaque tranche** (non tranchées ici) : forme des endpoints de checklist (un appel par formation évitera une requête par stagiaire, comme Q16) ; modèle de l'exemption ; type nul des documents existants.
+
+
+## G32 — « Gestion » : Formations, Documents et Profils ; le catalogue est dans « Documents »
+- Date : 2026-11-20 · précision de Manon après G19.
+- **Décision** : la page « Gestion » (`/admin/gestion`) passe de trois tuiles (Formations, Formateurs, Stagiaires) à **trois tuiles : Formations, Documents, Profils**. **Documents** mène à la gestion du catalogue des types (G19, G30) : créer un type, consulter et modifier les types existants. **Profils** est une seule tuile qui regroupe deux sections, **Formateurs** et **Stagiaires**, chacune avec « Créer un nouveau profil » et « Consulter profils existants » (liens actuels regroupés ; les routes `/admin/formateurs` et `/admin/stagiaires` ne changent pas). **Formations** garde « Gérer les catégories ».
+- **Visibilité** : la tuile **Documents** n'est visible que pour la **chargée de formation** ; le formateur ne la voit pas (aucun lien vers « Accès refusé », même règle que la gestion des catégories, D46/D54). Il voit la checklist sur ses formations (G29).
+- **Pourquoi** : trois entrées lisibles au lieu de quatre, et le catalogue des pièces trouve sa place à côté des formations et des profils.
+- **Alternatives écartées** : une page intermédiaire entre « Profils » et les deux listes (un clic de plus, nouvelle route) ; deux tuiles Formateurs et Stagiaires conservées avec « Documents » ajouté (quatre tuiles, pas de regroupement) ; catalogue en lecture seule pour le formateur.
+- **Conséquence** : `ManagementMenu` et `ManagementTiles` changent (une tuile à deux sections) ; le plan du site (`SiteMapPage`) et les tests de la page Gestion suivent ; nouvelle route pour le catalogue (chemin fixé au plan de la tranche 1, G31).
