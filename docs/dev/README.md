@@ -5,7 +5,7 @@ Le back de Charlotte ne documente pas de parcours « développeuse front » : so
 | Fichier | Rôle |
 |---|---|
 | `docker-compose.dev.yml` | surcharge : profil `dev`, port 8080 publié, front désactivé |
-| `seed-local-admin.sql` | comptes fictifs (SUPER_ADMIN, ADMIN, STAGIAIRE, compte non activé), local uniquement |
+| `seed-local-admin.sql` | comptes fictifs (SUPER_ADMIN, ADMIN, STAGIAIRE, compte non activé) + 4 formateurs, 8 stagiaires actifs, 2 formations et leurs inscriptions ; rejouable, local uniquement |
 | `../dev-compose/.env` | secrets locaux (hors des deux dépôts, jamais committé) — `DB_PASSWORD` et `JWT_SECRET` générés |
 
 Toutes les commandes se lancent depuis la racine du repo front (`front`).

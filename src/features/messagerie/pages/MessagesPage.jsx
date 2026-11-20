@@ -178,7 +178,7 @@ const MessagesPage = () => {
         ))}
       </fieldset>
 
-      {creating && <NewConversation onClose={() => setCreating(false)} />}
+      {creating && <NewConversation onClose={() => setCreating(false)} filters={{ role, search }} />}
 
       <div className={styles.host}>
         <div className={styles.layout} data-view={userId ? 'thread' : 'list'}>

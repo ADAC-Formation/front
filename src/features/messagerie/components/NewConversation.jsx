@@ -4,14 +4,17 @@ import Alert from '../../../components/atoms/Alert/Alert'
 import { roleLabels } from '../../../utils/roles'
 import { useRecipients } from '../useRecipients'
 import { displayName } from '../messageLabels'
+import { filterRecipients } from '../conversationFilters'
 import styles from './NewConversation.module.css'
 
 // Panneau « Nouvelle conversation » : les destinataires autorisés pour le rôle (décision H1). Il est
 // monté seulement quand la page l'ouvre (bouton de l'en-tête) : rien n'est chargé avant. Choisir
-// quelqu'un ouvre son fil (`/messages/:id`) et ferme le panneau.
-const NewConversation = ({ onClose }) => {
+// quelqu'un ouvre son fil (`/messages/:id`) et ferme le panneau. Le rôle et la recherche de la page s'appliquent
+// aussi à cette liste (`filters`).
+const NewConversation = ({ onClose, filters }) => {
   const titleId = useId()
-  const { recipients, isLoading, isError, refetch } = useRecipients()
+  const { recipients: allRecipients, isLoading, isError, refetch } = useRecipients()
+  const recipients = filterRecipients(allRecipients, filters)
 
   return (
     <section className={styles.panel} aria-labelledby={titleId}>
@@ -35,8 +38,12 @@ const NewConversation = ({ onClose }) => {
         </div>
       )}
 
-      {!isLoading && !isError && recipients.length === 0 && (
+      {!isLoading && !isError && allRecipients.length === 0 && (
         <p className={styles.empty}>Aucun destinataire disponible pour le moment.</p>
+      )}
+
+      {!isLoading && !isError && allRecipients.length > 0 && recipients.length === 0 && (
+        <p className={styles.empty}>Aucun destinataire ne correspond à la recherche ou au rôle choisi.</p>
       )}
 
       {!isLoading && !isError && recipients.length > 0 && (

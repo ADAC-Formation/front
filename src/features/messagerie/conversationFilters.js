@@ -24,6 +24,17 @@ export function filterConversations(conversations = [], { status = 'all', role =
   )
 }
 
+// Même rôle et même recherche pour « Nouvelle conversation » : la liste des destinataires proposés (comptes
+// « prénom nom », pas des conversations) suit les contrôles de la page.
+export function filterRecipients(recipients = [], { role = 'all', search = '' } = {}) {
+  const term = normalize(search)
+  return recipients.filter(
+    (recipient) =>
+      (role === 'all' || recipient.role === role) &&
+      (term === '' || normalize(`${recipient.prenom} ${recipient.nom}`).includes(term)),
+  )
+}
+
 export function hasActiveFilters({ status = 'all', role = 'all', search = '' } = {}) {
   return status !== 'all' || role !== 'all' || normalize(search) !== ''
 }

@@ -357,6 +357,45 @@ describe('MessagesPage — nouvelle conversation', () => {
     expect(links.map((a) => a.textContent)).toEqual(['Anne Martin — Formateur', 'Léa Petit — Stagiaire'])
   })
 
+  it('chargée de formation : le filtre par rôle de la page vaut aussi pour les destinataires proposés', async () => {
+    mockSession('SUPER_ADMIN')
+    mockConversations([])
+    mockAccountList('formateurs', FORMATEURS)
+    mockAccountList('stagiaires', STAGIAIRES)
+    renderPage('/messages')
+    await userEvent.selectOptions(await screen.findByRole('combobox', { name: /^Rôle/ }), 'STAGIAIRE')
+    await userEvent.click(screen.getByRole('button', { name: 'Nouvelle conversation' }))
+    const picker = await screen.findByRole('region', { name: 'Nouvelle conversation' })
+    const links = await within(picker).findAllByRole('link')
+    expect(links.map((a) => a.textContent)).toEqual(['Léa Petit — Stagiaire'])
+  })
+
+  it('chargée de formation : la recherche de la page vaut aussi pour les destinataires proposés', async () => {
+    mockSession('SUPER_ADMIN')
+    mockConversations([])
+    mockAccountList('formateurs', FORMATEURS)
+    mockAccountList('stagiaires', STAGIAIRES)
+    renderPage('/messages')
+    await userEvent.type(await screen.findByRole('searchbox', { name: 'Rechercher une personne' }), 'lea')
+    await userEvent.click(screen.getByRole('button', { name: 'Nouvelle conversation' }))
+    const picker = await screen.findByRole('region', { name: 'Nouvelle conversation' })
+    const links = await within(picker).findAllByRole('link')
+    expect(links.map((a) => a.textContent)).toEqual(['Léa Petit — Stagiaire'])
+  })
+
+  it('chargée de formation : si le filtre écarte tout le monde, le panneau le dit sans prétendre que personne n existe', async () => {
+    mockSession('SUPER_ADMIN')
+    mockConversations([])
+    mockAccountList('formateurs', FORMATEURS)
+    mockAccountList('stagiaires', STAGIAIRES)
+    renderPage('/messages')
+    await userEvent.type(await screen.findByRole('searchbox', { name: 'Rechercher une personne' }), 'zzz')
+    await userEvent.click(screen.getByRole('button', { name: 'Nouvelle conversation' }))
+    const picker = await screen.findByRole('region', { name: 'Nouvelle conversation' })
+    expect(await within(picker).findByText('Aucun destinataire ne correspond à la recherche ou au rôle choisi.')).toBeInTheDocument()
+    expect(within(picker).queryByText('Aucun destinataire disponible pour le moment.')).not.toBeInTheDocument()
+  })
+
   it('formateur sans aucun destinataire connu : message explicite', async () => {
     mockSession('ADMIN')
     mockConversations([])
