@@ -1,6 +1,6 @@
 import { BookOpen, FileText, Users } from "lucide-react";
 import { useCurrentUser } from "../../../features/auth/hooks";
-import { ACCOUNT_IMPORT_PATH, canManageAccounts } from "../../../features/accounts/accountKinds";
+import { canManageAccounts } from "../../../features/accounts/accountKinds";
 import BackButton from "../../molecules/BackButton/BackButton";
 import ManagementTile from "../../molecules/ManagementTiles/ManagementTiles";
 import { PageShell } from "../../../templates/PageShell/PageShell";
@@ -51,8 +51,6 @@ const profilesTile = {
   icon: <Users />,
   color: "var(--color-amber)",
   sections: profilesSections,
-  manageLabel: "Importer depuis Excel",
-  managePath: ACCOUNT_IMPORT_PATH,
 };
 
 // Création, import et catalogue des documents : chargée de formation seulement (le formateur consulte,
@@ -67,7 +65,6 @@ const ManagementMenu = () => {
         { ...formationsTile, createPath: undefined, managePath: undefined },
         {
           ...profilesTile,
-          managePath: undefined,
           sections: profilesSections.map((section) => ({ ...section, createPath: undefined })),
         },
       ];

@@ -116,19 +116,11 @@ describe('ManagementMenu', () => {
     })
   })
 
-  describe('import de comptes par Excel (NOTES-09)', () => {
-    it('la chargée de formation importe depuis la tuile Profils', async () => {
-      renderMenu('SUPER_ADMIN')
-      const link = await screen.findByRole('link', { name: 'Importer depuis Excel' })
-      expect(link).toHaveAttribute('href', '/admin/comptes/importer')
-      expect(link.closest('article')).toHaveTextContent('Profils')
-    })
-
-    it("le formateur n'a pas l'action", async () => {
-      renderMenu('ADMIN')
-      await screen.findByRole('link', { name: 'Consulter formations existantes' })
-      expect(screen.queryByRole('link', { name: 'Importer depuis Excel' })).not.toBeInTheDocument()
-    })
+  // L'import Excel des comptes se lance depuis les pages Formateurs et Stagiaires (NOTES-09), pas d'ici.
+  it("n'offre pas l'import Excel des comptes", async () => {
+    renderMenu('SUPER_ADMIN')
+    await screen.findByRole('heading', { level: 2, name: 'Documents' })
+    expect(screen.queryByRole('link', { name: 'Importer depuis Excel' })).not.toBeInTheDocument()
   })
 
   it("n'a aucune violation d'accessibilité (jest-axe)", async () => {
