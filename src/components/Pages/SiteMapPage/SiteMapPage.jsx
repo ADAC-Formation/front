@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { useCurrentUser } from "../../../features/auth/hooks";
-import { MANAGEMENT_ROLES } from "../../../utils/roles";
+import { MANAGEMENT_ROLES, ROLES } from "../../../utils/roles";
 import { PageShell } from "../../../templates/PageShell/PageShell";
 import styles from "./SiteMapPage.module.css";
 
@@ -18,10 +18,13 @@ const MANAGEMENT_PAGES = [
   { label: "Stagiaires", to: "/admin/stagiaires" },
 ];
 
+// Catalogue des types de document : chargée de formation seulement.
+const SUPER_ADMIN_PAGES = [{ label: "Documents", to: "/admin/documents" }];
+
 const SiteMapPage = () => {
   const { user } = useCurrentUser();
   const pages = MANAGEMENT_ROLES.includes(user?.role)
-    ? [...COMMON_PAGES, ...MANAGEMENT_PAGES]
+    ? [...COMMON_PAGES, ...MANAGEMENT_PAGES, ...(user.role === ROLES.SUPER_ADMIN ? SUPER_ADMIN_PAGES : [])]
     : COMMON_PAGES;
 
   return (

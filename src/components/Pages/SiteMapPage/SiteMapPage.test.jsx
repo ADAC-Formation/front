@@ -25,6 +25,17 @@ describe('SiteMapPage', () => {
     expect(screen.getByRole('link', { name: 'Stagiaires' })).toHaveAttribute('href', '/admin/stagiaires')
   })
 
+  it('ajoute « Documents » pour la chargée de formation seulement', async () => {
+    renderMap('SUPER_ADMIN')
+    expect(await screen.findByRole('link', { name: 'Documents' })).toHaveAttribute('href', '/admin/documents')
+  })
+
+  it('ne montre pas « Documents » au formateur', async () => {
+    renderMap('ADMIN')
+    await screen.findByRole('link', { name: 'Gestion' })
+    expect(screen.queryByRole('link', { name: 'Documents' })).not.toBeInTheDocument()
+  })
+
   it('n’a aucune violation d’accessibilité (jest-axe)', async () => {
     const { container } = renderMap('ADMIN')
     await screen.findByRole('heading', { level: 1 })
