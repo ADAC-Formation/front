@@ -9,7 +9,7 @@ export const ACCEPT_ATTRIBUTE = ALLOWED_EXTENSIONS.map((extension) => `.${extens
 
 const KINDS = { pdf: 'PDF', jpg: 'Image', jpeg: 'Image', png: 'Image', docx: 'Word', xlsx: 'Excel' }
 
-function extensionOf(fileName) {
+export function extensionOf(fileName) {
   const dot = fileName.lastIndexOf('.')
   return dot === -1 ? '' : fileName.slice(dot + 1).toLowerCase()
 }

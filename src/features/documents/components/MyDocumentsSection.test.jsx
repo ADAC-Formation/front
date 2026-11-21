@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mockDocumentApi } from '../../../test/documents'
+import { mockFormationDocumentTypes } from '../../../test/documentTypes'
 import { FORMATIONS } from '../../../test/formations'
 import { renderWithProviders } from '../../../test/render'
 import { USERS, mockSession } from '../../../test/session'
@@ -42,7 +43,12 @@ function renderSection(formation = active) {
   return renderWithProviders(<MyDocumentsSection formation={formation} />)
 }
 
-beforeEach(() => saveBlob.mockClear())
+// Types à envoyer pour la formation : aucun par défaut (la section se comporte comme avant les créneaux,
+// voir MyDocumentSlots.test.jsx pour ceux-ci).
+beforeEach(() => {
+  saveBlob.mockClear()
+  mockFormationDocumentTypes([])
+})
 
 describe('MyDocumentsSection — liste et téléchargement', () => {
   it('annonce le chargement puis liste les documents de son inscription, sans expéditeur', async () => {

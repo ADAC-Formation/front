@@ -7,6 +7,7 @@ import FormationListPage from './FormationListPage'
 import { renderWithProviders } from '../../../test/render'
 import { mockCategories } from '../../../test/categories'
 import { DOCUMENTS, mockDocumentApi } from '../../../test/documents'
+import { mockFormationDocumentTypes } from '../../../test/documentTypes'
 import { USERS, mockSession } from '../../../test/session'
 import {
   FORMATIONS,
@@ -23,6 +24,7 @@ function renderDetail(role, formation, { notice, documents } = {}) {
   mockSession(role)
   mockCategories() // la liste des formations, où l'on revient, charge les catégories du filtre
   mockDocumentApi(documents, { uploader: USERS.STAGIAIRE }) // la section « Documents » du détail
+  mockFormationDocumentTypes([]) // « Mes documents » du stagiaire : aucun document à envoyer
   const route = notice
     ? { pathname: `/formations/${formation.id}`, state: { notice } }
     : `/formations/${formation.id}`
