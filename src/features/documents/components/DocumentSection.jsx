@@ -56,7 +56,7 @@ const DocumentSection = ({ formation, className }) => {
 
   return (
     <section className={className}>
-      <h2>Documents</h2>
+      <h2>Documents de la formation</h2>
 
       {canUploadDocument(user, formation) && (
         <div className={styles.upload}>

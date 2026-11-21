@@ -32,7 +32,7 @@ describe('DocumentSection — liste', () => {
   it('affiche un chargement annoncé puis les documents de la formation', async () => {
     const api = mockDocumentApi()
     renderSection('STAGIAIRE')
-    expect(screen.getByRole('heading', { level: 2, name: 'Documents' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Documents de la formation' })).toBeInTheDocument()
     expect(screen.getByRole('status')).toHaveTextContent('Chargement…')
     expect(await screen.findByText('Support de cours.pdf')).toBeInTheDocument()
     expect(screen.getByText('Programme.docx')).toBeInTheDocument()
