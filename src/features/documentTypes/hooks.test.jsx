@@ -1,10 +1,11 @@
 import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { renderWithProviders } from '../../test/render'
-import { mockDocumentTypeApi, mockDocumentTypes } from '../../test/documentTypes'
+import { DOCUMENT_TYPES, mockDocumentTypeApi, mockDocumentTypes, mockFormationDocumentTypes } from '../../test/documentTypes'
 import {
   useCreateDocumentType,
   useDocumentTypes,
+  useFormationDocumentTypes,
   useSetDocumentTypeActive,
   useUpdateDocumentType,
 } from './hooks'
@@ -163,5 +164,33 @@ describe('useSetDocumentTypeActive', () => {
     await userEvent.click(screen.getByRole('button', { name: 'désactiver' }))
     expect(await screen.findByText('erreur 404 Type de document introuvable')).toBeInTheDocument()
     expect(api.calls.list).toBe(before)
+  })
+})
+
+function FormationProbe({ formationId, enabled }) {
+  const { data, isError, error } = useFormationDocumentTypes(formationId, { enabled })
+  if (isError) return <p>erreur {error.status}</p>
+  return <p>{data ? data.map((type) => type.nom).join(', ') || 'aucun' : 'chargement'}</p>
+}
+
+describe('useFormationDocumentTypes', () => {
+  it('lit les types à envoyer pour la formation', async () => {
+    const calls = mockFormationDocumentTypes([DOCUMENT_TYPES.identite])
+    renderWithProviders(<FormationProbe formationId={12} />)
+    expect(await screen.findByText('Pièce d’identité')).toBeInTheDocument()
+    expect(calls.urls[0]).toContain('/formations/12/document-types')
+  })
+
+  it('ne fait aucun appel quand il est désactivé', async () => {
+    const calls = mockFormationDocumentTypes([DOCUMENT_TYPES.identite])
+    renderWithProviders(<FormationProbe formationId={12} enabled={false} />)
+    await new Promise((resolve) => setTimeout(resolve, 50))
+    expect(calls.count).toBe(0)
+  })
+
+  it('remonte l’erreur en ApiError', async () => {
+    mockFormationDocumentTypes([], { errorStatus: 403 })
+    renderWithProviders(<FormationProbe formationId={12} />)
+    expect(await screen.findByText('erreur 403')).toBeInTheDocument()
   })
 })

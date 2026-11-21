@@ -26,3 +26,10 @@ export async function setDocumentTypeActive(id, active) {
   const { data } = await apiClient.patch(`/document-types/${id}/${active ? 'activate' : 'deactivate'}`)
   return data
 }
+
+// Types à envoyer pour une formation (tech.md « Types de document ») : actifs, triés par nom. Ouvert à la
+// chargée de formation, au formateur de la formation et au stagiaire inscrit (403 / 404 sinon).
+export async function listFormationDocumentTypes(formationId) {
+  const { data } = await apiClient.get(`/formations/${formationId}/document-types`)
+  return data
+}

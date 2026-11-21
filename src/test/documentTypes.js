@@ -146,3 +146,18 @@ export function mockDocumentTypeApi(
 
   return { calls, state: () => types }
 }
+
+// Types à envoyer pour une formation (GET /formations/{id}/document-types) : actifs, triés, comme le back.
+// `types` : la liste renvoyée telle quelle ; `errorStatus` : répond par cette erreur.
+export function mockFormationDocumentTypes(types = [], { errorStatus } = {}) {
+  const calls = { count: 0, urls: [] }
+  server.use(
+    http.get(`${API_URL}/formations/:formationId/document-types`, ({ request }) => {
+      calls.count += 1
+      calls.urls.push(request.url)
+      if (errorStatus) return apiError(errorStatus, 'Erreur serveur')
+      return HttpResponse.json(types)
+    }),
+  )
+  return calls
+}

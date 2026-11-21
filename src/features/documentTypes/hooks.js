@@ -1,10 +1,26 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createDocumentType, listDocumentTypes, setDocumentTypeActive, updateDocumentType } from './api'
+import {
+  createDocumentType,
+  listDocumentTypes,
+  listFormationDocumentTypes,
+  setDocumentTypeActive,
+  updateDocumentType,
+} from './api'
 
 export function useDocumentTypes({ active = false, enabled = true } = {}) {
   return useQuery({
     queryKey: ['document-types', 'list', active ? 'active' : 'all'],
     queryFn: () => listDocumentTypes({ active }),
+    enabled,
+  })
+}
+
+// Types à envoyer pour une formation. Clé hors de `['document-types', 'list']` : une modification du
+// catalogue (`['document-types']`) la recharge aussi.
+export function useFormationDocumentTypes(formationId, { enabled = true } = {}) {
+  return useQuery({
+    queryKey: ['document-types', 'formation', formationId],
+    queryFn: () => listFormationDocumentTypes(formationId),
     enabled,
   })
 }
