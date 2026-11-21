@@ -27,7 +27,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : (1) **la migration V6 est le point sensible** (schéma : décision de Manon, G19 à G32, mais c'est à Charlotte de la relire) ; (2) décisions de produit prises sans discussion préalable : catégories désactivées liables, `GET` réservé à la chargée, pas de verrou optimiste ; (3) la liste fictive des types n'est pas dans la migration : elle viendra de `docs/dev/seed-local-admin.sql` du front.
 - **Lien avec** : G19 à G32 de `decisions-documents.md` ; change front `document-types-catalogue`.
 
-### 2026-11-20 — `POST /users/import` : créer des comptes depuis un fichier Excel (TICKET-051, NOTES-09) (poussé, PR #26)
+### 2026-11-20 — `POST /users/import` : créer des comptes depuis un fichier Excel (TICKET-051, NOTES-09) (mergé le 2026-11-21 par Manon, PR #26)
 
 - **Branche et commit** (worktree `back-notes09` du clone, depuis `origin/dev`) : `feature/user-import`, `672c1ca`. Indépendante des autres branches. Poussée, PR #26.
 - **Quoi et pourquoi** : la chargée de formation crée plusieurs comptes d'un coup. Décisions de Manon : un seul fichier avec une colonne `role` (Formateur | Stagiaire), traitement **ligne par ligne** (les lignes valides sont créées, les autres renvoyées dans `errors` avec ligne, colonne, message), e-mail déjà utilisé ou répété = erreur de ligne, pas d'inscription à une formation (NOTES-10). Chaque compte créé reçoit l'e-mail d'activation, par le même chemin que `createFormateur` / `createStagiaire`.
@@ -37,7 +37,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : (1) **les e-mails d'activation partent l'un après l'autre après le commit, dans la requête** : un fichier de 200 lignes la tient le temps de 200 envois SMTP, ce qui peut dépasser le délai de nginx. Un échec d'envoi est déjà absorbé (`MailException` journalisée). Envoi asynchrone ou plafond plus bas : à décider avec toi ; (2) plafond de 200 lignes (1000 pour les formations) ; (3) le workflow `review-code` n'était pas installé dans la session : relecture manuelle, détaillée dans la fiche.
 - **Lien avec** : NOTES-09 (#79 du board) ; Q12 (forme des erreurs).
 
-### 2026-11-20 — `GET /users/{id}/inscriptions` ouvert au formateur pour ses propres formations (Q16) ; variables de stockage documentées (poussé, PR #25)
+### 2026-11-20 — `GET /users/{id}/inscriptions` ouvert au formateur pour ses propres formations (Q16) ; variables de stockage documentées (mergé le 2026-11-21 par Manon, PR #25)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/user-inscriptions-for-formateur`, `d25a0d4`. Indépendante des deux autres branches. Poussée, PR #25.
 - **Quoi et pourquoi** : l'endpoint de la Q16 était réservé à la chargée ; le front du formateur devait donc lire les inscrits de **chaque** formation pour savoir où est inscrit un stagiaire. Décision de Manon (2026-11-20, sans discussion préalable) : un formateur (`ADMIN`) appelle le même endpoint et reçoit **seulement les formations qu'il anime**, et seulement pour un stagiaire qu'il peut déjà voir (actif, inscrit à l'une de ses formations ; sinon `404`, comme `GET /users/{id}`). Il ne voit donc jamais les autres formations du même stagiaire. Le stagiaire garde `403`. La règle de visibilité de `getById` est extraite en une méthode privée partagée (`getVisibleToAdminOrThrow`), sans changement de comportement pour `getById`.
@@ -47,7 +47,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : (1) le front **ne l'utilise pas encore** pour le formateur : il garde son parcours des formations tant que cette branche n'est pas mergée et déployée (sinon `403` sur un back qui ne l'a pas) ; à basculer ensuite, c'est une simplification ; (2) c'est un élargissement de droit (le formateur lit un endpoint auparavant réservé), limité à ses propres formations et stagiaires.
 - **Lien avec** : Q16 de `points-pour-charlotte.md` (À2).
 
-### 2026-11-20 — Message groupé : mêmes destinataires pour tous les rôles, comptes suspendus écartés ; `tech.md` corrigé (poussé, PR #24, basée sur #23)
+### 2026-11-20 — Message groupé : mêmes destinataires pour tous les rôles, comptes suspendus écartés ; `tech.md` corrigé (mergé le 2026-11-21 par Manon, PR #24)
 
 - **Branche et commit** (clone `back-readonly`) : `fix/group-message-recipient-rules`, `4b9d488`. **Empilée sur** `feature/group-message-excluded-users` (même méthode `resolveGroupRecipients`) : relire et merger celle-là d'abord. Poussé.
 - **Quoi et pourquoi** : (1) un message groupé de la chargée atteignait les stagiaires jamais activés, celui du formateur non (`canMessage` exige `isActive` pour un ADMIN) ; or le message les attend dans leur fil et leur cloche. Décision de Manon : même règle pour tous. (2) Les comptes **suspendus** (activés un jour, puis désactivés) ne reçoivent plus de message groupé, même de la chargée. (3) `tech.md` disait qu'un aperçu de groupe vide répond 400 ; il répond `200 []` (c'est l'envoi qui répond 400).
@@ -58,7 +58,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : un appel `hasEverActivated` (une requête) par destinataire inactif d'un groupe ; négligeable pour des formations, à surveiller sur `MISSING_DOCS` si beaucoup de comptes inactifs.
 - **Lien avec** : À7 b et c de `points-pour-charlotte.md`.
 
-### 2026-11-20 — Message groupé : `filter.excludedUserIds` pour retirer des personnes d'un envoi (poussé, PR #23)
+### 2026-11-20 — Message groupé : `filter.excludedUserIds` pour retirer des personnes d'un envoi (mergé le 2026-11-21 par Manon, PR #23)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/group-message-excluded-users`, `9974577`. Pas poussé : à pousser et ouvrir en PR quand Manon le décide.
 - **Quoi et pourquoi** : sur la page « Message groupé » du front, chaque personne de l'aperçu a une case (cochée par défaut, H20) pour la retirer de l'envoi, y compris pour le formateur. Le back n'avait pas d'exclusion, et `MANUAL` est réservé à la chargée de formation. Nouveau champ optionnel `filter.excludedUserIds` : les destinataires résolus (tout type de filtre) dont l'id y figure sont retirés avant l'envoi. Aucun nouveau droit : le formateur reste limité à ses formations, la règle `canMessage` s'applique toujours. Tout exclure donne le même 400 que « aucun destinataire ».
