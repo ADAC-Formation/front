@@ -16,6 +16,16 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-21 — Types de document : plus d'« obligatoire / facultatif », liste des types d'une formation (TICKET-051, prêt à relire, complète l'entrée du 2026-11-20)
+
+- **Branche et commits** (clone `back-readonly`) : `feature/document-types`, `588f217` (retrait de `isRequired`) et `86f3156` (nouvel endpoint). Complète la PR #27 déjà ouverte ; rien de poussé depuis.
+- **Quoi et pourquoi** : décision de Manon le 2026-11-21 : il n'y a pas d'« obligatoire / facultatif ». Tout type actif qui s'applique à une formation est une pièce à envoyer ; le stagiaire peut envoyer d'autres fichiers en plus. Il faut donc (1) retirer `isRequired` et (2) laisser le stagiaire lire la liste de sa formation (il recevait `403` sur tout `/api/document-types`).
+- **Contrat** : `isRequired` disparaît de la requête et de la réponse. Nouveau `GET /api/formations/{id}/document-types` : types **actifs** de « toutes les formations » plus ceux liés à la catégorie de la formation, triés par nom ; **mêmes droits que `GET /api/formations/{id}`** (chargée de formation, formateur de la formation, stagiaire inscrit ; `404` formateur d'une autre formation, `403` stagiaire non inscrit, `401` sans session). Les endpoints `/api/document-types` restent SUPER_ADMIN seulement. `tech.md`, `DB_MODEL.md` et `.mmd`, `TICKET-051.md` mis à jour.
+- **Fichiers touchés** : **`V6__add_document_types.sql` modifiée en place** (colonne `is_required` retirée : V6 n'est pas mergée), `DocumentType`, `DocumentTypeRequest` / `Response`, `DocumentTypeServiceImpl` (+ `getDocumentTypesForFormation`), `DocumentTypeRepository` (`findActiveApplicableTo`), `FormationController` (route). Tests : `DocumentTypeRepositoryTest` (types « toutes » + catégorie, sans doublon, sans inactifs), `DocumentTypeServiceImplTest`, `FormationControllerTest` (200 / 403 / 404).
+- **Tests** : RED constaté, puis suite complète `mvn test` : 633 verts, sur un PostgreSQL 16 jetable (pas la base locale).
+- **À vérifier / risques** : (1) **V6 modifiée en place** : toute base où V6 est déjà appliquée (la base locale de Manon, par exemple) échoue à la validation Flyway (somme de contrôle) ; pour elle, `flyway repair` + `ALTER TABLE document_types DROP COLUMN is_required` ou repartir d'une base vide ; (2) **qui voit quoi** : le stagiaire et le formateur lisent maintenant les types (nom, aide, délai, formats, `isSensitive`) de leurs formations, décision de Manon ; (3) rien ne relie encore un fichier déposé à un type : le front le fait en préfixant le nom du fichier du nom du type (tranche suivante : champ `documentTypeId` sur le dépôt).
+- **Lien avec** : G19 à G32 de `decisions-documents.md` ; change front `document-types-catalogue`.
+
 ### 2026-11-20 — Catalogue des types de document : `/api/document-types` (TICKET-051, prêt à relire)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/document-types`, dernier commit `c624195` (6 commits). Pas poussée. **Indépendante** des trois autres branches (#23 à #25) : elle ne touche ni `MessageServiceImpl` ni `UserServiceImpl`.
