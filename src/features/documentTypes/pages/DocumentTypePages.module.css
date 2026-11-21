@@ -1,0 +1,429 @@
+/* Pages du catalogue des types de document : même gabarit que les comptes et les catégories
+   (carte arrondie, liste de lignes, boutons d'action). Le gabarit vient de `PageShell`. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- En-tête ---------- */
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+
+  margin-top: 1.5rem;
+}
+
+.title {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 700;
+  line-height: 1.15;
+
+  color: var(--foreground);
+}
+
+.pageTitle {
+  margin-top: 1.5rem;
+}
+
+.intro {
+  max-width: 700px;
+
+  margin: 0.75rem 0 0;
+
+  font-size: 0.95rem;
+  line-height: 1.6;
+
+  color: var(--muted-foreground);
+}
+
+.createButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  padding: 0.7rem 1rem;
+
+  border: none;
+  border-radius: 12px;
+
+  background-color: var(--color-action);
+  color: var(--color-on-action);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  cursor: pointer;
+  touch-action: manipulation;
+
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.createButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.notices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  margin-top: 1.5rem;
+}
+
+.notices:empty {
+  display: none;
+}
+
+/* ---------- Carte et liste ---------- */
+
+.card {
+  margin-top: 2rem;
+  padding: 2rem;
+
+  border: 1px solid var(--border);
+  border-radius: 30px;
+
+  background-color: var(--card);
+  color: var(--card-foreground);
+
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+}
+
+.cardHeader h2 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+
+  color: var(--card-foreground);
+}
+
+.cardHeader p {
+  margin: 0.25rem 0 0;
+
+  font-size: 0.875rem;
+
+  color: var(--muted-foreground);
+}
+
+.empty {
+  margin: 0;
+
+  font-size: 0.9rem;
+
+  color: var(--muted-foreground);
+}
+
+.errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  margin: 0;
+  padding: 0;
+
+  list-style: none;
+}
+
+.type {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+
+  padding: 1rem 1.25rem;
+
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  background-color: var(--background);
+}
+
+.typeInfo {
+  min-width: 0;
+}
+
+.typeInfo h3 {
+  margin: 0;
+
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  font-weight: 600;
+
+  color: var(--foreground);
+  overflow-wrap: anywhere;
+}
+
+/* Chaque propriété est écrite en toutes lettres : la couleur ne porte jamais seule l'information. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+
+  margin: 0.4rem 0 0;
+  padding: 0;
+
+  list-style: none;
+
+  font-size: 0.8rem;
+
+  color: var(--muted-foreground);
+}
+
+.strong {
+  font-weight: 600;
+
+  color: var(--foreground);
+}
+
+/* ---------- Actions ---------- */
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  flex-shrink: 0;
+}
+
+.editLink {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 0.4rem;
+
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+
+  color: var(--foreground);
+}
+
+.editLink:hover {
+  opacity: 0.7;
+}
+
+.statusButton {
+  min-height: 36px;
+  padding: 0.4rem 0.9rem;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+
+  background-color: var(--background);
+  color: var(--foreground);
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.statusButton:hover {
+  opacity: 0.8;
+}
+
+.statusButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Formulaire ---------- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+
+  border: none;
+}
+
+.group legend {
+  padding: 0;
+  margin-bottom: 0.25rem;
+
+  font-size: 0.875rem;
+  font-weight: 600;
+
+  color: var(--foreground);
+}
+
+.choice {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+
+  min-height: 2rem;
+
+  font-size: 0.9rem;
+
+  color: var(--foreground);
+
+  cursor: pointer;
+}
+
+.choice input {
+  flex-shrink: 0;
+
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  gap: 0.25rem 1rem;
+}
+
+.hint {
+  margin: 0;
+
+  font-size: 0.8rem;
+  line-height: 1.5;
+
+  color: var(--muted-foreground);
+}
+
+.deadline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+
+  padding-top: 1.5rem;
+
+  border-top: 1px solid var(--border);
+}
+
+.cancelButton,
+.submitButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 46px;
+  padding: 0.7rem 1.25rem;
+
+  border-radius: 14px;
+
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.cancelButton {
+  border: 1px solid var(--border);
+
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.submitButton {
+  border: 1px solid var(--foreground);
+
+  background-color: var(--foreground);
+  color: var(--background);
+}
+
+.cancelButton:hover,
+.submitButton:hover {
+  opacity: 0.9;
+}
+
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .createButton {
+    transition: none;
+  }
+
+  .createButton:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 700px) {
+  .header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 1.875rem;
+  }
+
+  .createButton {
+    width: 100%;
+  }
+
+  .card {
+    padding: 1.25rem;
+
+    border-radius: 24px;
+  }
+
+  .type {
+    grid-template-columns: 1fr;
+    align-items: flex-start;
+
+    padding: 1rem;
+  }
+
+  .deadline {
+    grid-template-columns: 1fr;
+  }
+}
