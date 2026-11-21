@@ -16,7 +16,7 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
-### 2026-11-21 — Types de document : plus d'« obligatoire / facultatif », liste des types d'une formation (TICKET-051, prêt à relire, complète l'entrée du 2026-11-20)
+### 2026-11-21 — Types de document : plus d'« obligatoire / facultatif », liste des types d'une formation (TICKET-052, prêt à relire, complète l'entrée du 2026-11-20)
 
 - **Branche et commits** (clone `back-readonly`) : `feature/document-types`, `588f217` (retrait de `isRequired`) et `86f3156` (nouvel endpoint). Complète la PR #27 déjà ouverte ; rien de poussé depuis.
 - **Quoi et pourquoi** : décision de Manon le 2026-11-21 : il n'y a pas d'« obligatoire / facultatif ». Tout type actif qui s'applique à une formation est une pièce à envoyer ; le stagiaire peut envoyer d'autres fichiers en plus. Il faut donc (1) retirer `isRequired` et (2) laisser le stagiaire lire la liste de sa formation (il recevait `403` sur tout `/api/document-types`).
@@ -26,9 +26,9 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : (1) **V6 modifiée en place** : toute base où V6 est déjà appliquée (la base locale de Manon, par exemple) échoue à la validation Flyway (somme de contrôle) ; pour elle, `flyway repair` + `ALTER TABLE document_types DROP COLUMN is_required` ou repartir d'une base vide ; (2) **qui voit quoi** : le stagiaire et le formateur lisent maintenant les types (nom, aide, délai, formats, `isSensitive`) de leurs formations, décision de Manon ; (3) rien ne relie encore un fichier déposé à un type : le front le fait en préfixant le nom du fichier du nom du type (tranche suivante : champ `documentTypeId` sur le dépôt).
 - **Lien avec** : G19 à G32 de `decisions-documents.md` ; change front `document-types-catalogue`.
 
-### 2026-11-20 — Catalogue des types de document : `/api/document-types` (TICKET-051, prêt à relire)
+### 2026-11-20 — Catalogue des types de document : `/api/document-types` (TICKET-052, prêt à relire)
 
-- **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/document-types`, dernier commit `c624195` (6 commits). Pas poussée. **Indépendante** des trois autres branches (#23 à #25) : elle ne touche ni `MessageServiceImpl` ni `UserServiceImpl`.
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/document-types`, dernier commit `1d4ef38` (10 commits avec la fusion de `dev`), poussée, PR #27. Pas poussée. **Indépendante** des trois autres branches (#23 à #25) : elle ne touche ni `MessageServiceImpl` ni `UserServiceImpl`.
 - **Quoi et pourquoi** : première tranche de la checklist des documents (décisions G19 à G32 de `decisions-documents.md`). La chargée de formation définit les pièces attendues des stagiaires : nom, texte d'aide, obligatoire ou facultatif, sensible, portée (toutes les formations ou une ou plusieurs catégories), délai relatif (N jours avant le début ou après la fin) et formats acceptés. Un type se désactive, jamais ne se supprime. Cette tranche ne relie pas encore les documents déposés à un type.
 - **Contrat** : `GET /api/document-types` (`?active=true`), `POST`, `PUT /{id}`, `PATCH /{id}/activate` et `/deactivate`, **SUPER_ADMIN seulement** (`403` pour les autres, `401` sans session), `409` sur un nom déjà pris (casse ignorée), `400` de validation, `404` pour un type ou une catégorie inconnus. Voir `tech.md`, section « Types de document ».
 - **Fichiers touchés** : migration `V6__add_document_types.sql` (**aucune donnée insérée** ; index unique sur `UPPER(nom)`, contraintes CHECK du délai), `DocumentType`, `DeadlineAnchor`, `DocumentTypeRepository`, `DocumentTypeRequest` et `DocumentTypeResponse`, `DocumentTypeMapper` (`unmappedTargetPolicy = ERROR`), `DocumentTypeService(Impl)`, `DocumentTypeController`, `DocumentTypeAlreadyExistsException` et son handler, `docs/tech.md`, `docs/DB_MODEL.md` et `.mmd`, `docs/tickets/TICKET-051.md`, `docs/TICKETS.md`, `docs/AGENT_HANDOFF.md`.
