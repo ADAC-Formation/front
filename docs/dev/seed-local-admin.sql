@@ -73,21 +73,21 @@ ON CONFLICT (stagiaire_id, formation_id) DO NOTHING;
 -- l'équipe, pas fournie par l'ADAC. Jamais une migration, jamais en production. Rejouable : un nom déjà présent
 -- (casse ignorée, index uk_document_types_nom_upper) n'est pas modifié. Le catalogue se tient ensuite depuis
 -- Gestion > Documents.
--- « Selon la situation » (A3) n'existe pas dans le modèle : ces pièces sont seedées « facultatif ».
+-- Pas d'« obligatoire / facultatif » (décision du 2026-11-21) : tout type qui s'applique à une formation est une pièce à envoyer.
 -- Les catégories fictives « Secourisme » et « Numérique » n'existent pas dans le back : le certificat médical
 -- est lié à « Mieux-être au travail » et la photo à « Spécial BCP » pour avoir des types liés à une catégorie.
-INSERT INTO document_types (nom, aide, is_required, is_sensitive, applies_to_all, deadline_days, deadline_anchor, allowed_formats)
+INSERT INTO document_types (nom, aide, is_sensitive, applies_to_all, deadline_days, deadline_anchor, allowed_formats)
 VALUES
-  ('Pièce d''identité (recto-verso)',   'Carte d''identité ou passeport en cours de validité.',     TRUE,  TRUE,  TRUE,  7,    'BEFORE_START', NULL),
-  ('Fiche d''inscription signée',        'Modèle fourni par l''ADAC.',                                 TRUE,  FALSE, TRUE,  7,    'BEFORE_START', 'pdf'),
-  ('Justificatif de prise en charge',    'Employeur, OPCO ou autre financeur. Absent si vous financez vous-même.', FALSE, TRUE,  TRUE,  7,    'BEFORE_START', NULL),
-  ('Attestation de situation de handicap', 'Pour adapter la formation à vos besoins.',               FALSE, TRUE,  TRUE,  7,    'BEFORE_START', NULL),
-  ('CV à jour',                          NULL,                                                        FALSE, FALSE, TRUE,  NULL, NULL,           'pdf,docx'),
-  ('Évaluation de la formation à chaud', 'À remplir à la fin de la formation.',                      TRUE,  FALSE, TRUE,  15,   'AFTER_END',    NULL),
-  ('Certificat médical d''aptitude',     NULL,                                                        TRUE,  FALSE, FALSE, 7,    'BEFORE_START', 'pdf,jpg,jpeg,png'),
-  ('Photo d''identité numérique',        'Pour l''attestation.',                                      FALSE, FALSE, FALSE, NULL, NULL,           'jpg,jpeg,png'),
-  ('Liste d''émargement signée',         NULL,                                                        TRUE,  FALSE, FALSE, 0,    'AFTER_END',    NULL),
-  ('Courrier d''accord de l''employeur', NULL,                                                        TRUE,  FALSE, FALSE, 7,    'BEFORE_START', NULL)
+  ('Pièce d''identité (recto-verso)',   'Carte d''identité ou passeport en cours de validité.',     TRUE,  TRUE,  7,    'BEFORE_START', NULL),
+  ('Fiche d''inscription signée',        'Modèle fourni par l''ADAC.',                                 FALSE, TRUE,  7,    'BEFORE_START', 'pdf'),
+  ('Justificatif de prise en charge',    'Employeur, OPCO ou autre financeur. Absent si vous financez vous-même.', TRUE,  TRUE,  7,    'BEFORE_START', NULL),
+  ('Attestation de situation de handicap', 'Pour adapter la formation à vos besoins.',               TRUE,  TRUE,  7,    'BEFORE_START', NULL),
+  ('CV à jour',                          NULL,                                                        FALSE, TRUE,  NULL, NULL,           'pdf,docx'),
+  ('Évaluation de la formation à chaud', 'À remplir à la fin de la formation.',                      FALSE, TRUE,  15,   'AFTER_END',    NULL),
+  ('Certificat médical d''aptitude',     NULL,                                                        FALSE, FALSE, 7,    'BEFORE_START', 'pdf,jpg,jpeg,png'),
+  ('Photo d''identité numérique',        'Pour l''attestation.',                                      FALSE, FALSE, NULL, NULL,           'jpg,jpeg,png'),
+  ('Liste d''émargement signée',         NULL,                                                        FALSE, FALSE, 0,    'AFTER_END',    NULL),
+  ('Courrier d''accord de l''employeur', NULL,                                                        FALSE, FALSE, 7,    'BEFORE_START', NULL)
 ON CONFLICT (UPPER(nom)) DO NOTHING;
 
 INSERT INTO document_type_categories (document_type_id, category_id)
