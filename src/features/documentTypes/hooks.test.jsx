@@ -48,7 +48,6 @@ describe('useDocumentTypes', () => {
 const NEW_TYPE = {
   nom: 'Attestation employeur',
   aide: null,
-  isRequired: true,
   isSensitive: false,
   appliesToAllFormations: true,
   categoryIds: [],

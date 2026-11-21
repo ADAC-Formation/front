@@ -132,14 +132,6 @@ const DocumentTypeForm = ({ type }) => {
           <label className={styles.choice}>
             <input
               type="checkbox"
-              checked={values.isRequired}
-              onChange={(event) => set({ isRequired: event.target.checked })}
-            />
-            Obligatoire
-          </label>
-          <label className={styles.choice}>
-            <input
-              type="checkbox"
               checked={values.isSensitive}
               onChange={(event) => set({ isSensitive: event.target.checked })}
             />

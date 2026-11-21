@@ -4,14 +4,13 @@ import { API_URL } from './session'
 import { CATEGORIES, apiError } from './formations'
 
 // Types de document fictifs (forme de DocumentTypeResponse, design.md § 3) : un type pour toutes les
-// formations (obligatoire, sensible, avec délai), un type par catégorie (facultatif, formats limités)
+// formations (sensible, avec délai), un type par catégorie (formats limités)
 // et un type désactivé.
 export const DOCUMENT_TYPES = {
   identite: {
     id: 1,
     nom: 'Pièce d’identité',
     aide: 'Recto-verso, en cours de validité.',
-    isRequired: true,
     isSensitive: true,
     appliesToAllFormations: true,
     categories: [],
@@ -26,7 +25,6 @@ export const DOCUMENT_TYPES = {
     id: 2,
     nom: 'Certificat médical',
     aide: null,
-    isRequired: false,
     isSensitive: false,
     appliesToAllFormations: false,
     categories: [CATEGORIES.secours],
@@ -41,7 +39,6 @@ export const DOCUMENT_TYPES = {
     id: 3,
     nom: 'Ancienne attestation',
     aide: null,
-    isRequired: true,
     isSensitive: false,
     appliesToAllFormations: true,
     categories: [],

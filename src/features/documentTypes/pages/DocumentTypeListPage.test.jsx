@@ -28,14 +28,14 @@ describe('DocumentTypeListPage — liste', () => {
     await screen.findByRole('heading', { name: 'Pièce d’identité', level: 3 })
 
     const identity = within(rowOf('Pièce d’identité'))
-    expect(identity.getByText('Obligatoire')).toBeInTheDocument()
     expect(identity.getByText('Sensible')).toBeInTheDocument()
     expect(identity.getByText('Toutes les formations')).toBeInTheDocument()
     expect(identity.getByText('7 jours avant le début')).toBeInTheDocument()
     expect(identity.getByText('Actif')).toBeInTheDocument()
 
     const certificate = within(rowOf('Certificat médical'))
-    expect(certificate.getByText('Facultatif')).toBeInTheDocument()
+    expect(certificate.queryByText('Facultatif')).not.toBeInTheDocument()
+    expect(identity.queryByText('Obligatoire')).not.toBeInTheDocument()
     expect(certificate.queryByText('Sensible')).not.toBeInTheDocument()
     expect(certificate.getByText('Secourisme')).toBeInTheDocument()
     expect(certificate.getByText('PDF, JPG')).toBeInTheDocument()

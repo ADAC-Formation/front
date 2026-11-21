@@ -12,7 +12,6 @@ export function emptyValues() {
   return {
     nom: '',
     aide: '',
-    isRequired: false,
     isSensitive: false,
     scope: 'all',
     categoryIds: [],
@@ -57,7 +56,6 @@ export function toRequest(values) {
   return {
     nom: values.nom.trim(),
     aide: values.aide.trim() === '' ? null : values.aide.trim(),
-    isRequired: values.isRequired,
     isSensitive: values.isSensitive,
     appliesToAllFormations,
     categoryIds: appliesToAllFormations ? [] : values.categoryIds,
@@ -72,7 +70,6 @@ export function fromType(type) {
   return {
     nom: type.nom,
     aide: type.aide ?? '',
-    isRequired: type.isRequired,
     isSensitive: type.isSensitive,
     scope: type.appliesToAllFormations ? 'all' : 'categories',
     categoryIds: type.categories.map((category) => category.id),

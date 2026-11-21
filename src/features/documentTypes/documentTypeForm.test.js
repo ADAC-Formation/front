@@ -4,11 +4,10 @@ import { emptyValues, fromType, toRequest, validateDocumentType } from './docume
 const valid = { ...emptyValues(), nom: 'Certificat médical' }
 
 describe('emptyValues', () => {
-  it('commence facultatif, pour toutes les formations, sans délai ni format', () => {
+  it('commence pour toutes les formations, sans délai ni format', () => {
     expect(emptyValues()).toEqual({
       nom: '',
       aide: '',
-      isRequired: false,
       isSensitive: false,
       scope: 'all',
       categoryIds: [],
@@ -70,11 +69,10 @@ describe('validateDocumentType', () => {
 describe('toRequest', () => {
   it('construit le corps complet pour « toutes les formations »', () => {
     expect(
-      toRequest({ ...valid, nom: '  Pièce d’identité ', isRequired: true, isSensitive: true, categoryIds: [3] }),
+      toRequest({ ...valid, nom: '  Pièce d’identité ', isSensitive: true, categoryIds: [3] }),
     ).toEqual({
       nom: 'Pièce d’identité',
       aide: null,
-      isRequired: true,
       isSensitive: true,
       appliesToAllFormations: true,
       categoryIds: [],
@@ -118,7 +116,6 @@ describe('fromType', () => {
     id: 4,
     nom: 'Certificat médical',
     aide: 'Moins de 3 mois',
-    isRequired: true,
     isSensitive: true,
     appliesToAllFormations: false,
     categories: [{ id: 2, nom: 'Secourisme', couleur: '#D62828', isActive: true }],
@@ -132,7 +129,6 @@ describe('fromType', () => {
     expect(fromType(type)).toEqual({
       nom: 'Certificat médical',
       aide: 'Moins de 3 mois',
-      isRequired: true,
       isSensitive: true,
       scope: 'categories',
       categoryIds: [2],
@@ -159,7 +155,6 @@ describe('fromType', () => {
     expect(toRequest(fromType(type))).toEqual({
       nom: type.nom,
       aide: type.aide,
-      isRequired: true,
       isSensitive: true,
       appliesToAllFormations: false,
       categoryIds: [2],

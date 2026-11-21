@@ -35,10 +35,10 @@ describe('DocumentTypeFormPage — création', () => {
     expect(screen.getByRole('link', { name: /Retour/ })).toHaveAttribute('href', '/admin/documents')
   })
 
-  it('démarre facultatif, pour toutes les formations, sans délai', async () => {
+  it('démarre pour toutes les formations, sans délai', async () => {
     renderForm('/admin/documents/nouveau')
     await screen.findByLabelText('Nom')
-    expect(screen.getByLabelText('Obligatoire')).not.toBeChecked()
+    expect(screen.queryByLabelText('Obligatoire')).not.toBeInTheDocument()
     expect(screen.getByLabelText('Sensible')).not.toBeChecked()
     expect(screen.getByRole('radio', { name: 'Toutes les formations' })).toBeChecked()
     expect(screen.getByLabelText('Délai')).toHaveValue('')
@@ -48,7 +48,7 @@ describe('DocumentTypeFormPage — création', () => {
   it('envoie le corps complet puis affiche la liste avec « Type de document créé »', async () => {
     const api = renderForm('/admin/documents/nouveau')
     await type('Nom', 'Certificat d’aptitude')
-    await userEvent.click(screen.getByLabelText('Obligatoire'))
+    await userEvent.click(screen.getByLabelText('Sensible'))
     await userEvent.click(screen.getByRole('radio', { name: 'Certaines catégories' }))
     await userEvent.click(await screen.findByRole('checkbox', { name: 'Secourisme' }))
     await userEvent.selectOptions(screen.getByLabelText('Délai'), 'BEFORE_START')
@@ -60,8 +60,7 @@ describe('DocumentTypeFormPage — création', () => {
       {
         nom: 'Certificat d’aptitude',
         aide: null,
-        isRequired: true,
-        isSensitive: false,
+        isSensitive: true,
         appliesToAllFormations: false,
         categoryIds: [1],
         deadlineDays: 7,
@@ -187,7 +186,6 @@ describe('DocumentTypeFormPage — modification', () => {
         id: 2,
         nom: 'Certificat médical',
         aide: null,
-        isRequired: false,
         isSensitive: false,
         appliesToAllFormations: false,
         categoryIds: [1],
