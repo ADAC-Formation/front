@@ -432,6 +432,11 @@
   transform: none;
 }
 
+/* « Inscrire des stagiaires » et sa liste de cases, sous les inscrits (J8). */
+.inscritsAction {
+  margin-top: 1rem;
+}
+
 /* ---------- Responsive ---------- */
 
 @media (max-width: 639px) {

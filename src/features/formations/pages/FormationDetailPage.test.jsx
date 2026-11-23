@@ -15,8 +15,11 @@ import {
   mockFormationDetail,
   mockFormationList,
   INSCRITS,
+  mockEnroll,
   mockInscriptions,
+  mockUnenroll,
 } from '../../../test/formations'
+import { mockAccountList } from '../../../test/accounts'
 
 const [secours, excel, postures] = FORMATIONS
 
@@ -393,5 +396,161 @@ describe('FormationDetailPage', () => {
     const { container } = renderDetail('SUPER_ADMIN', secours)
     await screen.findByText('Léa Petit')
     expect(await axe(container)).toHaveNoViolations()
+  })
+  describe('inscrire et désinscrire (J5, J8)', () => {
+    const stagiaire = (id, prenom, nom, { isActive, activated }) => ({
+      id, email: `${prenom.toLowerCase()}@adac.test`, prenom, nom, role: 'STAGIAIRE', isActive, activated, emailNotificationsEnabled: true,
+    })
+    // Léa (20) et Omar (21) sont déjà inscrits à 101 (INSCRITS).
+    const CANDIDATS = [
+      stagiaire(20, 'Léa', 'Petit', { isActive: true, activated: true }),
+      stagiaire(21, 'Omar', 'Benali', { isActive: true, activated: true }),
+      stagiaire(30, 'Zoé', 'Martin', { isActive: false, activated: false }), // jamais activée
+      stagiaire(31, 'Yann', 'Leroy', { isActive: false, activated: true }), // suspendu
+      stagiaire(32, 'Inès', 'Roy', { isActive: true, activated: true }),
+    ]
+    const lea = INSCRITS[0].stagiaire
+    const sentByLea = {
+      id: 701,
+      fileName: 'Carte-identite.pdf',
+      fileSize: 2048,
+      mimeType: 'application/pdf',
+      uploadedBy: { id: lea.id, prenom: lea.prenom, nom: lea.nom },
+      formationId: null,
+      inscriptionId: 1,
+      createdAt: '2026-03-01T10:00:00',
+    }
+    const sentToLea = { ...sentByLea, id: 702, fileName: 'Convocation.pdf', uploadedBy: { id: 1, prenom: 'Chargée', nom: 'Dev' } }
+
+    const inscritsSection = async () =>
+      (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
+
+    const openPicker = async (section) => {
+      await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire des stagiaires' }))
+      return within(section).getByRole('group', { name: 'Stagiaires' })
+    }
+
+    it('propose les jamais activés, ni les suspendus ni les inscrits, inscrit puis récapitule par nom', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockAccountList('stagiaires', CANDIDATS)
+      const enrolCalls = mockEnroll()
+      renderDetail('SUPER_ADMIN', secours)
+      const section = await inscritsSection()
+      await within(section).findByText('Léa Petit')
+      const picker = await openPicker(section)
+
+      const zoe = await within(picker).findByRole('checkbox', { name: 'Zoé Martin' })
+      const ines = within(picker).getByRole('checkbox', { name: 'Inès Roy' })
+      expect(within(picker).queryByRole('checkbox', { name: 'Yann Leroy' })).not.toBeInTheDocument()
+      expect(within(picker).queryByRole('checkbox', { name: 'Léa Petit' })).not.toBeInTheDocument()
+      expect(within(picker).queryByRole('checkbox', { name: 'Omar Benali' })).not.toBeInTheDocument()
+      expect(within(picker).queryByText(/@adac\.test/)).not.toBeInTheDocument()
+
+      await userEvent.click(zoe)
+      await userEvent.click(ines)
+      await userEvent.click(within(section).getByRole('button', { name: 'Inscrire' }))
+
+      expect(await within(section).findByText('Inscrits : Zoé Martin, Inès Roy.')).toBeInTheDocument()
+      expect(enrolCalls.bodies).toEqual([
+        { formationId: 101, stagiaireId: 30 },
+        { formationId: 101, stagiaireId: 32 },
+      ])
+      expect(within(section).queryByRole('group', { name: 'Stagiaires' })).not.toBeInTheDocument()
+      await within(section).findByText('Léa Petit')
+    })
+
+    it('liste les échecs par nom avec leur raison', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockAccountList('stagiaires', CANDIDATS)
+      mockEnroll({ errors: { '101:32': { status: 404, message: 'Stagiaire introuvable' } } })
+      renderDetail('SUPER_ADMIN', secours)
+      const section = await inscritsSection()
+      const picker = await openPicker(section)
+      await userEvent.click(await within(picker).findByRole('checkbox', { name: 'Zoé Martin' }))
+      await userEvent.click(within(picker).getByRole('checkbox', { name: 'Inès Roy' }))
+      await userEvent.click(within(section).getByRole('button', { name: 'Inscrire' }))
+
+      expect(await within(section).findByText('Inscrits : Zoé Martin.')).toBeInTheDocument()
+      expect(within(section).getByText('Inscription impossible : Inès Roy (Stagiaire introuvable).')).toBeInTheDocument()
+      await within(section).findByText('Léa Petit')
+    })
+
+    it('« Annuler » referme la liste sans appel', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockAccountList('stagiaires', CANDIDATS)
+      const enrolCalls = mockEnroll()
+      renderDetail('SUPER_ADMIN', secours)
+      const section = await inscritsSection()
+      const picker = await openPicker(section)
+      await userEvent.click(await within(picker).findByRole('checkbox', { name: 'Zoé Martin' }))
+      await userEvent.click(within(section).getByRole('button', { name: 'Annuler' }))
+      expect(within(section).queryByRole('group', { name: 'Stagiaires' })).not.toBeInTheDocument()
+      expect(enrolCalls.bodies).toEqual([])
+    })
+
+    it('« Désinscrire » annonce le nombre de documents, puis désinscrit', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      const unenrolCalls = mockUnenroll()
+      renderDetail('SUPER_ADMIN', secours, { documents: [sentByLea, sentToLea] })
+      const section = await inscritsSection()
+      const leaRow = (await within(section).findByText('Léa Petit')).closest('li')
+      await within(leaRow).findByText('Documents envoyés')
+      await userEvent.click(within(leaRow).getByRole('button', { name: 'Désinscrire Léa Petit' }))
+
+      const dialog = screen.getByRole('dialog', { name: 'Désinscrire Léa Petit de « Premiers secours PSC1 » ?' })
+      expect(
+        within(dialog).getByText('Ses 2 documents déposés sur cette formation seront supprimés définitivement.'),
+      ).toBeInTheDocument()
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Désinscrire' }))
+
+      await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+      expect(unenrolCalls.paths).toEqual([{ formationId: 101, stagiaireId: 20 }])
+      await within(section).findByText('Léa Petit')
+    })
+
+    it('affiche l’erreur de la désinscription dans la confirmation', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockUnenroll({ errorStatus: 409 })
+      renderDetail('SUPER_ADMIN', secours)
+      const section = await inscritsSection()
+      await userEvent.click(await within(section).findByRole('button', { name: 'Désinscrire Omar Benali' }))
+      const dialog = screen.getByRole('dialog')
+      await userEvent.click(within(dialog).getByRole('button', { name: 'Désinscrire' }))
+      expect(await within(dialog).findByRole('alert')).toHaveTextContent('Formation archivée, désinscription impossible')
+    })
+
+    it('aucune action sur une formation archivée', async () => {
+      mockFormationDetail(postures)
+      mockInscriptions(103)
+      renderDetail('SUPER_ADMIN', postures)
+      const section = await inscritsSection()
+      await within(section).findByText('Léa Petit')
+      expect(within(section).queryByRole('button', { name: /Inscrire|Désinscrire/ })).not.toBeInTheDocument()
+    })
+
+    it('aucune action pour le formateur', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('ADMIN', secours)
+      const section = await inscritsSection()
+      await within(section).findByText('Léa Petit')
+      expect(within(section).queryByRole('button', { name: /Inscrire|Désinscrire/ })).not.toBeInTheDocument()
+    })
+
+    it('n’a aucune violation d’accessibilité, liste ouverte (jest-axe)', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockAccountList('stagiaires', CANDIDATS)
+      const { container } = renderDetail('SUPER_ADMIN', secours)
+      const section = await inscritsSection()
+      const picker = await openPicker(section)
+      await within(picker).findByRole('checkbox', { name: 'Zoé Martin' })
+      expect(await axe(container)).toHaveNoViolations()
+    })
   })
 })

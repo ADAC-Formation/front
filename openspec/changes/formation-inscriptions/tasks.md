@@ -59,13 +59,13 @@ Deux branches : **back** `feature/formation-inscriptions` (depuis `origin/dev` d
 
 ## 9. Front : page de la formation (TDD)
 
-- [ ] 9.1 RED : `FormationDetailPage` — « Inscrire des stagiaires » (jamais activés inclus, suspendus et inscrits exclus), échecs par nom, « Désinscrire » avec le nombre de documents, archivée sans action, formateur sans action, jest-axe
-- [ ] 9.2 Mise en œuvre ; GREEN
-- [ ] 9.3 Commit `feat(inscriptions): enroll and unenroll stagiaires from the formation page`
+- [x] 9.1 RED : `FormationDetailPage` — « Inscrire des stagiaires » (jamais activés inclus, suspendus et inscrits exclus), échecs par nom, « Désinscrire » avec le nombre de documents, archivée sans action, formateur sans action, jest-axe
+- [x] 9.2 Mise en œuvre ; GREEN
+- [x] 9.3 Commit `feat(inscriptions): enroll and unenroll stagiaires from the formation page`
 
 ## 10. Clôture
 
-- [ ] 10.1 `npm run check` vert
+- [x] 10.1 `npm run check` vert
 - [ ] 10.2 Passage manuel sur le vrai back local (branche back du change) : les trois parcours, un échec partiel, une désinscription avec document
 - [ ] 10.3 Docs : `etat-front.md`, `CLAUDE.md` (règles à retenir), `spec.md` (cases cochées)
 - [ ] 10.4 Relecture (D30) ; fusion dans `dev` sur demande de Manon
