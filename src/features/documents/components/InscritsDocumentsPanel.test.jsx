@@ -47,6 +47,12 @@ function renderPanel({ inscrits = INSCRITS, types = TYPES, typesError, documents
 }
 
 const blockOf = async (name) => screen.findByRole('region', { name })
+// Les blocs sont repliés à l'arrivée : un clic sur la ligne (le résumé) les déplie.
+const openBlock = async (name) => {
+  const block = await blockOf(name)
+  await userEvent.click(within(block).getByText(name))
+  return block
+}
 
 beforeEach(() => saveBlob.mockClear())
 
@@ -59,9 +65,31 @@ describe('InscritsDocumentsPanel', () => {
     expect(await within(omarBlock).findByText('1/2 documents reçus')).toBeInTheDocument()
   })
 
-  it('écrit « Reçu » ou « Manquant » pour chaque type, avec les fichiers reçus', async () => {
+  it('replie chaque bloc à l’arrivée : nom et compte visibles, types masqués jusqu’au clic', async () => {
     renderPanel()
     const leaBlock = await blockOf('Léa Petit')
+    expect(await within(leaBlock).findByText('1/2 documents reçus')).toBeVisible()
+    const identite = await within(leaBlock).findByRole('listitem', { name: 'Pièce d’identité' })
+    expect(identite).not.toBeVisible()
+    await userEvent.click(within(leaBlock).getByText('Léa Petit'))
+    expect(identite).toBeVisible()
+    await userEvent.click(within(leaBlock).getByText('Léa Petit'))
+    expect(identite).not.toBeVisible()
+  })
+
+  it('marque le résumé d’un inscrit complet ou incomplet, l’état restant écrit', async () => {
+    renderPanel({
+      documents: [...DOCS, document(704, 'Diplôme - bac.pdf', 1, lea)],
+    })
+    const leaBlock = await blockOf('Léa Petit')
+    expect((await within(leaBlock).findByText('2/2 documents reçus')).closest('summary')).toHaveAttribute('data-complete', 'true')
+    const omarBlock = await blockOf('Omar Benali')
+    expect((await within(omarBlock).findByText('1/2 documents reçus')).closest('summary')).toHaveAttribute('data-complete', 'false')
+  })
+
+  it('écrit « Reçu » ou « Manquant » pour chaque type, avec les fichiers reçus', async () => {
+    renderPanel()
+    const leaBlock = await openBlock('Léa Petit')
     const identite = await within(leaBlock).findByRole('listitem', { name: 'Pièce d’identité' })
     expect(within(identite).getByText('Reçu')).toBeInTheDocument()
     expect(within(identite).getByRole('button', { name: 'Télécharger Pièce d’identité - recto.pdf' })).toBeInTheDocument()
@@ -72,8 +100,8 @@ describe('InscritsDocumentsPanel', () => {
 
   it('liste les fichiers hors type sous « Autres documents », le nom rendu en texte', async () => {
     const { container } = renderPanel()
-    const leaBlock = await blockOf('Léa Petit')
-    expect(await within(leaBlock).findByText('Autres documents')).toBeInTheDocument()
+    const leaBlock = await openBlock('Léa Petit')
+    expect(await within(leaBlock).findByText('Autres documents')).toBeVisible()
     expect(within(leaBlock).getByRole('button', { name: 'Télécharger CV <img src=x>.pdf' })).toBeInTheDocument()
     expect(container.querySelector('img')).toBeNull()
     const omarBlock = await blockOf('Omar Benali')
@@ -84,7 +112,7 @@ describe('InscritsDocumentsPanel', () => {
   it('télécharge un fichier par le client authentifié', async () => {
     const user = userEvent.setup()
     const { api } = renderPanel()
-    const leaBlock = await blockOf('Léa Petit')
+    const leaBlock = await openBlock('Léa Petit')
     await user.click(await within(leaBlock).findByRole('button', { name: 'Télécharger Pièce d’identité - recto.pdf' }))
     await waitFor(() => expect(saveBlob).toHaveBeenCalledTimes(1))
     expect(api.calls.downloaded).toEqual([701])

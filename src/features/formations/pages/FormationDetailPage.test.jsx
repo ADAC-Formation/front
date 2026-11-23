@@ -288,6 +288,7 @@ describe('FormationDetailPage', () => {
         renderDetail(role, secours, { documents: [...DOCUMENTS, sentByLea], types: TYPES })
         const panel = await openTab('Documents stagiaires')
         const leaBlock = await within(panel).findByRole('region', { name: 'Léa Petit' })
+        await userEvent.click(within(leaBlock).getByText('Léa Petit')) // bloc replié à l'arrivée
         const identite = await within(leaBlock).findByRole('listitem', { name: 'Pièce d’identité' })
         expect(within(identite).getByText('Reçu')).toBeInTheDocument()
         expect(within(identite).getByRole('button', { name: 'Télécharger Pièce d’identité - recto.pdf' })).toBeInTheDocument()
