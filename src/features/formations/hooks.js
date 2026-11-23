@@ -5,10 +5,12 @@ import { ROLES } from '../../utils/roles'
 import {
   archiveFormation,
   createFormation,
+  enrollStagiaire,
   fetchFormation,
   importFormations,
   listFormations,
   listInscriptions,
+  unenrollStagiaire,
   updateFormation,
 } from './api'
 
@@ -124,5 +126,50 @@ export function useImportFormations() {
   return useMutation({
     mutationFn: importFormations,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: FORMATIONS_KEY }),
+  })
+}
+
+// Les inscriptions changent les inscrits d'une formation (['formations', …]) et les formations d'un
+// stagiaire (['users', id, 'inscriptions']) : les deux familles de clés sont rechargées.
+function useInvalidateInscriptions() {
+  const queryClient = useQueryClient()
+  return () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: FORMATIONS_KEY }),
+      queryClient.invalidateQueries({ queryKey: ['users'] }),
+    ])
+}
+
+const ALREADY_ENROLLED = 409
+
+// Inscrit une liste de couples `{ formationId, stagiaireId }` l'un après l'autre (ordre lisible, pas de
+// rafale sur le back) et n'échoue jamais en bloc : renvoie `{ enrolled, failed }`, chaque échec avec le
+// `message` de son ApiError (message du back, ou coupure réseau). Un `409` « déjà inscrit » est une
+// réussite (J4).
+async function enrollEach(pairs) {
+  const enrolled = []
+  const failed = []
+  for (const pair of pairs) {
+    try {
+      await enrollStagiaire(pair.formationId, pair.stagiaireId)
+      enrolled.push(pair)
+    } catch (error) {
+      if (error.status === ALREADY_ENROLLED) enrolled.push(pair)
+      else failed.push({ ...pair, message: error.message })
+    }
+  }
+  return { enrolled, failed }
+}
+
+export function useEnrollStagiaires() {
+  const invalidate = useInvalidateInscriptions()
+  return useMutation({ mutationFn: enrollEach, onSettled: invalidate })
+}
+
+export function useUnenrollStagiaire() {
+  const invalidate = useInvalidateInscriptions()
+  return useMutation({
+    mutationFn: ({ formationId, stagiaireId }) => unenrollStagiaire(formationId, stagiaireId),
+    onSuccess: invalidate,
   })
 }

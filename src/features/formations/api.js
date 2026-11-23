@@ -20,6 +20,19 @@ export async function listInscriptions(id) {
   return data
 }
 
+// SUPER_ADMIN seulement (décisions J1–J9). `201` → InscriptionResponse ; `400` formation archivée ;
+// `404` stagiaire inconnu ou suspendu (un compte jamais activé est accepté, J2) ; `409` déjà inscrit.
+export async function enrollStagiaire(formationId, stagiaireId) {
+  const { data } = await apiClient.post(`/formations/${formationId}/inscriptions`, { stagiaireId })
+  return data
+}
+
+// SUPER_ADMIN seulement. Supprime aussi les documents de l'inscription (J6) ; `409` sur une formation
+// archivée (J7) ; idempotent (`204` même si le stagiaire n'était pas inscrit).
+export async function unenrollStagiaire(formationId, stagiaireId) {
+  await apiClient.delete(`/formations/${formationId}/inscriptions/${stagiaireId}`)
+}
+
 export async function archiveFormation(id) {
   const { data } = await apiClient.patch(`/formations/${id}/archive`)
   return data

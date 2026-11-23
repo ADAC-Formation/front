@@ -178,3 +178,38 @@ export function mockImportFormations({ count = 2, errorStatus, errorMessage = 'F
   )
   return calls
 }
+
+// POST /formations/{id}/inscriptions, toutes formations : 201, ou l'erreur prévue. `errors` est indexé par
+// « formationId:stagiaireId » ou par formationId seul : `{ status, message }`, ou `'network'` (coupure).
+// `calls.bodies` garde les couples reçus, dans l'ordre : `{ formationId, stagiaireId }`.
+export function mockEnroll({ errors = {} } = {}) {
+  const calls = { bodies: [] }
+  server.use(
+    http.post(`${API_URL}/formations/:id/inscriptions`, async ({ request, params }) => {
+      const { stagiaireId } = await request.json()
+      const formationId = Number(params.id)
+      calls.bodies.push({ formationId, stagiaireId })
+      const error = errors[`${formationId}:${stagiaireId}`] ?? errors[formationId]
+      if (error === 'network') return HttpResponse.error()
+      if (error) return apiError(error.status, error.message)
+      return HttpResponse.json(
+        { id: 900 + calls.bodies.length, stagiaire: { id: stagiaireId }, inscritLe: '2026-11-23T10:00:00Z' },
+        { status: 201 },
+      )
+    }),
+  )
+  return calls
+}
+
+// DELETE /formations/{id}/inscriptions/{stagiaireId}, toutes formations : 204, ou l'erreur demandée.
+// `calls.paths` garde les couples reçus : `{ formationId, stagiaireId }`.
+export function mockUnenroll({ errorStatus, errorMessage = 'Formation archivée, désinscription impossible' } = {}) {
+  const calls = { paths: [] }
+  server.use(
+    http.delete(`${API_URL}/formations/:id/inscriptions/:stagiaireId`, ({ params }) => {
+      calls.paths.push({ formationId: Number(params.id), stagiaireId: Number(params.stagiaireId) })
+      return errorStatus ? apiError(errorStatus, errorMessage) : new HttpResponse(null, { status: 204 })
+    }),
+  )
+  return calls
+}
