@@ -6,7 +6,7 @@ import { useCurrentUser } from '../../auth/hooks'
 import FeedbackDialog from './FeedbackDialog'
 import styles from './FeedbackButton.module.css'
 
-// Rôles qui peuvent envoyer un retour (F1) ; le back l'impose aussi (403 pour un stagiaire).
+// Rôles qui peuvent envoyer un retour (U1) ; le back l'impose aussi (403 pour un stagiaire).
 const ALLOWED_ROLES = [ROLES.SUPER_ADMIN, ROLES.ADMIN]
 const THANKS = 'Merci, votre retour a bien été envoyé.'
 const THANKS_DURATION_MS = 6000

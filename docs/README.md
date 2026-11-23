@@ -18,6 +18,7 @@ Un dossier par public. En cas de doute : le dev lit `projet/` et `decisions/`, C
 | `decisions-formations.md`, `decisions-documents.md`, `decisions-categories.md` | Formations (F), documents (G), catégories (C) |
 | `decisions-messagerie.md`, `decisions-notifications.md`, `decisions-profil.md` | Messagerie (H), notifications (N), profil (P) |
 | `decisions-import-comptes.md` | Import de comptes par fichier Excel (I, NOTES-09) |
+| `decisions-feedback.md` | Bouton « Envoyer un retour » : bug ou suggestion envoyé par email au développeur (U) |
 
 ## `design/` : design
 

@@ -11,6 +11,8 @@ services:
   backend:
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      # Destinataire des retours (POST /api/feedback) ; Mailtrap capture l'email, l'adresse importe peu.
+      FEEDBACK_RECIPIENT: ${FEEDBACK_RECIPIENT:-dev@example.org}
     ports:
       - "8080:8080"
 
