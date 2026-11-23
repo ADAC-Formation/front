@@ -6,7 +6,7 @@ import FormField from '../../../components/molecules/FormField/FormField'
 import { PageShell } from '../../../templates/PageShell/PageShell'
 import { useCategories } from '../../categories/hooks'
 import { emptyValues, fromType, toRequest, validateDocumentType } from '../documentTypeForm'
-import { DEADLINE_ANCHOR_LABELS, FORMATS } from '../documentTypeLabels'
+import { DEADLINE_ANCHOR_LABELS, FORMATS, PROVIDER_CHOICES } from '../documentTypeLabels'
 import { useCreateDocumentType, useDocumentTypes, useUpdateDocumentType } from '../hooks'
 import styles from './DocumentTypePages.module.css'
 
@@ -126,6 +126,21 @@ const DocumentTypeForm = ({ type }) => {
           error={errors.aide}
           onChange={(event) => set({ aide: event.target.value })}
         />
+
+        <fieldset className={styles.group}>
+          <legend>Fourni par</legend>
+          {PROVIDER_CHOICES.map((choice) => (
+            <label key={choice.value} className={styles.choice}>
+              <input
+                type="radio"
+                name="providedBy"
+                checked={values.providedBy === choice.value}
+                onChange={() => set({ providedBy: choice.value })}
+              />
+              {choice.label}
+            </label>
+          ))}
+        </fieldset>
 
         <fieldset className={styles.group}>
           <legend>Caractéristiques</legend>

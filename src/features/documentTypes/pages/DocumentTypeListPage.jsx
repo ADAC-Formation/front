@@ -5,7 +5,7 @@ import Alert from '../../../components/atoms/Alert/Alert'
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
 import { PageShell } from '../../../templates/PageShell/PageShell'
-import { deadlineLabel, formatsLabel, scopeLabel, sortByName } from '../documentTypeLabels'
+import { deadlineLabel, formatsLabel, providerLabel, scopeLabel, sortByName } from '../documentTypeLabels'
 import { useDocumentTypes, useSetDocumentTypeActive } from '../hooks'
 import styles from './DocumentTypePages.module.css'
 
@@ -23,6 +23,7 @@ const DocumentTypeRow = ({ type, busy, onDeactivate, onReactivate }) => {
       <div className={styles.typeInfo}>
         <h3>{type.nom}</h3>
         <ul className={styles.facts} aria-label={`Détails de ${type.nom}`}>
+          <li>{providerLabel(type)}</li>
           {type.isSensitive && <li className={styles.strong}>Sensible</li>}
           <li>{scopeLabel(type)}</li>
           {deadline && <li>{deadline}</li>}

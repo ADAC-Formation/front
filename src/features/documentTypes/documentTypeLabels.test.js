@@ -4,6 +4,7 @@ import {
   FORMATS,
   deadlineLabel,
   formatsLabel,
+  providerLabel,
   scopeLabel,
   sortByName,
 } from './documentTypeLabels'
@@ -76,5 +77,13 @@ describe('sortByName', () => {
     const types = [{ nom: 'zèbre' }, { nom: 'Étude' }, { nom: 'Attestation' }, { nom: 'etat' }]
     expect(sortByName(types).map((t) => t.nom)).toEqual(['Attestation', 'etat', 'Étude', 'zèbre'])
     expect(types[0].nom).toBe('zèbre')
+  })
+})
+
+describe('providerLabel (G35)', () => {
+  it('nomme qui fournit le document, le stagiaire par défaut', () => {
+    expect(providerLabel({ providedBy: 'ADAC' })).toBe('Fourni par l’ADAC')
+    expect(providerLabel({ providedBy: 'STAGIAIRE' })).toBe('Fourni par le stagiaire')
+    expect(providerLabel({})).toBe('Fourni par le stagiaire')
   })
 })

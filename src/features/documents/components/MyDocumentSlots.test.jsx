@@ -183,3 +183,13 @@ describe('MyDocumentsSection — créneaux des documents à envoyer', () => {
     expect(await axe(container)).toHaveNoViolations()
   })
 })
+
+describe('MyDocumentsSection — pièces de l’ADAC (G35)', () => {
+  it('ne propose aucun créneau pour un type fourni par l’ADAC', async () => {
+    mockFormationDocumentTypes([IDENTITE, { ...CV, id: 3, nom: 'Feuille d’émargement', providedBy: 'ADAC' }])
+    api()
+    renderSection()
+    await slotOf('Pièce d’identité')
+    expect(screen.queryByRole('group', { name: 'Feuille d’émargement' })).not.toBeInTheDocument()
+  })
+})

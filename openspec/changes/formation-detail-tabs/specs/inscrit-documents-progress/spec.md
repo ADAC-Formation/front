@@ -33,7 +33,7 @@ Pour `SUPER_ADMIN` et `ADMIN`, chaque ligne de « Liste stagiaires » SHALL affi
 - **THEN** sa ligne affiche « Chargement… », ou un message d'erreur avec « Réessayer », sans masquer les autres lignes
 
 ### Requirement: Détail par inscrit dans « Documents stagiaires »
-Pour `SUPER_ADMIN` et `ADMIN`, l'onglet « Documents stagiaires » SHALL afficher un bloc par inscrit, titré de son nom, dans l'ordre de « Liste stagiaires » : le compte « X/Y documents reçus », puis chaque type avec son état écrit (« Reçu » ou « Manquant ») et un lien de téléchargement par fichier, puis « Autres documents » s'il en a. Sans inscrit : « Aucun stagiaire inscrit ».
+Pour `SUPER_ADMIN` et `ADMIN`, l'onglet « Documents stagiaires » SHALL afficher un bloc par inscrit, dans l'ordre de « Liste stagiaires », replié à l'arrivée : sa ligne montre le nom et « X/Y documents reçus ». Déplié, il montre chaque type avec son état écrit (« Reçu » ou « Manquant ») et ses liens de téléchargement, puis « Autres documents ». Sans inscrit : « Aucun stagiaire inscrit ».
 
 #### Scenario: Type manquant
 - **WHEN** Léa n'a rien déposé pour le type « Pièce d'identité »
@@ -60,3 +60,22 @@ Après une désinscription ou une inscription, les deux onglets SHALL refléter 
 #### Scenario: Désinscription
 - **WHEN** la chargée désinscrit Léa depuis « Liste stagiaires » puis ouvre « Documents stagiaires »
 - **THEN** le bloc de Léa n'y figure plus
+
+### Requirement: Bloc replié et marqué
+Chaque bloc de « Documents stagiaires » SHALL être un élément dépliable natif, replié à l'arrivée. Sa ligne SHALL porter une marque verte quand tous les types sont reçus et rouge sinon, le compte écrit portant toujours l'état. Un clic ou Entrée sur la ligne SHALL déplier ou replier le bloc.
+
+#### Scenario: Déplier un bloc
+- **WHEN** la chargée clique sur la ligne de Léa
+- **THEN** les types de Léa et leurs fichiers deviennent visibles, et un second clic les masque
+
+#### Scenario: Inscrit complet
+- **WHEN** Léa a un fichier pour chaque type
+- **THEN** sa ligne affiche « 2/2 documents reçus » avec la marque verte
+
+### Requirement: Types fournis par l'ADAC exclus
+Seuls les types fournis par le stagiaire (`providedBy` absent ou `STAGIAIRE`) SHALL compter dans « X/Y documents reçus » et apparaître dans le détail d'un inscrit ou dans « Mes documents ».
+
+#### Scenario: Une pièce de l'ADAC dans la formation
+- **WHEN** la formation a un type du stagiaire et un type de l'ADAC, et Léa a envoyé le premier
+- **THEN** sa ligne affiche « 1/1 documents reçus » et « Mes documents » ne propose pas de créneau pour la pièce de l'ADAC
+

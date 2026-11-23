@@ -500,3 +500,12 @@
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* En-tête des pièces de l'ADAC (G35) : titre à gauche, « 1/2 pièces déposées » à droite. */
+.slotsHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}

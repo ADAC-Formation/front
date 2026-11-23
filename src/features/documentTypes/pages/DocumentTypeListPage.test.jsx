@@ -45,6 +45,14 @@ describe('DocumentTypeListPage — liste', () => {
     expect(old.getByText('Désactivé')).toBeInTheDocument()
   })
 
+  it('dit qui fournit chaque document (G35)', async () => {
+    mockDocumentTypeApi([DOCUMENT_TYPES.identite, { ...DOCUMENT_TYPES.certificat, providedBy: 'ADAC' }])
+    renderList()
+    await screen.findByRole('heading', { name: 'Pièce d’identité', level: 3 })
+    expect(within(rowOf('Pièce d’identité')).getByText('Fourni par le stagiaire')).toBeInTheDocument()
+    expect(within(rowOf('Certificat médical')).getByText('Fourni par l’ADAC')).toBeInTheDocument()
+  })
+
   it('trie par nom sans tenir compte de la casse ni des accents', async () => {
     mockDocumentTypeApi()
     renderList()

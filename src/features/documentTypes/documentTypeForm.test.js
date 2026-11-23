@@ -14,6 +14,7 @@ describe('emptyValues', () => {
       deadlineAnchor: '',
       deadlineDays: '',
       allowedFormats: [],
+      providedBy: 'STAGIAIRE',
     })
   })
 })
@@ -79,7 +80,12 @@ describe('toRequest', () => {
       deadlineDays: null,
       deadlineAnchor: null,
       allowedFormats: [],
+      providedBy: 'STAGIAIRE',
     })
+  })
+
+  it('envoie le fournisseur choisi (G35)', () => {
+    expect(toRequest({ ...valid, providedBy: 'ADAC' }).providedBy).toBe('ADAC')
   })
 
   it('envoie les catégories cochées pour « certaines catégories »', () => {
@@ -122,6 +128,7 @@ describe('fromType', () => {
     deadlineDays: 7,
     deadlineAnchor: 'BEFORE_START',
     allowedFormats: ['pdf'],
+    providedBy: 'ADAC',
     isActive: true,
   }
 
@@ -135,7 +142,12 @@ describe('fromType', () => {
       deadlineAnchor: 'BEFORE_START',
       deadlineDays: '7',
       allowedFormats: ['pdf'],
+      providedBy: 'ADAC',
     })
+  })
+
+  it('lit un type sans fournisseur comme une pièce du stagiaire', () => {
+    expect(fromType({ ...type, providedBy: undefined }).providedBy).toBe('STAGIAIRE')
   })
 
   it('gère un type sans aide, sans délai ni formats', () => {
@@ -161,6 +173,7 @@ describe('fromType', () => {
       deadlineDays: 7,
       deadlineAnchor: 'BEFORE_START',
       allowedFormats: ['pdf'],
+      providedBy: 'ADAC',
     })
   })
 })

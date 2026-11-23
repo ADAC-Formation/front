@@ -256,3 +256,13 @@ Suite du thème : mêmes composants et règles de fichier que 027 (G4), dépôt 
 - **Modifie G29** pour la page de la formation seulement : le détail est dans un onglet plutôt que dans un dépliant. Le profil d'un stagiaire ne change pas (G17/G29).
 - **Alternatives écartées** : dépliant par inscrit dans la liste (G29) ; tableau stagiaires × types (déjà écarté en G29) ; détail groupé par type ; nombre brut de fichiers sans total ; pour le stagiaire, garder les sections empilées.
 - **Hors périmètre** : « En retard » et « Non applicable » (tranche 2, G25/G28), types sensibles (G24), onglet dans l'URL.
+- **Précision du 2026-11-23** (Manon, après un premier essai) : dans « Documents stagiaires », chaque bloc est **replié à l'arrivée** (`<details>` natif) ; la ligne montre le nom et le compte, avec une bordure rouge tant qu'il manque une pièce, verte quand tout est reçu ; un clic déplie les types.
+
+## G35 — Un type de document dit qui le fournit : le stagiaire ou l'ADAC
+- Date : 2026-11-23 · demande de Manon, change `formation-detail-tabs`.
+- **Décision** : chaque type du catalogue porte **« Fourni par : Le stagiaire / L'ADAC »** (défaut : le stagiaire ; les types existants le restent). Les pièces **de l'ADAC** apparaissent dans l'onglet « Documents ADAC » de la formation, pour la chargée de formation et le formateur, en **créneaux rouges et verts** comme « Mes documents » (G33) : « Pièces à fournir par l'ADAC » avec « X/Y pièces déposées », dépôt depuis le créneau (même convention de nom « <type> - <fichier> »), puis « Autres documents ». Le stagiaire voit la liste simple des documents de la formation, sans créneau. Les pièces de l'ADAC ne comptent **pas** dans « X/Y documents reçus » d'un stagiaire et n'apparaissent pas dans « Mes documents ».
+- **Pourquoi** : la chargée vérifie d'un coup d'œil que tout ce que l'ADAC doit déposer pour une formation l'a été (convocation, programme, feuille d'émargement…), avec le même code visuel que pour les stagiaires.
+- **Back** : colonne `provided_by` (V7) et champ `providedBy` ; changement de schéma accepté par Manon (D66 point 3), journalisé dans `changements-back.md`.
+- **Alternatives écartées** : marquer les types de l'ADAC par un préfixe dans leur nom (fragile, à remplacer ensuite) ; attendre la réponse de l'ADAC à A5 (« qui fournit quoi ? ») : le champ sert quelle que soit la réponse, la liste réelle viendra de l'ADAC.
+- **Questions ouvertes** : la liste réelle des pièces de l'ADAC (A5, `questions-pour-adac.md`).
+

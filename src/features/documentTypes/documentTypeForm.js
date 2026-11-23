@@ -18,6 +18,7 @@ export function emptyValues() {
     deadlineAnchor: '',
     deadlineDays: '',
     allowedFormats: [],
+    providedBy: 'STAGIAIRE',
   }
 }
 
@@ -62,6 +63,7 @@ export function toRequest(values) {
     deadlineDays: hasDeadline ? Number(values.deadlineDays) : null,
     deadlineAnchor: hasDeadline ? values.deadlineAnchor : null,
     allowedFormats: values.allowedFormats,
+    providedBy: values.providedBy,
   }
 }
 
@@ -76,5 +78,6 @@ export function fromType(type) {
     deadlineAnchor: type.deadlineAnchor ?? '',
     deadlineDays: type.deadlineDays === null || type.deadlineDays === undefined ? '' : String(type.deadlineDays),
     allowedFormats: type.allowedFormats ?? [],
+    providedBy: type.providedBy ?? 'STAGIAIRE',
   }
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { SLOT_SEPARATOR, slotFileName, splitBySlot } from './documentSlots'
+import { SLOT_SEPARATOR, slotFileName, splitBySlot, typesProvidedBy } from './documentSlots'
 
 const identite = { id: 1, nom: 'Pièce d’identité' }
 const cv = { id: 2, nom: 'CV' }
@@ -71,5 +71,18 @@ describe('splitBySlot', () => {
       [4, 0],
       [5, 1],
     ])
+  })
+})
+
+describe('typesProvidedBy (G35)', () => {
+  const types = [
+    { id: 1, nom: 'Pièce d’identité', providedBy: 'STAGIAIRE' },
+    { id: 2, nom: 'Feuille d’émargement', providedBy: 'ADAC' },
+    { id: 3, nom: 'CV' }, // type lu avant le champ : pièce du stagiaire
+  ]
+
+  it('garde les types du fournisseur demandé, un type sans fournisseur étant au stagiaire', () => {
+    expect(typesProvidedBy(types, 'STAGIAIRE').map((type) => type.id)).toEqual([1, 3])
+    expect(typesProvidedBy(types, 'ADAC').map((type) => type.id)).toEqual([2])
   })
 })

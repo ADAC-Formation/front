@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { DOCUMENTS, mockDocumentApi } from '../../../test/documents'
+import { mockFormationDocumentTypes } from '../../../test/documentTypes'
 import { AUTRE_FORMATEUR, FORMATIONS } from '../../../test/formations'
 import { renderWithProviders } from '../../../test/render'
 import { USERS, mockSession } from '../../../test/session'
@@ -17,9 +18,11 @@ const formation = FORMATIONS.find((candidate) => candidate.id === 101)
 const archived = { ...formation, status: 'ARCHIVED' }
 const ofAnotherTrainer = { ...formation, formateur: AUTRE_FORMATEUR }
 
-function renderSection(role, target = formation) {
+function renderSection(role, target = formation, { types = [] } = {}) {
   mockSession(role)
-  return renderWithProviders(<DocumentSection formation={target} />, { withSession: true })
+  const typeCalls = mockFormationDocumentTypes(types) // pièces de l'ADAC (G35) : aucune par défaut
+  const view = renderWithProviders(<DocumentSection formation={target} />, { withSession: true })
+  return { ...view, typeCalls }
 }
 
 const zone = () => screen.queryByRole('group', { name: 'Zone de dépôt de documents' })
@@ -274,6 +277,76 @@ describe('DocumentSection — texte et accessibilité', () => {
     const { container } = renderSection('SUPER_ADMIN')
     await screen.findByRole('group', { name: 'Zone de dépôt de documents' })
     await screen.findByText('Support de cours.pdf')
+    expect(await axe(container)).toHaveNoViolations()
+  })
+})
+
+describe('DocumentSection — pièces à fournir par l’ADAC (G35)', () => {
+  const ADAC_TYPES = [
+    { id: 11, nom: 'Feuille d’émargement', aide: null, allowedFormats: [], providedBy: 'ADAC' },
+    { id: 12, nom: 'Programme', aide: null, allowedFormats: [], providedBy: 'ADAC' },
+    { id: 13, nom: 'Pièce d’identité', aide: null, allowedFormats: [], providedBy: 'STAGIAIRE' },
+  ]
+  const sentByAdac = {
+    ...DOCUMENTS[0],
+    id: 520,
+    fileName: 'Programme - v2.pdf',
+    uploadedBy: { id: USERS.SUPER_ADMIN.id, prenom: USERS.SUPER_ADMIN.prenom, nom: USERS.SUPER_ADMIN.nom },
+  }
+  const slotOf = (name) => screen.findByRole('group', { name })
+
+  it.each(['SUPER_ADMIN', 'ADMIN'])('%s voit un créneau rouge ou vert par pièce de l’ADAC, pas pour celles du stagiaire', async (role) => {
+    mockDocumentApi([...DOCUMENTS, sentByAdac])
+    renderSection(role, formation, { types: ADAC_TYPES })
+    expect(await screen.findByRole('heading', { level: 3, name: 'Pièces à fournir par l’ADAC' })).toBeInTheDocument()
+    const emargement = await slotOf('Feuille d’émargement')
+    expect(emargement).toHaveAttribute('data-status', 'missing')
+    expect(within(emargement).getByText('À envoyer')).toBeInTheDocument()
+    const programme = await slotOf('Programme')
+    await within(programme).findByText('Programme - v2.pdf')
+    expect(programme).toHaveAttribute('data-status', 'sent')
+    expect(screen.queryByRole('group', { name: 'Pièce d’identité' })).not.toBeInTheDocument()
+    expect(screen.getByText('1/2 pièces déposées')).toBeInTheDocument()
+  })
+
+  it('dépose depuis un créneau sous « <type> - <fichier> », sur la formation', async () => {
+    const { calls } = mockDocumentApi(DOCUMENTS)
+    renderSection('SUPER_ADMIN', formation, { types: ADAC_TYPES })
+    const slot = await slotOf('Feuille d’émargement')
+    fireEvent.change(within(slot).getByLabelText('Choisir un fichier pour Feuille d’émargement'), {
+      target: { files: [pdf('signée.pdf')] },
+    })
+    await waitFor(() => expect(slot).toHaveAttribute('data-status', 'sent'))
+    expect(calls.uploaded).toEqual([{ fileName: 'Feuille d’émargement - signée.pdf', formationId: 101, inscriptionId: null }])
+  })
+
+  it('range les autres documents de la formation sous « Autres documents »', async () => {
+    mockDocumentApi([...DOCUMENTS, sentByAdac])
+    renderSection('SUPER_ADMIN', formation, { types: ADAC_TYPES })
+    const others = (await screen.findByRole('heading', { level: 3, name: 'Autres documents' })).closest('div')
+    expect(await within(others).findByText('Support de cours.pdf')).toBeInTheDocument()
+    expect(within(others).queryByText('Programme - v2.pdf')).not.toBeInTheDocument()
+  })
+
+  it('n’offre aucun dépôt dans les créneaux d’une formation archivée', async () => {
+    mockDocumentApi(DOCUMENTS)
+    renderSection('SUPER_ADMIN', archived, { types: ADAC_TYPES })
+    const slot = await slotOf('Feuille d’émargement')
+    expect(within(slot).queryByRole('button', { name: /Envoyer un fichier/ })).not.toBeInTheDocument()
+  })
+
+  it('le stagiaire voit la liste simple, sans créneau ni appel aux types', async () => {
+    mockDocumentApi([...DOCUMENTS, sentByAdac])
+    const { typeCalls } = renderSection('STAGIAIRE', formation, { types: ADAC_TYPES })
+    expect(await screen.findByText('Programme - v2.pdf')).toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: 'Feuille d’émargement' })).not.toBeInTheDocument()
+    expect(typeCalls.count).toBe(0)
+  })
+
+  it('n’a aucune violation d’accessibilité avec les créneaux (jest-axe)', async () => {
+    mockDocumentApi([...DOCUMENTS, sentByAdac])
+    const { container } = renderSection('SUPER_ADMIN', formation, { types: ADAC_TYPES })
+    await within(await slotOf('Programme')).findByText('Programme - v2.pdf')
     expect(await axe(container)).toHaveNoViolations()
   })
 })

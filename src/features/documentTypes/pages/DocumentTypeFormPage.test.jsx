@@ -41,6 +41,7 @@ describe('DocumentTypeFormPage — création', () => {
     expect(screen.queryByLabelText('Obligatoire')).not.toBeInTheDocument()
     expect(screen.getByLabelText('Sensible')).not.toBeChecked()
     expect(screen.getByRole('radio', { name: 'Toutes les formations' })).toBeChecked()
+    expect(screen.getByRole('radio', { name: 'Le stagiaire' })).toBeChecked()
     expect(screen.getByLabelText('Délai')).toHaveValue('')
     expect(screen.queryByLabelText('Nombre de jours')).not.toBeInTheDocument()
   })
@@ -66,9 +67,20 @@ describe('DocumentTypeFormPage — création', () => {
         deadlineDays: 7,
         deadlineAnchor: 'BEFORE_START',
         allowedFormats: [],
+        providedBy: 'STAGIAIRE',
       },
     ])
     expect(await screen.findByRole('heading', { name: 'Certificat d’aptitude', level: 3 })).toBeInTheDocument()
+  })
+
+  it('envoie « Fourni par : L’ADAC » quand on le choisit (G35)', async () => {
+    const api = renderForm('/admin/documents/nouveau')
+    await type('Nom', 'Feuille d’émargement')
+    expect(screen.getByRole('group', { name: 'Fourni par' })).toBeInTheDocument()
+    await userEvent.click(screen.getByRole('radio', { name: 'L’ADAC' }))
+    await submit()
+    await screen.findByText('Type de document créé')
+    expect(api.calls.created[0].providedBy).toBe('ADAC')
   })
 
   it('envoie les formats cochés', async () => {
@@ -192,6 +204,7 @@ describe('DocumentTypeFormPage — modification', () => {
         deadlineDays: 15,
         deadlineAnchor: 'AFTER_END',
         allowedFormats: ['pdf', 'jpg'],
+        providedBy: 'STAGIAIRE',
       },
     ])
   })

@@ -37,3 +37,14 @@ export function formatsLabel(allowedFormats) {
 export function sortByName(types) {
   return [...types].sort((a, b) => a.nom.localeCompare(b.nom, 'fr', { sensitivity: 'base' }))
 }
+
+// Qui fournit un document (G35) : le stagiaire sur son inscription, ou l'ADAC sur la formation. Un type lu
+// avant ce champ est une pièce du stagiaire.
+export const PROVIDER_CHOICES = [
+  { value: 'STAGIAIRE', label: 'Le stagiaire' },
+  { value: 'ADAC', label: 'L’ADAC' },
+]
+
+export function providerLabel(type) {
+  return type.providedBy === 'ADAC' ? 'Fourni par l’ADAC' : 'Fourni par le stagiaire'
+}

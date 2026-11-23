@@ -30,6 +30,14 @@ describe('inscritDocumentProgress', () => {
     expect(progress.slots.every((slot) => slot.documents.length === 0)).toBe(true)
   })
 
+  it('ne compte pas les types fournis par l’ADAC (G35)', () => {
+    const types = [type(1, 'Type A'), { ...type(2, 'Émargement'), providedBy: 'ADAC' }]
+    const progress = inscritDocumentProgress(types, [doc(1, 'Type A - x.pdf')], LEA)
+    expect(progress.total).toBe(1)
+    expect(progress.received).toBe(1)
+    expect(progress.slots.map((slot) => slot.type.id)).toEqual([1])
+  })
+
   it('range les fichiers hors créneau dans « autres »', () => {
     const progress = inscritDocumentProgress([type(1, 'Type A')], [doc(1, 'Type A - x.pdf'), doc(2, 'CV.pdf')], LEA)
     expect(progress.slots[0].documents.map((d) => d.id)).toEqual([1])

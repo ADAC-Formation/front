@@ -17,6 +17,7 @@ export const DOCUMENT_TYPES = {
     deadlineDays: 7,
     deadlineAnchor: 'BEFORE_START',
     allowedFormats: [],
+    providedBy: 'STAGIAIRE',
     isActive: true,
     createdAt: '2026-11-20T09:00:00Z',
     updatedAt: '2026-11-20T09:00:00Z',
@@ -31,6 +32,7 @@ export const DOCUMENT_TYPES = {
     deadlineDays: null,
     deadlineAnchor: null,
     allowedFormats: ['pdf', 'jpg'],
+    providedBy: 'STAGIAIRE',
     isActive: true,
     createdAt: '2026-11-20T09:00:00Z',
     updatedAt: '2026-11-20T09:00:00Z',
@@ -45,6 +47,7 @@ export const DOCUMENT_TYPES = {
     deadlineDays: 15,
     deadlineAnchor: 'AFTER_END',
     allowedFormats: [],
+    providedBy: 'STAGIAIRE',
     isActive: false,
     createdAt: '2026-11-20T09:00:00Z',
     updatedAt: '2026-11-20T09:00:00Z',
@@ -119,7 +122,8 @@ export function mockDocumentTypeApi(
       const type = {
         id: nextId++,
         ...toResponse(body),
-        isActive: true,
+        providedBy: 'STAGIAIRE',
+    isActive: true,
         createdAt: '2026-11-21T09:00:00Z',
         updatedAt: '2026-11-21T09:00:00Z',
       }

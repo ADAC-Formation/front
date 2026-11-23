@@ -38,6 +38,15 @@ Front seul, branche `feature/formation-detail-tabs` créée depuis `dev`. TDD : 
 - [ ] 7.2 Passage manuel sur le vrai back local avec les trois rôles : comptes cohérents avec les dépôts, inscription et désinscription, dépôt d'un document ADAC et d'un document stagiaire, navigation au clavier dans la barre
 - [ ] 7.3 Commit(s) en Conventional Commits sur `feature/formation-detail-tabs`, fusion en avance rapide dans `dev` ; pousser seulement sur demande de Manon
 
+## 8. Ajouts du 2026-11-23 (après un premier essai)
+
+- [x] 8.1 Blocs repliables dans « Documents stagiaires » : tests RED (repliés à l'arrivée, clic, marque verte/rouge), `<details>` natif, styles ; tests verts (commit front `75d212a`)
+- [x] 8.2 Back (plan validé par Manon) : `providedBy` sur `feature/document-types` en TDD (V7, enum, DTO, service), docs du back, `mvn test` 698 verts, commit `a9c8855`, fusion dans `local/integration` (`58bd39c`), back local reconstruit (V7 appliquée)
+- [x] 8.3 Front : « Fourni par » dans le formulaire et la liste du catalogue, `typesProvidedBy`, exclusion des types `ADAC` du compte et de « Mes documents », créneaux `ADAC` dans « Documents ADAC ». Tests RED puis verts
+- [x] 8.4 Docs : G35 et précision sous G34, `changements-back.md`, `etat-front.md`, `CLAUDE.md`, specs de ce change
+- [ ] 8.5 Passage manuel : passer un type en « L'ADAC » dans Gestion > Documents, vérifier les créneaux, le compte et « Mes documents »
+
 ## Workflow follow-up
 
-- Archiver le change (`/opsx:archive`) et synchroniser les specs `formation-browsing`, `formation-inscriptions`, `formation-detail-layout`, `inscrit-documents-progress`.
+- Archiver le change (`/opsx:archive`) et synchroniser les specs `formation-browsing`, `formation-inscriptions`, `formation-documents`, `formation-detail-layout`, `inscrit-documents-progress`.
+- Pousser `feature/document-types` du back (PR #27) seulement quand Manon le décide.

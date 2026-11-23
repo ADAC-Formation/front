@@ -16,6 +16,15 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-23 — Types de document : qui les fournit, le stagiaire ou l'ADAC (`providedBy`, TICKET-052, prêt à relire, complète PR #27)
+
+- **Branche et commit** (clone `back-readonly`) : `feature/document-types`, `a9c8855`. Rien de poussé. Mergée dans `local/integration` (`58bd39c`, conflit d'ajout en fin de `AGENT_HANDOFF.md` : les deux rapports gardés) pour le back local, V7 appliquée sur la base de dev.
+- **Quoi et pourquoi** : G35 du front. La chargée de formation veut voir, sur la page d'une formation, les pièces que l'ADAC doit déposer (rouge tant qu'elles manquent, vert ensuite), comme celles du stagiaire. Un type porte donc son fournisseur.
+- **Fichiers touchés** : `V7__add_document_type_provider.sql` (colonne `provided_by` NOT NULL DEFAULT `'STAGIAIRE'`, CHECK `chk_document_types_provided_by`), `entity/enums/DocumentProvider.java`, `DocumentType`, `DocumentTypeRequest`, `DocumentTypeResponse`, `DocumentTypeServiceImpl` (absent = STAGIAIRE). Tests : `DocumentTypeRepositoryTest` (+4 : relecture ADAC, défaut, défaut posé par la base, CHECK), `DocumentTypeServiceImplTest` (+2), `DocumentTypeControllerTest` (+1, 2 enrichis), `FlywayMigrationTest` (V6 → V7). `mvn test` : 698 tests, tous verts après la mise à jour de `FlywayMigrationTest`.
+- **Contrat** : `providedBy` (`STAGIAIRE` | `ADAC`) dans la réponse et, optionnel, dans le corps de `POST`/`PUT /api/document-types` (absent = `STAGIAIRE`, valeur inconnue = `400`). `GET /api/formations/{id}/document-types` renvoie les deux sortes. Non cassant. `tech.md`, `DB_MODEL.md`/`.mmd`, `TICKET-052.md`, `AGENT_HANDOFF.md` à jour.
+- **À vérifier / risques** : **migration de schéma** (D66 point 3), décidée avec Manon le 2026-11-23 ; un `PUT` sans le champ remet `STAGIAIRE` (même règle que les autres champs : le PUT remplace tout). Le rattachement d'un fichier à son type reste par le nom de fichier (G33) ; `documentTypeId` sur le dépôt reste à demander.
+- **Lien avec** : G35 de `decisions-documents.md` ; change front `formation-detail-tabs`.
+
 ### 2026-11-23 — Bouton « Envoyer un retour » : `POST /api/feedback` (poussé, PR #29)
 
 - **Branche et commits** (clone `back-readonly`, depuis `origin/dev` `d43d4c9`) : `feature/feedback`, `887006e` (validation de la capture + limiteur), `a409d60` (email de retour), `8a5972d` (endpoint), `93b507b` (`tech.md`). **Poussée** le 2026-11-23 (`origin/feature/feedback`), PR #29 vers `dev` ouverte le 2026-11-23. Mergée dans `local/integration` (`e3fa88c`, conflit trivial dans `JwtAuthenticationIntegrationTest` : les deux tests 401 gardés) pour le back local.

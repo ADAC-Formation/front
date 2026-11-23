@@ -1,7 +1,7 @@
 import { useId, useState } from 'react'
 import Alert from '../../../components/atoms/Alert/Alert'
 import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDialog'
-import { slotFileName, splitBySlot } from '../../documentTypes/documentSlots'
+import { slotFileName, splitBySlot, typesProvidedBy } from '../../documentTypes/documentSlots'
 import { useFormationDocumentTypes } from '../../documentTypes/hooks'
 import { useCurrentUser } from '../../auth/hooks'
 import { canDeleteDocument, canUploadOwnDocument, inscriptionIdOf } from '../documentFiles'
@@ -70,7 +70,7 @@ const MyDocumentsSection = ({ formation, className, titleClassName }) => {
 
   const downloadingId = download.isPending ? download.variables.id : null
   const canUpload = canUploadOwnDocument(formation)
-  const { slots, others } = splitBySlot(types.data ?? [], documents.data ?? [])
+  const { slots, others } = splitBySlot(typesProvidedBy(types.data ?? [], 'STAGIAIRE'), documents.data ?? [])
   const hasSlots = slots.length > 0
   const listProps = {
     canDelete: (document) => canDeleteDocument(user, formation, document),

@@ -39,3 +39,9 @@ export function splitBySlot(types, documents) {
   }
   return { slots, others }
 }
+
+// Types d'un fournisseur (G35) : `STAGIAIRE` (créneaux de « Mes documents », compte des inscrits) ou `ADAC`
+// (créneaux de « Documents ADAC »). Un type sans `providedBy` est une pièce du stagiaire.
+export function typesProvidedBy(types, provider) {
+  return types.filter((type) => (type.providedBy ?? 'STAGIAIRE') === provider)
+}
