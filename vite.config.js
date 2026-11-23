@@ -1,9 +1,16 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import { readFileSync } from 'node:fs'
+
+// Version jointe aux retours (« Envoyer un retour ») : version de package.json + commit, s'il est
+// fourni au build (VITE_APP_COMMIT). `.git` est exclu du contexte Docker : pas de `git rev-parse` ici.
+const { version } = JSON.parse(readFileSync(new URL('./package.json', import.meta.url), 'utf-8'))
+const appVersion = `${version}+${process.env.VITE_APP_COMMIT || 'local'}`
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  define: { __APP_VERSION__: JSON.stringify(appVersion) },
   // Le manifeste permet à scripts/check-bundle.mjs de vérifier le budget et le découpage par page.
   build: { manifest: true },
   // Chargées à la demande par le modèle d'import : sans cela, le serveur de dev les découvre au premier
