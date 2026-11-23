@@ -6,6 +6,7 @@ import ConfirmDialog from '../../../components/molecules/ConfirmDialog/ConfirmDi
 import { ROLES, roleLabels } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
 import StagiaireDocumentsSection from '../../documents/components/StagiaireDocumentsSection'
+import StagiaireFormationsSection from '../../formations/components/StagiaireFormationsSection'
 import {
   ACCOUNT_KINDS,
   ACCOUNT_STATUS,
@@ -134,7 +135,12 @@ const AccountDetailPage = ({ kind }) => {
         )}
       </section>
 
-      {kind === 'stagiaires' && <StagiaireDocumentsSection stagiaireId={account.id} className={styles.card} />}
+      {kind === 'stagiaires' && (
+        <>
+          <StagiaireFormationsSection stagiaire={account} canManage={canManage} className={styles.card} />
+          <StagiaireDocumentsSection stagiaireId={account.id} className={styles.card} />
+        </>
+      )}
 
       {confirming && (
         <ConfirmDialog

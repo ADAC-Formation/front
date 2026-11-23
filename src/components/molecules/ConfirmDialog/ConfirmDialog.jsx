@@ -1,10 +1,12 @@
 import { useId, useRef } from "react";
 import { useModalFocus } from "../../../hooks/useModalFocus";
+import Alert from "../../atoms/Alert/Alert";
 import styles from "./ConfirmDialog.module.css";
 
 // Boîte de dialogue modale de confirmation : nommée par son titre, focus initial sur
 // « Annuler » (action sûre), Échap annule, Tab reste dans la boîte, le focus revient à
 // l'élément précédent à la fermeture (hook partagé `useModalFocus`). `children` est rendu en texte.
+// `error` : message d'échec de l'action, affiché en texte dans la boîte, qui reste ouverte.
 const ConfirmDialog = ({
   title,
   confirmLabel,
@@ -12,6 +14,7 @@ const ConfirmDialog = ({
   onConfirm,
   onCancel,
   disabled = false,
+  error,
   children,
 }) => {
   const titleId = useId();
@@ -34,6 +37,7 @@ const ConfirmDialog = ({
           {title}
         </h2>
         {children && <p className={styles.message}>{children}</p>}
+        {error && <Alert variant="error">{error}</Alert>}
         <div className={styles.actions}>
           <button ref={cancelRef} type="button" className={styles.cancel} onClick={onCancel}>
             {cancelLabel}

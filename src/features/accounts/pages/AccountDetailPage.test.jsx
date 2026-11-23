@@ -1,4 +1,4 @@
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse } from 'msw'
 import { axe } from 'jest-axe'
@@ -6,7 +6,15 @@ import { Route, Routes } from 'react-router'
 import AccountDetailPage from './AccountDetailPage'
 import { renderWithProviders } from '../../../test/render'
 import { mockDocumentApi } from '../../../test/documents'
-import { FORMATIONS, INSCRITS, mockFormationList, mockInscriptions, mockUserInscriptions } from '../../../test/formations'
+import {
+  FORMATIONS,
+  INSCRITS,
+  mockEnroll,
+  mockFormationList,
+  mockInscriptions,
+  mockUnenroll,
+  mockUserInscriptions,
+} from '../../../test/formations'
 import { mockSession } from '../../../test/session'
 import { FORMATEURS, STAGIAIRES, apiError, mockAccountList, mockRequest } from '../../../test/accounts'
 import { mockConversations } from '../../../test/messages'
@@ -14,11 +22,16 @@ import { mockConversations } from '../../../test/messages'
 // Le formateur lit ses stagiaires pour savoir s'il peut leur écrire (bouton « Envoyer un message »).
 // Section « Documents » du stagiaire : la chargée de formation lit `GET /users/{id}/inscriptions` (`enrolments`,
 // Q16) ; le formateur parcourt les formations (`formations`) et leurs inscrits.
-function renderDetail(kind, id, role, { state, formations = [], enrolments = [], scopedStagiaires = STAGIAIRES } = {}) {
+function renderDetail(
+  kind,
+  id,
+  role,
+  { state, formations = [], enrolments = [], enrolmentsError, scopedStagiaires = STAGIAIRES } = {},
+) {
   mockSession(role)
   if (kind === 'stagiaires') {
     mockFormationList(formations)
-    if (role === 'SUPER_ADMIN') mockUserInscriptions(id, enrolments)
+    if (role === 'SUPER_ADMIN') mockUserInscriptions(id, enrolments, { errorStatus: enrolmentsError })
   }
   if (role === 'ADMIN') {
     mockConversations([])
@@ -283,6 +296,190 @@ describe('AccountDetailPage', () => {
       await screen.findByRole('heading', { level: 1, name: 'Anne Martin' })
       await settle()
       expect(messageLink()).not.toBeInTheDocument()
+    })
+  })
+  describe('formations du stagiaire (J5)', () => {
+    const [secours, excel, postures] = FORMATIONS // 101 active, 102 active, 103 archivée
+    const lea = STAGIAIRES[0] // id 20
+    const sentByLea = {
+      id: 701,
+      fileName: 'Carte-identite.pdf',
+      fileSize: 2048,
+      mimeType: 'application/pdf',
+      uploadedBy: { id: 20, prenom: 'Léa', nom: 'Petit' },
+      formationId: null,
+      inscriptionId: 1,
+      createdAt: '2026-03-01T10:00:00',
+    }
+
+    // La chargée de formation : `enrolments` = réponse de `GET /users/20/inscriptions`.
+    function renderManager(enrolments, { documents = [] } = {}) {
+      mockAccount(lea)
+      mockDocumentApi(documents)
+      return renderDetail('stagiaires', 20, 'SUPER_ADMIN', { formations: FORMATIONS, enrolments })
+    }
+
+    const formationsSection = async () =>
+      (await screen.findByRole('heading', { level: 2, name: 'Formations' })).closest('section')
+
+    it('liste ses formations avec un lien, « Désinscrire » seulement sur une formation active', async () => {
+      renderManager([
+        { id: 1, formation: secours },
+        { id: 3, formation: postures },
+      ])
+      const section = await formationsSection()
+      expect(await within(section).findByRole('link', { name: 'Premiers secours PSC1' })).toHaveAttribute(
+        'href',
+        '/formations/101',
+      )
+      expect(within(section).getByRole('link', { name: 'Gestes et postures' })).toHaveAttribute('href', '/formations/103')
+      expect(within(section).getByText('Archivée')).toBeInTheDocument()
+      expect(within(section).getByRole('button', { name: 'Désinscrire de Premiers secours PSC1' })).toBeInTheDocument()
+      expect(within(section).queryByRole('button', { name: 'Désinscrire de Gestes et postures' })).not.toBeInTheDocument()
+    })
+
+    it('place la section « Formations » avant « Documents »', async () => {
+      renderManager([{ id: 1, formation: secours }])
+      await formationsSection()
+      const names = screen.getAllByRole('heading', { level: 2 }).map((heading) => heading.textContent)
+      expect(names.indexOf('Formations')).toBeGreaterThan(-1)
+      expect(names.indexOf('Formations')).toBeLessThan(names.indexOf('Documents'))
+    })
+
+    it('dit quand il n’est inscrit à aucune formation', async () => {
+      renderManager([])
+      const section = await formationsSection()
+      expect(await within(section).findByText('Ce stagiaire n’est inscrit à aucune formation')).toBeInTheDocument()
+    })
+
+    it('propose « Réessayer » sur une erreur de chargement', async () => {
+      mockAccount(lea)
+      mockDocumentApi([])
+      renderDetail('stagiaires', 20, 'SUPER_ADMIN', { formations: FORMATIONS, enrolmentsError: 500 })
+      const section = await formationsSection()
+      expect(await within(section).findByRole('alert')).toHaveTextContent('Erreur serveur')
+      mockUserInscriptions(20, [])
+      await userEvent.click(within(section).getByRole('button', { name: 'Réessayer' }))
+      expect(await within(section).findByText('Ce stagiaire n’est inscrit à aucune formation')).toBeInTheDocument()
+    })
+
+    describe('« Inscrire à une formation »', () => {
+      it('propose les formations actives qu’il ne suit pas, inscrit puis affiche le récapitulatif', async () => {
+        const enrolCalls = mockEnroll()
+        renderManager([{ id: 1, formation: secours }])
+        const section = await formationsSection()
+        await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire à une formation' }))
+
+        const picker = within(section).getByRole('group', { name: 'Inscrire à une formation' })
+        const excelBox = await within(picker).findByRole('checkbox', { name: /Excel niveau 1/ })
+        expect(within(picker).queryByRole('checkbox', { name: /Premiers secours/ })).not.toBeInTheDocument()
+        expect(within(picker).queryByRole('checkbox', { name: /Gestes et postures/ })).not.toBeInTheDocument()
+
+        await userEvent.click(excelBox)
+        await userEvent.click(within(section).getByRole('button', { name: 'Inscrire' }))
+
+        expect(await within(section).findByText('Inscrit à : Excel niveau 1.')).toBeInTheDocument()
+        expect(enrolCalls.bodies).toEqual([{ formationId: 102, stagiaireId: 20 }])
+        expect(within(section).queryByRole('group', { name: 'Inscrire à une formation' })).not.toBeInTheDocument()
+        await within(section).findByRole('link', { name: 'Premiers secours PSC1' })
+      })
+
+      it('désactive « Inscrire » tant qu’aucune formation n’est cochée', async () => {
+        renderManager([])
+        const section = await formationsSection()
+        await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire à une formation' }))
+        await within(section).findByRole('checkbox', { name: /Excel niveau 1/ })
+        expect(within(section).getByRole('button', { name: 'Inscrire' })).toBeDisabled()
+      })
+
+      it('liste les échecs avec leur raison (J4)', async () => {
+        mockEnroll({ errors: { 102: { status: 400, message: 'Formation archivée, inscription impossible' } } })
+        renderManager([])
+        const section = await formationsSection()
+        await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire à une formation' }))
+        await userEvent.click(await within(section).findByRole('checkbox', { name: /Premiers secours PSC1/ }))
+        await userEvent.click(within(section).getByRole('checkbox', { name: /Excel niveau 1/ }))
+        await userEvent.click(within(section).getByRole('button', { name: 'Inscrire' }))
+
+        expect(await within(section).findByText('Inscrit à : Premiers secours PSC1.')).toBeInTheDocument()
+        expect(
+          within(section).getByText('Inscription impossible : Excel niveau 1 (Formation archivée, inscription impossible).'),
+        ).toBeInTheDocument()
+        await within(section).findByText('Ce stagiaire n’est inscrit à aucune formation')
+      })
+
+      it('« Annuler » referme la liste sans appel', async () => {
+        const enrolCalls = mockEnroll()
+        renderManager([])
+        const section = await formationsSection()
+        await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire à une formation' }))
+        await userEvent.click(await within(section).findByRole('checkbox', { name: /Excel niveau 1/ }))
+        await userEvent.click(within(section).getByRole('button', { name: 'Annuler' }))
+        expect(within(section).queryByRole('group', { name: 'Inscrire à une formation' })).not.toBeInTheDocument()
+        expect(enrolCalls.bodies).toEqual([])
+      })
+
+      it('n’a aucune violation d’accessibilité, liste ouverte (jest-axe)', async () => {
+        const { container } = renderManager([{ id: 1, formation: secours }])
+        const section = await formationsSection()
+        await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire à une formation' }))
+        await within(section).findByRole('checkbox', { name: /Excel niveau 1/ })
+        expect(await axe(container)).toHaveNoViolations()
+      })
+    })
+
+    describe('« Désinscrire »', () => {
+      it('confirme en annonçant la perte de ses documents, puis désinscrit', async () => {
+        const unenrolCalls = mockUnenroll()
+        renderManager([{ id: 1, formation: secours }], { documents: [sentByLea] })
+        const section = await formationsSection()
+        await screen.findByRole('button', { name: 'Télécharger Carte-identite.pdf' }) // documents connus de la page
+        await userEvent.click(within(section).getByRole('button', { name: 'Désinscrire de Premiers secours PSC1' }))
+
+        const dialog = screen.getByRole('dialog', { name: 'Désinscrire Léa Petit de « Premiers secours PSC1 » ?' })
+        expect(
+          within(dialog).getByText('Son document déposé sur cette formation sera supprimé définitivement.'),
+        ).toBeInTheDocument()
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Désinscrire' }))
+
+        await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
+        expect(unenrolCalls.paths).toEqual([{ formationId: 101, stagiaireId: 20 }])
+        await within(section).findByRole('link', { name: 'Premiers secours PSC1' })
+      })
+
+      it('affiche l’erreur dans la confirmation sans la fermer', async () => {
+        mockUnenroll({ errorStatus: 409 })
+        renderManager([{ id: 1, formation: secours }])
+        const section = await formationsSection()
+        await userEvent.click(await within(section).findByRole('button', { name: 'Désinscrire de Premiers secours PSC1' }))
+        const dialog = screen.getByRole('dialog')
+        await userEvent.click(within(dialog).getByRole('button', { name: 'Désinscrire' }))
+        expect(await within(dialog).findByRole('alert')).toHaveTextContent('Formation archivée, désinscription impossible')
+        expect(screen.getByRole('dialog')).toBeInTheDocument()
+      })
+
+      it('« Annuler » n’appelle rien et rend le focus au bouton', async () => {
+        const unenrolCalls = mockUnenroll()
+        renderManager([{ id: 1, formation: secours }])
+        const section = await formationsSection()
+        const button = await within(section).findByRole('button', { name: 'Désinscrire de Premiers secours PSC1' })
+        await userEvent.click(button)
+        await userEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Annuler' }))
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+        expect(button).toHaveFocus()
+        expect(unenrolCalls.paths).toEqual([])
+      })
+    })
+
+    it('le formateur voit ses formations sans action', async () => {
+      mockAccount(lea)
+      mockInscriptions(101)
+      mockInscriptions(102, [])
+      mockDocumentApi([])
+      renderDetail('stagiaires', 20, 'ADMIN', { formations: [secours, excel] })
+      const section = await formationsSection()
+      expect(await within(section).findByRole('link', { name: 'Premiers secours PSC1' })).toBeInTheDocument()
+      expect(within(section).queryByRole('button', { name: /Désinscrire|Inscrire/ })).not.toBeInTheDocument()
     })
   })
 })

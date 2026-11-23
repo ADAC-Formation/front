@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import ConfirmDialog from './ConfirmDialog'
@@ -80,6 +80,18 @@ describe('ConfirmDialog', () => {
     closeDialog()
     expect(trigger).toHaveFocus()
     trigger.remove()
+  })
+
+  it("affiche une erreur en texte dans la boîte, sans la fermer", () => {
+    renderDialog({ error: '<b>Formation archivée</b>' })
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getByRole('alert')).toHaveTextContent('<b>Formation archivée</b>')
+    expect(dialog.querySelector('b')).toBeNull()
+  })
+
+  it("n'affiche aucune alerte sans erreur", () => {
+    renderDialog()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
   it("n'a pas de violation d'accessibilité", async () => {

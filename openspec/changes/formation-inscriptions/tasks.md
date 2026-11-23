@@ -35,7 +35,7 @@ Deux branches : **back** `feature/formation-inscriptions` (depuis `origin/dev` d
 ## 5. Front : données (TDD)
 
 - [x] 5.1 Mocks MSW `mockEnroll()` / `mockUnenroll()` dans `src/test/`
-- [x] 5.2 RED puis GREEN : `enrollStagiaire`, `unenrollStagiaire`, `useEnrollStagiaires` (séquentiel, `409` = réussite, résultat `{ enrolled, failed }`), `useUnenrollStagiaire` (invalidations), `inscriptionOutcome.js`
+- [x] 5.2 RED puis GREEN : `enrollStagiaire`, `unenrollStagiaire`, `useEnrollStagiaires` (séquentiel, `409` = réussite, résultat `{ enrolled, failed }`), `useUnenrollStagiaire` (invalidations) ; `inscriptionOutcome.js` fait en 8.2
 - [x] 5.3 Commit `feat(inscriptions): add the enroll and unenroll API calls`
 
 ## 6. Front : sélecteurs (TDD)
@@ -53,9 +53,9 @@ Deux branches : **back** `feature/formation-inscriptions` (depuis `origin/dev` d
 
 ## 8. Front : page du stagiaire (TDD)
 
-- [ ] 8.1 RED : `AccountDetailPage` — section « Formations », récapitulatif de création, « Inscrire à une formation », « Désinscrire » avec confirmation, formation archivée sans action, formateur sans action, vide, erreur, jest-axe
-- [ ] 8.2 Mise en œuvre ; GREEN
-- [ ] 8.3 Commit `feat(inscriptions): manage a stagiaire's formations from their page`
+- [x] 8.1 RED : `AccountDetailPage` — section « Formations », récapitulatif de création, « Inscrire à une formation », « Désinscrire » avec confirmation, formation archivée sans action, formateur sans action, vide, erreur, jest-axe
+- [x] 8.2 Mise en œuvre ; GREEN
+- [x] 8.3 Commit `feat(inscriptions): manage a stagiaire's formations from their page`
 
 ## 9. Front : page de la formation (TDD)
 
