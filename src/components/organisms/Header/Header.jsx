@@ -3,6 +3,7 @@ import { ThemeToggle } from "../../molecules/DarkMode/DarkMode";
 import { AccessibilityMenu } from "../../molecules/Accessibility/Accessibility";
 import { CurrentUser } from "../../molecules/CurrentUser/CurrentUser";
 import { NotificationBell } from "../../../features/notifications/components/NotificationBell";
+import { FeedbackButton } from "../../../features/feedback/components/FeedbackButton";
 import styles from "./Header.module.css";
 
 export function SiteHeader() {
@@ -10,6 +11,7 @@ export function SiteHeader() {
     <header className={styles.header}>
       <div className={styles.inner}>
         <LoginButton />
+        <FeedbackButton />
         <NotificationBell />
         <ThemeToggle />
         <AccessibilityMenu />

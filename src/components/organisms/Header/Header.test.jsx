@@ -34,6 +34,27 @@ describe('SiteHeader — cloche de notifications', () => {
   })
 })
 
+describe('SiteHeader — bouton de retour', () => {
+  it('place « Envoyer un retour » juste avant la cloche pour la chargée de formation', async () => {
+    mockSession('SUPER_ADMIN')
+    mockNotificationApi()
+    renderWithProviders(<SiteHeader />, { withSession: true })
+
+    const feedback = await screen.findByRole('button', { name: 'Envoyer un retour' })
+    const bell = await screen.findByRole('button', { name: /Notifications/ })
+    const buttons = screen.getAllByRole('button')
+    expect(buttons.indexOf(feedback)).toBe(buttons.indexOf(bell) - 1)
+  })
+
+  it('n’affiche pas le bouton de retour pour un stagiaire', async () => {
+    mockSession('STAGIAIRE')
+    mockNotificationApi()
+    renderWithProviders(<SiteHeader />, { withSession: true })
+    await screen.findByRole('button', { name: /Notifications/ })
+    expect(screen.queryByRole('button', { name: 'Envoyer un retour' })).not.toBeInTheDocument()
+  })
+})
+
 describe('SiteHeader — nom de l’utilisateur', () => {
   it.each([
     ['SUPER_ADMIN', 'Chargée Dev', 'Chargée de formation'],
