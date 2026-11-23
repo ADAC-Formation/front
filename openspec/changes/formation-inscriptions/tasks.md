@@ -67,5 +67,7 @@ Deux branches : **back** `feature/formation-inscriptions` (depuis `origin/dev` d
 
 - [x] 10.1 `npm run check` vert
 - [ ] 10.2 Passage manuel sur le vrai back local (branche back du change) : les trois parcours, un échec partiel, une désinscription avec document
-- [ ] 10.3 Docs : `etat-front.md`, `CLAUDE.md` (règles à retenir), `spec.md` (cases cochées)
+  - [x] Contrat vérifié au `curl` sur le back local (2026-11-23) : jamais activé `201`, archivée `400`, réinscription `409`, `formation.status` dans `GET /users/{id}/inscriptions`, désinscription avec un document `204` (tout supprimé), archivée `409`
+  - [ ] Parcours dans le navigateur (les trois écrans)
+- [x] 10.3 Docs : `etat-front.md`, `CLAUDE.md` (règles à retenir), `spec.md` (cases cochées)
 - [ ] 10.4 Relecture (D30) ; fusion dans `dev` sur demande de Manon

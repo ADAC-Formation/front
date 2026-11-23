@@ -205,21 +205,21 @@ Source : TICKET-032 (front), US-014, `tech.md` §7, décisions H12–H17 (`decis
 
 ## Critères d'acceptation des inscriptions (change `formation-inscriptions`)
 
-Source : point 10 des notes ADAC, décisions J1–J9 (`decisions-inscriptions.md`), `tech.md` (inscriptions). Détail testable : `openspec/changes/formation-inscriptions/specs/formation-inscriptions/spec.md`. Back : branche `feature/formation-inscriptions` (J2, J6, J7).
+Source : point 10 des notes ADAC, décisions J1–J10 (`decisions-inscriptions.md`), `tech.md` (inscriptions). Détail testable : `openspec/changes/formation-inscriptions/specs/formation-inscriptions/spec.md`. Back : branche `feature/formation-inscriptions` (J2, J6, J7, J10 ; TICKET-053).
 
 ### Création d'un stagiaire (chargée de formation)
-- [ ] Section « Formations (facultatif) » : formations actives en cases à cocher, recherche, nombre sélectionné annoncé ; absente pour un formateur et en modification.
-- [ ] Aucune formation cochée : parcours inchangé. Sinon : un seul `POST /users/stagiaires` avec `formationIds` (J10), puis la page du stagiaire avec « Compte créé, e-mail d'activation envoyé » et « Inscrit à : … ».
-- [ ] Refus (`400` formation archivée, `404`, `409`) : rien n'est créé, erreur sur le formulaire, saisie et cases conservées.
+- [x] Section « Formations (facultatif) » : formations actives en cases à cocher, recherche, nombre sélectionné annoncé ; absente pour un formateur et en modification.
+- [x] Aucune formation cochée : parcours inchangé. Sinon : un seul `POST /users/stagiaires` avec `formationIds` (J10), puis la page du stagiaire avec « Compte créé, e-mail d'activation envoyé » et « Inscrit à : … ».
+- [x] Refus (`400` formation archivée, `404`, `409`) : rien n'est créé, erreur sur le formulaire, saisie et cases conservées.
 
 ### Page du stagiaire
-- [ ] Section « Formations » : ses inscriptions avec lien ; « Inscrire à une formation » (formations déjà suivies exclues) et « Désinscrire » pour la chargée sur une formation active ; vide et erreur avec « Réessayer » ; lecture seule pour le formateur.
+- [x] Section « Formations » : ses inscriptions avec lien ; « Inscrire à une formation » (formations déjà suivies exclues) et « Désinscrire » pour la chargée sur une formation active ; vide et erreur avec « Réessayer » ; lecture seule pour le formateur.
 
 ### Page de la formation
-- [ ] « Stagiaires inscrits » : « Inscrire des stagiaires » (`StagiairePicker` : actifs et jamais activés, sans suspendus ni inscrits, nom seul) et « Désinscrire » par ligne, pour la chargée sur une formation active ; échecs listés par nom.
+- [x] « Stagiaires inscrits » : « Inscrire des stagiaires » (`StagiairePicker` : actifs et jamais activés, sans suspendus ni inscrits, nom seul) et « Désinscrire » par ligne, pour la chargée sur une formation active ; échecs listés par nom.
 
 ### Désinscription et formations archivées
-- [ ] Confirmation qui nomme le stagiaire et la formation et annonce la suppression définitive de ses documents (avec leur nombre quand il est connu) ; erreur affichée sans fermer ; « Annuler » / Échap sans appel.
-- [ ] Formation archivée : jamais proposée, aucune action d'inscription ni de désinscription.
-- [ ] Accessibilité : `fieldset` / `legend`, clavier, annonces d'état, jest-axe sans violation sur chaque page touchée.
+- [x] Confirmation qui nomme le stagiaire et la formation et annonce la suppression définitive de ses documents (avec leur nombre quand il est connu) ; erreur affichée sans fermer ; « Annuler » / Échap sans appel.
+- [x] Formation archivée : jamais proposée, aucune action d'inscription ni de désinscription.
+- [x] Accessibilité : `fieldset` / `legend`, clavier, annonces d'état, jest-axe sans violation sur chaque page touchée.
 - Reporté : choisir les stagiaires en créant une formation, formations dans la modification d'un stagiaire, notification d'inscription (`future-implementation-ideas.md`).
