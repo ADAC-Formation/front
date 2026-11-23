@@ -209,8 +209,8 @@ Source : point 10 des notes ADAC, décisions J1–J9 (`decisions-inscriptions.md
 
 ### Création d'un stagiaire (chargée de formation)
 - [ ] Section « Formations (facultatif) » : formations actives en cases à cocher, recherche, nombre sélectionné annoncé ; absente pour un formateur et en modification.
-- [ ] Aucune formation cochée : parcours inchangé. Sinon : `POST /users`, puis un `POST /formations/{id}/inscriptions` par formation, l'un après l'autre, puis la page du stagiaire avec « Compte créé. Inscrit à : … ».
-- [ ] Échec d'une inscription : compte gardé, « Inscription impossible : C (raison) » en texte ; `409` déjà inscrit = réussite ; compte refusé = aucune inscription.
+- [ ] Aucune formation cochée : parcours inchangé. Sinon : un seul `POST /users/stagiaires` avec `formationIds` (J10), puis la page du stagiaire avec « Compte créé, e-mail d'activation envoyé » et « Inscrit à : … ».
+- [ ] Refus (`400` formation archivée, `404`, `409`) : rien n'est créé, erreur sur le formulaire, saisie et cases conservées.
 
 ### Page du stagiaire
 - [ ] Section « Formations » : ses inscriptions avec lien ; « Inscrire à une formation » (formations déjà suivies exclues) et « Désinscrire » pour la chargée sur une formation active ; vide et erreur avec « Réessayer » ; lecture seule pour le formateur.

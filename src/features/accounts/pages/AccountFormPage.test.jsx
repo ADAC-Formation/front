@@ -5,9 +5,11 @@ import { axe } from 'jest-axe'
 import { Route, Routes, useLocation } from 'react-router'
 import AccountFormPage from './AccountFormPage'
 import AccountListPage from './AccountListPage'
+import AccountNotice from '../components/AccountNotice'
 import { renderWithProviders } from '../../../test/render'
 import { mockSession } from '../../../test/session'
 import { FORMATEURS, STAGIAIRES, apiError, mockAccountList, mockRequest } from '../../../test/accounts'
+import { FORMATIONS, mockFormationList, mockFormationListError } from '../../../test/formations'
 
 function Where() {
   const location = useLocation()
@@ -25,6 +27,7 @@ function renderForm(route) {
         <Route path="/admin/formateurs/:id/modifier" element={<AccountFormPage kind="formateurs" />} />
         <Route path="/admin/stagiaires/nouveau" element={<AccountFormPage kind="stagiaires" />} />
         <Route path="/admin/stagiaires" element={<AccountListPage kind="stagiaires" />} />
+        <Route path="/admin/stagiaires/:id" element={<AccountNotice />} />
       </Routes>
       <Where />
     </>,
@@ -55,6 +58,7 @@ describe('AccountFormPage — création', () => {
   })
 
   it('propose un retour vers la liste', async () => {
+    mockFormationList(FORMATIONS)
     renderForm('/admin/stagiaires/nouveau')
     expect(await screen.findByRole('link', { name: 'Retour aux stagiaires' })).toHaveAttribute(
       'href',
@@ -102,6 +106,7 @@ describe('AccountFormPage — création', () => {
       HttpResponse.json({ ...STAGIAIRES[0], id: 22 }, { status: 201 }),
     )
     mockAccountList('stagiaires', STAGIAIRES)
+    mockFormationList(FORMATIONS)
     renderForm('/admin/stagiaires/nouveau')
     await screen.findByRole('heading', { level: 1, name: 'Créer un stagiaire' })
     await fillValid()
@@ -109,6 +114,77 @@ describe('AccountFormPage — création', () => {
     expect(await screen.findByText("Compte créé, e-mail d'activation envoyé")).toBeInTheDocument()
     expect(await screen.findByRole('link', { name: 'Léa Petit' })).toBeInTheDocument()
     expect(calls.body).toEqual({ nom: 'Roux', prenom: 'Zoé', email: 'zoe@adac.test', formationIds: [] })
+  })
+
+  describe('formations du stagiaire (J3, J10)', () => {
+    const PSC1 = 'Premiers secours PSC1 — du 10 mars 2026 au 12 mars 2026'
+    const EXCEL = 'Excel niveau 1 — du 2 février 2026 au 3 février 2026'
+
+    it('propose les formations actives au stagiaire, jamais au formateur', async () => {
+      mockFormationList(FORMATIONS)
+      renderForm('/admin/stagiaires/nouveau')
+      expect(await screen.findByRole('group', { name: 'Formations (facultatif)' })).toBeInTheDocument()
+      expect(await screen.findByRole('checkbox', { name: PSC1 })).toBeInTheDocument()
+    })
+
+    it("n'a pas de section formations pour un formateur", async () => {
+      renderForm('/admin/formateurs/nouveau')
+      await screen.findByRole('heading', { level: 1 })
+      expect(screen.queryByRole('group', { name: 'Formations (facultatif)' })).not.toBeInTheDocument()
+    })
+
+    it('envoie les formations cochées avec le compte, puis ouvre la page du stagiaire', async () => {
+      const calls = mockRequest('post', '/users/stagiaires', () =>
+        HttpResponse.json({ ...STAGIAIRES[0], id: 22 }, { status: 201 }),
+      )
+      mockFormationList(FORMATIONS)
+      renderForm('/admin/stagiaires/nouveau')
+      await screen.findByRole('checkbox', { name: PSC1 })
+      await fillValid()
+      await userEvent.click(screen.getByRole('checkbox', { name: PSC1 }))
+      await userEvent.click(screen.getByRole('checkbox', { name: EXCEL }))
+      await submit()
+      expect(await screen.findByText("Compte créé, e-mail d'activation envoyé")).toBeInTheDocument()
+      expect(screen.getByText('Inscrit à : Premiers secours PSC1, Excel niveau 1.')).toBeInTheDocument()
+      expect(screen.getByTestId('path')).toHaveTextContent('/admin/stagiaires/22')
+      expect(calls.body).toEqual({ nom: 'Roux', prenom: 'Zoé', email: 'zoe@adac.test', formationIds: [101, 102] })
+    })
+
+    it('affiche le refus du back sur le formulaire et garde la saisie (rien n’est créé)', async () => {
+      mockRequest('post', '/users/stagiaires', () => apiError(400, 'Formation archivée, inscription impossible'))
+      mockFormationList(FORMATIONS)
+      renderForm('/admin/stagiaires/nouveau')
+      await screen.findByRole('checkbox', { name: PSC1 })
+      await fillValid()
+      await userEvent.click(screen.getByRole('checkbox', { name: PSC1 }))
+      await submit()
+      expect(await screen.findByText('Formation archivée, inscription impossible')).toBeInTheDocument()
+      expect(screen.getByRole('checkbox', { name: PSC1 })).toBeChecked()
+      expect(screen.getByLabelText('Nom')).toHaveValue('Roux')
+      expect(screen.getByTestId('path')).toHaveTextContent('/admin/stagiaires/nouveau')
+    })
+
+    it('permet de créer le compte même si les formations ne se chargent pas', async () => {
+      const calls = mockRequest('post', '/users/stagiaires', () =>
+        HttpResponse.json({ ...STAGIAIRES[0], id: 22 }, { status: 201 }),
+      )
+      mockFormationListError(500)
+      mockAccountList('stagiaires', STAGIAIRES)
+      renderForm('/admin/stagiaires/nouveau')
+      expect(await screen.findByText('Impossible de charger les formations.')).toBeInTheDocument()
+      await fillValid()
+      await submit()
+      expect(await screen.findByText("Compte créé, e-mail d'activation envoyé")).toBeInTheDocument()
+      expect(await screen.findByRole('link', { name: 'Léa Petit' })).toBeInTheDocument()
+      expect(calls.body.formationIds).toEqual([])
+    })
+
+    it("n'a pas de violation d'accessibilité avec la liste des formations", async () => {
+      mockFormationList(FORMATIONS)
+      const { container } = renderForm('/admin/stagiaires/nouveau')
+      await screen.findByRole('checkbox', { name: PSC1 })
+      expect(await axe(container)).toHaveNoViolations()
+    })
   })
 
   it("affiche le 409 en ligne et conserve les valeurs saisies", async () => {

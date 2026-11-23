@@ -26,18 +26,18 @@ Le formulaire de création d'un stagiaire SHALL proposer une section « Formatio
 
 #### Scenario: Deux formations cochées
 - **WHEN** la chargée crée un stagiaire et coche deux formations
-- **THEN** `POST /users` part, puis un `POST /formations/{id}/inscriptions` `{ stagiaireId }` par formation, l'un après l'autre, et la page du stagiaire affiche « Compte créé. Inscrit à : A, B. »
+- **THEN** un seul `POST /users/stagiaires` part avec `formationIds: [a, b]` (J10) et la page du stagiaire affiche « Compte créé, e-mail d'activation envoyé » et « Inscrit à : A, B. »
 
-#### Scenario: Création du compte refusée
-- **WHEN** `POST /users` répond `409` (e-mail déjà utilisé)
-- **THEN** l'erreur s'affiche comme aujourd'hui et aucune inscription n'est envoyée
+#### Scenario: Création refusée
+- **WHEN** `POST /users/stagiaires` répond `400` (formation archivée entre-temps), `404` (formation introuvable) ou `409` (e-mail déjà utilisé)
+- **THEN** rien n'est créé, l'erreur s'affiche sur le formulaire et la saisie (champs et cases) est conservée
 
-### Requirement: Échec partiel des inscriptions
-Le système SHALL garder le compte créé quand une inscription échoue et SHALL afficher, en texte, les formations inscrites et celles qui ont échoué avec la raison (message du back, ou « Erreur de connexion »). Un `409` « déjà inscrit » SHALL compter comme une réussite. Le récapitulatif SHALL passer par l'état de navigation, jamais par le stockage du navigateur.
+### Requirement: Échec partiel des inscriptions (page du stagiaire, page de la formation)
+Quand « Inscrire » envoie plusieurs inscriptions (un appel chacune), le système SHALL afficher, en texte, celles qui ont réussi et celles qui ont échoué avec la raison (message de l'ApiError : message du back, ou coupure réseau). Un `409` « déjà inscrit » SHALL compter comme une réussite. À la création d'un compte, il n'y a pas d'échec partiel (J10) ; le récapitulatif de création SHALL passer par l'état de navigation, jamais par le stockage du navigateur.
 
 #### Scenario: Une formation archivée entre-temps
-- **WHEN** l'inscription à la formation C répond `400 « Formation archivée, inscription impossible »`
-- **THEN** la page du stagiaire affiche « Inscrit à : A. » et « Inscription impossible : C (Formation archivée, inscription impossible) », et la chargée peut réessayer depuis cette page
+- **WHEN** depuis la page du stagiaire, l'inscription à la formation C répond `400 « Formation archivée, inscription impossible »` et celle à A réussit
+- **THEN** la section affiche « Inscrit à : A. » et « Inscription impossible : C (Formation archivée, inscription impossible) »
 
 ### Requirement: Formations d'un stagiaire sur sa page
 La page d'un stagiaire SHALL afficher une section « Formations » : chaque inscription avec un lien vers la formation et, pour la chargée et une formation active, « Désinscrire ». « Inscrire à une formation » SHALL ouvrir la même liste de cases (formations déjà suivies exclues) avec « Inscrire » et « Annuler ». Sans inscription : « Ce stagiaire n'est inscrit à aucune formation ». Une erreur de chargement SHALL proposer « Réessayer ».

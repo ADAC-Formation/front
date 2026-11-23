@@ -82,8 +82,10 @@ describe('routes des comptes', () => {
       mockSession('SUPER_ADMIN')
       const router = renderApp('/admin/formateurs/nouveau')
       expect(await screen.findByRole('heading', { level: 1, name: 'Créer un formateur' })).toBeInTheDocument()
+      mockFormationList()
       await router.navigate('/admin/stagiaires/nouveau')
       expect(await screen.findByRole('heading', { level: 1, name: 'Créer un stagiaire' })).toBeInTheDocument()
+      expect(await screen.findByRole('checkbox', { name: /Premiers secours PSC1/ })).toBeInTheDocument()
     })
 
     it('accède au formulaire de modification', async () => {

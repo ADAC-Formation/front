@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { Link, useNavigate, useParams } from 'react-router'
 import Alert from '../../../components/atoms/Alert/Alert'
@@ -6,6 +7,8 @@ import FormField from '../../../components/molecules/FormField/FormField'
 import { validateEmail, validateRequired } from '../../../utils/validation'
 import { ACCOUNT_KINDS, fullName } from '../accountKinds'
 import AccountNotFound from '../components/AccountNotFound'
+import FormationPicker from '../../formations/components/FormationPicker'
+import { useFormations } from '../../formations/hooks'
 import { useAccount, useCreateAccount, useUpdateAccount } from '../hooks'
 import styles from './AccountPages.module.css'
 import { PageShell } from '../../../templates/PageShell/PageShell'
@@ -19,6 +22,10 @@ const AccountForm = ({ config, account }) => {
   const create = useCreateAccount(config.kind)
   const update = useUpdateAccount(account?.id)
   const mutation = account ? update : create
+  // Formations choisies à la création d'un stagiaire (J3, J10) : elles partent avec le compte.
+  const choosesFormations = !account && config.kind === 'stagiaires'
+  const [formationIds, setFormationIds] = useState([])
+  const { data: activeFormations = [] } = useFormations({ status: 'ACTIVE', enabled: choosesFormations })
 
   const {
     register,
@@ -47,8 +54,15 @@ const AccountForm = ({ config, account }) => {
         await update.mutateAsync({ original: account, values: trimmed })
         navigate(`${config.basePath}/${account.id}`, { state: { notice: 'account-updated' } })
       } else {
-        await create.mutateAsync(trimmed)
-        navigate(config.basePath, { state: { notice: 'account-created' } })
+        const created = await create.mutateAsync({ ...trimmed, formationIds })
+        if (formationIds.length === 0) {
+          navigate(config.basePath, { state: { notice: 'account-created' } })
+        } else {
+          const enrolledIn = activeFormations
+            .filter((formation) => formationIds.includes(formation.id))
+            .map((formation) => formation.intitule)
+          navigate(`${config.basePath}/${created.id}`, { state: { notice: 'account-created', enrolledIn } })
+        }
       }
     } catch (error) {
       // E-mail déjà pris : erreur sur le champ, valeurs conservées. Autres erreurs : bandeau.
@@ -104,6 +118,12 @@ const AccountForm = ({ config, account }) => {
               {...register('email', { validate: (value) => validateEmail(value) ?? true })}
             />
           </div>
+
+          {choosesFormations && (
+            <div className={styles.fullWidth}>
+              <FormationPicker legend="Formations (facultatif)" selectedIds={formationIds} onChange={setFormationIds} />
+            </div>
+          )}
 
           {mustWarnAboutSessions && (
             <div className={styles.formNotice}>

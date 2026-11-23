@@ -34,21 +34,22 @@ Deux branches : **back** `feature/formation-inscriptions` (depuis `origin/dev` d
 
 ## 5. Front : données (TDD)
 
-- [ ] 5.1 Mocks MSW `mockEnroll()` / `mockUnenroll()` dans `src/test/`
-- [ ] 5.2 RED puis GREEN : `enrollStagiaire`, `unenrollStagiaire`, `useEnrollStagiaires` (séquentiel, `409` = réussite, résultat `{ enrolled, failed }`), `useUnenrollStagiaire` (invalidations), `inscriptionOutcome.js`
-- [ ] 5.3 Commit `feat(inscriptions): add the enroll and unenroll API calls`
+- [x] 5.1 Mocks MSW `mockEnroll()` / `mockUnenroll()` dans `src/test/`
+- [x] 5.2 RED puis GREEN : `enrollStagiaire`, `unenrollStagiaire`, `useEnrollStagiaires` (séquentiel, `409` = réussite, résultat `{ enrolled, failed }`), `useUnenrollStagiaire` (invalidations), `inscriptionOutcome.js`
+- [x] 5.3 Commit `feat(inscriptions): add the enroll and unenroll API calls`
 
 ## 6. Front : sélecteurs (TDD)
 
-- [ ] 6.1 RED puis GREEN : `FormationPicker` (formations actives, recherche, sélection conservée, nombre annoncé, `excludeIds`, erreur + « Réessayer », jest-axe)
-- [ ] 6.2 RED puis GREEN : `StagiairePicker` options `includePending` et `excludeIds` (suspendus jamais proposés) ; message groupé inchangé
-- [ ] 6.3 Commit `feat(inscriptions): add the formation picker and extend the stagiaire picker`
+- [x] 6.1 RED puis GREEN : `FormationPicker` (formations actives, recherche, sélection conservée, nombre annoncé, `excludeIds`, erreur + « Réessayer », jest-axe)
+- [x] 6.2 RED puis GREEN : `StagiairePicker` options `includePending` et `excludeIds` (suspendus jamais proposés) ; message groupé inchangé
+- [x] 6.3 Commit `feat(inscriptions): add the formation picker and extend the stagiaire picker`
 
 ## 7. Front : création d'un stagiaire (TDD)
 
-- [ ] 7.1 RED : `AccountFormPage` — section absente pour un formateur et en modification ; aucune formation → parcours inchangé ; deux formations → `POST /users` puis deux `POST` dans l'ordre, page du stagiaire avec récapitulatif ; échec partiel ; `409` sur le compte → aucune inscription
-- [ ] 7.2 Mise en œuvre ; GREEN
-- [ ] 7.3 Commit `feat(inscriptions): enroll a stagiaire in formations when creating the account`
+- [x] 7.0 Back (J10) : `formationIds` refuse une formation archivée — commit `cc039e2` sur la branche du back, vérifié sur le back local (`400`, aucun compte créé)
+- [x] 7.1 RED : `AccountFormPage` — section absente pour un formateur ; aucune formation → parcours inchangé ; deux formations → un seul `POST /users/stagiaires` avec `formationIds`, page du stagiaire avec « Inscrit à : … » ; refus `400` sur le formulaire, saisie conservée ; formations en erreur sans bloquer la création ; jest-axe
+- [x] 7.2 Mise en œuvre ; GREEN
+- [x] 7.3 Commit `feat(inscriptions): enroll a stagiaire in formations when creating the account`
 
 ## 8. Front : page du stagiaire (TDD)
 

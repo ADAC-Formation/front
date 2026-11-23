@@ -57,3 +57,10 @@ Préfixe **J**. Back existant : `POST /api/formations/{id}/inscriptions` (`{ sta
 - **Décision** (Manon) : ce change n'ajoute ni notification ni e-mail. La formation apparaît simplement dans « Mes formations » du stagiaire ; un stagiaire jamais activé reçoit de toute façon son e-mail d'activation.
 - **Pourquoi** : garder le change petit ; un nouveau type de notification touche le back et peut-être le schéma (D66, cas 3).
 - **Alternatives écartées (reportées, `future-implementation-ideas.md`)** : notification dans la cloche (`FORMATION_ENROLLED`) ; notification et e-mail.
+
+## J10 — À la création, les formations partent avec le compte (`formationIds`), tout ou rien
+- Date : 2026-11-23
+- **Constat** (oublié pendant la clarification) : `POST /users/stagiaires` accepte déjà `formationIds` et crée le compte et ses inscriptions dans la même transaction (`UserServiceImpl.enroll`) ; une formation inconnue → `404`, rien n'est créé. Il ne vérifiait pas qu'une formation est archivée.
+- **Décision** (Manon) : le formulaire de création envoie les formations cochées dans `formationIds` (un seul appel). **J4 ne s'applique plus à la création** : pas d'échec partiel possible. Un refus (formation archivée ou introuvable entre-temps) s'affiche sur le formulaire, valeurs et cases conservées, et rien n'est créé. Après succès, la page du stagiaire affiche « Compte créé, e-mail d'activation envoyé » et « Inscrit à : A, B. ». Changement du back dans TICKET-053 : `formationIds` refuse une formation archivée (`400 « Formation archivée, inscription impossible »`, comme `POST …/inscriptions`). J4 reste la règle de « Inscrire » depuis la page du stagiaire et celle de la formation (un appel par inscription).
+- **Pourquoi** : un seul appel atomique, aucun compte créé à moitié inscrit ; l'oubli du contrôle « archivée » était un trou du back.
+- **Alternatives écartées** : garder J4 à la création (compte créé avec `formationIds: []`, puis un `POST` par formation).

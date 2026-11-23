@@ -8,13 +8,25 @@ const NOTICES = {
   'account-updated': 'Compte mis à jour',
 }
 
+// `enrolledIn` : intitulés des formations où le stagiaire vient d'être inscrit à sa création (J10).
 const AccountNotice = () => {
   const { state } = useLocation()
   const text = NOTICES[state?.notice]
 
   if (!text) return null
 
-  return <Alert variant="success">{text}</Alert>
+  const enrolledIn = state.enrolledIn ?? []
+  return (
+    <Alert variant="success">
+      <span>{text}</span>
+      {enrolledIn.length > 0 && (
+        <>
+          <br />
+          <span>{`Inscrit à : ${enrolledIn.join(', ')}.`}</span>
+        </>
+      )}
+    </Alert>
+  )
 }
 
 export default AccountNotice

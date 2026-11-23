@@ -14,9 +14,10 @@ export async function fetchAccount(id) {
   return data
 }
 
-// Un stagiaire est créé sans formation pour l'instant (le choix arrive avec feature/formations).
-export async function createAccount(kind, { nom, prenom, email }) {
-  const body = kind === 'stagiaires' ? { nom, prenom, email, formationIds: [] } : { nom, prenom, email }
+// Un stagiaire peut être inscrit dès sa création (J10) : `formationIds` part avec le compte et le back crée
+// tout dans la même transaction (400 formation archivée, 404 formation introuvable : rien n'est créé).
+export async function createAccount(kind, { nom, prenom, email, formationIds = [] }) {
+  const body = kind === 'stagiaires' ? { nom, prenom, email, formationIds } : { nom, prenom, email }
   const { data } = await apiClient.post(`/users/${kind}`, body)
   return data
 }
