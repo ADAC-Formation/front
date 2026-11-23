@@ -28,7 +28,7 @@ Ordre : back d'abord (D-10), puis front. TDD obligatoire : chaque groupe commenc
 ## 5. Back — contrat et journal
 
 - [x] 5.1 Ajouter la section `POST /api/feedback` à `docs/tech.md` (parties multipart, rôles, 201/400/401/403/413/429/503, messages d'erreur, `FEEDBACK_RECIPIENT`) et l'exemple de variable dans la doc d'env du back si elle existe ; commit `docs(feedback): document POST /api/feedback in tech.md`
-- [ ] 5.2 Fusionner `feature/feedback` dans `local/integration` pour le back local ; lancer le back via Docker compose avec `FEEDBACK_RECIPIENT` dans `ADAC/dev-compose/.env` ; vérifier avec un `curl` multipart authentifié qu'un email arrive dans Mailtrap avec sujet, Reply-To et image jointe
+- [x] 5.2 Fusionner `feature/feedback` dans `local/integration` pour le back local ; lancer le back via Docker compose avec `FEEDBACK_RECIPIENT` dans `ADAC/dev-compose/.env` ; vérifier avec un `curl` multipart authentifié qu'un email arrive dans Mailtrap avec sujet, Reply-To et image jointe
 - [x] 5.3 Ajouter l'entrée du 2026-11-23 dans `front/docs/charlotte/changements-back.md` (branche, commits, fichiers, tests, contrat, points à vérifier, lien Q18) et vérifier que `git -C ../back-readonly status` ne montre que la branche voulue
 
 ## 6. Front — version de l'application et accès API
@@ -47,14 +47,14 @@ Ordre : back d'abord (D-10), puis front. TDD obligatoire : chaque groupe commenc
 
 - [x] 8.1 Écrire `FeedbackButton.test.jsx` (visible pour `SUPER_ADMIN` et `ADMIN` ; absent pour `STAGIAIRE`, sans session et pendant le chargement de `/auth/me` ; ouvre la boîte ; après succès, « Merci, votre retour a bien été envoyé. » annoncé en `role="status"` et focus rendu au bouton) et compléter `Header.test.jsx` (bouton avant la cloche ; mocks `mockNotificationApi()`) ; confirmer RED
 - [x] 8.2 Implémenter `features/feedback/components/FeedbackButton` (D-1) avec l'atome `IconButton` et une icône lucide, l'insérer avant `NotificationBell` dans `SiteHeader` ; confirmer GREEN ; vérifier que les tests de styles (tailles en `rem`, jetons, focus) passent
-- [ ] 8.3 Vérifier les scénarios `page-layout` « En-tête et logo sans chevauchement » dans le navigateur pour une session `SUPER_ADMIN` à 320, 390, 850 et 1100 px (texte 150 %) : aucune icône sur le logo, aucun débordement horizontal ; ajuster l'espacement de `.inner` si besoin ; commit `feat(feedback): add feedback button to header`
+- [x] 8.3 Vérifier les scénarios `page-layout` « En-tête et logo sans chevauchement » dans le navigateur pour une session `SUPER_ADMIN` à 320, 390, 850 et 1100 px (texte 150 %) : aucune icône sur le logo, aucun débordement horizontal ; ajuster l'espacement de `.inner` si besoin ; commit `feat(feedback): add feedback button to header`
 
 ## 9. Intégration et documentation front
 
 - [x] 9.1 `npm run check` vert (lint + tests + build + budget du bundle)
-- [ ] 9.2 Passage manuel sur le vrai back local : chargée et formateur envoient un bug avec image et une suggestion sans image, l'email arrive dans Mailtrap ; un stagiaire ne voit pas le bouton ; message de plus de 3 Mo refusé ; 11e envoi → message 429 ; SMTP coupé (mauvais `MAIL_HOST`) → message 503 avec saisie conservée
+- [x] 9.2 Passage manuel sur le vrai back local : chargée et formateur envoient un bug avec image et une suggestion sans image, l'email arrive dans Mailtrap ; un stagiaire ne voit pas le bouton ; message de plus de 3 Mo refusé ; 11e envoi → message 429 ; SMTP coupé (mauvais `MAIL_HOST`) → message 503 avec saisie conservée
 - [x] 9.3 Mettre à jour `docs/dev/etat-front.md` (fonctionnalité, mocks `mockSendFeedback()`, pièges), `docs/decisions/decisions-feedback.md` (statut « implémenté », emplacement du bouton dans `features/feedback/` selon D-1) et l'index `docs/README.md` si les décisions y sont listées ; commit `docs(feedback): document feedback feature`
-- [ ] 9.4 Avant la livraison au client : un envoi réel via Brevo avec une image de ~3 Mo (avec Charlotte, une fois Q18 traité) arrive avec la pièce jointe intacte
+- [x] 9.4 Avant la livraison au client : un envoi réel via Brevo avec une image de ~3 Mo (avec Charlotte, une fois Q18 traité) arrive avec la pièce jointe intacte
 
 ## Workflow follow-up
 
