@@ -205,7 +205,7 @@ Source : TICKET-032 (front), US-014, `tech.md` §7, décisions H12–H17 (`decis
 
 ## Critères d'acceptation des inscriptions (change `formation-inscriptions`)
 
-Source : point 10 des notes ADAC, décisions J1–J10 (`decisions-inscriptions.md`), `tech.md` (inscriptions). Détail testable : `openspec/changes/formation-inscriptions/specs/formation-inscriptions/spec.md`. Back : branche `feature/formation-inscriptions` (J2, J6, J7, J10 ; TICKET-053).
+Source : point 10 des notes ADAC, décisions J1–J10 (`decisions-inscriptions.md`), `tech.md` (inscriptions). Détail testable : `openspec/specs/formation-inscriptions/spec.md` (change archivé : `openspec/changes/archive/2026-11-23-formation-inscriptions/`). Back : TICKET-053, PR #30 (J2, J6, J7, J10).
 
 ### Création d'un stagiaire (chargée de formation)
 - [x] Section « Formations (facultatif) » : formations actives en cases à cocher, recherche, nombre sélectionné annoncé ; absente pour un formateur et en modification.
