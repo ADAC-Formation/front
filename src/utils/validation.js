@@ -39,3 +39,29 @@ export function validateCode(value) {
   if (code === '') return 'Le code de vérification est obligatoire.'
   return CODE_PATTERN.test(code) ? null : 'Le code doit contenir 6 chiffres.'
 }
+
+// Retour (« Envoyer un retour ») : mêmes bornes que le back (tech.md § 9).
+const FEEDBACK_MESSAGE_MIN_LENGTH = 10
+const FEEDBACK_MESSAGE_MAX_LENGTH = 2000
+const FEEDBACK_IMAGE_MAX_BYTES = 3 * 1024 * 1024
+export const FEEDBACK_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp']
+
+export function validateFeedbackMessage(value) {
+  const message = (value ?? '').trim()
+  if (!message) return 'Le message est obligatoire.'
+  if (message.length < FEEDBACK_MESSAGE_MIN_LENGTH) {
+    return `Le message doit contenir au moins ${FEEDBACK_MESSAGE_MIN_LENGTH} caractères.`
+  }
+  if (message.length > FEEDBACK_MESSAGE_MAX_LENGTH) {
+    return `Le message ne doit pas dépasser ${FEEDBACK_MESSAGE_MAX_LENGTH} caractères.`
+  }
+  return null
+}
+
+// `file` : image facultative (File ou objet `{ type, size }`). Le back revérifie le contenu réel.
+export function validateFeedbackImage(file) {
+  if (!file) return null
+  if (!FEEDBACK_IMAGE_TYPES.includes(file.type)) return 'Format non accepté : png, jpeg ou webp.'
+  if (file.size > FEEDBACK_IMAGE_MAX_BYTES) return 'Image trop lourde (3 Mo maximum).'
+  return null
+}

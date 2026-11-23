@@ -4,6 +4,8 @@ import {
   validatePasswordConfirmation,
   validateCode,
   validateRequired,
+  validateFeedbackMessage,
+  validateFeedbackImage,
 } from './validation'
 
 describe('validateRequired', () => {
@@ -78,5 +80,41 @@ describe('validateCode', () => {
   })
   it('accepte 6 chiffres', () => {
     expect(validateCode('123456')).toBeNull()
+  })
+})
+
+describe('validateFeedbackMessage', () => {
+  it('refuse un message vide ou de moins de 10 caractères, espaces exclus', () => {
+    expect(validateFeedbackMessage('')).toBe('Le message est obligatoire.')
+    expect(validateFeedbackMessage('   court   ')).toBe('Le message doit contenir au moins 10 caractères.')
+  })
+  it('accepte de 10 à 2000 caractères', () => {
+    expect(validateFeedbackMessage('a'.repeat(10))).toBeNull()
+    expect(validateFeedbackMessage('a'.repeat(2000))).toBeNull()
+  })
+  it('refuse plus de 2000 caractères', () => {
+    expect(validateFeedbackMessage('a'.repeat(2001))).toBe('Le message ne doit pas dépasser 2000 caractères.')
+  })
+})
+
+describe('validateFeedbackImage', () => {
+  const image = (type, size) => ({ type, size })
+  const THREE_MB = 3 * 1024 * 1024
+
+  it('accepte l’absence d’image', () => {
+    expect(validateFeedbackImage(null)).toBeNull()
+    expect(validateFeedbackImage(undefined)).toBeNull()
+  })
+  it('accepte png, jpeg et webp jusqu’à 3 Mo', () => {
+    expect(validateFeedbackImage(image('image/png', THREE_MB))).toBeNull()
+    expect(validateFeedbackImage(image('image/jpeg', 1000))).toBeNull()
+    expect(validateFeedbackImage(image('image/webp', 1000))).toBeNull()
+  })
+  it('refuse une image de plus de 3 Mo', () => {
+    expect(validateFeedbackImage(image('image/png', THREE_MB + 1))).toBe('Image trop lourde (3 Mo maximum).')
+  })
+  it('refuse un autre format', () => {
+    expect(validateFeedbackImage(image('application/pdf', 1000))).toBe('Format non accepté : png, jpeg ou webp.')
+    expect(validateFeedbackImage(image('image/gif', 1000))).toBe('Format non accepté : png, jpeg ou webp.')
   })
 })
