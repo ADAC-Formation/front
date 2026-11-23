@@ -108,7 +108,11 @@ Les commandes de l'en-tête (session, mode sombre, accessibilité) SHALL ne reco
 
 #### Scenario: Téléphone
 - **WHEN** n'importe quelle page est affichée sur un écran de 390 px
-- **THEN** les trois icônes de l'en-tête n'empiètent pas sur le logo
+- **THEN** les icônes de l'en-tête n'empiètent pas sur le logo
+
+#### Scenario: Téléphone étroit, toutes les icônes
+- **WHEN** une utilisatrice `SUPER_ADMIN` affiche n'importe quelle page sur un écran de 320 px
+- **THEN** le bouton de retour, la cloche, le mode sombre, l'accessibilité et la session n'empiètent pas sur le logo et ne débordent pas horizontalement de la page
 
 #### Scenario: Tablette large
 - **WHEN** n'importe quelle page est affichée sur un écran de 850 px

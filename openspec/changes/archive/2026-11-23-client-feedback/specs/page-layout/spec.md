@@ -3,7 +3,7 @@
 ## MODIFIED Requirements
 
 ### Requirement: En-tête et logo sans chevauchement
-Les commandes de l'en-tête (retour, notifications, session, mode sombre, accessibilité) SHALL ne recouvrir aucune partie visible du logo ADAC, à toute largeur d'écran de 320 à 1920 px et à chaque palier de taille de texte, y compris quand toutes sont affichées (utilisateur `SUPER_ADMIN` ou `ADMIN`). Le libellé « Se connecter » / « Se déconnecter » SHALL n'apparaître que lorsque l'en-tête ainsi élargi ne rencontre pas le logo. Le dégagement sous le logo défini pour les pages (`Dégagement identique sous le logo`) SHALL rester inchangé et le contenu ne SHALL pas être recouvert par le logo.
+Les commandes de l'en-tête (session, mode sombre, accessibilité) SHALL ne recouvrir aucune partie visible du logo ADAC, à toute largeur d'écran de 320 à 1920 px et à chaque palier de taille de texte. Le libellé « Se connecter » / « Se déconnecter » SHALL n'apparaître que lorsque l'en-tête ainsi élargi ne rencontre pas le logo. Le dégagement sous le logo défini pour les pages (`Dégagement identique sous le logo`) SHALL rester inchangé et le contenu ne SHALL pas être recouvert par le logo.
 
 #### Scenario: Téléphone
 - **WHEN** n'importe quelle page est affichée sur un écran de 390 px

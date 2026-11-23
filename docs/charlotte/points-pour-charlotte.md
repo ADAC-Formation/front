@@ -222,7 +222,7 @@ Proposition : (1) envoyer la notification au stagiaire quel que soit le champ (o
 ### Q18 — Bouton « Envoyer un retour » : variable `FEEDBACK_RECIPIENT` en prod — nouveau, 2026-11-23
 Décision de Manon (`docs/decisions/decisions-feedback.md`, U15) : la chargée de formation et les formateurs pourront envoyer un bug ou une suggestion depuis le header. Le back reçoit `POST /api/feedback` (branche `feature/feedback`, journal dans `changements-back.md`) et envoie un email via le mailer existant, sans rien stocker.
 
-Ce qu'il te faut faire, seulement côté déploiement : ajouter `FEEDBACK_RECIPIENT` à l'env de prod (adresse de Manon pour l'instant ; à remplacer à la passation par celle de la personne qui reprend, U10), **et** l'ajouter à la liste `environment:` du service `backend` dans `docker-compose.yml`, qui passe chaque variable explicitement. Sans elle, chaque envoi répond `503` (le back démarre quand même). Détail du changement : `changements-back.md`, entrée du 2026-11-23.
+Ce qu'il te faut faire, seulement côté déploiement : ajouter `FEEDBACK_RECIPIENT=ManonGodfroy@protonmail.com` à l'env de prod (adresse de Manon pour l'instant ; à remplacer à la passation par celle de la personne qui reprend, U10), **et** l'ajouter à la liste `environment:` du service `backend` dans `docker-compose.yml`, qui passe chaque variable explicitement. Sans elle, chaque envoi répond `503` (le back démarre quand même). Détail du changement : `changements-back.md`, entrée du 2026-11-23.
 
 ## 4. Conflits entre `tech.md` et les autres documents du back
 
