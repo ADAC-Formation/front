@@ -3,13 +3,9 @@
 //   role   : « all » (défaut) ou un rôle du back, appliqué à l'interlocuteur ;
 //   search : texte cherché dans « prénom nom » de l'interlocuteur, sans casse ni accents.
 
-// « Léa » → « lea » : minuscules et accents retirés pour comparer.
-export const normalize = (text) =>
-  text
-    .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
-    .toLowerCase()
-    .trim()
+import { normalize } from '../../utils/searchText'
+
+export { normalize }
 
 const matchesSearch = ({ participant }, term) =>
   term === '' || normalize(`${participant.prenom} ${participant.nom}`).includes(term)

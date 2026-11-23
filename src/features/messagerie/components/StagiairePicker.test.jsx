@@ -13,10 +13,11 @@ const elodie = { id: 23, email: 'elodie@adac.test', prenom: 'Élodie', nom: 'Rou
 const ACCOUNTS = [...STAGIAIRES, marc, elodie] // Léa 20, Omar 21 (désactivé), Marc 22, Élodie 23
 
 // Le composant est contrôlé : ce harnais garde la sélection comme le fait la page.
-function Harness({ initial = [], spy }) {
+function Harness({ initial = [], spy, ...options }) {
   const [ids, setIds] = useState(initial)
   return (
     <StagiairePicker
+      {...options}
       selectedIds={ids}
       onChange={(next) => {
         spy?.(next)
@@ -143,5 +144,32 @@ describe('StagiairePicker', () => {
     mockAccountList('stagiaires', ACCOUNTS)
     await userEvent.click(within(alert.parentElement).getByRole('button', { name: 'Réessayer' }))
     expect(await screen.findByRole('checkbox', { name: 'Léa Petit' })).toBeInTheDocument()
+  })
+
+  describe('pour inscrire (includePending, excludeIds)', () => {
+    const suspendu = { id: 24, email: 'sam@adac.test', prenom: 'Sam', nom: 'Morel', role: 'STAGIAIRE', isActive: false, activated: true, emailNotificationsEnabled: true }
+
+    it('propose les actifs et les comptes jamais activés, jamais les suspendus', async () => {
+      const calls = mockAccountList('stagiaires', [...ACCOUNTS, suspendu])
+      render({ includePending: true })
+      expect(await screen.findByRole('checkbox', { name: 'Omar Benali' })).toBeInTheDocument()
+      expect(checkbox('Léa Petit')).toBeInTheDocument()
+      expect(screen.queryByRole('checkbox', { name: 'Sam Morel' })).not.toBeInTheDocument()
+      expect(calls.urls[0]).not.toContain('active=true')
+    })
+
+    it('ne propose pas les stagiaires exclus (déjà inscrits)', async () => {
+      mockAccountList('stagiaires', ACCOUNTS)
+      render({ includePending: true, excludeIds: [20, 22] })
+      expect(await screen.findByRole('checkbox', { name: 'Omar Benali' })).toBeInTheDocument()
+      expect(screen.queryByRole('checkbox', { name: 'Léa Petit' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('checkbox', { name: 'Marc Dubois' })).not.toBeInTheDocument()
+    })
+
+    it('annonce « Aucun stagiaire à inscrire. » quand tous sont exclus', async () => {
+      mockAccountList('stagiaires', STAGIAIRES)
+      render({ includePending: true, excludeIds: [20, 21] })
+      expect(await screen.findByText('Aucun stagiaire à inscrire.')).toBeInTheDocument()
+    })
   })
 })
