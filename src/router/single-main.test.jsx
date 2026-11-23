@@ -8,6 +8,7 @@ import { mockNoSession, mockSession } from '../test/session'
 import { FORMATEURS, STAGIAIRES, mockAccountList, mockRequest } from '../test/accounts'
 import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions, mockUserInscriptions } from '../test/formations'
 import { mockDocumentApi } from '../test/documents'
+import { mockFormationDocumentTypes } from '../test/documentTypes'
 import { mockConversations } from '../test/messages'
 import { mockCategories } from '../test/categories'
 import { mockNotificationApi } from '../test/notifications'
@@ -35,6 +36,7 @@ function mockFormations() {
   mockInscriptions(101)
   mockUserInscriptions(20, [{ id: 1, formation: FORMATIONS[0] }]) // profil du stagiaire 20 (chargée de formation)
   mockDocumentApi()
+  mockFormationDocumentTypes()
   mockCategories()
 }
 

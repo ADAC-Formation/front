@@ -18,8 +18,8 @@ import UploadNotices from './UploadNotices'
 // en neutre. Dépôt seulement si la formation est active (G10), suppression de ses propres dépôts avec
 // confirmation (G15). Sans `inscriptionId` (stagiaire non inscrit), un simple avis et aucun appel (G11).
 // Le nom des fichiers et les messages du back sont rendus en texte. `className` : habillage de section
-// fourni par la page.
-const MyDocumentsSection = ({ formation, className }) => {
+// fourni par la page ; `titleClassName` : habillage du titre (masqué visuellement dans un onglet, G34).
+const MyDocumentsSection = ({ formation, className, titleClassName }) => {
   const titleId = useId()
   const { user } = useCurrentUser()
   const inscriptionId = inscriptionIdOf(formation)
@@ -81,7 +81,9 @@ const MyDocumentsSection = ({ formation, className }) => {
 
   return (
     <section aria-labelledby={titleId} className={className}>
-      <h2 id={titleId}>Mes documents</h2>
+      <h2 id={titleId} className={titleClassName}>
+        Mes documents
+      </h2>
 
       {inscriptionId === null && <p className={styles.empty}>Dépôt indisponible pour le moment</p>}
 

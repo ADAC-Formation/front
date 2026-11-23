@@ -23,11 +23,11 @@ import { mockAccountList } from '../../../test/accounts'
 
 const [secours, excel, postures] = FORMATIONS
 
-function renderDetail(role, formation, { notice, documents } = {}) {
+function renderDetail(role, formation, { notice, documents, types = [] } = {}) {
   mockSession(role)
   mockCategories() // la liste des formations, où l'on revient, charge les catégories du filtre
-  mockDocumentApi(documents, { uploader: USERS.STAGIAIRE }) // la section « Documents » du détail
-  mockFormationDocumentTypes([]) // « Mes documents » du stagiaire : aucun document à envoyer
+  mockDocumentApi(documents, { uploader: USERS.STAGIAIRE }) // l'onglet « Documents ADAC » du détail
+  mockFormationDocumentTypes(types) // types à envoyer : aucun par défaut
   const route = notice
     ? { pathname: `/formations/${formation.id}`, state: { notice } }
     : `/formations/${formation.id}`
@@ -41,6 +41,15 @@ function renderDetail(role, formation, { notice, documents } = {}) {
 }
 
 const archiveButton = () => screen.queryByRole('button', { name: 'Archiver' })
+
+// Onglets du détail (G34) : les panneaux inactifs restent montés mais `hidden`, donc on cherche toujours
+// dans le panneau visible (`getByRole` ignore les panneaux masqués).
+const openTab = async (name) => {
+  await userEvent.click(await screen.findByRole('tab', { name }))
+  return screen.getByRole('tabpanel', { name })
+}
+const visiblePanel = (name) => screen.findByRole('tabpanel', { name })
+const tabNames = () => screen.getAllByRole('tab').map((tab) => tab.textContent)
 
 describe('FormationDetailPage', () => {
   it('affiche un état de chargement puis les informations de la formation', async () => {
@@ -63,7 +72,7 @@ describe('FormationDetailPage', () => {
     renderDetail('SUPER_ADMIN', excel)
     await screen.findByRole('heading', { level: 1, name: 'Excel niveau 1' })
     expect(screen.queryByText('null')).not.toBeInTheDocument()
-    expect(await screen.findByText('Aucun stagiaire inscrit')).toBeInTheDocument()
+    expect(await within(await visiblePanel('Liste stagiaires')).findByText('Aucun stagiaire inscrit')).toBeInTheDocument()
   })
 
   it('rend le contenu du back en texte, jamais en HTML', async () => {
@@ -117,12 +126,12 @@ describe('FormationDetailPage', () => {
   })
 
   describe('documents', () => {
-    it.each(['SUPER_ADMIN', 'ADMIN', 'STAGIAIRE'])('%s voit les documents de la formation', async (role) => {
+    it.each(['SUPER_ADMIN', 'ADMIN', 'STAGIAIRE'])('%s voit les documents de la formation dans « Documents ADAC »', async (role) => {
       mockFormationDetail(secours)
       mockInscriptions(101)
       renderDetail(role, secours)
-      expect(await screen.findByRole('heading', { level: 2, name: 'Documents de la formation' })).toBeInTheDocument()
-      expect(await screen.findByText('Support de cours.pdf')).toBeInTheDocument()
+      const panel = await openTab('Documents ADAC')
+      expect(await within(panel).findByText('Support de cours.pdf')).toBeInTheDocument()
       expect(screen.queryByText(/arriveront bientôt/)).not.toBeInTheDocument()
     })
 
@@ -130,7 +139,8 @@ describe('FormationDetailPage', () => {
       mockFormationDetail(secours)
       mockInscriptions(101)
       renderDetail('SUPER_ADMIN', secours)
-      expect(await screen.findByRole('group', { name: 'Zone de dépôt de documents' })).toBeInTheDocument()
+      const panel = await openTab('Documents ADAC')
+      expect(await within(panel).findByRole('group', { name: 'Zone de dépôt de documents' })).toBeInTheDocument()
     })
 
     describe('« Mes documents » du stagiaire (G16)', () => {
@@ -147,23 +157,36 @@ describe('FormationDetailPage', () => {
         createdAt: '2026-03-01T10:00:00',
       }
 
-      it('affiche, sous les documents de la formation, la zone de dépôt et ses propres dépôts', async () => {
+      it('ouvre « Documents ADAC » et propose « Mes documents » avec la zone de dépôt et ses propres dépôts', async () => {
         mockFormationDetail(mineOnPage)
         renderDetail('STAGIAIRE', mineOnPage, { documents: [...DOCUMENTS, myDocument] })
-        const mine = await screen.findByRole('region', { name: 'Mes documents' })
+        const adac = await visiblePanel('Documents ADAC')
+        expect(await within(adac).findByText('Support de cours.pdf')).toBeInTheDocument()
+        const mine = await openTab('Mes documents')
         expect(await within(mine).findByText('Justificatif.pdf')).toBeInTheDocument()
         expect(within(mine).getByRole('group', { name: 'Zone de dépôt de documents' })).toBeInTheDocument()
         expect(within(mine).getByRole('button', { name: 'Supprimer Justificatif.pdf' })).toBeInTheDocument()
         expect(within(mine).queryByText('Support de cours.pdf')).not.toBeInTheDocument()
-        expect(await screen.findByText('Support de cours.pdf')).toBeInTheDocument()
       })
 
       it('garde les documents de la formation en lecture seule pour le stagiaire', async () => {
         mockFormationDetail(mineOnPage)
         renderDetail('STAGIAIRE', mineOnPage, { documents: [...DOCUMENTS, myDocument] })
-        await screen.findByText('Support de cours.pdf')
-        expect(screen.queryByRole('button', { name: 'Supprimer Support de cours.pdf' })).not.toBeInTheDocument()
-        expect(screen.getAllByRole('group', { name: 'Zone de dépôt de documents' })).toHaveLength(1)
+        const adac = await visiblePanel('Documents ADAC')
+        await within(adac).findByText('Support de cours.pdf')
+        expect(within(adac).queryByRole('button', { name: 'Supprimer Support de cours.pdf' })).not.toBeInTheDocument()
+        expect(within(adac).queryByRole('group', { name: 'Zone de dépôt de documents' })).not.toBeInTheDocument()
+      })
+
+      it('reste sur « Mes documents » après un dépôt', async () => {
+        mockFormationDetail(mineOnPage)
+        renderDetail('STAGIAIRE', mineOnPage, { documents: [...DOCUMENTS, myDocument] })
+        const mine = await openTab('Mes documents')
+        await within(mine).findByText('Justificatif.pdf')
+        const pdf = new File(['%PDF'], 'Attestation.pdf', { type: 'application/pdf' })
+        await userEvent.upload(mine.querySelector('input[type="file"]'), pdf)
+        expect(await within(mine).findByText('Attestation.pdf')).toBeInTheDocument()
+        expect(screen.getByRole('tab', { name: 'Mes documents' })).toHaveAttribute('aria-selected', 'true')
       })
 
       it('sur une formation archivée : ses dépôts sans zone de dépôt ni suppression', async () => {
@@ -172,7 +195,7 @@ describe('FormationDetailPage', () => {
         renderDetail('STAGIAIRE', archivedMine, {
           documents: [{ ...myDocument, id: 602, fileName: 'Ancien.pdf', inscriptionId: 9 }],
         })
-        const mine = await screen.findByRole('region', { name: 'Mes documents' })
+        const mine = await openTab('Mes documents')
         expect(await within(mine).findByText('Ancien.pdf')).toBeInTheDocument()
         expect(within(mine).queryByRole('group', { name: 'Zone de dépôt de documents' })).not.toBeInTheDocument()
         expect(within(mine).queryByRole('button', { name: /Supprimer/ })).not.toBeInTheDocument()
@@ -182,8 +205,8 @@ describe('FormationDetailPage', () => {
         mockFormationDetail(secours)
         mockInscriptions(101)
         renderDetail(role, secours)
-        await screen.findByRole('heading', { level: 2, name: 'Documents de la formation' })
-        expect(screen.queryByRole('region', { name: 'Mes documents' })).not.toBeInTheDocument()
+        await screen.findByRole('tablist')
+        expect(screen.queryByRole('tab', { name: 'Mes documents' })).not.toBeInTheDocument()
       })
     })
 
@@ -191,8 +214,9 @@ describe('FormationDetailPage', () => {
       mockFormationDetail(secours)
       mockInscriptions(101)
       const { container } = renderDetail('SUPER_ADMIN', secours)
-      await screen.findByText('Support de cours.pdf')
-      await screen.findByRole('group', { name: 'Zone de dépôt de documents' })
+      const panel = await openTab('Documents ADAC')
+      await within(panel).findByText('Support de cours.pdf')
+      await within(panel).findByRole('group', { name: 'Zone de dépôt de documents' })
       expect(await axe(container)).toHaveNoViolations()
     })
   })
@@ -202,7 +226,7 @@ describe('FormationDetailPage', () => {
       mockFormationDetail(secours)
       mockInscriptions(101)
       renderDetail('SUPER_ADMIN', secours)
-      const section = (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
+      const section = await visiblePanel('Liste stagiaires')
       expect(await within(section).findByText('Léa Petit')).toBeInTheDocument()
       expect(within(section).getByText('lea@adac.test')).toBeInTheDocument()
       expect(within(section).getByText('Omar Benali')).toBeInTheDocument()
@@ -212,7 +236,7 @@ describe('FormationDetailPage', () => {
       mockFormationDetail(secours)
       const calls = mockInscriptions(101)
       renderDetail('ADMIN', secours)
-      expect(await screen.findByText('Léa Petit')).toBeInTheDocument()
+      expect(await within(await visiblePanel('Liste stagiaires')).findByText('Léa Petit')).toBeInTheDocument()
       expect(calls.count).toBe(1)
     })
 
@@ -226,43 +250,56 @@ describe('FormationDetailPage', () => {
       await new Promise((resolve) => setTimeout(resolve, 50))
       expect(calls.count).toBe(0)
       expect(screen.queryByText('lea@adac.test')).not.toBeInTheDocument()
-      expect(screen.queryByRole('heading', { name: 'Stagiaires inscrits' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('tab', { name: 'Liste stagiaires' })).not.toBeInTheDocument()
     })
 
-    describe('documents envoyés par les stagiaires (G17)', () => {
+    describe('documents reçus par inscrit (G34)', () => {
       const lea = INSCRITS[0].stagiaire
+      const TYPES = [
+        { id: 1, nom: 'Pièce d’identité' },
+        { id: 2, nom: 'Diplôme' },
+      ]
       const sentByLea = {
         id: 701,
-        fileName: 'Carte-identite.pdf',
-        fileUrl: 'https://supabase.test/storage/701',
+        fileName: 'Pièce d’identité - recto.pdf',
         fileSize: 2048,
         mimeType: 'application/pdf',
-        uploadedBy: lea,
+        uploadedBy: { id: lea.id, prenom: lea.prenom, nom: lea.nom },
         formationId: null,
         inscriptionId: 1,
         createdAt: '2026-03-01T10:00:00',
       }
 
-      it.each(['SUPER_ADMIN', 'ADMIN'])(
-        '%s voit, pour chaque inscrit, une coche s’il a envoyé un document, avec le lien du fichier',
-        async (role) => {
-          mockFormationDetail(secours)
-          mockInscriptions(101)
-          renderDetail(role, secours, { documents: [...DOCUMENTS, sentByLea] })
-          const section = (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
-          const leaRow = (await within(section).findByText('Léa Petit')).closest('li')
-          expect(await within(leaRow).findByText('Documents envoyés')).toBeInTheDocument()
-          expect(within(leaRow).getByRole('button', { name: 'Télécharger Carte-identite.pdf' })).toBeInTheDocument()
-          const omarRow = within(section).getByText('Omar Benali').closest('li')
-          expect(await within(omarRow).findByText('Aucun document envoyé')).toBeInTheDocument()
-        },
-      )
+      it.each(['SUPER_ADMIN', 'ADMIN'])('%s voit « X/Y documents reçus » sur la ligne de chaque inscrit', async (role) => {
+        mockFormationDetail(secours)
+        mockInscriptions(101)
+        renderDetail(role, secours, { documents: [...DOCUMENTS, sentByLea], types: TYPES })
+        const section = await visiblePanel('Liste stagiaires')
+        const leaRow = (await within(section).findByText('Léa Petit')).closest('li')
+        expect(await within(leaRow).findByText('1/2 documents reçus')).toBeInTheDocument()
+        expect(within(leaRow).queryByRole('button', { name: /Télécharger/ })).not.toBeInTheDocument()
+        const omarRow = within(section).getByText('Omar Benali').closest('li')
+        expect(await within(omarRow).findByText('0/2 documents reçus')).toBeInTheDocument()
+      })
+
+      it.each(['SUPER_ADMIN', 'ADMIN'])('%s voit le détail par type dans « Documents stagiaires »', async (role) => {
+        mockFormationDetail(secours)
+        mockInscriptions(101)
+        renderDetail(role, secours, { documents: [...DOCUMENTS, sentByLea], types: TYPES })
+        const panel = await openTab('Documents stagiaires')
+        const leaBlock = await within(panel).findByRole('region', { name: 'Léa Petit' })
+        const identite = await within(leaBlock).findByRole('listitem', { name: 'Pièce d’identité' })
+        expect(within(identite).getByText('Reçu')).toBeInTheDocument()
+        expect(within(identite).getByRole('button', { name: 'Télécharger Pièce d’identité - recto.pdf' })).toBeInTheDocument()
+        expect(within(within(leaBlock).getByRole('listitem', { name: 'Diplôme' })).getByText('Manquant')).toBeInTheDocument()
+      })
 
       it('n’a aucune violation d’accessibilité (jest-axe)', async () => {
         mockFormationDetail(secours)
         mockInscriptions(101)
-        const { container } = renderDetail('SUPER_ADMIN', secours, { documents: [...DOCUMENTS, sentByLea] })
-        await screen.findByText('Documents envoyés')
+        const { container } = renderDetail('SUPER_ADMIN', secours, { documents: [...DOCUMENTS, sentByLea], types: TYPES })
+        const panel = await openTab('Documents stagiaires')
+        await within(await within(panel).findByRole('region', { name: 'Léa Petit' })).findByText('1/2 documents reçus')
         expect(await axe(container)).toHaveNoViolations()
       })
     })
@@ -271,7 +308,7 @@ describe('FormationDetailPage', () => {
       mockFormationDetail(secours)
       mockInscriptions(101, [], { errorStatus: 500 })
       renderDetail('SUPER_ADMIN', secours)
-      const section = (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
+      const section = await visiblePanel('Liste stagiaires')
       expect(await within(section).findByRole('alert')).toBeInTheDocument()
       expect(screen.getByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
       mockInscriptions(101)
@@ -355,7 +392,7 @@ describe('FormationDetailPage', () => {
       mockInscriptions(101)
       renderDetail(role, secours)
       await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })
-      if (role === 'ADMIN') await screen.findByText('Léa Petit')
+      if (role === 'ADMIN') await within(await visiblePanel('Liste stagiaires')).findByText('Léa Petit')
       expect(screen.queryByRole('link', { name: 'Modifier' })).not.toBeInTheDocument()
     })
 
@@ -364,7 +401,7 @@ describe('FormationDetailPage', () => {
       mockInscriptions(103, [])
       renderDetail('SUPER_ADMIN', postures)
       await screen.findByRole('heading', { level: 1, name: 'Gestes et postures' })
-      await screen.findByText('Aucun stagiaire inscrit')
+      await within(await visiblePanel('Liste stagiaires')).findByText('Aucun stagiaire inscrit')
       expect(screen.queryByRole('link', { name: 'Modifier' })).not.toBeInTheDocument()
     })
   })
@@ -394,8 +431,60 @@ describe('FormationDetailPage', () => {
     mockFormationDetail(secours)
     mockInscriptions(101)
     const { container } = renderDetail('SUPER_ADMIN', secours)
-    await screen.findByText('Léa Petit')
+    await within(await visiblePanel('Liste stagiaires')).findByText('Léa Petit')
     expect(await axe(container)).toHaveNoViolations()
+  })
+
+  it('ne présente aucune violation d’accessibilité pour le stagiaire', async () => {
+    const mine = { ...secours, inscriptionId: 7 }
+    mockFormationDetail(mine)
+    const { container } = renderDetail('STAGIAIRE', mine)
+    await within(await visiblePanel('Documents ADAC')).findByText('Support de cours.pdf')
+    expect(await axe(container)).toHaveNoViolations()
+  })
+
+  describe('onglets (G34)', () => {
+    it.each(['SUPER_ADMIN', 'ADMIN'])('%s : trois onglets, « Liste stagiaires » ouvert par défaut', async (role) => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail(role, secours)
+      await screen.findByRole('tablist', { name: 'Sections de la formation' })
+      expect(tabNames()).toEqual(['Liste stagiaires', 'Documents stagiaires', 'Documents ADAC'])
+      expect(screen.getByRole('tab', { name: 'Liste stagiaires' })).toHaveAttribute('aria-selected', 'true')
+    })
+
+    it('stagiaire : deux onglets, « Documents ADAC » ouvert par défaut', async () => {
+      const mine = { ...secours, inscriptionId: 7 }
+      mockFormationDetail(mine)
+      renderDetail('STAGIAIRE', mine)
+      await screen.findByRole('tablist', { name: 'Sections de la formation' })
+      expect(tabNames()).toEqual(['Documents ADAC', 'Mes documents'])
+      expect(screen.getByRole('tab', { name: 'Documents ADAC' })).toHaveAttribute('aria-selected', 'true')
+    })
+
+    it('place les informations, « Modifier » et « Archiver » avant la barre d’onglets', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours)
+      const tablist = await screen.findByRole('tablist')
+      const before = (node) => Boolean(node.compareDocumentPosition(tablist) & Node.DOCUMENT_POSITION_FOLLOWING)
+      expect(before(screen.getByRole('heading', { level: 1, name: 'Premiers secours PSC1' }))).toBe(true)
+      expect(before(screen.getByText('du 10 mars 2026 au 12 mars 2026'))).toBe(true)
+      expect(before(screen.getByRole('link', { name: 'Modifier' }))).toBe(true)
+      expect(before(screen.getByRole('button', { name: 'Archiver' }))).toBe(true)
+    })
+
+    it('passe d’un onglet à l’autre au clavier', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours)
+      const first = await screen.findByRole('tab', { name: 'Liste stagiaires' })
+      first.focus()
+      await userEvent.keyboard('{ArrowRight}')
+      expect(screen.getByRole('tab', { name: 'Documents stagiaires' })).toHaveAttribute('aria-selected', 'true')
+      await userEvent.keyboard('{End}')
+      expect(screen.getByRole('tabpanel', { name: 'Documents ADAC' })).toBeVisible()
+    })
   })
   describe('inscrire et désinscrire (J5, J8)', () => {
     const stagiaire = (id, prenom, nom, { isActive, activated }) => ({
@@ -422,8 +511,7 @@ describe('FormationDetailPage', () => {
     }
     const sentToLea = { ...sentByLea, id: 702, fileName: 'Convocation.pdf', uploadedBy: { id: 1, prenom: 'Chargée', nom: 'Dev' } }
 
-    const inscritsSection = async () =>
-      (await screen.findByRole('heading', { level: 2, name: 'Stagiaires inscrits' })).closest('section')
+    const inscritsSection = () => visiblePanel('Liste stagiaires')
 
     const openPicker = async (section) => {
       await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire des stagiaires' }))
@@ -498,7 +586,7 @@ describe('FormationDetailPage', () => {
       renderDetail('SUPER_ADMIN', secours, { documents: [sentByLea, sentToLea] })
       const section = await inscritsSection()
       const leaRow = (await within(section).findByText('Léa Petit')).closest('li')
-      await within(leaRow).findByText('Documents envoyés')
+      await within(leaRow).findByText('1 document envoyé')
       await userEvent.click(within(leaRow).getByRole('button', { name: 'Désinscrire Léa Petit' }))
 
       const dialog = screen.getByRole('dialog', { name: 'Désinscrire Léa Petit de « Premiers secours PSC1 » ?' })
@@ -510,6 +598,33 @@ describe('FormationDetailPage', () => {
       await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
       expect(unenrolCalls.paths).toEqual([{ formationId: 101, stagiaireId: 20 }])
       await within(section).findByText('Léa Petit')
+    })
+
+    it('après une désinscription, reste sur « Liste stagiaires » et retire le stagiaire des deux onglets', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      mockUnenroll()
+      renderDetail('SUPER_ADMIN', secours)
+      const section = await inscritsSection()
+      await userEvent.click(await within(section).findByRole('button', { name: 'Désinscrire Léa Petit' }))
+      mockInscriptions(101, [INSCRITS[1]]) // le back ne renvoie plus Léa
+      await userEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: 'Désinscrire' }))
+      await waitFor(() => expect(within(section).queryByText('Léa Petit')).not.toBeInTheDocument())
+      expect(screen.getByRole('tab', { name: 'Liste stagiaires' })).toHaveAttribute('aria-selected', 'true')
+      const documents = await openTab('Documents stagiaires')
+      expect(await within(documents).findByRole('region', { name: 'Omar Benali' })).toBeInTheDocument()
+      expect(within(documents).queryByRole('region', { name: 'Léa Petit' })).not.toBeInTheDocument()
+    })
+
+    it('ne propose « Inscrire des stagiaires » et « Désinscrire » que dans « Liste stagiaires »', async () => {
+      mockFormationDetail(secours)
+      mockInscriptions(101)
+      renderDetail('SUPER_ADMIN', secours)
+      await within(await inscritsSection()).findByRole('button', { name: 'Inscrire des stagiaires' })
+      for (const name of ['Documents stagiaires', 'Documents ADAC']) {
+        const panel = await openTab(name)
+        expect(within(panel).queryByRole('button', { name: /Inscrire|Désinscrire/ })).not.toBeInTheDocument()
+      }
     })
 
     it('affiche l’erreur de la désinscription dans la confirmation', async () => {

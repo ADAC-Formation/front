@@ -1,0 +1,65 @@
+/* Barre d'onglets soulignée : l'onglet actif est en gras et souligné (pas seulement en couleur).
+   Sur un écran étroit la barre défile horizontalement, aucun libellé n'est tronqué ni masqué. */
+.tablist {
+  display: flex;
+  gap: 0.25rem;
+
+  overflow-x: auto;
+  scrollbar-width: thin;
+
+  border-bottom: 1px solid var(--border);
+}
+
+.tab {
+  flex: 0 0 auto;
+
+  margin-bottom: -1px;
+  padding: 0.75rem 1rem;
+
+  border: none;
+  border-bottom: 3px solid transparent;
+  border-radius: 0.4rem 0.4rem 0 0;
+
+  background: none;
+  color: var(--foreground);
+
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  font-weight: 500;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
+}
+
+.tab:hover {
+  background-color: var(--muted);
+}
+
+.tab[aria-selected='true'] {
+  border-bottom-color: var(--foreground);
+  font-weight: 700;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.panel {
+  padding-top: 1.5rem;
+}
+
+.panel:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tab {
+    transition: none;
+  }
+}

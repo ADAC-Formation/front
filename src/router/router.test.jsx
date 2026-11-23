@@ -12,6 +12,7 @@ import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } 
 import { FORMATEURS, mockAccountList } from '../test/accounts'
 import { mockCategories } from '../test/categories'
 import { mockDocumentApi } from '../test/documents'
+import { mockFormationDocumentTypes } from '../test/documentTypes'
 import { mockConversations } from '../test/messages'
 import { mockNotificationApi } from '../test/notifications'
 
@@ -81,6 +82,7 @@ describe('pages de formations branchées sur le back', () => {
     mockFormationDetail(FORMATIONS[0])
     mockInscriptions(101)
     mockDocumentApi()
+    mockFormationDocumentTypes()
     renderApp('/formations/101')
     expect(await screen.findByRole('heading', { level: 1, name: 'Premiers secours PSC1' })).toBeInTheDocument()
   })

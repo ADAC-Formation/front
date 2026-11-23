@@ -8,6 +8,7 @@ import { FORMATIONS, mockFormationDetail, mockFormationList, mockInscriptions } 
 import { FORMATEURS, mockAccountList } from '../test/accounts'
 import { mockCategories } from '../test/categories'
 import { mockDocumentApi } from '../test/documents'
+import { mockFormationDocumentTypes } from '../test/documentTypes'
 import { cssSheets, rulesOf, stripComments } from '../test/css-sheets'
 import { mockNotificationApi } from '../test/notifications'
 
@@ -43,6 +44,7 @@ describe.each([
     mockFormationDetail(FORMATIONS[0])
     mockInscriptions(101)
     mockDocumentApi()
+    mockFormationDocumentTypes()
     mockCategories()
     mockAccountList('formateurs', FORMATEURS)
     renderApp(path)

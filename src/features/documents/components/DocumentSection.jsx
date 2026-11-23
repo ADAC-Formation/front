@@ -13,8 +13,8 @@ import UploadNotices from './UploadNotices'
 // Section « Documents » du détail d'une formation (TICKET-027, G1–G6). Droits affichés = droits du
 // back : dépôt et suppression selon le rôle, l'auteur et l'état de la formation (documentFiles).
 // Tout ce qui vient du back (noms de fichiers, messages) est rendu en texte. `className` : habillage
-// de section fourni par la page.
-const DocumentSection = ({ formation, className }) => {
+// de section fourni par la page ; `titleClassName` : habillage du titre (masqué visuellement dans un onglet, G34).
+const DocumentSection = ({ formation, className, titleClassName }) => {
   const { user } = useCurrentUser()
   const documents = useDocuments({ formationId: formation.id })
   const { upload, isPending: isUploading, result, reset: resetUpload } = useUploadDocuments({ formationId: formation.id })
@@ -56,7 +56,7 @@ const DocumentSection = ({ formation, className }) => {
 
   return (
     <section className={className}>
-      <h2>Documents de la formation</h2>
+      <h2 className={titleClassName}>Documents de la formation</h2>
 
       {canUploadDocument(user, formation) && (
         <div className={styles.upload}>

@@ -619,3 +619,14 @@
 .inscritIdentity span:last-child {
   color: var(--muted-foreground);
 }
+
+/* ---------- Onglets du détail d'une formation (G34) ---------- */
+
+.tabs {
+  margin-top: 2rem;
+}
+
+/* Ligne d'un inscrit : identité, compte de documents, puis « Désinscrire » à droite. */
+.inscritAction {
+  margin-left: auto;
+}
