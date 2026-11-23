@@ -19,6 +19,7 @@ Clarifications de la phase SDD pour TICKET-024 (liste et détail des formations)
 - **Décision** : le détail lit les inscrits par `GET /formations/{id}/inscriptions` pour la chargée de formation et le formateur uniquement (jamais le stagiaire : l'e-mail des co-inscrits serait exposé, `tech.md` §5) ; le stagiaire ne voit que le nombre d'inscrits (`inscriptionsCount`). La section « Documents » est un emplacement réservé, branché dans `feature/documents` (027) : aucun appel, aucun faux contenu d'ici là. Inscrire / désinscrire (POST/DELETE inscriptions) et la colonne « formations » des comptes restent hors de ce change.
 - **Pourquoi** : respecter les critères de 024 sans dépendre des documents ni élargir le change ; protéger la vie privée des stagiaires.
 - **Alternatives écartées** : ajouter inscrire / désinscrire maintenant (change plus large, touche aux comptes, D54) ; détail sans inscrits (écart avec 024).
+- **Remplacée en partie le 2026-11-23 par J5** (`decisions-inscriptions.md`) : inscrire / désinscrire sont construits par le change `formation-inscriptions` ; le reste de F3 tient.
 
 ## F4 — Actions : « Archiver » livré, « Modifier » avec le formulaire de 025
 - Date : 2026-11-01

@@ -74,7 +74,7 @@ Source : TICKET-024 (front), `tech.md` §4–5, décisions F1–F7 (`decisions-f
 - [ ] ADMIN (D46, F2) : « Mes formations » (défaut) / « Toutes » filtrés côté client, aucune action de gestion ; `404` sur le détail → « Formation introuvable ou non accessible ».
 - [ ] STAGIAIRE (F6) : titre « Mes formations », aucune action ; détail avec nombre d'inscrits seulement ; `403` → « Accès refusé ».
 - [ ] Détail : titre, description, dates, modalité, catégorie, formateur ; liste des inscrits (SUPER_ADMIN et ADMIN seulement, F3) ; section « Documents » réservée, sans appel (027) ; contenu rendu en texte.
-- Reporté : création et import Excel (025), « Modifier », filtre et gestion des catégories (048/049), documents (027), inscrire / désinscrire, code de référence (Q9).
+- Reporté : création et import Excel (025), « Modifier », filtre et gestion des catégories (048/049), documents (027), inscrire / désinscrire (construits par le change `formation-inscriptions`, J5), code de référence (Q9).
 
 ## Critères d'acceptation du formulaire de formation (change `formation-form`)
 
@@ -202,3 +202,24 @@ Source : TICKET-032 (front), US-014, `tech.md` §7, décisions H12–H17 (`decis
 - [ ] Aperçu automatique (`GET /messages/group/preview`) dès que le filtre est complet : noms seulement, jamais d'e-mail, compte annoncé ; liste vide (`200 []`) → « Aucun destinataire correspondant » et envoi désactivé ; erreur (`400` compris) → alerte avec « Réessayer » et envoi désactivé.
 - [ ] Texte seul, 1 à 5000 caractères (H9) ; « Envoyer à X destinataires » ouvre une confirmation ; `POST /messages/send` `{ content, filter }` n'est appelé qu'après confirmation, une seule fois ; succès → retour sur `/messages` avec « Message envoyé à X destinataires » ; `403` / `404` / réseau → erreur, texte conservé.
 - [ ] Fil : mention « Message groupé » pour `isGroup` ; la liste `recipients` n'est jamais affichée (H15).
+
+## Critères d'acceptation des inscriptions (change `formation-inscriptions`)
+
+Source : point 10 des notes ADAC, décisions J1–J9 (`decisions-inscriptions.md`), `tech.md` (inscriptions). Détail testable : `openspec/changes/formation-inscriptions/specs/formation-inscriptions/spec.md`. Back : branche `feature/formation-inscriptions` (J2, J6, J7).
+
+### Création d'un stagiaire (chargée de formation)
+- [ ] Section « Formations (facultatif) » : formations actives en cases à cocher, recherche, nombre sélectionné annoncé ; absente pour un formateur et en modification.
+- [ ] Aucune formation cochée : parcours inchangé. Sinon : `POST /users`, puis un `POST /formations/{id}/inscriptions` par formation, l'un après l'autre, puis la page du stagiaire avec « Compte créé. Inscrit à : … ».
+- [ ] Échec d'une inscription : compte gardé, « Inscription impossible : C (raison) » en texte ; `409` déjà inscrit = réussite ; compte refusé = aucune inscription.
+
+### Page du stagiaire
+- [ ] Section « Formations » : ses inscriptions avec lien ; « Inscrire à une formation » (formations déjà suivies exclues) et « Désinscrire » pour la chargée sur une formation active ; vide et erreur avec « Réessayer » ; lecture seule pour le formateur.
+
+### Page de la formation
+- [ ] « Stagiaires inscrits » : « Inscrire des stagiaires » (`StagiairePicker` : actifs et jamais activés, sans suspendus ni inscrits, nom seul) et « Désinscrire » par ligne, pour la chargée sur une formation active ; échecs listés par nom.
+
+### Désinscription et formations archivées
+- [ ] Confirmation qui nomme le stagiaire et la formation et annonce la suppression définitive de ses documents (avec leur nombre quand il est connu) ; erreur affichée sans fermer ; « Annuler » / Échap sans appel.
+- [ ] Formation archivée : jamais proposée, aucune action d'inscription ni de désinscription.
+- [ ] Accessibilité : `fieldset` / `legend`, clavier, annonces d'état, jest-axe sans violation sur chaque page touchée.
+- Reporté : choisir les stagiaires en créant une formation, formations dans la modification d'un stagiaire, notification d'inscription (`future-implementation-ideas.md`).
