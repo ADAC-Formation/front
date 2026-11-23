@@ -28,7 +28,8 @@ const StagiaireFormationsSection = ({ stagiaire, canManage, className }) => {
   }
 
   const submit = () => {
-    const intituleOf = ({ formationId }) => activeFormations.find((formation) => formation.id === formationId)?.intitule
+    const intituleOf = ({ formationId }) =>
+      activeFormations.find((formation) => formation.id === formationId)?.intitule ?? String(formationId)
     enroll.mutate(
       selectedIds.map((formationId) => ({ formationId, stagiaireId: stagiaire.id })),
       {
