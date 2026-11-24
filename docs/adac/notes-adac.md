@@ -48,7 +48,7 @@ Lignes dans l'ordre de la feuille. `[…]` = lecture incertaine.
 | 2 | Stagiaire | Le mot « disponibles » prête à confusion | Revoir le libellé de la liste des formations vue par le stagiaire | Non |
 | 3 | Stagiaire | Enlever le nombre d'inscrits (le garder pour formateur et chargée) | Masquer ce nombre pour le rôle stagiaire | Non |
 | 4 | Stagiaire | Enlever l'option « ne plus recevoir d'e-mail » | **Décision : retrait total.** Le stagiaire reçoit toujours les e-mails, sans réglage dans son profil (indicateur 30 : le questionnaire à 6 mois ne doit pas être raté). À vérifier : les comptes qui ont déjà coupé les e-mails, et si le back doit forcer l'envoi | À voir |
-| 5 | Tous | « Envoi CSV » | **Précision : les fichiers Excel doivent aussi être acceptés comme documents déposés, par tous les rôles** (pas du CSV). La liste actuelle est pdf, jpg, jpeg, png et docx, fixée par le back (Q5) : il faut ajouter les formats Excel (.xlsx, et .xls ?) | Oui |
+| 5 | Tous | « Envoi CSV » | **Précision : les fichiers Excel doivent aussi être acceptés comme documents déposés, par tous les rôles** (pas du CSV). La liste actuelle est pdf, jpg, jpeg, png et docx, fixée par le back (Q5) : il faut ajouter les formats Excel. **Fait** : `.xlsx` accepté (back PR #16) ; `.xls` écarté par Manon le 2026-11-24 | Oui |
 | 6 | Formateur | Classer les conversations par formation | Regrouper la liste de la messagerie par formation | Peut-être (la messagerie ne connaît pas la formation) |
 | 7 | Formateur | Ajouter des CV aux profils formateurs | Dépôt d'un CV sur la fiche du formateur. Lien avec l'indicateur 21 (compétences des acteurs) | Oui |
 | 8 | Formateur | Voir les documents dans le profil | **Précision : les siens.** Dans son propre profil, le formateur voit les documents qu'il a déposés (comme « Mes documents » du stagiaire) | À voir |
@@ -70,9 +70,9 @@ Les rôles actuels du back sont `SUPER_ADMIN` (chargée de formation), `ADMIN` (
 
 ## 4. Questions encore ouvertes
 
-1. **Inscription** (à discuter avec Fatma) : le concept d'inscription est à rediscuter ; est-ce faisable sur le site ? Les inscriptions sont encore reportées côté portail et la décision doit venir avant de les construire (point 10).
+1. ~~**Inscription** (à discuter avec Fatma)~~ : tranché par Manon sans attendre (J1 à J10, `decisions-inscriptions.md`) ; inscriptions livrées (point 10).
 2. **Deux nouveaux rôles** : à évoquer avec Charlotte puis avec l'ADAC (section 3).
-3. **Excel (point 5)** : seulement `.xlsx`, ou aussi l'ancien `.xls` ?
+3. ~~**Excel (point 5)** : seulement `.xlsx`, ou aussi l'ancien `.xls` ?~~ Tranché le 2026-11-24 par Manon : **`.xlsx` seulement**. `.xls` est l'ancien format binaire d'Excel 97-2003 : tout Excel depuis 2007 enregistre en `.xlsx`, le back ne le lit pas, et il peut porter des macros. Un fichier `.xls` se convertit par « Enregistrer sous » > « Classeur Excel (.xlsx) ».
 4. **E-mails (point 4)** : que faire des stagiaires qui ont déjà coupé les e-mails, et faut-il le garantir côté back ?
 
 ## 5. Liens avec Qualiopi
