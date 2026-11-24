@@ -16,9 +16,9 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
-### 2026-11-24 — Dépôt d'un fichier dont le nom a un accent : « Service de stockage indisponible » corrigé (prêt à relire)
+### 2026-11-24 — Dépôt d'un fichier dont le nom a un accent : « Service de stockage indisponible » corrigé (poussé, PR #31)
 
-- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `82e74d6`) : `fix/storage-key-accents`, `d540767`. Pas poussée.
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `82e74d6`) : `fix/storage-key-accents`, `d540767`. Poussée le 2026-11-24, PR #31 vers `dev`.
 - **Quoi et pourquoi** : constaté par Manon sur le back local : « CV à jour - perfil profesional.docx » est refusé avec `502 « Service de stockage indisponible »`. La cause n'est pas le stockage : Supabase refuse une clé d'objet qui contient un accent (`400 InvalidKey`), et le back mettait le nom d'origine dans la clé. Tout fichier au nom accentué échouait, et **tout dépôt depuis un créneau** dont le type a un accent (« Pièce d'identité - … », G33), quel que soit le fichier.
 - **Fichiers touchés** : `utils/StorageKeys.java` (nouveau : nom sûr pour une clé, accents retirés, ligatures `œ`/`æ` écrites en deux lettres, autres caractères remplacés par `_`, 120 caractères au plus avec l'extension), `DocumentServiceImpl` (clés `formations/…` et `inscriptions/…`), `AGENT_HANDOFF.md`. Tests : `StorageKeysTest` (nouveau, 18), `DocumentServiceImplTest` (+2 : clé sûre et nom d'origine gardé, pour une inscription et pour une formation). `mvn test` : 735 tests, tous verts.
 - **Contrat** : inchangé. Le nom affiché (`fileName`) reste celui d'origine ; seule la clé de stockage, jamais exposée, change. Pas de migration ; les fichiers déjà stockés gardent leur clé.
