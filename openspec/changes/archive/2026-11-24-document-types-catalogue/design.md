@@ -2,7 +2,8 @@
 
 ## Context
 
-- Décisions de référence : G19 à G32 de `docs/decisions/decisions-documents.md` (catalogue, portée, obligatoire, sensible, délai, formats, actif, Gestion), D12 (erreurs), D15 (accessibilité), D46 et D54 (rôles de gestion), D59 (`lazyPage`), D66 (changements du back sur branche).
+- **Mise à jour du 2026-11-24 (G33)** : le champ « obligatoire / facultatif » (`is_required`, `isRequired`) décrit ci-dessous a été retiré du back et du front pendant la tranche ; tout type actif applicable est à envoyer. G33 ajoute aussi `GET /api/formations/{id}/document-types` et les créneaux de « Mes documents » ; G35 (change `formation-detail-tabs`) ajoute `providedBy`. Le ticket du back est devenu TICKET-052.
+- Décisions de référence : G19 à G33 de `docs/decisions/decisions-documents.md` (catalogue, portée, obligatoire, sensible, délai, formats, actif, Gestion), D12 (erreurs), D15 (accessibilité), D46 et D54 (rôles de gestion), D59 (`lazyPage`), D66 (changements du back sur branche).
 - Modèle à imiter : les **catégories** (back : `Category`, `CategoryController`, `CategoryServiceImpl`, `tech.md` §3 ; front : `features/categories`). Même contrat : liste, création, `PUT`, `PATCH activate` et `deactivate`, `409` sur un nom déjà pris, jamais de suppression. Le formulaire est plus grand que celui d'une catégorie : il suit plutôt les **comptes** (`AccountFormPage`, pages de création et de modification) qu'une boîte de dialogue.
 - Le back n'a aucun type de document : `Document` a seulement un fichier et une cible (`formationId` ou `inscriptionId`). Cette tranche ne touche pas aux documents eux-mêmes (tranche 2).
 

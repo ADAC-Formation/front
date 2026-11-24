@@ -223,3 +223,19 @@ Source : point 10 des notes ADAC, décisions J1–J10 (`decisions-inscriptions.m
 - [x] Formation archivée : jamais proposée, aucune action d'inscription ni de désinscription.
 - [x] Accessibilité : `fieldset` / `legend`, clavier, annonces d'état, jest-axe sans violation sur chaque page touchée.
 - Reporté : choisir les stagiaires en créant une formation, formations dans la modification d'un stagiaire, notification d'inscription (`future-implementation-ideas.md`).
+
+## Critères d'acceptation du catalogue des types de document (change `document-types-catalogue`)
+
+Décisions : G19 à G33 (`docs/decisions/decisions-documents.md`). Back : TICKET-052 (PR #27).
+
+### Gestion > Documents (chargée de formation seulement)
+- [x] « Gestion » montre Formations, Documents et Profils (Formateurs et Stagiaires) ; le formateur ne voit ni la tuile Documents ni `/admin/documents`.
+- [x] Liste des types triée par nom : « Sensible », portée, délai, « Fourni par », état actif ou désactivé ; liste vide et erreur avec « Réessayer ».
+- [x] Création et modification : nom, aide, sensible, portée (toutes les formations ou des catégories), délai, formats, « Fourni par » ; validation en ligne sans appel, `409` sous « Nom » ; texte « s'applique aux formations en cours ».
+- [x] Désactivation avec confirmation, réactivation sans ; jamais de suppression.
+- [x] Pas d'« obligatoire / facultatif » (G33) : tout type actif applicable est à envoyer.
+
+### Types d'une formation
+- [x] Lus par `GET /formations/{id}/document-types` (mêmes droits que la formation) ; « Mes documents » du stagiaire en créneaux rouges et verts, état écrit (G33).
+- [x] Accessibilité : jest-axe sans violation, clavier, 320 px et 150 % de taille de texte.
+- Reporté (tranches 2 à 4, G31) : « En retard », « Non applicable », types sensibles à la lecture, lien type-fichier par `documentTypeId` au lieu du nom de fichier.

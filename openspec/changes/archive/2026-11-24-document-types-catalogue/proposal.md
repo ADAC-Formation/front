@@ -10,7 +10,8 @@ La chargée de formation doit pouvoir définir elle-même les pièces que les st
 - **Front** :
   - « Gestion » (`/admin/gestion`) devient **Formations, Documents, Profils** (G32) : la tuile Documents (chargée seulement) mène au catalogue ; la tuile Profils regroupe deux sections, Formateurs et Stagiaires.
   - Pages `/admin/documents` (liste, état actif ou désactivé, modifier, désactiver ou réactiver avec confirmation), `/admin/documents/nouveau` et `/admin/documents/:id/modifier` (formulaire).
-  - Un type a : nom, texte d'aide, obligatoire ou facultatif, sensible, portée (toutes les formations ou une ou plusieurs catégories), délai optionnel (N jours avant le début ou après la fin), formats acceptés optionnels, actif (G30).
+  - Un type a : nom, texte d'aide, sensible, portée (toutes les formations ou une ou plusieurs catégories), délai optionnel (N jours avant le début ou après la fin), formats acceptés optionnels, actif (G30). Le champ « obligatoire ou facultatif » prévu au départ a été retiré (G33, 2026-11-21) : tout type applicable est à envoyer.
+  - (G33) « Mes documents » du stagiaire montre un créneau rouge ou vert par type à envoyer ; les types d'une formation sont lus par `GET /api/formations/{id}/document-types`.
 - **Données de départ (développement seulement)** : la liste fictive `docs/adac/documents-obligatoires-factices.md` est ajoutée à `docs/dev/seed-local-admin.sql`. Aucune donnée dans la migration : rien de fictif ne doit exister en production.
 - Plan du site : `Documents` ajouté pour la chargée.
 
