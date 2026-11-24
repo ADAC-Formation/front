@@ -16,7 +16,7 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
-### 2026-11-23 — Types de document : qui les fournit, le stagiaire ou l'ADAC (`providedBy`, TICKET-052, poussé le 2026-11-24 dans PR #27)
+### 2026-11-23 — Types de document : qui les fournit, le stagiaire ou l'ADAC (`providedBy`, TICKET-052, mergé le 2026-11-24, PR #27)
 
 - **Branche et commit** (clone `back-readonly`) : `feature/document-types`, `a9c8855`, poussé le 2026-11-24 (`origin/feature/document-types`, PR #27). Mergée dans `local/integration` (`58bd39c`, conflit d'ajout en fin de `AGENT_HANDOFF.md` : les deux rapports gardés) pour le back local, V7 appliquée sur la base de dev.
 - **Quoi et pourquoi** : G35 du front. La chargée de formation veut voir, sur la page d'une formation, les pièces que l'ADAC doit déposer (rouge tant qu'elles manquent, vert ensuite), comme celles du stagiaire. Un type porte donc son fournisseur.
@@ -25,7 +25,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : **migration de schéma** (D66 point 3), décidée avec Manon le 2026-11-23 ; un `PUT` sans le champ remet `STAGIAIRE` (même règle que les autres champs : le PUT remplace tout). Le rattachement d'un fichier à son type reste par le nom de fichier (G33) ; `documentTypeId` sur le dépôt reste à demander.
 - **Lien avec** : G35 de `decisions-documents.md` ; change front `formation-detail-tabs`.
 
-### 2026-11-23 — Bouton « Envoyer un retour » : `POST /api/feedback` (poussé, PR #29)
+### 2026-11-23 — Bouton « Envoyer un retour » : `POST /api/feedback` (mergé le 2026-11-24, PR #29)
 
 - **Branche et commits** (clone `back-readonly`, depuis `origin/dev` `d43d4c9`) : `feature/feedback`, `887006e` (validation de la capture + limiteur), `a409d60` (email de retour), `8a5972d` (endpoint), `93b507b` (`tech.md`). **Poussée** le 2026-11-23 (`origin/feature/feedback`), PR #29 vers `dev` ouverte le 2026-11-23. Mergée dans `local/integration` (`e3fa88c`, conflit trivial dans `JwtAuthenticationIntegrationTest` : les deux tests 401 gardés) pour le back local.
 - **Quoi et pourquoi** (décisions U1–U15 de Manon, `docs/decisions/decisions-feedback.md`, change OpenSpec `client-feedback`) : la chargée de formation et les formateurs signalent un bug ou une suggestion depuis l'en-tête du portail. Le back reçoit un formulaire multipart et envoie un email au développeur (`Reply-To` = l'auteur, capture en pièce jointe), **sans rien stocker**. Identité et rôle viennent de la session, jamais du formulaire.
@@ -35,7 +35,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : (1) **déploiement (à toi, Q18)** : ajouter `FEEDBACK_RECIPIENT` à l'env de prod **et** à la liste `environment:` du service `backend` dans `docker-compose.yml` (le compose passe chaque variable explicitement) ; tant qu'elle est vide, chaque envoi répond `503` et le démarrage n'échoue pas ; (2) la limite de 10 retours par heure est en mémoire (remise à zéro au redémarrage, une seule instance) ; (3) envoi synchrone : la requête attend le SMTP ; (4) Brevo : un envoi réel avec une image de ~3 Mo reste à faire avant la livraison ; (5) **hors ticket, préexistant sur `origin/dev`** : `NotificationRepositoryTest.bellQueryOrdersMostRecentFirst` échoue au hasard (2 fois sur 3 en local) — trois notifications enregistrées dans la même milliseconde ont le même `createdAt`, l'ordre n'est donc pas garanti ; suggestion : départager par `id` dans la requête ou espacer les `createdAt` dans le test.
 - **Lien avec** : Q18 de `points-pour-charlotte.md`.
 
-### 2026-11-23 — Inscriptions : stagiaire jamais activé, désinscription avec ses documents, formation archivée (TICKET-053, poussé, PR #30)
+### 2026-11-23 — Inscriptions : stagiaire jamais activé, désinscription avec ses documents, formation archivée (TICKET-053, mergé le 2026-11-24, PR #30)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `d43d4c9`) : `feature/formation-inscriptions`, `6cab382` puis `cc039e2` (J10). **Poussée** le 2026-11-23, PR #30 vers `dev`. Mergée dans `local/integration` (`7f1ee77`, puis `b052c37`) pour le back local.
 - **Quoi et pourquoi** (décisions J2, J6, J7 et J10 de Manon, `docs/decisions/decisions-inscriptions.md`) : la chargée de formation inscrit un stagiaire **dès la création de son compte**, et le désinscrit depuis sa page ou celle de la formation. (1) `POST /formations/{id}/inscriptions` refusait tout compte inactif (`404`) : or un compte créé reste inactif jusqu'à son activation, il était donc impossible à inscrire. Un compte **jamais activé** est maintenant accepté ; un compte **suspendu** (inactif après une activation, `hasEverActivated`) reste refusé. (2) `DELETE …/inscriptions/{stagiaireId}` finissait en `500` dès que l'inscription avait un document (clé étrangère `documents_inscription_id_fkey`, reproduite sur base réelle) : il supprime maintenant les documents de l'inscription, puis l'inscription, puis les fichiers du stockage (échec journalisé). (3) La désinscription répond `409 « Formation archivée, désinscription impossible »` sur une formation archivée, comme la suppression d'un document. (4) **J10, `cc039e2`** : `POST /users/stagiaires` avec des `formationIds` répond `400 « Formation archivée, inscription impossible »` si l'une d'elles est archivée, et **rien n'est créé** (ni compte, ni inscription, ni email) ; avant, le compte était créé et inscrit à la formation archivée.
@@ -44,7 +44,7 @@ Une entrée par changement, la plus récente en haut :
 - **Contrat** : `tech.md` mis à jour (règles du `POST` et du `DELETE`, et `400` de `POST /users/stagiaires`). Aucun champ ni chemin modifié.
 - **À vérifier / risques** : (1) **la désinscription supprime définitivement des documents, qui peuvent être des preuves Qualiopi** : choix de Manon pour pouvoir corriger une inscription faite par erreur (le front annonce la perte dans la confirmation) ; à confirmer avec toi ; (2) un fichier qui ne se supprime pas du stockage reste orphelin ; (3) un compte désactivé par la chargée **avant** sa première activation reste inscriptible (même définition que `activated`) ; (4) relecture manuelle, `review-code` absent de la session. Suggestion hors ticket : `deleteDocument` envoie au stockage un chemin vide pour une ligne antérieure à V5.
 
-### 2026-11-21 — Dépôt de document sur une inscription : 500 corrigé (poussé, PR #28)
+### 2026-11-21 — Dépôt de document sur une inscription : 500 corrigé (mergé le 2026-11-24, PR #28)
 
 - **Branche et commit** (worktree `back-fix-upload` du clone, depuis `origin/dev` `d43d4c9`) : `fix/document-upload-lazy-formation`, `6e7b490`. Poussée, PR #28. Mergée dans `local/integration` pour le back local.
 - **Quoi et pourquoi** : tout dépôt sur une **inscription** (le stagiaire sur la sienne, la chargée pour un stagiaire) répondait `500` (« erreur interne du serveur »). Le contrôle « formation archivée » ajouté par `80a8c54` (2026-11-19) lit `inscription.getFormation().getStatus()` ; `uploadDocument` n'est pas transactionnel (envoi Supabase puis enregistrement avec compensation) et `open-in-view` est à `false`, donc le proxy paresseux de la formation ne peut pas se charger (`LazyInitializationException`). Le dépôt sur une **formation** n'était pas touché. La formation est maintenant relue par `formationRepository.findById` avant le contrôle.
@@ -53,7 +53,7 @@ Une entrée par changement, la plus récente en haut :
 - **Contrat** : inchangé, `tech.md` non modifié.
 - **À vérifier / risques** : une requête de plus par dépôt sur inscription ; l'alternative serait une requête `join fetch` dans `InscriptionRepository`. Les tests unitaires mockent les dépôts, d'où un test d'intégration pour ce chemin.
 
-### 2026-11-21 — Types de document : plus d'« obligatoire / facultatif », liste des types d'une formation (TICKET-052, prêt à relire, complète l'entrée du 2026-11-20)
+### 2026-11-21 — Types de document : plus d'« obligatoire / facultatif », liste des types d'une formation (TICKET-052, mergé le 2026-11-24 avec la PR #27, complète l'entrée du 2026-11-20)
 
 - **Branche et commits** (clone `back-readonly`) : `feature/document-types`, `588f217` (retrait de `isRequired`) et `86f3156` (nouvel endpoint). Complète la PR #27 déjà ouverte ; rien de poussé depuis.
 - **Quoi et pourquoi** : décision de Manon le 2026-11-21 : il n'y a pas d'« obligatoire / facultatif ». Tout type actif qui s'applique à une formation est une pièce à envoyer ; le stagiaire peut envoyer d'autres fichiers en plus. Il faut donc (1) retirer `isRequired` et (2) laisser le stagiaire lire la liste de sa formation (il recevait `403` sur tout `/api/document-types`).
@@ -63,7 +63,7 @@ Une entrée par changement, la plus récente en haut :
 - **À vérifier / risques** : (1) **V6 modifiée en place** : toute base où V6 est déjà appliquée (la base locale de Manon, par exemple) échoue à la validation Flyway (somme de contrôle) ; pour elle, `flyway repair` + `ALTER TABLE document_types DROP COLUMN is_required` ou repartir d'une base vide ; (2) **qui voit quoi** : le stagiaire et le formateur lisent maintenant les types (nom, aide, délai, formats, `isSensitive`) de leurs formations, décision de Manon ; (3) rien ne relie encore un fichier déposé à un type : le front le fait en préfixant le nom du fichier du nom du type (tranche suivante : champ `documentTypeId` sur le dépôt).
 - **Lien avec** : G19 à G32 de `decisions-documents.md` ; change front `document-types-catalogue`.
 
-### 2026-11-20 — Catalogue des types de document : `/api/document-types` (TICKET-052, prêt à relire)
+### 2026-11-20 — Catalogue des types de document : `/api/document-types` (TICKET-052, mergé le 2026-11-24, PR #27)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev`) : `feature/document-types`, dernier commit `1d4ef38` (10 commits avec la fusion de `dev`), poussée, PR #27. Pas poussée. **Indépendante** des trois autres branches (#23 à #25) : elle ne touche ni `MessageServiceImpl` ni `UserServiceImpl`.
 - **Quoi et pourquoi** : première tranche de la checklist des documents (décisions G19 à G32 de `decisions-documents.md`). La chargée de formation définit les pièces attendues des stagiaires : nom, texte d'aide, obligatoire ou facultatif, sensible, portée (toutes les formations ou une ou plusieurs catégories), délai relatif (N jours avant le début ou après la fin) et formats acceptés. Un type se désactive, jamais ne se supprime. Cette tranche ne relie pas encore les documents déposés à un type.
