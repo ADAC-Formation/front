@@ -16,7 +16,7 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
-### 2026-11-24 — Dépôt d'un fichier dont le nom a un accent : « Service de stockage indisponible » corrigé (poussé, PR #31)
+### 2026-11-24 — Dépôt d'un fichier dont le nom a un accent : « Service de stockage indisponible » corrigé (mergé le 2026-11-24, PR #31)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `82e74d6`) : `fix/storage-key-accents`, `d540767`. Poussée le 2026-11-24, PR #31 vers `dev`.
 - **Quoi et pourquoi** : constaté par Manon sur le back local : « CV à jour - perfil profesional.docx » est refusé avec `502 « Service de stockage indisponible »`. La cause n'est pas le stockage : Supabase refuse une clé d'objet qui contient un accent (`400 InvalidKey`), et le back mettait le nom d'origine dans la clé. Tout fichier au nom accentué échouait, et **tout dépôt depuis un créneau** dont le type a un accent (« Pièce d'identité - … », G33), quel que soit le fichier.
