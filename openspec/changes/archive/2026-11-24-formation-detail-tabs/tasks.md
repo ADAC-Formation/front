@@ -25,7 +25,7 @@ Front seul, branche `feature/formation-detail-tabs` créée depuis `dev`. TDD : 
 
 - [x] 5.1 RED : mettre à jour `FormationDetailPage.test.jsx` : bloc d'informations et « Modifier »/« Archiver » avant la barre ; chargée/formateur → trois onglets, « Liste stagiaires » par défaut avec « X/Y documents reçus » ; « Inscrire des stagiaires »/« Désinscrire » seulement dans cet onglet et jamais sur une formation archivée ; « Documents ADAC » → liste et dépôt ; stagiaire → deux onglets, « Documents ADAC » par défaut, aucun appel aux inscriptions ; onglet conservé après un dépôt et après une désinscription (le bloc disparaît des deux onglets) ; erreur des inscrits dans l'onglet ; jest-axe pour chaque rôle. Vérifier RED
 - [x] 5.2 GREEN : extraire `InscritsSection` vers `src/features/formations/components/InscritsPanel.jsx` (comptes à la place de `SentDocuments`) ; prop `titleClassName` sur `DocumentSection` et `MyDocumentsSection` (titre masqué visuellement dans l'onglet) ; composer la page avec `Tabs`. Vérifier les tests de la page et ceux de `router/` (`single-main`, `back-links`) verts
-- [ ] 5.3 Mise en page : `FormationPages.module.css` (barre sous les informations, panneaux espacés comme les sections), passage visuel à 375 px, 768 px et en bureau, en mode sombre et en contraste élevé (vérifié à l'écran)
+- [x] 5.3 Mise en page : `FormationPages.module.css` (barre sous les informations, panneaux espacés comme les sections), passage visuel à 375 px, 768 px et en bureau, en mode sombre et en contraste élevé (vérifié à l'écran)
 
 ## 6. Docs et décisions
 
@@ -35,8 +35,8 @@ Front seul, branche `feature/formation-detail-tabs` créée depuis `dev`. TDD : 
 ## 7. Vérification
 
 - [x] 7.1 `npm run check` vert (lint, tests, build, budget du bundle)
-- [ ] 7.2 Passage manuel sur le vrai back local avec les trois rôles : comptes cohérents avec les dépôts, inscription et désinscription, dépôt d'un document ADAC et d'un document stagiaire, navigation au clavier dans la barre
-- [ ] 7.3 Commit(s) en Conventional Commits sur `feature/formation-detail-tabs`, fusion en avance rapide dans `dev` ; pousser seulement sur demande de Manon
+- [x] 7.2 Passage manuel sur le vrai back local avec les trois rôles : comptes cohérents avec les dépôts, inscription et désinscription, dépôt d'un document ADAC et d'un document stagiaire, navigation au clavier dans la barre
+- [x] 7.3 Commit(s) en Conventional Commits sur `feature/formation-detail-tabs`, fusion en avance rapide dans `dev` ; pousser seulement sur demande de Manon (fusionné et poussé le 2026-11-24, branche locale supprimée)
 
 ## 8. Ajouts du 2026-11-23 (après un premier essai)
 
@@ -44,7 +44,7 @@ Front seul, branche `feature/formation-detail-tabs` créée depuis `dev`. TDD : 
 - [x] 8.2 Back (plan validé par Manon) : `providedBy` sur `feature/document-types` en TDD (V7, enum, DTO, service), docs du back, `mvn test` 698 verts, commit `a9c8855`, fusion dans `local/integration` (`58bd39c`), back local reconstruit (V7 appliquée)
 - [x] 8.3 Front : « Fourni par » dans le formulaire et la liste du catalogue, `typesProvidedBy`, exclusion des types `ADAC` du compte et de « Mes documents », créneaux `ADAC` dans « Documents ADAC ». Tests RED puis verts
 - [x] 8.4 Docs : G35 et précision sous G34, `changements-back.md`, `etat-front.md`, `CLAUDE.md`, specs de ce change
-- [ ] 8.5 Passage manuel : passer un type en « L'ADAC » dans Gestion > Documents, vérifier les créneaux, le compte et « Mes documents »
+- [x] 8.5 Passage manuel : passer un type en « L'ADAC » dans Gestion > Documents, vérifier les créneaux, le compte et « Mes documents »
 
 ## Workflow follow-up
 

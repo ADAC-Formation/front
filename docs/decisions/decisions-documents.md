@@ -258,6 +258,7 @@ Suite du thème : mêmes composants et règles de fichier que 027 (G4), dépôt 
 - **Alternatives écartées** : dépliant par inscrit dans la liste (G29) ; tableau stagiaires × types (déjà écarté en G29) ; détail groupé par type ; nombre brut de fichiers sans total ; pour le stagiaire, garder les sections empilées.
 - **Hors périmètre** : « En retard » et « Non applicable » (tranche 2, G25/G28), types sensibles (G24), onglet dans l'URL.
 - **Précision du 2026-11-23** (Manon, après un premier essai) : dans « Documents stagiaires », chaque bloc est **replié à l'arrivée** (`<details>` natif) ; la ligne montre le nom et le compte, avec une bordure rouge tant qu'il manque une pièce, verte quand tout est reçu ; un clic déplie les types.
+- **Passage manuel (tâches 5.3, 7.2 et 8.5, 2026-11-24)** : vérifié par Manon sur le back local à jour de `dev` (PR #27 à #31 mergées) : mise en page à 375 px, 768 px et en bureau, mode sombre et contraste élevé ; les trois rôles (comptes, inscription et désinscription, dépôt d'un document ADAC et d'un document stagiaire, clavier dans la barre) ; un type passé en « L'ADAC » (créneaux, compte, « Mes documents »). Le passage a révélé qu'un nom de fichier accentué était refusé par le stockage, d'où la PR #31 du back.
 
 ## G35 — Un type de document dit qui le fournit : le stagiaire ou l'ADAC
 - Date : 2026-11-23 · demande de Manon, change `formation-detail-tabs`.
