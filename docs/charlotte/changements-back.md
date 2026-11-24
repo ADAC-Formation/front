@@ -16,6 +16,15 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-24 — Dépôt d'un fichier dont le nom a un accent : « Service de stockage indisponible » corrigé (prêt à relire)
+
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `82e74d6`) : `fix/storage-key-accents`, `d540767`. Pas poussée.
+- **Quoi et pourquoi** : constaté par Manon sur le back local : « CV à jour - perfil profesional.docx » est refusé avec `502 « Service de stockage indisponible »`. La cause n'est pas le stockage : Supabase refuse une clé d'objet qui contient un accent (`400 InvalidKey`), et le back mettait le nom d'origine dans la clé. Tout fichier au nom accentué échouait, et **tout dépôt depuis un créneau** dont le type a un accent (« Pièce d'identité - … », G33), quel que soit le fichier.
+- **Fichiers touchés** : `utils/StorageKeys.java` (nouveau : nom sûr pour une clé, accents retirés, ligatures `œ`/`æ` écrites en deux lettres, autres caractères remplacés par `_`, 120 caractères au plus avec l'extension), `DocumentServiceImpl` (clés `formations/…` et `inscriptions/…`), `AGENT_HANDOFF.md`. Tests : `StorageKeysTest` (nouveau, 18), `DocumentServiceImplTest` (+2 : clé sûre et nom d'origine gardé, pour une inscription et pour une formation). `mvn test` : 735 tests, tous verts.
+- **Contrat** : inchangé. Le nom affiché (`fileName`) reste celui d'origine ; seule la clé de stockage, jamais exposée, change. Pas de migration ; les fichiers déjà stockés gardent leur clé.
+- **À vérifier / risques** : aucun connu. Au passage, une barre oblique dans un nom de fichier ne peut plus créer de sous-dossier dans la clé. Le `502` reste peu parlant quand Supabase refuse une requête (point de la carte #62) : ce bug en est un exemple.
+- **Lien avec** : G33 (rattachement par le nom « <type> - <fichier> ») ; carte #62.
+
 ### 2026-11-23 — Types de document : qui les fournit, le stagiaire ou l'ADAC (`providedBy`, TICKET-052, mergé le 2026-11-24, PR #27)
 
 - **Branche et commit** (clone `back-readonly`) : `feature/document-types`, `a9c8855`, poussé le 2026-11-24 (`origin/feature/document-types`, PR #27). Mergée dans `local/integration` (`58bd39c`, conflit d'ajout en fin de `AGENT_HANDOFF.md` : les deux rapports gardés) pour le back local, V7 appliquée sur la base de dev.
