@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { MessageSquareWarning } from 'lucide-react'
-import { IconButton } from '../../../components/atoms/IconButton/IconButton'
 import { ROLES } from '../../../utils/roles'
 import { useCurrentUser } from '../../auth/hooks'
 import FeedbackDialog from './FeedbackDialog'
@@ -34,9 +33,10 @@ export function FeedbackButton() {
 
   return (
     <div className={styles.wrapper}>
-      <IconButton type="button" aria-label="Envoyer un retour" aria-haspopup="dialog" onClick={() => setIsOpen(true)}>
+      <button type="button" className={styles.button} aria-haspopup="dialog" onClick={() => setIsOpen(true)}>
         <MessageSquareWarning aria-hidden="true" />
-      </IconButton>
+        <span className={styles.label}>Envoyer un retour</span>
+      </button>
       <p role="status" className={thanks ? styles.thanks : styles.empty}>
         {thanks}
       </p>

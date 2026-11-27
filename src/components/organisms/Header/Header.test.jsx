@@ -35,47 +35,26 @@ describe('SiteHeader — cloche de notifications', () => {
   })
 })
 
-describe('SiteHeader — bouton de retour', () => {
-  it('place « Envoyer un retour » juste avant la cloche pour la chargée de formation', async () => {
-    mockSession('SUPER_ADMIN')
-    mockNotificationApi()
-    renderWithProviders(<SiteHeader />, { withSession: true })
-
-    const feedback = await screen.findByRole('button', { name: 'Envoyer un retour' })
-    const bell = await screen.findByRole('button', { name: /Notifications/ })
-    const buttons = screen.getAllByRole('button')
-    expect(buttons.indexOf(feedback)).toBe(buttons.indexOf(bell) - 1)
-  })
-
-  it('n’affiche pas le bouton de retour pour un stagiaire', async () => {
-    mockSession('STAGIAIRE')
-    mockNotificationApi()
-    renderWithProviders(<SiteHeader />, { withSession: true })
-    await screen.findByRole('button', { name: /Notifications/ })
-    expect(screen.queryByRole('button', { name: 'Envoyer un retour' })).not.toBeInTheDocument()
-  })
-})
-
-describe('SiteHeader — nom de l’utilisateur', () => {
-  it.each([
-    ['SUPER_ADMIN', 'Chargée Dev', 'Chargée de formation'],
-    ['ADMIN', 'Formateur Dev', 'Formateur'],
-    ['STAGIAIRE', 'Stagiaire Dev', 'Stagiaire'],
-  ])('affiche le nom et le rôle de %s sous le bandeau, avec un lien vers le profil', async (role, name, label) => {
+// D67 (suite) : le nom va sur l'accueil, « Envoyer un retour » en bas à droite de la page.
+describe('SiteHeader — contenu de la rangée', () => {
+  it.each(['SUPER_ADMIN', 'ADMIN', 'STAGIAIRE'])('n’affiche plus ni le nom ni « Envoyer un retour » pour %s', async (role) => {
     mockSession(role)
     mockNotificationApi()
     renderWithProviders(<SiteHeader />, { withSession: true })
-    const link = await screen.findByRole('link', { name: new RegExp(`${name}`) })
-    expect(link).toHaveAttribute('href', '/profile')
-    expect(link).toHaveTextContent(label)
+    await screen.findByRole('button', { name: /Notifications/ })
+    expect(screen.queryByRole('link', { name: /Dev/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Envoyer un retour' })).not.toBeInTheDocument()
   })
 
-  it('n’affiche aucun nom pour un visiteur', async () => {
-    mockNoSession()
+  it('garde déconnexion, cloche, mode sombre et accessibilité, dans cet ordre', async () => {
+    mockSession('SUPER_ADMIN')
     mockNotificationApi()
-    renderWithProviders(<SiteHeader />, { withSession: true, route: '/login' })
-    await settle()
-    expect(screen.queryByRole('link', { name: /Dev/ })).not.toBeInTheDocument()
+    renderWithProviders(<SiteHeader />, { withSession: true })
+    await screen.findByRole('button', { name: /Notifications/ })
+    const names = screen.getAllByRole('button').map((button) => button.getAttribute('aria-label') ?? button.textContent)
+    expect(names[0]).toBe('Se déconnecter')
+    expect(names[1]).toMatch(/^Notifications/)
+    expect(names.at(-1)).toBe("Options d'accessibilité")
   })
 })
 
@@ -139,7 +118,7 @@ describe('SiteHeader — bulle au défilement (NOTES-35)', () => {
     expect(bubble()).toHaveAttribute('aria-expanded', 'true')
     expect(row()).not.toHaveAttribute('inert')
     expect(bubble()).toHaveAttribute('aria-controls', row().id)
-    expect(within(row()).getByRole('link', { name: /Chargée Dev/ })).toBeInTheDocument()
+    expect(within(row()).getByRole('button', { name: /^Notifications/ })).toBeInTheDocument()
   })
 
   it('reste déroulée pendant le défilement', async () => {
@@ -198,12 +177,11 @@ describe('SiteHeader — bulle au défilement (NOTES-35)', () => {
     expect(bubble()).toHaveAttribute('aria-expanded', 'false')
   })
 
-  it('Échap ne replie pas la rangée quand la boîte « Envoyer un retour » est ouverte', async () => {
+  it('Échap ne replie pas la rangée quand le panneau des notifications est ouvert', async () => {
     await renderHeader()
     await scrollPageTo(400)
     await userEvent.click(bubble())
-    await userEvent.click(screen.getByRole('button', { name: 'Envoyer un retour' }))
-    await screen.findByRole('dialog')
+    await userEvent.click(screen.getByRole('button', { name: /^Notifications/ }))
     await userEvent.keyboard('{Escape}')
     expect(row()).not.toHaveAttribute('inert')
   })

@@ -5,7 +5,7 @@ import { useCurrentUser } from "../../../features/auth/hooks";
 const HomeRoute = () => {
   const { user } = useCurrentUser();
 
-  return <HomePage role={user?.role} />;
+  return <HomePage role={user?.role} prenom={user?.prenom} />;
 };
 
 export default HomeRoute;

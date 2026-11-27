@@ -10,3 +10,11 @@
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
+
+/* Sous 640 px, le bouton rond « Envoyer un retour » (en bas à droite) recouvrait le lien : on garde sa
+   hauteur et sa marge sous le lien (D67, suite). */
+@media (max-width: 639px) {
+  .footer {
+    padding-bottom: 5rem;
+  }
+}

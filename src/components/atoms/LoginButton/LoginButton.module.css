@@ -41,10 +41,9 @@
   white-space: nowrap;
 }
 
-/* NOTES-31 (D67) : l'icône seule ; le libellé se déplie au focus clavier et au survol. Sous 1300 px la rangée n’a
-   pas la place : déplié, il élargissait le fond plein jusque sur le logo (mesuré jusqu’à 1250 px, D67) et sortait
-   de l’écran à 390 px. L’icône reste seule, le nom accessible ne change pas. */
-@media (min-width: 1300px) {
+/* NOTES-31 (D67) : l'icône seule ; le libellé se déplie au focus clavier et au survol. Sous 640 px la rangée n’a
+   pas la place (à 390 px il sortait de l’écran, D67) : l’icône reste seule, le nom accessible ne change pas. */
+@media (min-width: 640px) {
   .button:focus-visible .label {
     position: static;
     width: auto;
@@ -56,7 +55,7 @@
 }
 
 /* Survol : seulement sur un appareil qui sait survoler (sur écran tactile, il resterait collé après un appui). */
-@media (min-width: 1300px) and (hover: hover) {
+@media (min-width: 640px) and (hover: hover) {
   .button:hover .label {
     position: static;
     width: auto;

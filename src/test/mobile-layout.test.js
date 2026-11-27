@@ -31,15 +31,14 @@ describe('bouton de session (LoginButton)', () => {
     expect(css).not.toMatch(/min-width:\s*1150px/)
   })
 
-  // Mesuré (D67) : déplié, le libellé élargit le fond plein de la rangée, qui recouvrait le haut du logo jusqu’à
-  // 1250 px (et sortait de l’écran à 390 px). Sous 1300 px, l’icône seule ;
-  // le survol seulement sur un appareil qui sait survoler.
-  it('ne déplie le libellé qu’à partir de 1300 px, et au survol seulement sur un appareil qui survole', () => {
+  // Mesuré (D67) : à 390 px le libellé déplié sortait de l'écran ; dès 640 px il tient, sans toucher le logo
+  // (rangée sans nom ni bouton de retour). Le survol seulement sur un appareil qui sait survoler.
+  it('ne déplie le libellé qu’à partir de 640 px, et au survol seulement sur un appareil qui survole', () => {
     const css = sheet(file)
     const outsideMedia = css.replace(/@media[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, '')
     expect(outsideMedia).not.toMatch(/\.button:(hover|focus-visible)\s+\.label/)
-    expect(css).toMatch(/@media\s*\(min-width:\s*1300px\)\s*\{[^@]*\.button:focus-visible\s+\.label/)
-    expect(css).toMatch(/@media\s*\(min-width:\s*1300px\)\s*and\s*\(hover:\s*hover\)\s*\{[^@]*\.button:hover\s+\.label/)
+    expect(css).toMatch(/@media\s*\(min-width:\s*640px\)\s*\{[^@]*\.button:focus-visible\s+\.label/)
+    expect(css).toMatch(/@media\s*\(min-width:\s*640px\)\s*and\s*\(hover:\s*hover\)\s*\{[^@]*\.button:hover\s+\.label/)
   })
 })
 

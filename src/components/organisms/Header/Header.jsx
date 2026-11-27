@@ -3,9 +3,7 @@ import { Menu, X } from "lucide-react";
 import { LoginButton } from "../../atoms/LoginButton/LoginButton";
 import { ThemeToggle } from "../../molecules/DarkMode/DarkMode";
 import { AccessibilityMenu } from "../../molecules/Accessibility/Accessibility";
-import { CurrentUser } from "../../molecules/CurrentUser/CurrentUser";
 import { NotificationBell } from "../../../features/notifications/components/NotificationBell";
-import { FeedbackButton } from "../../../features/feedback/components/FeedbackButton";
 import { useCurrentUser } from "../../../features/auth/hooks";
 import { useUnreadNotifications } from "../../../features/notifications/hooks";
 import { useHeaderCollapse } from "./useHeaderCollapse";
@@ -18,7 +16,7 @@ function bubbleLabel(unread) {
   return `Menu de l'en-tête, ${unread} notification${unread > 1 ? "s" : ""} non lue${unread > 1 ? "s" : ""}`;
 }
 
-// Un panneau ou une boîte ouverts depuis la rangée gèrent eux-mêmes Échap : la rangée attend qu'ils soient fermés.
+// Un panneau ouvert depuis la rangée gère lui-même Échap : la rangée attend qu'ils soient fermés.
 const hasOpenChild = (row) => Boolean(row?.querySelector('[aria-expanded="true"], [role="dialog"]'));
 
 // Bulle ≡ affichée une fois la page défilée sur ordinateur (D67) : elle porte la pastille des non lues et
@@ -48,10 +46,11 @@ function HeaderBubble({ isExpanded, rowId, onToggle, buttonRef }) {
   );
 }
 
-// En-tête du site. Téléphone et tablette : en haut de la page, il défile avec elle. Ordinateur : fixé en haut
+// En-tête du site : déconnexion, cloche, mode sombre, accessibilité. Le nom de la personne est sur l'accueil et
+// « Envoyer un retour » en bas à droite (gabarit). Téléphone et tablette : en haut de la page, il défile avec elle. Ordinateur : fixé en haut
 // à droite ; dès que la page a défilé, la rangée se rassemble dans une bulle qui la déroule au clic. Elle se
 // replie sur Échap, au clic ailleurs ou en revenant en haut ; elle reste déroulée tant que le focus y est
-// (une boîte ouverte depuis la rangée ne doit jamais devenir inerte).
+// (un panneau ouvert depuis la rangée ne doit jamais devenir inerte).
 export function SiteHeader() {
   const collapsed = useHeaderCollapse();
   const [isOpen, setIsOpen] = useState(false);
@@ -120,14 +119,10 @@ export function SiteHeader() {
         onFocus={() => setHasFocusWithin(true)}
         onBlur={onRowBlur}
       >
-        <div className={styles.inner}>
-          <LoginButton />
-          <FeedbackButton />
-          <NotificationBell />
-          <ThemeToggle />
-          <AccessibilityMenu />
-        </div>
-        <CurrentUser />
+        <LoginButton />
+        <NotificationBell />
+        <ThemeToggle />
+        <AccessibilityMenu />
       </div>
       {collapsed && (
         <HeaderBubble

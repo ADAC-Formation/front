@@ -24,6 +24,22 @@ describe('HomePage', () => {
     expect(names).toEqual(expect.arrayContaining(['Messages', 'Notifications', 'Profile']))
   })
 
+  // D67 (suite) : le nom de la personne connectée quitte l'en-tête pour l'accueil.
+  it.each([
+    ['SUPER_ADMIN', 'Chargée', 'Chargée de formation'],
+    ['ADMIN', 'Claire', 'Formateur'],
+    ['STAGIAIRE', 'Léa', 'Stagiaire'],
+  ])('salue %s par son prénom, avec son rôle sous le titre', (role, prenom, roleLabel) => {
+    renderWithProviders(<HomePage role={role} prenom={prenom} />)
+    expect(screen.getByRole('heading', { level: 1, name: `Bonjour ${prenom}` })).toBeInTheDocument()
+    expect(screen.getByText(roleLabel)).toBeInTheDocument()
+  })
+
+  it('garde un titre de page sans prénom connu', () => {
+    renderWithProviders(<HomePage role="STAGIAIRE" />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Bonjour' })).toBeInTheDocument()
+  })
+
   it("n'a aucune violation d'accessibilité (jest-axe)", async () => {
     const { container } = renderWithProviders(<HomePage role="STAGIAIRE" />)
     expect(await axe(container)).toHaveNoViolations()

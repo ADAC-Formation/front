@@ -95,7 +95,7 @@ Base : `rem` / multiples de 4 px. Valeurs courantes observées :
 | Écart entre icônes d'en-tête | 0,375 rem (< 640 px) · 0,5 rem (≥ 640 px) |
 | Marge de l'en-tête | 1 rem (< 640 px) · 1,5 rem (≥ 640 px) |
 | Dégagement sous le logo (`--page-top`, `PageShell`) | `calc(6rem + 180px)` = 276 px (≥ 640 px) · `calc(5rem + 180px)` (≤ 639 px) — le logo est en position absolue, aucune page ne redéfinit ce dégagement (D57) |
-| Mise en page mobile (D61) | Tuiles Gestion : 3 colonnes à partir de 56 rem de conteneur, sinon une colonne statique (actions visibles) ; le survol n'existe qu'avec une souris. Accueil : grille `2fr 1fr` à partir de 40 rem de conteneur. Libellé « Se déconnecter » : icône seule, déplié au survol et au focus à partir de 1300 px (D67), nommé partout. Sous 768 px le logo (largeur `min(96vw, 420px)`, 66 vw plafonné à 580 px au-delà) passe sous la rangée d'icônes (`--header-row`, 4,5 rem) |
+| Mise en page mobile (D61) | Tuiles Gestion : 3 colonnes à partir de 56 rem de conteneur, sinon une colonne statique (actions visibles) ; le survol n'existe qu'avec une souris. Accueil : grille `2fr 1fr` à partir de 40 rem de conteneur. Libellé « Se déconnecter » : icône seule, déplié au survol et au focus à partir de 640 px (D67), nommé partout. Sous 768 px le logo (largeur `min(96vw, 420px)`, 66 vw plafonné à 580 px au-delà) passe sous la rangée d'icônes (`--header-row`, 4,5 rem) |
 | Marges latérales de page (`PageShell`) | 2,5 rem (≥ 1024 px) · 1,5 rem (≤ 1023 px) · 1 rem (≤ 639 px) ; contenu 80 rem au plus ; 3 rem en bas |
 | Padding interne d'une tuile | 32 px |
 | Hauteur d'un champ | 43 px |
@@ -147,7 +147,9 @@ Base : `rem` / multiples de 4 px. Valeurs courantes observées :
 - Libellé au-dessus du champ : écart `--label-gap` (0,625rem, NOTES-15), aussi dans `GroupFilters` et la recherche de `CheckboxPicker`
 
 ### En-tête (`organisms/Header`)
-- En haut à droite : déconnexion (icône seule, libellé au survol et au focus dès 1300 px), retour, cloche, mode sombre, accessibilité ; nom et rôle dessous
+- En haut à droite : déconnexion (icône seule, libellé au survol et au focus dès 640 px), cloche, mode sombre, accessibilité
+- Nom et rôle : salutation de l'accueil (« Bonjour <prénom> », rôle dessous), plus dans l'en-tête
+- « Envoyer un retour » : bouton rond de 3,25 rem fixé en bas à droite (chargée de formation, formateurs), libellé au survol et au focus (D67)
 - Ordinateur (≥ 1024 px) : fixé, sur un fond `--card` arrondi (30 px) ; une fois la page défilée, rassemblé dans une bulle ≡ de 3,25 rem avec la pastille des non lues, qui le déroule au clic (D67)
 - Téléphone et tablette : en haut de la page, il défile avec elle (D67)
 - Logo ADAC à gauche (réserve d'espace `--logo-space`)

@@ -2,6 +2,7 @@ import { Outlet, useNavigation } from "react-router";
 import { SiteHeader } from '../components/organisms/Header/Header';
 import { SiteFooter } from '../components/organisms/Footer/Footer';
 import Logo from '../components/atoms/Logo/Logo';
+import { FeedbackButton } from '../features/feedback/components/FeedbackButton';
 import styles from "./Layout.module.css"
 
 // Région annoncée aux lecteurs d'écran pendant le téléchargement d'une page : le routeur garde
@@ -26,6 +27,8 @@ const Layout = () => {
             <Outlet />
         </main>
         <SiteFooter />
+        {/* Bouton rond en bas à droite, chargée de formation et formateurs seulement (D67, suite). */}
+        <FeedbackButton />
     </div>
   )
 }
