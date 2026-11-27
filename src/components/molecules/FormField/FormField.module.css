@@ -1,7 +1,7 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 9px;
+  gap: var(--label-gap);
 }
 
 .label {

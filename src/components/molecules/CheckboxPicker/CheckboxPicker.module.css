@@ -26,7 +26,7 @@
   display: flex;
   flex: 1 1 14rem;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--label-gap);
 }
 
 .searchLabel {

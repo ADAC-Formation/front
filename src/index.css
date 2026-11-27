@@ -69,6 +69,8 @@ select {
   --page-top: calc(6rem + 180px);
   /* Rangée d'icônes de l'en-tête ; sous 640 px le logo passe dessous (D61). */
   --header-row: 4.5rem;
+  /* Espace entre un libellé et le champ placé dessous (NOTES-15). */
+  --label-gap: 0.625rem;
 
   /* Semantic UI colors */
   --background: oklch(0.9880 0.0040 91.62);
@@ -78,7 +80,8 @@ select {
   --card-foreground: oklch(0.2630 0.0115 225.65);
 
   --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.6699 0.0046 271.25);
+  /* Texte atténué : 5.1:1 sur le fond, 4.8:1 sur --muted (WCAG AA, NOTES-15 ; était 2.9:1). */
+  --muted-foreground: oklch(0.53 0.0046 271.25);
 
   --border: oklch(0.929 0.013 255.508);
 

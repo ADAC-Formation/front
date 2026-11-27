@@ -42,7 +42,7 @@ les couleurs supplémentaires (bleu, violet, orange doux, vert) servent aux cat�
 | `--background` | `oklch(0.988 0.004 91.62)` | Fond de page (blanc cassé chaud) |
 | `--foreground` | `oklch(0.263 0.0115 225.65)` | Texte principal (quasi-noir ADAC) |
 | `--card` / `--card-foreground` | `oklch(1 0 0)` / `--foreground` | Cartes, panneaux, champs |
-| `--muted` / `--muted-foreground` | `oklch(0.968 0.007 247.9)` / `oklch(0.67 0.005 271)` | Fonds et textes secondaires |
+| `--muted` / `--muted-foreground` | `oklch(0.968 0.007 247.9)` / `oklch(0.53 0.005 271)` | Fonds et textes secondaires (texte ≥ 4.5:1 sur tous les fonds clairs, NOTES-15) |
 | `--border` | `oklch(0.929 0.013 255.5)` | Bordures, séparateurs |
 | `--accent` | `--color-yellow` | Accent |
 | `--ring` | `--foreground` | Anneau de focus |
@@ -144,6 +144,7 @@ Base : `rem` / multiples de 4 px. Valeurs courantes observées :
 ### Champ de formulaire (`atoms/FormInput`, `molecules/FormField`)
 - Hauteur 43 px, bordure `--border`, rayon 14 px, fond `--card`
 - Focus : bordure `--ring` · Placeholder : `--muted-foreground`
+- Libellé au-dessus du champ : écart `--label-gap` (0,625rem, NOTES-15), aussi dans `GroupFilters` et la recherche de `CheckboxPicker`
 
 ### En-tête (`organisms/Header`)
 - Barre fixe en haut à droite : cloche (notifications), bascule mode sombre, menu d'accessibilité, déconnexion
