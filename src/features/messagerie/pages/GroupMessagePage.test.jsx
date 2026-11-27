@@ -49,9 +49,9 @@ describe('GroupMessagePage — structure', () => {
     expect(screen.getByRole('link', { name: 'Retour' })).toHaveAttribute('href', '/messages')
   })
 
-  it('propose les 3 filtres à la chargée de formation', async () => {
+  it('propose les 2 filtres à la chargée de formation', async () => {
     renderPage('SUPER_ADMIN')
-    expect(await screen.findAllByRole('radio')).toHaveLength(3)
+    expect(await screen.findAllByRole('radio')).toHaveLength(2)
     expect(screen.getByRole('radio', { name: 'Formation' })).toBeChecked()
   })
 
@@ -85,13 +85,10 @@ describe('GroupMessagePage — aperçu', () => {
     expect(screen.getByRole('button', { name: 'Envoyer à 2 destinataires' })).toBeInTheDocument()
   })
 
-  it('« Documents manquants » charge l\'aperçu sans autre paramètre', async () => {
-    const calls = mockGroupPreview(RECIPIENTS)
+  it('ne propose plus « Documents manquants » (NOTES-17)', async () => {
     renderPage()
-    await userEvent.click(await screen.findByRole('radio', { name: 'Documents manquants' }))
-    expect(await screen.findByText('Léa Petit')).toBeInTheDocument()
-    expect([...calls.searches[0].keys()]).toEqual(['filterType'])
-    expect(calls.searches[0].get('filterType')).toBe('MISSING_DOCS')
+    expect(await screen.findByRole('radio', { name: 'Formation' })).toBeInTheDocument()
+    expect(screen.queryByRole('radio', { name: 'Documents manquants' })).not.toBeInTheDocument()
   })
 
   it('« Sélection libre » charge l\'aperçu avec les personnes cochées', async () => {
@@ -256,13 +253,6 @@ describe('GroupMessagePage — décocher des destinataires (H20)', () => {
     await chooseFormation()
     expect(await screen.findByRole('checkbox', { name: 'Léa Petit' })).toBeChecked()
     expect(screen.getByRole('checkbox', { name: 'Marc Dubois' })).toBeChecked()
-  })
-
-  it('« Documents manquants » propose aussi les cases', async () => {
-    mockGroupPreview(RECIPIENTS)
-    renderPage()
-    await userEvent.click(await screen.findByRole('radio', { name: 'Documents manquants' }))
-    expect(await screen.findByRole('checkbox', { name: 'Léa Petit' })).toBeChecked()
   })
 
   it('décocher une personne baisse le décompte, le bouton et la confirmation', async () => {

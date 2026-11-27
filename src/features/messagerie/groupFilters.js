@@ -1,17 +1,17 @@
 import { ROLES } from '../../utils/roles'
 
 // Règles des filtres de la messagerie groupée (décisions H12 et H16), sans rendu ni appel réseau.
-// Contrat : back-readonly/docs/tech.md § 7 (`filter.type` = FORMATION | MISSING_DOCS | MANUAL).
+// Contrat : back-readonly/docs/tech.md § 7 (`filter.type` = FORMATION | MISSING_DOCS | MANUAL). Le front n'envoie plus
+// MISSING_DOCS : « Documents manquants » est retiré de la messagerie (NOTES-17), la relance passe par la formation.
 
 export const FILTER_TYPES = {
   FORMATION: 'FORMATION',
-  MISSING_DOCS: 'MISSING_DOCS',
   MANUAL: 'MANUAL',
 }
 
-// Chargée de formation : les trois filtres ; formateur : « Formation » seulement ; stagiaire : aucun.
+// Chargée de formation : « Formation » et « Sélection libre » ; formateur : « Formation » seulement ; stagiaire : aucun.
 export function filterTypesFor(role) {
-  if (role === ROLES.SUPER_ADMIN) return [FILTER_TYPES.FORMATION, FILTER_TYPES.MISSING_DOCS, FILTER_TYPES.MANUAL]
+  if (role === ROLES.SUPER_ADMIN) return [FILTER_TYPES.FORMATION, FILTER_TYPES.MANUAL]
   if (role === ROLES.ADMIN) return [FILTER_TYPES.FORMATION]
   return []
 }
@@ -31,8 +31,6 @@ export function isFilterComplete(filter) {
       return hasFormation(filter)
     case FILTER_TYPES.MANUAL:
       return (filter.userIds?.length ?? 0) > 0
-    case FILTER_TYPES.MISSING_DOCS:
-      return true
     default:
       return false
   }

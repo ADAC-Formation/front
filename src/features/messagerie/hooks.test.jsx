@@ -384,15 +384,6 @@ describe('useGroupPreview', () => {
     expect([...calls.searches[0].keys()]).not.toContain('userIds[]')
   })
 
-  it('« Documents manquants » envoie seulement filterType', async () => {
-    const calls = mockGroupPreview()
-    const { result } = renderHook(() => useGroupPreview({ type: 'MISSING_DOCS' }), {
-      wrapper: wrapperWith(noRetryClient()),
-    })
-    await waitFor(() => expect(result.current.isSuccess).toBe(true))
-    expect([...calls.searches[0].keys()]).toEqual(['filterType'])
-  })
-
   it("ne redemande pas quand les mêmes personnes sont cochées dans un autre ordre", async () => {
     const calls = mockGroupPreview()
     const { result, rerender } = renderHook(({ filter }) => useGroupPreview(filter), {

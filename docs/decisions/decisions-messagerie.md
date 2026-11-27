@@ -149,4 +149,5 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 ## H21 — « Documents manquants » retiré du message groupé
 - **Date** : 2026-11-20 · demande de Manon pendant le grill de la checklist des documents (voir G26 de `decisions-documents.md`).
 - **Décision** : la chargée de formation n'a plus que les filtres « Formation » et « Sélection libre ». Le filtre `MISSING_DOCS` n'est plus proposé (H12), et sa mention dans l'aperçu décochable (H20) disparaît. Le suivi des pièces manquantes passera par un tableau de bord, hors messagerie.
-- **Pourquoi** : voir G26. Pas encore implémenté : H12 et H20 restent vrais jusqu'au changement de code.
+- **Pourquoi** : voir G26.
+- **Implémenté côté front le 2026-11-27** (NOTES-17, #88) : `MISSING_DOCS` retiré de `groupFilters.js` et de `GroupFilters`. Le back accepte encore ce type (Q19 de `points-pour-charlotte.md`).

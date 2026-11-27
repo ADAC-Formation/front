@@ -219,6 +219,11 @@ Côté back, rien n'empêche encore un stagiaire d'être sans e-mails : `EmailSe
 
 Proposition : (1) envoyer la notification au stagiaire quel que soit le champ (ou refuser `emailNotificationsEnabled` de `PATCH /users/me` pour le rôle STAGIAIRE) ; (2) remettre à `true` les stagiaires déjà à `false` (migration), si des comptes existent en production. À décider avec Manon (D66 : change ce que l'utilisateur reçoit, et la migration touche le schéma de données) : rien n'est codé côté back.
 
+### Q19 — Filtre `MISSING_DOCS` du message groupé : retiré du front, encore accepté par le back — nouveau, 2026-11-27
+Décision de Manon (G26, H21 ; NOTES-17) : le message groupé ne propose plus « Documents manquants ». Le front n'envoie plus `filterType=MISSING_DOCS` (aperçu) ni `filter.type: MISSING_DOCS` (envoi) ; il garde `FORMATION` et `MANUAL`.
+
+Côté back, le type existe toujours (`tech.md` §7) et reste utilisable par un appel direct. Le retirer casse un contrat existant (D66, cas 4) : rien n'est codé. À décider avec Manon : retirer le type du back et de `tech.md`, ou le garder inutilisé.
+
 ### Q18 — Bouton « Envoyer un retour » : variable `FEEDBACK_RECIPIENT` en prod — nouveau, 2026-11-23
 Décision de Manon (`docs/decisions/decisions-feedback.md`, U15) : la chargée de formation et les formateurs pourront envoyer un bug ou une suggestion depuis le header. Le back reçoit `POST /api/feedback` (branche `feature/feedback`, journal dans `changements-back.md`) et envoie un email via le mailer existant, sans rien stocker.
 

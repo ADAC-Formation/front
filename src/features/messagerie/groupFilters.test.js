@@ -11,12 +11,12 @@ import {
 } from './groupFilters'
 
 describe('filterTypesFor', () => {
-  it('propose les trois filtres à la chargée de formation', () => {
-    expect(filterTypesFor(ROLES.SUPER_ADMIN)).toEqual([
-      FILTER_TYPES.FORMATION,
-      FILTER_TYPES.MISSING_DOCS,
-      FILTER_TYPES.MANUAL,
-    ])
+  it('propose « Formation » et « Sélection libre » à la chargée de formation', () => {
+    expect(filterTypesFor(ROLES.SUPER_ADMIN)).toEqual([FILTER_TYPES.FORMATION, FILTER_TYPES.MANUAL])
+  })
+
+  it('ne connaît plus « Documents manquants » (retiré de la messagerie, NOTES-17)', () => {
+    expect(Object.keys(FILTER_TYPES)).toEqual(['FORMATION', 'MANUAL'])
   })
 
   it('ne propose que « Formation » au formateur', () => {
@@ -63,14 +63,11 @@ describe('isFilterComplete', () => {
     expect(isFilterComplete({ type: FILTER_TYPES.MANUAL, userIds: [4] })).toBe(true)
   })
 
-  it('« Documents manquants » est toujours complet', () => {
-    expect(isFilterComplete({ type: FILTER_TYPES.MISSING_DOCS })).toBe(true)
-  })
-
   it('un filtre absent ou de type inconnu est incomplet', () => {
     expect(isFilterComplete(undefined)).toBe(false)
     expect(isFilterComplete({})).toBe(false)
     expect(isFilterComplete({ type: 'AUTRE' })).toBe(false)
+    expect(isFilterComplete({ type: 'MISSING_DOCS' })).toBe(false)
   })
 })
 
@@ -79,12 +76,6 @@ describe('toPreviewParams', () => {
     expect(toPreviewParams({ type: FILTER_TYPES.FORMATION, formationId: '101' })).toEqual({
       filterType: 'FORMATION',
       formationId: 101,
-    })
-  })
-
-  it('« Documents manquants » envoie seulement filterType', () => {
-    expect(toPreviewParams({ type: FILTER_TYPES.MISSING_DOCS, formationId: '101', userIds: [4] })).toEqual({
-      filterType: 'MISSING_DOCS',
     })
   })
 
@@ -104,13 +95,6 @@ describe('toSendBody', () => {
     })
   })
 
-  it('« Documents manquants » : ni formationId ni userIds', () => {
-    expect(toSendBody({ type: FILTER_TYPES.MISSING_DOCS, formationId: '101', userIds: [4] }, 'Bonjour')).toEqual({
-      content: 'Bonjour',
-      filter: { type: 'MISSING_DOCS' },
-    })
-  })
-
   it('« Sélection libre » : userIds seulement, sans formationId', () => {
     expect(toSendBody({ type: FILTER_TYPES.FORMATION, formationId: '101', excludedUserIds: [4] }, 'Bonjour')).toEqual({
       content: 'Bonjour',
@@ -123,7 +107,7 @@ describe('toSendBody', () => {
   })
 
   it('conserve le texte tel quel, sans le rogner (H9)', () => {
-    const { content } = toSendBody({ type: FILTER_TYPES.MISSING_DOCS }, '  Bonjour\nà tous  ')
+    const { content } = toSendBody({ type: FILTER_TYPES.MANUAL, userIds: [4] }, '  Bonjour\nà tous  ')
     expect(content).toBe('  Bonjour\nà tous  ')
   })
 })

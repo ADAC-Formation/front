@@ -8,7 +8,6 @@ import styles from './GroupFilters.module.css'
 
 const TYPE_LABELS = {
   [FILTER_TYPES.FORMATION]: 'Formation',
-  [FILTER_TYPES.MISSING_DOCS]: 'Documents manquants',
   [FILTER_TYPES.MANUAL]: 'Sélection libre',
 }
 
@@ -52,7 +51,7 @@ const FormationSelect = ({ user, value, onChange }) => {
 
 // Choix des destinataires d'un message groupé (décisions H12, H14, H16, H17). Composant contrôlé :
 // `filter` = { type, formationId, userIds } et `onChange(nextFilter)`. Changer de type repart d'un filtre
-// vide (ni formation ni sélection d'un autre type). La chargée de formation a les trois types, le formateur
+// vide (ni formation ni sélection d'un autre type). La chargée de formation a « Formation » et « Sélection libre », le formateur
 // « Formation » seulement.
 const GroupFilters = ({ user, filter, onChange }) => {
   const titleId = useId()
@@ -85,12 +84,6 @@ const GroupFilters = ({ user, filter, onChange }) => {
           value={filter.formationId}
           onChange={(formationId) => onChange({ ...filter, formationId })}
         />
-      )}
-
-      {filter.type === FILTER_TYPES.MISSING_DOCS && (
-        <p className={styles.help}>
-          Stagiaires qui n'ont déposé aucun document, toutes formations confondues.
-        </p>
       )}
 
       {filter.type === FILTER_TYPES.MANUAL && (

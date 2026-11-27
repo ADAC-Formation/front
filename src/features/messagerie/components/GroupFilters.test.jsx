@@ -29,10 +29,10 @@ const radioNames = () => screen.getAllByRole('radio').map((radio) => radio.getAt
 
 describe('GroupFilters', () => {
   describe('types de filtre selon le rôle', () => {
-    it('propose les trois filtres à la chargée de formation, dans cet ordre', () => {
+    it('propose « Formation » puis « Sélection libre » à la chargée de formation (plus « Documents manquants », NOTES-17)', () => {
       mockFormationList()
       render({ user: USERS.SUPER_ADMIN })
-      expect(radioNames()).toEqual(['Formation', 'Documents manquants', 'Sélection libre'])
+      expect(radioNames()).toEqual(['Formation', 'Sélection libre'])
     })
 
     it('ne propose que « Formation » au formateur', () => {
@@ -43,9 +43,9 @@ describe('GroupFilters', () => {
 
     it('coche le type du filtre courant', () => {
       mockFormationList()
-      render({ user: USERS.SUPER_ADMIN, initial: { ...EMPTY, type: 'MISSING_DOCS' } })
-      expect(screen.getByRole('radio', { name: 'Documents manquants' })).toBeChecked()
-      expect(screen.getByRole('radio', { name: 'Formation' })).not.toBeChecked()
+      render({ user: USERS.SUPER_ADMIN, initial: { ...EMPTY, type: 'FORMATION' } })
+      expect(screen.getByRole('radio', { name: 'Formation' })).toBeChecked()
+      expect(screen.getByRole('radio', { name: 'Sélection libre' })).not.toBeChecked()
     })
 
     it('les types forment un groupe nommé', () => {
@@ -103,16 +103,6 @@ describe('GroupFilters', () => {
     })
   })
 
-  describe('« Documents manquants »', () => {
-    it("explique la définition du back et n'affiche ni formation ni liste de stagiaires", () => {
-      mockFormationList()
-      render({ user: USERS.SUPER_ADMIN, initial: { ...EMPTY, type: 'MISSING_DOCS' } })
-      expect(screen.getByText(/n'ont déposé aucun document, toutes formations confondues/)).toBeInTheDocument()
-      expect(screen.queryByRole('combobox')).not.toBeInTheDocument()
-      expect(screen.queryByRole('searchbox')).not.toBeInTheDocument()
-    })
-  })
-
   describe('« Sélection libre »', () => {
     it('affiche la liste de stagiaires avec recherche', async () => {
       mockFormationList()
@@ -138,8 +128,9 @@ describe('GroupFilters', () => {
       mockFormationList()
       const spy = vi.fn()
       render({ user: USERS.SUPER_ADMIN, initial: { type: 'FORMATION', formationId: '101', userIds: [20] }, spy })
-      await userEvent.click(screen.getByRole('radio', { name: 'Documents manquants' }))
-      expect(spy).toHaveBeenLastCalledWith({ type: 'MISSING_DOCS', formationId: '', userIds: [] })
+      mockAccountList('stagiaires', STAGIAIRES)
+      await userEvent.click(screen.getByRole('radio', { name: 'Sélection libre' }))
+      expect(spy).toHaveBeenLastCalledWith({ type: 'MANUAL', formationId: '', userIds: [] })
     })
 
     it("n'appelle pas le back pour les stagiaires tant que « Sélection libre » n'est pas choisi", async () => {
