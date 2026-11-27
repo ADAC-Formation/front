@@ -1,12 +1,30 @@
+/*
+ * En-tête repliable (NOTES-35, D67).
+ * Téléphone et tablette : en haut de la page, il défile avec elle (absolute dans .layout, position: relative).
+ * Ordinateur (≥ 1024 px) : fixé en haut à droite ; une fois la page défilée, la rangée se rassemble dans la bulle.
+ * Le cadre laisse passer les clics vers la page : seuls la rangée et la bulle les captent.
+ */
 .header {
-  position: fixed;
+  position: absolute;
   top: 0;
   right: 0;
   z-index: 50;
   display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 1rem;
+  pointer-events: none;
+}
+
+.row,
+.bubble {
+  pointer-events: auto;
+}
+
+.row {
+  display: flex;
   flex-direction: column;
   align-items: flex-end;
-  padding: 1rem;
 }
 
 .inner {
@@ -21,5 +39,114 @@
   }
   .inner {
     gap: 0.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .header {
+    position: fixed;
+  }
+
+  /* Un seul fond plein (NOTES-32) : la rangée ne se mêle plus au contenu qui défile dessous. */
+  .row {
+    padding: 0.25rem 0.5rem 0.5rem;
+
+    border: 1px solid var(--border);
+    border-radius: 30px;
+
+    background-color: var(--card);
+    color: var(--card-foreground);
+
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+    transform-origin: right center;
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease,
+      visibility 0s linear 0s;
+  }
+
+  /* Repliée : la rangée se rassemble vers la bulle, puis disparaît (elle est aussi `inert`). */
+  .row[data-folded] {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(1.5rem) scaleX(0.2);
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease,
+      visibility 0s linear 200ms;
+  }
+}
+
+.bubble {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0;
+
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+
+  background-color: var(--card);
+  color: var(--card-foreground);
+
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  animation: bubble-in 200ms ease;
+}
+
+.bubble svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bubble:hover {
+  background-color: var(--accent);
+  color: var(--accent-foreground);
+}
+
+.bubble:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--background),
+    0 0 0 4px var(--ring);
+}
+
+/* Même pastille que la cloche : les non lues restent visibles bulle fermée. */
+.badge {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  min-width: 1.25rem;
+  padding: 0 0.3125rem;
+  border-radius: 9999px;
+  background-color: var(--color-red);
+  color: var(--color-white);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.25rem;
+  text-align: center;
+  pointer-events: none;
+}
+
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .row,
+  .row[data-folded],
+  .bubble {
+    transition: none;
+    animation: none;
   }
 }

@@ -41,14 +41,28 @@
   white-space: nowrap;
 }
 
-/* Le libellé élargit l'en-tête : il n'apparaît que lorsque l'en-tête ne rencontre plus le logo. */
-@media (min-width: 1150px) {
-  .label {
+/* NOTES-31 (D67) : l'icône seule ; le libellé se déplie au focus clavier et au survol. Sous 1300 px la rangée n’a
+   pas la place : déplié, il élargissait le fond plein jusque sur le logo (mesuré jusqu’à 1250 px, D67) et sortait
+   de l’écran à 390 px. L’icône reste seule, le nom accessible ne change pas. */
+@media (min-width: 1300px) {
+  .button:focus-visible .label {
     position: static;
     width: auto;
     height: auto;
     overflow: visible;
     clip-path: none;
-    white-space: normal;
+    white-space: nowrap;
+  }
+}
+
+/* Survol : seulement sur un appareil qui sait survoler (sur écran tactile, il resterait collé après un appui). */
+@media (min-width: 1300px) and (hover: hover) {
+  .button:hover .label {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+    white-space: nowrap;
   }
 }
