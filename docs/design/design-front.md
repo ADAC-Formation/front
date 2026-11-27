@@ -69,17 +69,17 @@ Teintes de tuiles en sombre : `--rouge`, `--rose`, `--orange`, `--jaune`, `--noi
 
 ## Typographie
 
-- **Titres, boutons, tuiles (`--font-display`)** : **Syne**
+- **Titres, boutons, tuiles (`--font-display`)** : **Sora** (remplace Syne le 2026-11-27, NOTES-16 : les jambages courts de Syne faisaient paraître les g, p, y coupés)
 - **Texte courant (`--font-sans`)** : **Plus Jakarta Sans**, repli `system-ui, sans-serif`
 - **Chargement** : polices **auto-hébergées** (D31) — pas de Google Fonts, qui transmet l'adresse IP des visiteurs à un tiers
-  (paquets `@fontsource-variable/syne` et `@fontsource-variable/plus-jakarta-sans`, importés dans `src/fonts.css` ; migré le 2026-11-09, `index.html` ne contacte plus aucun tiers)
+  (paquets `@fontsource-variable/sora` et `@fontsource-variable/plus-jakarta-sans`, importés dans `src/fonts.css` ; migré le 2026-11-09, `index.html` ne contacte plus aucun tiers)
 
 | Niveau | Taille | Graisse | Police |
 |---|---|---|---|
-| Libellé de tuile « hero » | 1,5 → 2,25 rem (selon la largeur) | 700 | Syne |
-| Libellé de tuile standard | 1,125 → 1,875 rem | 700 | Syne |
-| Titre de page / section | 1,5 rem | 600–700 | Syne |
-| Corps, champs, boutons | 14 px | 400 / 600 | Plus Jakarta Sans / Syne |
+| Libellé de tuile « hero » | 1,5 → 2,25 rem (selon la largeur) | 700 | Sora |
+| Libellé de tuile standard | 1,125 → 1,875 rem | 700 | Sora |
+| Titre de page / section | 1,5 rem | 600–700 | Sora |
+| Corps, champs, boutons | 14 px | 400 / 600 | Plus Jakarta Sans / Sora |
 | Petits libellés, liens | 11–12 px | 400 | Plus Jakarta Sans |
 
 > Taille du texte : classes `text-step-1..3` sur `<html>` ; la base passe à 112,5 / 125 / 150 % (D60) et toutes les tailles de police sont en `rem` (aucune en `px`, vérifié par test). Option « Contraste élevé » : classe `high-contrast` (clair) ou `high-contrast` + `dark` (sombre) ; jetons en hexadécimal, texte 7:1, bordures et anneau de focus 3:1 (D58).
@@ -138,7 +138,7 @@ Base : `rem` / multiples de 4 px. Valeurs courantes observées :
 - Un seul tableau de bord pour tous les rôles ; seule la grande tuile change (voir « Écrans principaux »)
 
 ### Bouton principal (`atoms/FormButton`)
-- Fond jaune `--color-yellow`, 230 × 45 px, rayon 24 px, Syne 14 px / 600
+- Fond jaune `--color-yellow`, 230 × 45 px, rayon 24 px, Sora 14 px / 600
 - Survol : opacité 0,85 · Désactivé : opacité 0,5 + curseur interdit
 
 ### Champ de formulaire (`atoms/FormInput`, `molecules/FormField`)
@@ -228,7 +228,7 @@ Points de rupture déjà présents dans le code : 639, 640, 700, 800, 1023, 1024
 
 | Sujet | Constat |
 |---|---|
-| Polices | Syne chargée depuis Google Fonts (`index.html`) — à auto-héberger (D31) ; Plus Jakarta Sans à déclarer |
+| Polices | Résolu le 2026-11-09 : polices auto-hébergées (`src/fonts.css`, D31) |
 | Points de rupture | Plusieurs valeurs proches (639/640, 700, 800) |
 
 ---
@@ -237,7 +237,7 @@ Points de rupture déjà présents dans le code : 639, 640, 700, 800, 1023, 1024
 
 | Sujet | `DESIGN.md` (back) | Front (ce document) |
 |---|---|---|
-| Police | Manrope | Syne (titres) + Plus Jakarta Sans (texte) |
+| Police | Manrope | Sora (titres) + Plus Jakarta Sans (texte) |
 | Couleur primaire | `#cc3d34` (boutons) | Jaune `#f6d628` pour le bouton principal ; rouge pour la grande tuile |
 | Fond / texte | `#faf8f5` / `#1f2629` | `oklch(0.988 …)` / `oklch(0.263 …)` — équivalents visuels |
 | Rayons | tuiles 24 px, boutons 12 px, champs 6 px | tuiles 28 px, boutons 24 px, champs 14 px |

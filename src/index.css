@@ -60,7 +60,8 @@ select {
 
 
   /* Typography */
-  --font-display: "Syne Variable", "Syne", sans-serif;
+  /* Sora remplace Syne (NOTES-16) : les jambages de Syne (g, p, y) paraissaient coupés. */
+  --font-display: "Sora Variable", "Sora", sans-serif;
   --font-sans: "Plus Jakarta Sans Variable", "Plus Jakarta Sans", system-ui, sans-serif;
 
   /* Layout */

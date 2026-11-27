@@ -28,12 +28,13 @@ describe('index.html', () => {
     expect(html).not.toMatch(/googleapis|gstatic|https?:\/\/(?!localhost)/)
   })
 
-  it('charge les polices du thème depuis les paquets @fontsource (Syne et Plus Jakarta Sans)', () => {
+  it('charge les polices du thème depuis les paquets @fontsource (Sora et Plus Jakarta Sans ; Sora remplace Syne, NOTES-16)', () => {
     const fonts = readFileSync(path.join(process.cwd(), 'src/fonts.css'), 'utf8')
-    expect(fonts).toContain('@fontsource-variable/syne')
+    expect(fonts).toContain('@fontsource-variable/sora')
+    expect(fonts).not.toMatch(/syne/i)
     expect(fonts).toContain('@fontsource-variable/plus-jakarta-sans')
     const index = readFileSync(path.join(process.cwd(), 'src/index.css'), 'utf8')
-    expect(index).toMatch(/--font-display:\s*"Syne Variable"/)
+    expect(index).toMatch(/--font-display:\s*"Sora Variable"/)
     expect(index).toMatch(/--font-sans:\s*"Plus Jakarta Sans Variable"/)
   })
 })

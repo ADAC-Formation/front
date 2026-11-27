@@ -13,7 +13,7 @@
 ## D2 — Design : on garde le thème actuel du front (exception à D1)
 - **PRÉCISÉE le 2026-10-31 (D41)** : le design est une décision du front ; il est documenté dans `design-front.md` (même structure que `DESIGN.md`) et partagé avec Charlotte. Plus « à trancher avec le dev back ».
 - Date : 2026-10-11
-- **Décision** : conserver le thème actuel (Syne + Plus Jakarta Sans, tokens oklch, mode sombre / grand texte / contraste élevé). `DESIGN.md` du back (Manrope, `#cc3d34`, tuiles colorées, rayon 24px) n'est pas adopté pour l'instant.
+- **Décision** : conserver le thème actuel (Syne + Plus Jakarta Sans, tokens oklch, mode sombre / grand texte / contraste élevé). `DESIGN.md` du back (Manrope, `#cc3d34`, tuiles colorées, rayon 24px) n'est pas adopté pour l'instant. Mise à jour du 2026-11-27 (NOTES-16) : Sora remplace Syne pour les titres.
 - **Pourquoi** : choix de Manon ; moins de retravail ; le point doit être tranché avec le dev back.
 - **Alternatives écartées** : adopter `DESIGN.md` immédiatement ; attendre ADAC avant de construire.
 - **À faire** : point inscrit dans `meeting-points-back.md` pour la prochaine réunion avec Charlotte. Construire avec des tokens CSS pour que le changement reste peu coûteux.
