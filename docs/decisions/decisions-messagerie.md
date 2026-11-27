@@ -151,3 +151,9 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 - **Décision** : la chargée de formation n'a plus que les filtres « Formation » et « Sélection libre ». Le filtre `MISSING_DOCS` n'est plus proposé (H12), et sa mention dans l'aperçu décochable (H20) disparaît. Le suivi des pièces manquantes passera par un tableau de bord, hors messagerie.
 - **Pourquoi** : voir G26.
 - **Implémenté côté front le 2026-11-27** (NOTES-17, #88) : `MISSING_DOCS` retiré de `groupFilters.js` et de `GroupFilters`. Le back accepte encore ce type (Q19 de `points-pour-charlotte.md`).
+
+## H22 — Liste des conversations : défilement propre en deux volets
+- **Date** : 2026-11-27 · réunion du 27/11 (NOTES-19, #90).
+- **Décision** : dès que les deux volets sont côte à côte (conteneur ≥ 48rem), la liste des conversations défile seule, avec la même hauteur maximale que le fil (`60vh`). Sur écran étroit, la liste est seule à l'écran : la page défile, sans zone de défilement imbriquée.
+- **Pourquoi** : avec beaucoup de conversations, la liste allongeait la page et éloignait le fil ouvert ; le fil défilait déjà seul.
+- **Alternatives écartées** : limiter aussi la hauteur sur mobile (deux défilements imbriqués, gênant au doigt).

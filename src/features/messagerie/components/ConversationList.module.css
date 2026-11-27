@@ -149,3 +149,13 @@
 
   cursor: pointer;
 }
+
+/* Deux volets (même seuil que MessagesPage) : la liste défile seule, à la hauteur du fil (NOTES-19).
+   Le padding garde les anneaux de focus visibles dans la zone qui défile. Sur mobile, la page défile. */
+@container (min-width: 48rem) {
+  .list {
+    max-height: 60vh;
+    padding: 0.25rem;
+    overflow-y: auto;
+  }
+}
