@@ -46,6 +46,7 @@ const RecipientPreview = ({ recipients = [], isLoading = false, error = null, on
             {keptCount === recipients.length ? countLabel(recipients.length) : `${keptCount} sur ${countLabel(recipients.length)}`}
           </p>
           {/* Liste défilante : atteignable au clavier pour pouvoir la parcourir (WCAG 2.1.1). */}
+          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- zone de défilement (axe : scrollable-region-focusable) */}
           <ul className={styles.list} aria-label="Destinataires" tabIndex={0}>
             {recipients.map((recipient) => (
               <li key={recipient.id}>

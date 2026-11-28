@@ -94,7 +94,7 @@
 .sort select {
   padding: 0.5rem 0.75rem;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--input);
   border-radius: 12px;
 
   background-color: var(--card);

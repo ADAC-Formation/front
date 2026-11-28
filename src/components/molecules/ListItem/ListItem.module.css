@@ -74,9 +74,12 @@
   font-weight: 700;
 }
 
+/* NOTES-34 (A2) : nom dans la couleur du texte, pastille dans la couleur de la catégorie (comme la fiche). */
 .category {
-  display: inline-block;
-  color: var(--category-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--foreground);
 
   font-size: 0.7rem;
   font-weight: 700;
@@ -85,6 +88,16 @@
   letter-spacing: 0.04em;
 
   background-color: transparent;
+}
+
+.categoryDot {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background-color: var(--category-color);
 }
 
 /* ---------- Title ---------- */
@@ -197,8 +210,4 @@
   .item:hover .arrow {
     transform: translateX(3px);
   }
-}
-/* Contraste élevé : le texte prend la couleur du texte courant ; la couleur reste portée par la barre. */
-:global(html.high-contrast) .category {
-  color: var(--foreground);
 }

@@ -54,7 +54,9 @@ const Thread = ({ userId }) => {
   }
 
   return (
-    <ol ref={listRef} className={styles.list} aria-label="Messages">
+    // NOTES-34 (A7, WCAG 2.1.1) : le fil défile seul ; focalisable pour le faire défiler au clavier.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- zone de défilement (axe : scrollable-region-focusable)
+    <ol ref={listRef} className={styles.list} aria-label="Messages" tabIndex={0}>
       {messages.map((message) => {
         const isMine = message.sender?.id === user?.id
         return (

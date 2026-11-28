@@ -45,7 +45,7 @@
 }
 
 .active {
-  color: var(--color-green);
+  color: var(--color-status-active);
 }
 
 .name {

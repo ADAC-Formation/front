@@ -59,6 +59,7 @@ const CategoryFormDialog = ({ category, onSubmit, onCancel, error, isPending = f
 
   return (
     <div className={styles.backdrop}>
+      {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions -- Échap et piège du focus de la boîte de dialogue (useModalFocus) */}
       <div
         ref={dialogRef}
         role="dialog"

@@ -27,6 +27,13 @@ body {
   outline-offset: 2px;
 }
 
+/* Lien sans style propre : couleur du texte, souligné (NOTES-34, A5). Le bleu du navigateur tombait à 1.2:1
+   en mode sombre. Un lien avec sa propre classe garde sa couleur. */
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
 button,
 input,
 textarea,
@@ -84,16 +91,23 @@ select {
   /* Texte atténué : 5.1:1 sur le fond, 4.8:1 sur --muted (WCAG AA, NOTES-15 ; était 2.9:1). */
   --muted-foreground: oklch(0.53 0.0046 271.25);
 
+  /* Bordures décoratives (cartes, séparateurs) : exemptées du 3:1. */
   --border: oklch(0.929 0.013 255.508);
+  /* Bord des champs de formulaire (NOTES-34, A3) : 3:1 sur le fond, la carte et --muted (WCAG 1.4.11). */
+  --input: #868b92;
+
+  /* Statut « Actif » des comptes (NOTES-34, A4) : 5.3:1 sur la carte (#439224 n'atteignait que 3.9:1). */
+  --color-status-active: #3a7a1f;
 
   --accent: var(--color-yellow);
   --accent-foreground: var(--foreground);
 
   --ring: var(--foreground);
 
-  /* Boutons d'action orange doux : fond et texte (redéfinis en contraste élevé). */
+  /* Boutons d'action orange doux : fond et texte (redéfinis en contraste élevé). Texte toujours sombre,
+     dans tous les modes (NOTES-34, A1) : 7.4:1 ; le texte clair du mode clair n'atteignait que 2:1. */
   --color-action: var(--color-soft-orange);
-  --color-on-action: var(--background);
+  --color-on-action: var(--color-on-yellow);
 }
 
 @media (max-width: 639px) {
@@ -128,7 +142,9 @@ select {
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.984 0.003 247.858);
   --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  /* NOTES-34 (A3, A4) : bord des champs 3.3:1 sur la carte ; « Actif » 5.3:1 sur la carte. */
+  --input: #868c90;
+  --color-status-active: #7cc35e;
   --ring: oklch(0.8772 0.1731 97.56);
   --chart-1: oklch(0.5691 0.1813 27.94);
   --chart-2: oklch(0.6779 0.1828 17.88);
@@ -180,7 +196,8 @@ html.grayscale.negative-contrast {
   filter: grayscale(1) invert(1);
 }
 
-/* Fond clair même si le mode sombre est actif : mêmes jetons que le mode clair. */
+/* Fond clair même si le mode sombre est actif : mêmes jetons que le mode clair. NOTES-34 (A6) : --muted,
+   --ring et --color-status-active restaient ceux du mode sombre (anneau de focus jaune sur blanc : 1.4:1). */
 html.light-background,
 html.dark.light-background {
   --background: oklch(0.984 0.003 247.858);
@@ -189,9 +206,12 @@ html.dark.light-background {
   --card-foreground: oklch(0.2630 0.0115 225.65);
   --popover: #ffffff;
   --popover-foreground: oklch(0.2630 0.0115 225.65);
+  --muted: oklch(0.968 0.007 247.896);
   --muted-foreground: oklch(0.45 0.01 225);
   --border: oklch(0 0 0 / 15%);
-  --input: oklch(0 0 0 / 20%);
+  --input: #868b92;
+  --ring: oklch(0.2630 0.0115 225.65);
+  --color-status-active: #3a7a1f;
 }
 
 html.underline-links a {
@@ -222,6 +242,7 @@ html.high-contrast {
   --ring: #000000;
   --color-action: #ffe600;
   --color-on-action: #000000;
+  --color-status-active: #1e5c0c;
 }
 
 html.dark.high-contrast {
@@ -238,4 +259,5 @@ html.dark.high-contrast {
   --ring: #ffe600;
   --color-action: #ffe600;
   --color-on-action: #000000;
+  --color-status-active: #9ee080;
 }

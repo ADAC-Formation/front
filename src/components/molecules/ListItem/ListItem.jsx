@@ -21,6 +21,8 @@ const ListItem = ({ title, category, categoryColor, badge, details, to }) => (
               "--category-color": categoryColor,
             }}
           >
+            {/* NOTES-34 (A2) : la couleur choisie colore la pastille, jamais le texte (souvent illisible). */}
+            <span className={styles.categoryDot} aria-hidden="true" />
             {category}
           </span>
         )}

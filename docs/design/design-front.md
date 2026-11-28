@@ -30,7 +30,7 @@
 | `--color-blue` | `#12427c` | Réservé (liens / états d'information) |
 | `--color-purple` | `#7a2f7c` | Réservé (catégories) |
 | `--color-soft-orange` | `#F7A062` | Réservé (catégories) |
-| `--color-green` | `#439224` | Succès |
+| `--color-green` | `#439224` | Succès (pastilles, pas de texte : 3.9:1 sur blanc) |
 
 Les 6 couleurs de la charte ADAC (`#cc3d34`, `#F35E6C`, `#d9812c`, `#f6d628`, quasi-noir, gris) sont toutes utilisées ;
 les couleurs supplémentaires (bleu, violet, orange doux, vert) servent aux catégories, aux états et aux badges.
@@ -43,7 +43,10 @@ les couleurs supplémentaires (bleu, violet, orange doux, vert) servent aux cat�
 | `--foreground` | `oklch(0.263 0.0115 225.65)` | Texte principal (quasi-noir ADAC) |
 | `--card` / `--card-foreground` | `oklch(1 0 0)` / `--foreground` | Cartes, panneaux, champs |
 | `--muted` / `--muted-foreground` | `oklch(0.968 0.007 247.9)` / `oklch(0.53 0.005 271)` | Fonds et textes secondaires (texte ≥ 4.5:1 sur tous les fonds clairs, NOTES-15) |
-| `--border` | `oklch(0.929 0.013 255.5)` | Bordures, séparateurs |
+| `--border` | `oklch(0.929 0.013 255.5)` | Bordures décoratives : cartes, séparateurs |
+| `--input` | `#868b92` | Bord des champs, listes déroulantes, recherches (≥ 3:1, D68) |
+| `--color-action` / `--color-on-action` | `--color-soft-orange` / `--color-on-yellow` | Boutons d'action orange : texte toujours sombre, 7.4:1 (D68) |
+| `--color-status-active` | `#3a7a1f` | Statut « Actif » des comptes, 5.3:1 (D68) |
 | `--accent` | `--color-yellow` | Accent |
 | `--ring` | `--foreground` | Anneau de focus |
 
@@ -57,7 +60,8 @@ les couleurs supplémentaires (bleu, violet, orange doux, vert) servent aux cat�
 | `--primary` / `--ring` | `oklch(0.8772 0.1731 97.56)` (jaune) |
 | `--accent` | `oklch(0.5691 0.1813 27.94)` (rouge) |
 | `--border` | `oklch(1 0 0 / 10%)` |
-| `--input` | `oklch(1 0 0 / 15%)` |
+| `--input` | `#868c90` (3.3:1 sur la carte, D68) |
+| `--color-status-active` | `#7cc35e` (5.3:1 sur la carte, D68) |
 | `--destructive` | `oklch(0.704 0.191 22.2)` |
 
 Teintes de tuiles en sombre : `--rouge`, `--rose`, `--orange`, `--jaune`, `--noir`, `--gris` (équivalents `oklch` des couleurs de marque).
@@ -142,7 +146,7 @@ Base : `rem` / multiples de 4 px. Valeurs courantes observées :
 - Survol : opacité 0,85 · Désactivé : opacité 0,5 + curseur interdit
 
 ### Champ de formulaire (`atoms/FormInput`, `molecules/FormField`)
-- Hauteur 43 px, bordure `--border`, rayon 14 px, fond `--card`
+- Hauteur 43 px, bordure `--input` (≥ 3:1, D68), rayon 14 px, fond `--card`
 - Focus : bordure `--ring` · Placeholder : `--muted-foreground`
 - Libellé au-dessus du champ : écart `--label-gap` (0,625rem, NOTES-15), aussi dans `GroupFilters` et la recherche de `CheckboxPicker`
 
@@ -196,7 +200,8 @@ Dans **Gestion** : **Formations** · **Formateurs** · **Stagiaires** (et **Cat�
 
 ### Liste / détail de formation
 Cartes (titre, dates, modalité, pastille de catégorie colorée + nom, formateur, nombre d'inscrits), filtres
-(statut, catégorie, « Mes formations » par défaut pour un formateur), badge « Archivée » en lecture seule.
+(statut, catégorie, « Mes formations » par défaut pour un formateur), badge « Archivée » en lecture seule. La couleur
+de la catégorie colore la barre et la pastille, jamais le nom, qui reste dans la couleur du texte (D68).
 
 ### Messagerie
 Deux volets sur grand écran (conversations à gauche, fil à droite) ; un seul volet à la fois sur petit écran
@@ -221,8 +226,10 @@ Points de rupture déjà présents dans le code : 639, 640, 700, 800, 1023, 1024
 
 ## Accessibilité (D15)
 
-- Cible **WCAG 2.1 AA**, `lang="fr"`, parcours complet au clavier, focus visible, champs étiquetés
-- Contraste vérifié dans les trois thèmes (clair, sombre, contraste élevé)
+- Cible **WCAG 2.2 AA** (D68), `lang="fr"`, parcours complet au clavier, focus visible, champs étiquetés
+- Contraste vérifié dans les trois thèmes (clair, sombre, contraste élevé) et calculé par `src/test/a11y-contrast.test.js` :
+  texte ≥ 4.5:1, bord des champs et anneau de focus ≥ 3:1 ; aucune couleur choisie par un utilisateur n'écrit de texte
+- `eslint-plugin-jsx-a11y` (règles recommandées) dans `npm run check` (D68)
 - `aria-live` pour les erreurs et les notifications ; contrôle `jest-axe` par page (D4, D30)
 - Bascules : mode sombre et options du menu d'accessibilité (D60)
 

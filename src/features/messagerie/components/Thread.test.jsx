@@ -25,6 +25,14 @@ describe('Thread', () => {
     expect(within(items[2]).getByText('Rendez-vous lundi ?')).toBeInTheDocument()
   })
 
+  // NOTES-34 (A7, WCAG 2.1.1) : le fil défile seul ; sans élément focalisable, le clavier ne pouvait pas le faire défiler.
+  it('la liste des messages est atteignable au clavier pour la faire défiler', async () => {
+    mockThread(10)
+    render()
+    const list = await screen.findByRole('list', { name: 'Messages' })
+    expect(list).toHaveAttribute('tabindex', '0')
+  })
+
   it('indique l\'auteur par du texte (« Vous » ou le nom) et la date', async () => {
     mockThread(10)
     render()

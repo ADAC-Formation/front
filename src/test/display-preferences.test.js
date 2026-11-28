@@ -70,11 +70,14 @@ describe('Contraste élevé : étiquettes de catégorie', () => {
     'src/components/molecules/ListItem/ListItem.module.css',
     'src/features/formations/pages/FormationPages.module.css',
   ])('le texte de .category prend --foreground dans %s', (file) => {
-    const rule = rulesOf(stripComments(cssSheets[file])).find(
-      ({ selector }) => /high-contrast/.test(selector) && /\.category/.test(selector),
-    )
-    expect(rule, `règle high-contrast .category dans ${file}`).toBeDefined()
-    expect(rule.body).toMatch(/color:\s*var\(--foreground\)/)
+    // En contraste élevé seulement, ou dans tous les modes (ListItem depuis NOTES-34, A2 : la couleur de la
+    // catégorie ne colore plus que la pastille).
+    const rules = rulesOf(stripComments(cssSheets[file]))
+    const rule =
+      rules.find(({ selector }) => /high-contrast/.test(selector) && /\.category\b/.test(selector)) ??
+      rules.find(({ selector }) => selector.trim() === '.category')
+    expect(rule, `règle .category dans ${file}`).toBeDefined()
+    expect(rule.body).toMatch(/(^|[^-])color:\s*var\(--foreground\)/)
   })
 
   it('ListItem ne fixe pas la couleur du texte en ligne (une feuille ne pourrait pas la remplacer)', () => {

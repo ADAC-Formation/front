@@ -52,7 +52,7 @@
   height: 2.875rem;
   padding: 0 0.75rem;
 
-  border: 1px solid var(--border);
+  border: 1px solid var(--input);
   border-radius: 14px;
 
   background-color: var(--card);
