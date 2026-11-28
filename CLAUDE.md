@@ -12,36 +12,7 @@ Portail de gestion des formations pour l'ADAC, remplaçant les échanges email i
 ## Structure du projet — deux repos séparés
 
 Pas un monorepo : `front` et `back` sont deux repos GitHub distincts sous l'organisation `ADAC-Formation`.
-Ce repo (`ADAC-Formation/front`, racine git = `front`) porte le code frontend. La documentation partagée et l'infra vivent dans le repo `back` (Charlotte gère le déploiement) ; le seul fichier de contrat à lire là-bas est `docs/tech.md`.
-
-```
-front/ (ce repo)                back-readonly/ (clone local du back, branches de travail, D66)
-├── src/                        ├── src/ ... Spring Boot
-│   ├── api/                    ├── docs/
-│   ├── components/             │   ├── tech.md   ← contrat API
-│   │   ├── atoms/              │   ├── DESIGN.md, STORIES.md, TICKETS.md
-│   │   ├── molecules/          │   └── USERFLOW.md, INFRASTRUCTURE.md
-│   │   ├── organisms/          └── CLAUDE.md
-│   │   └── Pages/
-│   ├── features/       ← nouveau code, par domaine (D32)
-│   ├── router/
-│   ├── templates/PageShell
-│   ├── Layout/
-│   └── utils/
-├── public/
-├── docs/               ← documentation du front (en français) ; index : docs/README.md
-│   ├── projet/         ← cadrage.md, plan-de-proyecto.md, spec.md
-│   ├── decisions/      ← decisions-*.md (D1–D65 et décisions par fonctionnalité)
-│   ├── design/         ← design-front.md, design-site.md
-│   ├── charlotte/      ← points-pour-charlotte.md (+ « À envoyer »), meeting-points-back.md
-│   ├── adac/           ← questions-pour-adac.md, qualiopi-criteres.md, notes-adac.md, synthèse .docx…
-│   └── dev/            ← README.md, docker-compose.dev.yml, seed-local-admin.sql
-├── index.html
-├── vite.config.js
-├── eslint.config.js
-├── package.json
-└── CLAUDE.md           ← ce fichier
-```
+Ce repo (`ADAC-Formation/front`, racine git = `front`) porte le code frontend. La documentation partagée et l'infra vivent dans le repo `back` (Charlotte gère le déploiement) ; le seul fichier de contrat à lire là-bas est `docs/tech.md`. Docs du front : index `docs/README.md`.
 
 Clone local du back : `../back-readonly` (branche `dev`).
 
@@ -103,41 +74,24 @@ Depuis le 2026-11-19, d'accord avec Charlotte, Manon peut faire modifier le back
 
 Stack de test : Vitest + Testing Library + MSW + jest-axe (D4, D15) — installée (`npm run test`). Un check jest-axe par page ; helper `renderWithProviders` dans `src/test/render.jsx`, serveur MSW dans `src/test/msw/` (tout appel non déclaré fait échouer le test).
 
-## Démarrer le frontend en local — checklist
+## Démarrer le front et le back en local
 
-1. `npm install`
-2. **Le back doit tourner** sur `http://localhost:8080` (Docker compose depuis `../back-readonly` + `docs/dev/docker-compose.dev.yml` — voir « Back en local » ci-dessous et `docs/dev/README.md`).
-3. **`.env` à la racine, obligatoire** (git-ignoré) : `cp .env.example .env` (`VITE_API_URL=http://localhost:8080/api`). Sans lui, le front interroge le serveur Vite au lieu du back ; redémarrer `npm run dev` après modification.
-4. `npm run dev` — le serveur Vite démarre sur `http://localhost:5173` (origine CORS par défaut du back, ne pas changer de port)
-5. Vérifier : la page s'affiche et `GET /auth/me` répond (401 si non connecté, c'est normal)
+Checklist de démarrage (back Docker, `.env`, port 5173) : skill `run-front` (`.claude/skills/run-front/SKILL.md`).
 
 ## Commandes utiles
 
 ### Frontend (racine de ce repo)
 
-```bash
-npm install
-npm run dev                  # démarrer (http://localhost:5173)
-npm run build                # build production
-npm run lint                 # eslint (flat config)
-npm run preview              # prévisualiser le build
-npm run test                 # lancer les tests (Vitest)
-npm run check                # lint + test + build + budget du bundle (gate pre-commit, D26 ; aussi exécuté par la CI)
-```
+Scripts dans `package.json`. À retenir : `npm run check` = lint + test + build + budget du bundle (gate pre-commit, D26 ; aussi exécuté par la CI).
 
 ### Backend (repo séparé, celui de Charlotte)
 
-Cloné dans `../back-readonly`. Lancé uniquement via Docker compose (voir ci-dessous). Modifiable sur branche de travail seulement, voir la règle « Back-end : modifiable sur branche » plus haut (D66).
+Cloné dans `../back-readonly`. Lancé uniquement via Docker compose (skill `run-front`). Modifiable sur branche de travail seulement, voir la règle « Back-end : modifiable sur branche » plus haut (D66).
 Swagger UI : `http://localhost:8080/swagger-ui.html`
 
 ### Docker
 
 Le `Dockerfile` (build node20 → nginx:alpine + `curl` pour le healthcheck), `.dockerignore` et `.github/workflows/ci.yml` (lint + build, push de l'image vers `ghcr.io/adac-formation/front` : tags `X.Y.Z`/`X.Y`/`latest` sur un tag git `vX.Y.Z`, `main`/`dev` + SHA sur push de branche, D45) vivent **dans ce repo**, écrits selon la spec de Charlotte (`INFRASTRUCTURE.md` §4, D5 révisée). **Charlotte** garde le `docker-compose.yml`, `nginx.conf` (monté dans l'image front), le déploiement et le CD. `VITE_API_URL` est injectée au **build** (`/api` en prod, même origine). À confirmer avec elle : TICKET-010.
-
-## Back en local (D16–D20)
-
-- Docker compose depuis `../back-readonly` + `docs/dev/docker-compose.dev.yml` (D53) + `ADAC/dev-compose/.env` hors dépôts (secrets, comptes dev personnels Mailtrap/Supabase). Commandes : `docs/dev/README.md`.
-- Le back ne crée aucun SUPER_ADMIN : utiliser `docs/dev/seed-local-admin.sql`.
 
 ## Auth — point clé
 
@@ -181,12 +135,6 @@ Route (react-router 8, createBrowserRouter — src/router/router.jsx)
 - Vie privée : aucune donnée personnelle dans le stockage navigateur, polices auto-hébergées, aucun tracker (D31).
 
 ## Tests frontend
-
-| Couche | Outil | Ce qu'on teste |
-|---|---|---|
-| Composant / page | Vitest + Testing Library | Rendu, interactions, états de chargement/erreur |
-| API | MSW | Contrat DTO, codes HTTP (401/403/409/429) |
-| Accessibilité | jest-axe | Un check par page |
 
 ```bash
 npm run test -- NomTest       # un test spécifique
