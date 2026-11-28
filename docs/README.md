@@ -51,6 +51,14 @@ Un dossier par public. En cas de doute : le dev lit `projet/` et `decisions/`, C
 | `adac-site-reference.md` | Ce que dit le site officiel de l'ADAC |
 | `2026.07.06 1er Rencontre…pdf` | Compte rendu de la 1re rencontre. **Ignoré par git** (noms de personnes) : présent seulement sur le poste de Manon |
 
+## `accessibilite/` : accessibilité (RGAA)
+
+| Fichier | Contenu |
+| --- | --- |
+| `audit-rgaa-2026-11-28.md` | Auto-évaluation RGAA 4.1.2 : 106 critères, échantillon de 15 pages, non-conformités et corrections proposées |
+| `declaration-accessibilite-brouillon.md` | Brouillon de déclaration d'accessibilité, à compléter et faire valider par l'ADAC |
+| `test-lecteur-ecran.md` | Test manuel au lecteur d'écran (NVDA) qui complète l'audit |
+
 ## Règles
 
 - Une décision = une entrée dans `decisions/` au moment où elle est prise.

@@ -1,10 +1,10 @@
 # Qualiopi — ce que le portail couvre, ce qui manque, ce qui est hors périmètre
 
-Qualiopi est un point central pour l'ADAC (attestation 2024–2027, voir `adac-site-reference.md` §4). Ce document confronte les 7 critères / 32 indicateurs au portail (front + back, état au 2026-11-01).
+Qualiopi est un point central pour l'ADAC (attestation 2024–2027, voir `adac-site-reference.md` §4). Ce document confronte les 7 critères / 32 indicateurs au portail (front + back, état au 2026-11-01 ; mis à jour le 2026-11-28 : accessibilité, e-mails, règle D66).
 
 > **Sources et limites.** Intitulés tirés de https://www.digiforma.com/certification-qualiopi/criteres/ ; les descriptions sont des **reformulations**, pas le texte officiel du référentiel national qualité (RNQ). Avant toute décision, relire l'indicateur dans le référentiel officiel et demander à l'ADAC ce que l'auditeur lui demande réellement comme preuve.
 > **Périmètre du portail.** Qualiopi certifie l'organisme, pas un logiciel. Le portail sert d'**outil de preuve et de suivi** : il ne rend pas l'ADAC conforme, il rend la conformité plus facile à démontrer.
-> **Contrainte d'équipe.** Le front ne peut pas modifier le back. Tout manque qui exige une donnée ou un endpoint est marqué « back » et devrait passer par `points-pour-charlotte.md`.
+> **Contrainte d'équipe.** Depuis D66 (2026-11-19), Manon peut modifier le back sur une branche de travail, avec un journal pour Charlotte (`changements-back.md`). Un manque marqué « back » exige une donnée ou un endpoint : il passe par ce flux, et par `points-pour-charlotte.md` quand il touche au contrat, aux rôles ou au schéma.
 > Ce document n'est pas une décision : aucun manque ci-dessous n'est planifié tant que Manon ne l'a pas retenu.
 
 ## Vue d'ensemble : les 32 indicateurs
@@ -70,10 +70,10 @@ L'ADAC propose des **actions de formation** (catalogue, sur mesure, intra). Hypo
 | 1 | Information du public | Fiche formation : intitulé, description, dates, modalité (visio / présentiel / mixte), catégorie, formateur | Accessible aux seuls comptes connectés (stagiaires inscrits) ; le public général relève du site web |
 | 9 | Conditions de déroulement, référents | Formateur rattaché à chaque formation ; documents de la formation (convocation, règlement, livret d'accueil) déposés et notifiés aux inscrits ; messagerie avec le formateur | Pas de rubrique « référents » explicite (pédagogique, administratif, handicap) |
 | 11 | Atteinte des objectifs | Les documents de fin de formation (attestations, bilans) peuvent être déposés par stagiaire (document ciblé, US-010) | Dépôt de fichiers seulement : aucune évaluation ni attestation structurée |
-| 12 | Engagement des bénéficiaires | Messagerie individuelle et groupée, notifications in-app et e-mail : relance rapide d'un stagiaire silencieux | Aucun suivi de présence ni détection d'abandon |
+| 12 | Engagement des bénéficiaires | Messagerie individuelle et groupée, notifications dans le portail : relance rapide d'un stagiaire silencieux | Aucun suivi de présence ni détection d'abandon. **Aucune notification ne part encore par e-mail** (constaté le 2026-11-28 : l'envoi n'est branché nulle part ; NOTES-28 à 30) |
 | 18 | Coordination des acteurs | Trois rôles distincts, formateur affecté par formation, changement de formateur (`PATCH /formations/{id}/formateur`) | Pas d'organigramme ni de planning de l'équipe |
 | 19 | Ressources pédagogiques | Support de cours déposés sur la formation, téléchargeables par les inscrits | Dépend de la durée de conservation après la fin de la formation (point #11 de `meeting-points-back.md`) |
-| 4 / 26 (accessibilité) | Accessibilité | Interface conforme WCAG 2.1 AA, options d'affichage (D15, D60) | Voir §3 pour le recueil des besoins |
+| 4 / 26 (accessibilité) | Accessibilité | Toutes les pages au niveau WCAG 2.2 AA à l'audit automatique (D68) ; auto-évaluation RGAA 4.1.2 : partiellement conforme, 88,7 % (`docs/accessibilite/`) ; 8 réglages d'affichage (D15, D60) | Voir §3 pour le recueil des besoins ; 8 non-conformités RGAA à corriger ; pas encore de déclaration d'accessibilité publiée |
 | 31 | Traitement des réclamations | Canal de contact direct (messagerie) | Pas de registre, voir §3 |
 
 **Effet de bord utile pour l'audit** : tout dépôt de document, inscription et message est horodaté (`createdAt`, `inscritLe`). C'est une trace datée de ce qui a été communiqué à qui.
@@ -116,7 +116,7 @@ Classé par valeur probable pour un audit. « Back » = exige une évolution de 
 
 ### 3.4 Contraintes à respecter en ajoutant ces fonctions
 
-- **Vie privée (D31, RGPD)** : questionnaires, besoins liés au handicap et réclamations sont des données personnelles, parfois sensibles. La durée de conservation et la page Confidentialité sont encore ouvertes (`spec.md`, point #11).
+- **Vie privée (D31, RGPD)** : questionnaires, besoins liés au handicap et réclamations sont des données personnelles, parfois sensibles. La page Confidentialité a son contenu RGPD (`decisions-profil.md` P7) ; la durée de conservation, la base légale et le contact restent à fournir par l'ADAC (`legalInfo.js`).
 - **Aucune donnée personnelle dans le stockage du navigateur** (D31).
 - **Contenu affiché en texte, jamais en HTML** (réclamations et réponses libres : risque XSS).
 
@@ -164,6 +164,7 @@ Le critère 7 est le plus fort écart **et** le plus réalisable côté portail 
 5. L'ADAC souhaite-t-elle que le portail devienne le **registre officiel** de ces preuves, ou seulement un outil d'appoint ?
 6. Qui sont les référents (pédagogique, administratif, handicap) à afficher dans le portail ?
 7. Les fiches PDF des formations (durée, prix, prérequis, objectifs) doivent-elles être reprises dans le portail ? Elles contiennent probablement déjà les données des indicateurs 1, 5 et 6.
+8. L'ADAC est-elle soumise à l'obligation légale d'accessibilité numérique (article 47 de la loi du 11 février 2005 : mission de service public, financements publics) ? La réponse décide si la déclaration d'accessibilité (`docs/accessibilite/declaration-accessibilite-brouillon.md`) est obligatoire ou volontaire.
 
 ## 7. Suites possibles (non engagées)
 
