@@ -30,7 +30,46 @@ describe('LegalPage', () => {
     expect(within(identity).getAllByText('À renseigner par l’ADAC').length).toBeGreaterThanOrEqual(2)
     const privacy = screen.getByRole('region', { name: 'Confidentialité' })
     expect(within(privacy).getByText(/Durée de conservation des données/)).toBeInTheDocument()
-    expect(within(privacy).getAllByText('À renseigner par l’ADAC')).toHaveLength(1)
+    // Contact pour les données personnelles, base légale, durée de conservation (NOTES-04).
+    expect(within(privacy).getAllByText('À renseigner par l’ADAC')).toHaveLength(3)
+  })
+
+  describe('RGPD (NOTES-04)', () => {
+    const privacy = () => screen.getByRole('region', { name: 'Confidentialité' })
+
+    it('nomme le responsable du traitement, le contact et la base légale', () => {
+      renderLegal()
+      const facts = within(privacy()).getByRole('region', { name: 'Responsable du traitement' })
+      expect(facts).toHaveTextContent(LEGAL_INFO.name)
+      expect(facts).toHaveTextContent(LEGAL_INFO.address)
+      expect(within(facts).getByText('Contact pour vos données personnelles')).toBeInTheDocument()
+      expect(within(facts).getByText('Base légale')).toBeInTheDocument()
+    })
+
+    it('dit à quoi servent les données, dont les e-mails toujours envoyés, et qui y accède', () => {
+      renderLegal()
+      expect(within(privacy()).getByRole('heading', { level: 3, name: 'Finalités' })).toBeInTheDocument()
+      expect(within(privacy()).getByText(/e-mails du portail.*ne peuvent pas être désactivés/)).toBeInTheDocument()
+      expect(within(privacy()).getByRole('heading', { level: 3, name: 'Destinataires' })).toBeInTheDocument()
+      expect(within(privacy()).getByText(/prestataires techniques/)).toBeInTheDocument()
+    })
+
+    it('liste les six droits et les directives après le décès', () => {
+      renderLegal()
+      const rights = within(privacy()).getByRole('heading', { level: 3, name: 'Vos droits' }).nextElementSibling
+      for (const right of ['accès', 'rectification', 'effacement', 'limitation', 'opposition', 'portabilité', 'décès']) {
+        expect(rights).toHaveTextContent(right)
+      }
+    })
+
+    it('explique comment saisir la CNIL', () => {
+      renderLegal()
+      expect(within(privacy()).getByRole('link', { name: 'www.cnil.fr/plaintes' })).toHaveAttribute(
+        'href',
+        'https://www.cnil.fr/plaintes',
+      )
+      expect(privacy()).toHaveTextContent('3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07')
+    })
   })
 
   it('affiche la valeur dès qu’elle est fournie, sans mention « à renseigner »', () => {

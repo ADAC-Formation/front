@@ -1,0 +1,4 @@
+.pending {
+  font-style: italic;
+  color: var(--muted-foreground);
+}

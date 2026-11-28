@@ -16,6 +16,15 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-28 — Notifications par e-mail toujours envoyées, pour tous les rôles (NOTES-04, Q17 ; prêt à relire)
+
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `fd81682`) : `fix/notification-emails-always`, `d276cab`, commit local, **non poussé** (Manon décide).
+- **Quoi et pourquoi** : décision de Manon (réunion du 27/11, NOTES-04 #74) : tout le monde reçoit toujours les e-mails du portail (Qualiopi ind. 30, notamment le questionnaire à froid du stagiaire). Le front a retiré le réglage du profil pour tous les rôles (`decisions-profil.md` P7). Côté back, `EmailServiceImpl.sendNotificationEmail` sautait tout compte à `emailNotificationsEnabled = false` : la condition est retirée.
+- **Fichiers touchés** : `service/EmailServiceImpl.java`, `controller/UserController.java` (description Swagger de `PATCH /me`), `docs/tech.md`, `docs/AGENT_HANDOFF.md`. Test : `EmailServiceImplTest` (`…WithToggleDisabledSendsNothing` remplacé par `…AlwaysSendsEvenWithNotificationsDisabled`, RED puis GREEN). `mvn test` : 745 tests, 2 échecs **déjà présents sur `origin/dev`** (vérifié sans ce correctif) : `FlywayMigrationTest` attend V7 alors que `dev` contient V8, et `NotificationRepositoryTest.bellQueryOrdersMostRecentFirst` (instable, déjà signalé).
+- **Contrat** : inchangé. `PATCH /api/users/me` accepte et enregistre toujours `emailNotificationsEnabled`, `UserResponse` le renvoie toujours ; `tech.md` précise qu'il n'empêche plus l'envoi. **Pas de migration** : les comptes qui l'avaient coupé reçoivent de nouveau les e-mails sans changement de données.
+- **À vérifier / risques** : `sendNotificationEmail` n'a **aucun appelant** sur `origin/dev` : aujourd'hui aucune notification ne part par e-mail, avec ou sans le réglage. Ce correctif fixe la règle pour le jour où l'envoi sera branché (NOTES-28 à 30). Alors, les formateurs et la chargée de formation qui avaient coupé les e-mails en recevront un par notification (décision voulue). Relevé au passage, hors de ce correctif : `MAIL_FROM: ${MAIL_FROM}` dans `docker-compose.yml` passe une chaîne vide si `.env` ne le définit pas (le défaut `no-reply@adac.fr` est alors ignoré). Plus tard, avec Charlotte : retirer le champ (contrat cassé, D66 cas 4) ou le garder inutilisé.
+- **Lien avec** : Q17 (traitée par ce changement).
+
 ### 2026-11-24 — Dépôt d'un fichier dont le nom a un accent : « Service de stockage indisponible » corrigé (mergé le 2026-11-24, PR #31)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `82e74d6`) : `fix/storage-key-accents`, `d540767`. Poussée le 2026-11-24, PR #31 vers `dev`.

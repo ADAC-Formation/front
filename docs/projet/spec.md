@@ -185,7 +185,7 @@ Source : TICKET-031 (front), US-013, `tech.md` §7, décisions H1–H9 (`decisio
 
 ### TICKETS 036 et 044 — Page profil
 - [ ] `/profile` (tous les rôles) : « Mes informations » en lecture seule (prénom, nom, e-mail, rôle libellé), rendues en texte.
-- [ ] « Notifications par e-mail » : interrupteur « Recevoir les notifications par e-mail » à l'état de `emailNotificationsEnabled` ; un changement envoie tout de suite `PATCH /users/me`, annonce « Préférences enregistrées » ; en cas d'échec il revient à l'état précédent et l'erreur est annoncée. Note : les e-mails de sécurité sont toujours envoyés.
+- [ ] ~~« Notifications par e-mail »~~ retiré pour tous les rôles (NOTES-04, `decisions-profil.md` P7), remplacé par « Mes données personnelles ». Ancien texte : interrupteur « Recevoir les notifications par e-mail » à l'état de `emailNotificationsEnabled` ; un changement envoie tout de suite `PATCH /users/me`, annonce « Préférences enregistrées » ; en cas d'échec il revient à l'état précédent et l'erreur est annoncée. Note : les e-mails de sécurité sont toujours envoyés.
 - [ ] « Mot de passe » : ancien, nouveau, confirmation validés avant tout appel (8–72 caractères, une majuscule, un chiffre) puis `PATCH /users/me/password` (route annoncée, absente du back `dev` au 2026-11-09, Q1) ; succès annoncé et champs vidés ; message du back affiché en cas d'échec, sans déconnexion sur un `401` ; lien « Mot de passe actuel oublié ? ».
 - [ ] « Mes documents » : stagiaire seulement (inchangé).
 - [ ] Accessibilité : jest-axe sans violation.

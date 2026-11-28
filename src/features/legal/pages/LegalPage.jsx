@@ -1,18 +1,14 @@
 import BackButton from '../../../components/molecules/BackButton/BackButton'
 import { PageShell } from '../../../templates/PageShell/PageShell'
+import LegalValue from '../components/LegalValue'
 import { LEGAL_INFO } from '../legalInfo'
 import styles from './LegalPage.module.css'
-
-const PENDING = 'À renseigner par l’ADAC'
-
-// Valeur fournie par l'ADAC, ou mention visible tant qu'elle manque (jamais de texte inventé).
-const Value = ({ children }) => (children ? children : <span className={styles.pending}>{PENDING}</span>)
 
 const Fact = ({ label, children }) => (
   <>
     <dt>{label}</dt>
     <dd>
-      <Value>{children}</Value>
+      <LegalValue>{children}</LegalValue>
     </dd>
   </>
 )
@@ -68,6 +64,30 @@ const LegalPage = () => {
             de formation, les formateurs et les stagiaires. Il ne collecte que ce dont ce service a besoin.
           </p>
 
+          <section aria-labelledby="controller-heading">
+            <h3 id="controller-heading" className={styles.subheading}>
+              Responsable du traitement
+            </h3>
+            <dl className={styles.facts}>
+              <Fact label="Association">
+                {info.name}, {info.address}
+              </Fact>
+              <Fact label="Contact pour vos données personnelles">{info.privacyContact}</Fact>
+              <Fact label="Base légale">{info.legalBasis}</Fact>
+            </dl>
+          </section>
+
+          <h3 className={styles.subheading}>Finalités</h3>
+          <ul className={styles.list}>
+            <li>Gérer les formations, les inscriptions et le suivi des stagiaires.</li>
+            <li>Recevoir et conserver les documents demandés pour les formations.</li>
+            <li>Permettre les échanges sur le portail : messagerie et notifications.</li>
+            <li>
+              Envoyer les e-mails du portail (activation du compte, réinitialisation du mot de passe, notifications). Ils
+              font partie du suivi des formations et ne peuvent pas être désactivés.
+            </li>
+          </ul>
+
           <h3 className={styles.subheading}>Données traitées</h3>
           <ul className={styles.list}>
             <li>Votre compte : nom, prénom, adresse e-mail et rôle.</li>
@@ -76,9 +96,16 @@ const LegalPage = () => {
             <li>Vos messages et vos notifications.</li>
           </ul>
 
+          <h3 className={styles.subheading}>Destinataires</h3>
+          <p className={styles.text}>
+            Seules les personnes qui en ont besoin accèdent à vos données : l’équipe de l’ADAC et les formateurs
+            concernés. Les prestataires techniques du portail (hébergement, stockage des documents, envoi des e-mails)
+            les traitent pour le compte de l’ADAC. Vos données ne sont ni vendues ni cédées.
+          </p>
+
           <h3 className={styles.subheading}>Durée de conservation</h3>
           <p className={styles.text}>
-            Durée de conservation des données : <Value>{info.retention}</Value>
+            Durée de conservation des données : <LegalValue>{info.retention}</LegalValue>
           </p>
 
           <h3 className={styles.subheading}>Ce qui est enregistré dans votre navigateur</h3>
@@ -99,8 +126,21 @@ const LegalPage = () => {
 
           <h3 className={styles.subheading}>Vos droits</h3>
           <p className={styles.text}>
-            Vous pouvez demander l’accès à vos données, leur rectification ou leur effacement en écrivant à l’ADAC
-            (voir les coordonnées ci-dessus). Vous pouvez aussi saisir la CNIL.
+            Conformément au règlement général sur la protection des données (RGPD) et à la loi « Informatique et
+            libertés », vous disposez d’un droit d’accès, de rectification et d’effacement de vos données, d’un droit à
+            la limitation de leur traitement, d’un droit d’opposition et d’un droit à la portabilité. Vous pouvez aussi
+            définir des directives sur le sort de vos données après votre décès. Pour exercer ces droits, écrivez au
+            contact pour vos données personnelles (voir « Responsable du traitement »).
+          </p>
+
+          <h3 className={styles.subheading}>Réclamation</h3>
+          <p className={styles.text}>
+            Si vous estimez, après avoir contacté l’ADAC, que vos droits ne sont pas respectés, vous pouvez adresser une
+            réclamation à la CNIL, en ligne sur{' '}
+            <a className={styles.link} href="https://www.cnil.fr/plaintes">
+              www.cnil.fr/plaintes
+            </a>{' '}
+            ou par courrier : CNIL, 3 place de Fontenoy, TSA 80715, 75334 Paris Cedex 07.
           </p>
         </section>
       </div>

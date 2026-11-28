@@ -1,12 +1,13 @@
-import { screen, waitFor } from '@testing-library/react'
+import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { axe } from 'jest-axe'
 import { describe, expect, it } from 'vitest'
-import { mockChangePassword, mockUpdateProfile } from '../../../test/profile'
+import { LEGAL_INFO } from '../../legal/legalInfo'
+import { mockChangePassword } from '../../../test/profile'
 import { renderWithProviders } from '../../../test/render'
-import { USERS, mockSession } from '../../../test/session'
+import { USERS } from '../../../test/session'
 import ChangePasswordForm from './ChangePasswordForm'
-import EmailNotificationToggle from './EmailNotificationToggle'
+import PersonalDataSection from './PersonalDataSection'
 import ProfileInfo from './ProfileInfo'
 
 describe('ProfileInfo', () => {
@@ -31,41 +32,21 @@ describe('ProfileInfo', () => {
   })
 })
 
-describe('EmailNotificationToggle', () => {
-  function renderToggle(user = USERS.STAGIAIRE, options) {
-    mockSession('STAGIAIRE')
-    const api = mockUpdateProfile(user, options)
-    renderWithProviders(<EmailNotificationToggle />, { withSession: true })
-    return api
-  }
-
-  it('reprend l’état de la session et explique que les e-mails de sécurité sont toujours envoyés', async () => {
-    renderToggle()
-    const toggle = await screen.findByRole('switch', { name: 'Recevoir les notifications par e-mail' })
-    expect(toggle).toBeChecked()
-    expect(screen.getByText(/e-mails de sécurité \(activation, réinitialisation\) sont toujours envoyés/)).toBeInTheDocument()
-  })
-
-  it('enregistre le changement tout de suite et l’annonce', async () => {
-    const api = renderToggle()
-    await userEvent.click(await screen.findByRole('switch', { name: 'Recevoir les notifications par e-mail' }))
-    await waitFor(() => expect(api.patched).toEqual([{ emailNotificationsEnabled: false }]))
-    expect(await screen.findByRole('status')).toHaveTextContent('Préférences enregistrées')
-    expect(screen.getByRole('switch')).not.toBeChecked()
-  })
-
-  it('revient à l’état précédent et annonce l’erreur quand le back refuse', async () => {
-    renderToggle(USERS.STAGIAIRE, { error: { status: 500, message: 'Service indisponible' } })
-    await userEvent.click(await screen.findByRole('switch', { name: 'Recevoir les notifications par e-mail' }))
-    expect(await screen.findByRole('alert')).toHaveTextContent('Service indisponible')
-    await waitFor(() => expect(screen.getByRole('switch')).toBeChecked())
-    expect(screen.queryByText('Préférences enregistrées')).not.toBeInTheDocument()
+describe('PersonalDataSection', () => {
+  it('affiche le contact fourni par l’ADAC, sans mention « à renseigner »', () => {
+    const original = { ...LEGAL_INFO }
+    Object.assign(LEGAL_INFO, { privacyContact: 'rgpd@adac.test' })
+    try {
+      renderWithProviders(<PersonalDataSection />)
+      expect(screen.getByText('rgpd@adac.test')).toBeInTheDocument()
+      expect(screen.queryByText('À renseigner par l’ADAC')).not.toBeInTheDocument()
+    } finally {
+      Object.assign(LEGAL_INFO, original)
+    }
   })
 
   it('n’a aucune violation jest-axe', async () => {
-    mockSession('STAGIAIRE')
-    const { container } = renderWithProviders(<EmailNotificationToggle />, { withSession: true })
-    await screen.findByRole('switch')
+    const { container } = renderWithProviders(<PersonalDataSection />)
     expect(await axe(container)).toHaveNoViolations()
   })
 })

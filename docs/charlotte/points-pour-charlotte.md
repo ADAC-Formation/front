@@ -212,12 +212,14 @@ Pour afficher, sur le profil d'un stagiaire, ce qu'il a envoyé dans chacune de 
 
 Proposition : `GET /api/users/{id}/inscriptions` → `{ id, formation }[]` (SUPER_ADMIN : toutes ; ADMIN : celles de ses formations ; la même règle que `GET /api/documents?inscriptionId=`). Le front passera à cet appel unique dès qu'il existe.
 
-### Q17 — Toujours envoyer les e-mails de notification au stagiaire (NOTES-04, Qualiopi ind. 30) — nouveau, 2026-11-20
+### Q17 — Toujours envoyer les e-mails de notification au stagiaire (NOTES-04, Qualiopi ind. 30) — nouveau, 2026-11-20 · **traitée le 2026-11-28 par Manon** (voir la fin de cette section)
 Décision de Manon : le stagiaire doit toujours recevoir les e-mails, notamment le futur questionnaire à froid (six mois après la formation). Le front a retiré l'interrupteur « Notifications par e-mail » du profil du stagiaire ; le formateur et la chargée de formation le gardent.
 
 Côté back, rien n'empêche encore un stagiaire d'être sans e-mails : `EmailServiceImpl.sendNotificationEmail` saute tout compte à `emailNotificationsEnabled = false`, et `PATCH /users/me` accepte ce champ pour tous les rôles. Sans l'interrupteur, un stagiaire qui l'aurait coupé avant ne pourrait plus le rallumer (en local au 2026-11-20 : aucun, les 13 stagiaires sont à `true`).
 
 Proposition : (1) envoyer la notification au stagiaire quel que soit le champ (ou refuser `emailNotificationsEnabled` de `PATCH /users/me` pour le rôle STAGIAIRE) ; (2) remettre à `true` les stagiaires déjà à `false` (migration), si des comptes existent en production. À décider avec Manon (D66 : change ce que l'utilisateur reçoit, et la migration touche le schéma de données) : rien n'est codé côté back.
+
+**Mise à jour du 2026-11-28** : Manon a élargi la règle à **tous les rôles** (réunion du 27/11) et a fait le changement elle-même dans le back (D66) : branche `fix/notification-emails-always`, journal `changements-back.md` du 2026-11-28. La notification part quel que soit `emailNotificationsEnabled` ; le champ reste dans `PATCH /users/me` et `UserResponse` (aucun contrat cassé) ; **pas de migration** (inutile : le champ n'est plus lu à l'envoi). Constat : `sendNotificationEmail` n'a aucun appelant sur `dev`, donc aucune notification ne part encore par e-mail ; la règle s'appliquera quand l'envoi sera branché (NOTES-28 à 30). Il te reste seulement à relire, et à dire plus tard si on retire le champ ou si on le garde inutilisé.
 
 ### Q19 — Filtre `MISSING_DOCS` du message groupé : retiré du front, encore accepté par le back — nouveau, 2026-11-27
 Décision de Manon (G26, H21 ; NOTES-17) : le message groupé ne propose plus « Documents manquants ». Le front n'envoie plus `filterType=MISSING_DOCS` (aperçu) ni `filter.type: MISSING_DOCS` (envoi) ; il garde `FORMATION` et `MANUAL`.

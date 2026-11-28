@@ -68,24 +68,42 @@ describe('ProfilePage', () => {
     expect(screen.getByRole('heading', { level: 2, name: 'Mot de passe' })).toBeInTheDocument()
   })
 
-  it.each(['ADMIN', 'SUPER_ADMIN'])('%s : garde le réglage « Notifications par e-mail »', async (role) => {
-    if (role === 'ADMIN') {
-      mockFormationList([])
-      mockDocumentApi([], { uploader: USERS.ADMIN })
-    }
-    renderProfile(role)
-    expect(await screen.findByRole('switch', { name: 'Recevoir les notifications par e-mail' })).toBeInTheDocument()
-  })
+  it.each(['STAGIAIRE', 'ADMIN', 'SUPER_ADMIN'])(
+    '%s : aucun réglage des e-mails, ils sont toujours envoyés (NOTES-04, ind. 30)',
+    async (role) => {
+      if (role !== 'SUPER_ADMIN') {
+        mockFormationList([])
+        mockDocumentApi([], { uploader: USERS[role] })
+      }
+      renderProfile(role)
+      // « Mes informations » attend la session : le réglage, s'il existait, serait déjà rendu.
+      expect(await screen.findByRole('heading', { level: 2, name: 'Mes informations' })).toBeInTheDocument()
+      expect(screen.queryByRole('heading', { name: 'Notifications par e-mail' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('switch')).not.toBeInTheDocument()
+    },
+  )
 
-  it('stagiaire : aucun réglage des e-mails, ils sont toujours envoyés (NOTES-04, ind. 30)', async () => {
-    mockFormationList([])
-    mockDocumentApi([], { uploader: USERS.STAGIAIRE })
-    renderProfile('STAGIAIRE')
-    // « Mes informations » attend la session : le réglage, s'il existait, serait déjà rendu.
-    expect(await screen.findByRole('heading', { level: 2, name: 'Mes informations' })).toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Notifications par e-mail' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('switch')).not.toBeInTheDocument()
-  })
+  it.each(['STAGIAIRE', 'ADMIN', 'SUPER_ADMIN'])(
+    '%s : « Mes données personnelles » résume le RGPD et mène aux mentions légales',
+    async (role) => {
+      if (role !== 'SUPER_ADMIN') {
+        mockFormationList([])
+        mockDocumentApi([], { uploader: USERS[role] })
+      }
+      renderProfile(role)
+      const section = await screen.findByRole('region', { name: 'Mes données personnelles' })
+      expect(within(section).getByText(/e-mails du portail.*toujours envoyés/)).toBeInTheDocument()
+      for (const right of ['accès', 'rectification', 'effacement', 'limitation', 'vous opposer', 'portabilité']) {
+        expect(section).toHaveTextContent(right)
+      }
+      expect(within(section).getByText('Contact pour vos données personnelles')).toBeInTheDocument()
+      expect(within(section).getByText('À renseigner par l’ADAC')).toBeInTheDocument()
+      expect(within(section).getByRole('link', { name: 'Tout savoir sur vos données personnelles' })).toHaveAttribute(
+        'href',
+        '/mentions-legales',
+      )
+    },
+  )
 
   it('n’a aucun <main> (celui du Layout est le seul) et aucune violation jest-axe', async () => {
     mockFormationList(mine)
