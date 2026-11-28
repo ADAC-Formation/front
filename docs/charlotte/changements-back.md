@@ -16,18 +16,18 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
-### 2026-11-28 — Formation obligatoire à la création d'un stagiaire (NOTES-25, Q20 ; prêt à relire)
+### 2026-11-28 — Formation obligatoire à la création d'un stagiaire (NOTES-25, Q20 ; poussé, PR #33)
 
-- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `fd81682`) : `fix/stagiaire-requires-formation`, `40ea409`, commit local, **non poussé** (Manon décide).
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `fd81682`) : `fix/stagiaire-requires-formation`, `40ea409`. Poussée le 2026-11-28, PR #33 vers `dev`.
 - **Quoi et pourquoi** : décision de Manon (réunion du 27/11, NOTES-25 #96) : un stagiaire est toujours créé avec une formation. Le front l'impose déjà (`decisions-inscriptions.md` J11) ; le back refuse aussi, pour qu'aucun autre appel ne crée un stagiaire sans formation.
 - **Fichiers touchés** : `service/UserServiceImpl.java` (`createStagiaire` : `400 « Au moins une formation est obligatoire »` si `formationIds` est absent ou vide, avant toute création), `controller/UserController.java` (Swagger), `docs/tech.md`, `docs/AGENT_HANDOFF.md`. Tests : `UserServiceImplTest` (`null` et `[]`, RED puis GREEN ; remplace `…WithNoFormationIdsSkipsEnrollment`), `UserControllerTest` (`400` et message).
 - **Contrat** : **change** : `formationIds` devient obligatoire sur `POST /users/stagiaires` (D66, cas 4, décidé par Manon). `POST /users/formateurs` et `POST /users/import` inchangés : l'import crée toujours des stagiaires sans inscription.
 - **À vérifier / risques** : tout autre client qui créait un stagiaire sans formation reçoit désormais `400` ; le seul connu est le front, déjà à jour.
 - **Lien avec** : Q20.
 
-### 2026-11-28 — Notifications par e-mail toujours envoyées, pour tous les rôles (NOTES-04, Q17 ; prêt à relire)
+### 2026-11-28 — Notifications par e-mail toujours envoyées, pour tous les rôles (NOTES-04, Q17 ; poussé, PR #32)
 
-- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `fd81682`) : `fix/notification-emails-always`, `d276cab`, commit local, **non poussé** (Manon décide).
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `fd81682`) : `fix/notification-emails-always`, `d276cab`. Poussée le 2026-11-28, PR #32 vers `dev`.
 - **Quoi et pourquoi** : décision de Manon (réunion du 27/11, NOTES-04 #74) : tout le monde reçoit toujours les e-mails du portail (Qualiopi ind. 30, notamment le questionnaire à froid du stagiaire). Le front a retiré le réglage du profil pour tous les rôles (`decisions-profil.md` P7). Côté back, `EmailServiceImpl.sendNotificationEmail` sautait tout compte à `emailNotificationsEnabled = false` : la condition est retirée.
 - **Fichiers touchés** : `service/EmailServiceImpl.java`, `controller/UserController.java` (description Swagger de `PATCH /me`), `docs/tech.md`, `docs/AGENT_HANDOFF.md`. Test : `EmailServiceImplTest` (`…WithToggleDisabledSendsNothing` remplacé par `…AlwaysSendsEvenWithNotificationsDisabled`, RED puis GREEN). `mvn test` : 745 tests, 2 échecs **déjà présents sur `origin/dev`** (vérifié sans ce correctif) : `FlywayMigrationTest` attend V7 alors que `dev` contient V8, et `NotificationRepositoryTest.bellQueryOrdersMostRecentFirst` (instable, déjà signalé).
 - **Contrat** : inchangé. `PATCH /api/users/me` accepte et enregistre toujours `emailNotificationsEnabled`, `UserResponse` le renvoie toujours ; `tech.md` précise qu'il n'empêche plus l'envoi. **Pas de migration** : les comptes qui l'avaient coupé reçoivent de nouveau les e-mails sans changement de données.
