@@ -16,6 +16,15 @@ Une entrée par changement, la plus récente en haut :
 
 ## Entrées
 
+### 2026-11-28 — Formation obligatoire à la création d'un stagiaire (NOTES-25, Q20 ; prêt à relire)
+
+- **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `fd81682`) : `fix/stagiaire-requires-formation`, `40ea409`, commit local, **non poussé** (Manon décide).
+- **Quoi et pourquoi** : décision de Manon (réunion du 27/11, NOTES-25 #96) : un stagiaire est toujours créé avec une formation. Le front l'impose déjà (`decisions-inscriptions.md` J11) ; le back refuse aussi, pour qu'aucun autre appel ne crée un stagiaire sans formation.
+- **Fichiers touchés** : `service/UserServiceImpl.java` (`createStagiaire` : `400 « Au moins une formation est obligatoire »` si `formationIds` est absent ou vide, avant toute création), `controller/UserController.java` (Swagger), `docs/tech.md`, `docs/AGENT_HANDOFF.md`. Tests : `UserServiceImplTest` (`null` et `[]`, RED puis GREEN ; remplace `…WithNoFormationIdsSkipsEnrollment`), `UserControllerTest` (`400` et message).
+- **Contrat** : **change** : `formationIds` devient obligatoire sur `POST /users/stagiaires` (D66, cas 4, décidé par Manon). `POST /users/formateurs` et `POST /users/import` inchangés : l'import crée toujours des stagiaires sans inscription.
+- **À vérifier / risques** : tout autre client qui créait un stagiaire sans formation reçoit désormais `400` ; le seul connu est le front, déjà à jour.
+- **Lien avec** : Q20.
+
 ### 2026-11-28 — Notifications par e-mail toujours envoyées, pour tous les rôles (NOTES-04, Q17 ; prêt à relire)
 
 - **Branche et commit** (clone `back-readonly`, depuis `origin/dev` `fd81682`) : `fix/notification-emails-always`, `d276cab`, commit local, **non poussé** (Manon décide).

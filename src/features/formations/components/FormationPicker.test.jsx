@@ -95,6 +95,51 @@ describe('FormationPicker', () => {
     expect(await screen.findByRole('checkbox', { name: ACTIVE_LABEL })).toBeInTheDocument()
   })
 
+  // NOTES-26 (J12) : filtre par catégorie, au-dessus de la recherche.
+  describe('filtre par catégorie', () => {
+    const category = () => screen.getByRole('combobox', { name: 'Catégorie' })
+
+    it('propose « Toutes les catégories » puis seulement les catégories qui ont une formation à proposer', async () => {
+      mockFormationList(FORMATIONS)
+      render()
+      await screen.findByRole('checkbox', { name: ACTIVE_LABEL })
+      const options = within(category()).getAllByRole('option').map((option) => option.textContent)
+      // « Ancienne catégorie » n'a qu'une formation archivée : elle n'apparaît pas.
+      expect(options).toEqual(['Toutes les catégories', 'Numérique', 'Secourisme'])
+      expect(category()).toHaveValue('')
+    })
+
+    it('ne garde que les formations de la catégorie choisie et garde la sélection masquée', async () => {
+      mockFormationList(FORMATIONS)
+      render({ initial: [101] })
+      await screen.findByRole('checkbox', { name: ACTIVE_LABEL })
+      await userEvent.selectOptions(category(), 'Numérique')
+      expect(screen.getByRole('checkbox', { name: EXCEL_LABEL })).toBeInTheDocument()
+      expect(screen.queryByRole('checkbox', { name: ACTIVE_LABEL })).not.toBeInTheDocument()
+      expect(screen.getByText('1 formation sélectionnée')).toBeInTheDocument()
+      await userEvent.selectOptions(category(), 'Toutes les catégories')
+      expect(screen.getByRole('checkbox', { name: ACTIVE_LABEL })).toBeChecked()
+    })
+
+    it('se combine avec la recherche et reste affiché quand rien ne correspond', async () => {
+      mockFormationList(FORMATIONS)
+      render()
+      await screen.findByRole('checkbox', { name: ACTIVE_LABEL })
+      await userEvent.selectOptions(category(), 'Numérique')
+      await userEvent.type(search(), 'secours')
+      expect(screen.getByText('Aucune formation trouvée.')).toBeInTheDocument()
+      expect(category()).toBeInTheDocument()
+    })
+
+    it('ne propose pas la catégorie dont toutes les formations sont exclues', async () => {
+      mockFormationList(FORMATIONS)
+      render({ excludeIds: [102] })
+      await screen.findByRole('checkbox', { name: ACTIVE_LABEL })
+      const options = within(category()).getAllByRole('option').map((option) => option.textContent)
+      expect(options).toEqual(['Toutes les catégories', 'Secourisme'])
+    })
+  })
+
   it('n’a pas de violation d’accessibilité', async () => {
     mockFormationList(FORMATIONS)
     const { container } = render()

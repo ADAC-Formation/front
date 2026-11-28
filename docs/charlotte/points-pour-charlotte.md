@@ -221,6 +221,9 @@ Proposition : (1) envoyer la notification au stagiaire quel que soit le champ (o
 
 **Mise à jour du 2026-11-28** : Manon a élargi la règle à **tous les rôles** (réunion du 27/11) et a fait le changement elle-même dans le back (D66) : branche `fix/notification-emails-always`, journal `changements-back.md` du 2026-11-28. La notification part quel que soit `emailNotificationsEnabled` ; le champ reste dans `PATCH /users/me` et `UserResponse` (aucun contrat cassé) ; **pas de migration** (inutile : le champ n'est plus lu à l'envoi). Constat : `sendNotificationEmail` n'a aucun appelant sur `dev`, donc aucune notification ne part encore par e-mail ; la règle s'appliquera quand l'envoi sera branché (NOTES-28 à 30). Il te reste seulement à relire, et à dire plus tard si on retire le champ ou si on le garde inutilisé.
 
+### Q20 — Formation obligatoire à la création d'un stagiaire (NOTES-25) — nouveau, 2026-11-28, fait par Manon
+Décision de Manon (réunion du 27/11 ; `decisions-inscriptions.md` J11) : un stagiaire créé depuis le formulaire a toujours au moins une formation. Manon l'a fait elle-même dans le back (D66) : branche `fix/stagiaire-requires-formation` (journal `changements-back.md` du 2026-11-28). `POST /users/stagiaires` répond `400 « Au moins une formation est obligatoire »` si `formationIds` est absent ou vide. **C'est un changement de contrat** : à relire. L'import Excel n'est pas touché : il crée toujours des stagiaires sans inscription (à inscrire ensuite depuis leur page).
+
 ### Q19 — Filtre `MISSING_DOCS` du message groupé : retiré du front, encore accepté par le back — nouveau, 2026-11-27
 Décision de Manon (G26, H21 ; NOTES-17) : le message groupé ne propose plus « Documents manquants ». Le front n'envoie plus `filterType=MISSING_DOCS` (aperçu) ni `filter.type: MISSING_DOCS` (envoi) ; il garde `FORMATION` et `MANUAL`.
 

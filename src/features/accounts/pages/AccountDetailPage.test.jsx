@@ -384,6 +384,16 @@ describe('AccountDetailPage', () => {
         await within(section).findByRole('link', { name: 'Premiers secours PSC1' })
       })
 
+      it('filtre les formations par catégorie (NOTES-26, J12)', async () => {
+        renderManager([])
+        const section = await formationsSection()
+        await userEvent.click(await within(section).findByRole('button', { name: 'Inscrire à une formation' }))
+        await within(section).findByRole('checkbox', { name: /Excel niveau 1/ })
+        await userEvent.selectOptions(within(section).getByRole('combobox', { name: 'Catégorie' }), 'Secourisme')
+        expect(within(section).getByRole('checkbox', { name: /Premiers secours PSC1/ })).toBeInTheDocument()
+        expect(within(section).queryByRole('checkbox', { name: /Excel niveau 1/ })).not.toBeInTheDocument()
+      })
+
       it('désactive « Inscrire » tant qu’aucune formation n’est cochée', async () => {
         renderManager([])
         const section = await formationsSection()

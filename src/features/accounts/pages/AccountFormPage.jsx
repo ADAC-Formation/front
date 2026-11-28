@@ -22,10 +22,15 @@ const AccountForm = ({ config, account }) => {
   const create = useCreateAccount(config.kind)
   const update = useUpdateAccount(account?.id)
   const mutation = account ? update : create
-  // Formations choisies à la création d'un stagiaire (J3, J10) : elles partent avec le compte.
+  // Formations choisies à la création d'un stagiaire (J3, J10) : elles partent avec le compte. Au moins une
+  // est obligatoire (NOTES-25, J11) : l'erreur s'affiche après une tentative d'envoi, et disparaît dès qu'une
+  // formation est cochée.
   const choosesFormations = !account && config.kind === 'stagiaires'
   const [formationIds, setFormationIds] = useState([])
+  const [triedToSubmit, setTriedToSubmit] = useState(false)
   const { data: activeFormations = [] } = useFormations({ status: 'ACTIVE', enabled: choosesFormations })
+  const missingFormation = choosesFormations && formationIds.length === 0
+  const formationError = triedToSubmit && missingFormation ? 'Choisissez au moins une formation.' : undefined
 
   const {
     register,
@@ -44,6 +49,7 @@ const AccountForm = ({ config, account }) => {
   const mustWarnAboutSessions = emailChanged && account.isActive
 
   const submit = async (values) => {
+    if (missingFormation) return
     const trimmed = {
       nom: values.nom.trim(),
       prenom: values.prenom.trim(),
@@ -89,7 +95,14 @@ const AccountForm = ({ config, account }) => {
         </p>
       )}
 
-      <form className={styles.card} onSubmit={handleSubmit(submit)} noValidate>
+      <form
+        className={styles.card}
+        onSubmit={(event) => {
+          setTriedToSubmit(true)
+          return handleSubmit(submit)(event)
+        }}
+        noValidate
+      >
         {otherError && <Alert variant="error">{otherError.message}</Alert>}
 
         <div className={styles.formGrid}>
@@ -121,7 +134,18 @@ const AccountForm = ({ config, account }) => {
 
           {choosesFormations && (
             <div className={styles.fullWidth}>
-              <FormationPicker legend="Formations (facultatif)" selectedIds={formationIds} onChange={setFormationIds} />
+              <FormationPicker
+                legend="Formations"
+                selectedIds={formationIds}
+                onChange={setFormationIds}
+                error={formationError}
+                empty={
+                  <>
+                    Aucune formation active : créez d’abord une formation pour y inscrire le stagiaire.{' '}
+                    <Link to="/formations/creer">Créer une formation</Link>
+                  </>
+                }
+              />
             </div>
           )}
 

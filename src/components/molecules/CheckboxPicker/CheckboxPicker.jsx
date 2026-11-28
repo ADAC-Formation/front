@@ -7,14 +7,24 @@ import styles from './CheckboxPicker.module.css'
 // Composant contrôlé : `selectedIds` / `onChange(ids)`. La sélection survit à la recherche (seules les cases
 // affichées changent) ; « Tout sélectionner » (facultatif) agit sur les résultats affichés. Les libellés sont
 // rendus en texte. Utilisé par StagiairePicker et FormationPicker.
-//   items : [{ id, label }] ; texts : { search, count(n), empty, noMatch, loading, error } ;
+//   items : [{ id, label, ... }] ; texts : { search, count(n), empty, noMatch, loading, error } ;
 //   status : { isLoading, isError, retry }.
-const CheckboxPicker = ({ legend, items, selectedIds, onChange, texts, status, selectAll = false }) => {
+//   filter (facultatif, NOTES-26) : liste déroulante avant la recherche, qui se combine avec elle ; la sélection
+//     masquée reste sélectionnée. { label, allLabel, options: [{ value, label }], matches(item, value) }.
+//   error (facultatif, NOTES-25) : message relié au groupe par `aria-describedby`.
+const CheckboxPicker = ({ legend, items, selectedIds, onChange, texts, status, selectAll = false, filter, error }) => {
   const searchId = useId()
+  const filterId = useId()
+  const errorId = useId()
   const [search, setSearch] = useState('')
+  const [filterValue, setFilterValue] = useState('')
 
   const term = normalize(search)
-  const shown = items.filter((item) => term === '' || normalize(item.label).includes(term))
+  const shown = items.filter(
+    (item) =>
+      (!filter || filterValue === '' || filter.matches(item, filterValue)) &&
+      (term === '' || normalize(item.label).includes(term)),
+  )
 
   const toggle = (id) =>
     onChange(selectedIds.includes(id) ? selectedIds.filter((selectedId) => selectedId !== id) : [...selectedIds, id])
@@ -25,7 +35,7 @@ const CheckboxPicker = ({ legend, items, selectedIds, onChange, texts, status, s
   const isReady = !status.isLoading && !status.isError
 
   return (
-    <fieldset className={styles.picker}>
+    <fieldset className={styles.picker} aria-describedby={error ? errorId : undefined}>
       <legend className={styles.legend}>{legend}</legend>
 
       {status.isLoading && <p role="status">{texts.loading}</p>}
@@ -44,6 +54,26 @@ const CheckboxPicker = ({ legend, items, selectedIds, onChange, texts, status, s
       {isReady && items.length > 0 && (
         <>
           <div className={styles.toolbar}>
+            {filter && (
+              <div className={styles.search}>
+                <label htmlFor={filterId} className={styles.searchLabel}>
+                  {filter.label}
+                </label>
+                <select
+                  id={filterId}
+                  className={styles.searchInput}
+                  value={filterValue}
+                  onChange={(event) => setFilterValue(event.target.value)}
+                >
+                  <option value="">{filter.allLabel}</option>
+                  {filter.options.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
             <div className={styles.search}>
               <label htmlFor={searchId} className={styles.searchLabel}>
                 {texts.search}
@@ -82,6 +112,12 @@ const CheckboxPicker = ({ legend, items, selectedIds, onChange, texts, status, s
             </ul>
           )}
         </>
+      )}
+
+      {error && (
+        <Alert variant="error" id={errorId}>
+          {error}
+        </Alert>
       )}
     </fieldset>
   )

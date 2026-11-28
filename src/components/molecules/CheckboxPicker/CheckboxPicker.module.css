@@ -27,6 +27,7 @@
   flex: 1 1 14rem;
   flex-direction: column;
   gap: var(--label-gap);
+  min-width: 0;
 }
 
 .searchLabel {
@@ -35,6 +36,9 @@
 }
 
 .searchInput {
+  /* NOTES-26 : largeur en pourcentage = compressible ; une longue catégorie n’élargit plus le formulaire. */
+  width: 100%;
+  min-width: 0;
   height: 2.875rem;
   padding: 0 0.875rem;
 

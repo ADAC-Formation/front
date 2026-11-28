@@ -101,21 +101,6 @@ describe('AccountFormPage — création', () => {
     expect(calls.body).toEqual({ nom: 'Roux', prenom: 'Zoé', email: 'zoe@adac.test' })
   })
 
-  it('crée un stagiaire sans formation', async () => {
-    const calls = mockRequest('post', '/users/stagiaires', () =>
-      HttpResponse.json({ ...STAGIAIRES[0], id: 22 }, { status: 201 }),
-    )
-    mockAccountList('stagiaires', STAGIAIRES)
-    mockFormationList(FORMATIONS)
-    renderForm('/admin/stagiaires/nouveau')
-    await screen.findByRole('heading', { level: 1, name: 'Créer un stagiaire' })
-    await fillValid()
-    await submit()
-    expect(await screen.findByText("Compte créé, e-mail d'activation envoyé")).toBeInTheDocument()
-    expect(await screen.findByRole('link', { name: 'Léa Petit' })).toBeInTheDocument()
-    expect(calls.body).toEqual({ nom: 'Roux', prenom: 'Zoé', email: 'zoe@adac.test', formationIds: [] })
-  })
-
   describe('formations du stagiaire (J3, J10)', () => {
     const PSC1 = 'Premiers secours PSC1 — du 10 mars 2026 au 12 mars 2026'
     const EXCEL = 'Excel niveau 1 — du 2 février 2026 au 3 février 2026'
@@ -123,14 +108,50 @@ describe('AccountFormPage — création', () => {
     it('propose les formations actives au stagiaire, jamais au formateur', async () => {
       mockFormationList(FORMATIONS)
       renderForm('/admin/stagiaires/nouveau')
-      expect(await screen.findByRole('group', { name: 'Formations (facultatif)' })).toBeInTheDocument()
+      expect(await screen.findByRole('group', { name: 'Formations' })).toBeInTheDocument()
       expect(await screen.findByRole('checkbox', { name: PSC1 })).toBeInTheDocument()
     })
 
     it("n'a pas de section formations pour un formateur", async () => {
       renderForm('/admin/formateurs/nouveau')
       await screen.findByRole('heading', { level: 1 })
-      expect(screen.queryByRole('group', { name: 'Formations (facultatif)' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('group', { name: 'Formations' })).not.toBeInTheDocument()
+    })
+
+    // NOTES-25 (J11) : un stagiaire est toujours créé avec au moins une formation.
+    it('refuse de créer un stagiaire sans formation : aucun appel, erreur reliée au groupe', async () => {
+      const calls = mockRequest('post', '/users/stagiaires', () =>
+        HttpResponse.json({ ...STAGIAIRES[0], id: 22 }, { status: 201 }),
+      )
+      mockFormationList(FORMATIONS)
+      renderForm('/admin/stagiaires/nouveau')
+      await screen.findByRole('checkbox', { name: PSC1 })
+      await fillValid()
+      await submit()
+      const error = await screen.findByText('Choisissez au moins une formation.')
+      expect(screen.getByRole('group', { name: 'Formations' })).toHaveAttribute(
+        'aria-describedby',
+        expect.stringContaining(error.id),
+      )
+      expect(calls.count).toBe(0)
+      expect(screen.getByTestId('path')).toHaveTextContent('/admin/stagiaires/nouveau')
+      // L'erreur disparaît dès qu'une formation est cochée.
+      await userEvent.click(screen.getByRole('checkbox', { name: PSC1 }))
+      expect(screen.queryByText('Choisissez au moins une formation.')).not.toBeInTheDocument()
+    })
+
+    it('sans formation active : l’explique et mène à « Créer une formation », sans rien envoyer', async () => {
+      const calls = mockRequest('post', '/users/stagiaires', () => HttpResponse.json({}, { status: 201 }))
+      mockFormationList([FORMATIONS[2]])
+      renderForm('/admin/stagiaires/nouveau')
+      expect(
+        await screen.findByText('Aucune formation active : créez d’abord une formation pour y inscrire le stagiaire.'),
+      ).toBeInTheDocument()
+      expect(screen.getByRole('link', { name: 'Créer une formation' })).toHaveAttribute('href', '/formations/creer')
+      await fillValid()
+      await submit()
+      expect(await screen.findByText('Choisissez au moins une formation.')).toBeInTheDocument()
+      expect(calls.count).toBe(0)
     })
 
     it('envoie les formations cochées avec le compte, puis ouvre la page du stagiaire', async () => {
@@ -164,19 +185,15 @@ describe('AccountFormPage — création', () => {
       expect(screen.getByTestId('path')).toHaveTextContent('/admin/stagiaires/nouveau')
     })
 
-    it('permet de créer le compte même si les formations ne se chargent pas', async () => {
-      const calls = mockRequest('post', '/users/stagiaires', () =>
-        HttpResponse.json({ ...STAGIAIRES[0], id: 22 }, { status: 201 }),
-      )
+    it('ne crée pas le compte quand les formations ne se chargent pas (formation obligatoire)', async () => {
+      const calls = mockRequest('post', '/users/stagiaires', () => HttpResponse.json({}, { status: 201 }))
       mockFormationListError(500)
-      mockAccountList('stagiaires', STAGIAIRES)
       renderForm('/admin/stagiaires/nouveau')
       expect(await screen.findByText('Impossible de charger les formations.')).toBeInTheDocument()
       await fillValid()
       await submit()
-      expect(await screen.findByText("Compte créé, e-mail d'activation envoyé")).toBeInTheDocument()
-      expect(await screen.findByRole('link', { name: 'Léa Petit' })).toBeInTheDocument()
-      expect(calls.body.formationIds).toEqual([])
+      expect(await screen.findByText('Choisissez au moins une formation.')).toBeInTheDocument()
+      expect(calls.count).toBe(0)
     })
 
     it("n'a pas de violation d'accessibilité avec la liste des formations", async () => {
