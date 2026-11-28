@@ -27,3 +27,17 @@ describe('Liste des conversations en deux volets', () => {
     expect(declarations(list)['max-height']).toBeUndefined()
   })
 })
+
+// NOTES-18 : les destinataires de « Nouvelle conversation » défilent dans le panneau, à toutes les largeurs (H23).
+describe('Liste des destinataires de la nouvelle conversation', () => {
+  const recipientList = () => declarations(css('components/NewConversation.module.css').match(/\.list\s*\{([^}]*)\}/)[1])
+
+  it('défile seule (overflow-y: auto)', () => {
+    expect(recipientList()['overflow-y']).toBe('auto')
+  })
+
+  it('a la même hauteur maximale que le fil, sans requête de conteneur', () => {
+    const thread = css('components/Thread.module.css').match(/\.list\s*\{([^}]*)\}/)[1]
+    expect(recipientList()['max-height']).toBe(declarations(thread)['max-height'])
+  })
+})

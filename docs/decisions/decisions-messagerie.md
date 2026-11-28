@@ -157,3 +157,9 @@ Décisions prises avec Manon (`/grill-me-with-docs`). Complète D21 et D22 de `d
 - **Décision** : dès que les deux volets sont côte à côte (conteneur ≥ 48rem), la liste des conversations défile seule, avec la même hauteur maximale que le fil (`60vh`). Sur écran étroit, la liste est seule à l'écran : la page défile, sans zone de défilement imbriquée.
 - **Pourquoi** : avec beaucoup de conversations, la liste allongeait la page et éloignait le fil ouvert ; le fil défilait déjà seul.
 - **Alternatives écartées** : limiter aussi la hauteur sur mobile (deux défilements imbriqués, gênant au doigt).
+
+## H23 — Nouvelle conversation : la liste des destinataires défile
+- **Date** : 2026-11-28 · réunion du 27/11 (NOTES-18, #89).
+- **Décision** : la liste des destinataires du panneau « Nouvelle conversation » défile dans le panneau, à toutes les largeurs, avec la même hauteur maximale que le fil (`60vh`). Les destinataires restent des liens : la tabulation les parcourt et le navigateur fait défiler la liste jusqu’à celui qui a le focus.
+- **Pourquoi** : le panneau s’ouvre au-dessus de la liste des conversations ; sans limite, une recherche large repoussait les conversations loin vers le bas, surtout sur téléphone (vérifié à 390 px : 14 destinataires, la liste défile, les conversations restent juste en dessous).
+- **Alternatives écartées** : limiter seulement en deux volets comme H22 (sur téléphone, la liste repoussait tout le reste) ; une hauteur fixe de `20rem` (ne suit pas la hauteur de l’écran).

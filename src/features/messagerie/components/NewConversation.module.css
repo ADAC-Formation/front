@@ -50,6 +50,10 @@
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr));
   gap: 0.25rem;
 
+  /* NOTES-18 (H23) : la liste défile dans le panneau, à toutes les largeurs, même hauteur que le fil. */
+  max-height: 60vh;
+  overflow-y: auto;
+
   margin: 0;
   padding: 0;
 
